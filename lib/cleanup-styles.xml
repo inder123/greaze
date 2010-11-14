@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <profiles version="2">
-<profile kind="CleanUpProfile" name="Gson" version="2">
+<profile kind="CleanUpProfile" name="Greaze" version="2">
 <setting id="cleanup.add_missing_nls_tags" value="false"/>
 <setting id="cleanup.format_source_code" value="false"/>
 <setting id="cleanup.add_missing_override_annotations" value="true"/>
