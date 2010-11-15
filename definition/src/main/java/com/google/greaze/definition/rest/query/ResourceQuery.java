@@ -25,9 +25,10 @@ import com.google.greaze.definition.rest.RestResource;
  * 
  * @author Inderjeet Singh
  */
-public interface ResourceQuery<I extends ID, R extends RestResource<I, R>, QUERY> {
+public interface ResourceQuery<
+    I extends ID, R extends RestResource<I, R>, Q extends ResourceQueryParams> {
   /**
    * Returns a list of resources matching the query
    */
-  public List<R> query(QUERY query);
+  public List<R> query(Q query);
 }

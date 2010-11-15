@@ -13,32 +13,13 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.google.greaze.example.definition.model;
-
-import com.google.greaze.definition.rest.query.ResourceQueryParams;
+package com.google.greaze.definition.rest.query;
 
 /**
- * A query for orders by item name
- *
+ * This interface is implemented by all the query parameter types used for a {@link ResourceQuery}
+ * 
  * @author Inderjeet Singh
  */
-public class QueryOrdersByItemName implements ResourceQueryParams {
-  private final String itemName;
-
-  public QueryOrdersByItemName() {
-    this(null);
-  }
-
-  public QueryOrdersByItemName(String itemName) {
-    this.itemName = itemName;
-  }
-  
-  public String getItemName() {
-    return itemName;
-  }
-
-  @Override
-  public String getQueryName() {
-    return "orders_by_item_name";
-  }
+public interface ResourceQueryParams {
+  public String getQueryName();
 }

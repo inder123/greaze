@@ -68,7 +68,7 @@ public class OrderClient {
     Cart cart = new Cart(lineItems, "first last", "4111-1111-1111-1111");
     Order order = client.placeOrder(cart);
     System.out.println("Placed order: " + order);
-    List<Order> queriedOrder = client.query(itemName);
-    System.out.println("Queried order by item name ( " + itemName + "): " + order);
+    List<Order> queriedOrders = client.query(itemName);
+    System.out.println("Queried orders by item name ( " + itemName + "): " + queriedOrders);
   }
 }

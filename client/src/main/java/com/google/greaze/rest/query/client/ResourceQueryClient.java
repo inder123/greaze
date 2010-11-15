@@ -23,6 +23,7 @@ import com.google.greaze.definition.HttpMethod;
 import com.google.greaze.definition.rest.ID;
 import com.google.greaze.definition.rest.RestResource;
 import com.google.greaze.definition.rest.query.ResourceQuery;
+import com.google.greaze.definition.rest.query.ResourceQueryParams;
 import com.google.greaze.definition.rest.query.TypedKeysQuery;
 import com.google.greaze.definition.webservice.RequestBody;
 import com.google.greaze.definition.webservice.ResponseBody;
@@ -41,8 +42,9 @@ import com.google.gson.Gson;
  * @param <R> type of the REST resource
  * @param <Q> Query parameters
  */
-public class ResourceQueryClient<I extends ID, R extends RestResource<I, R>, Q>
-    implements ResourceQuery<I, R, Q> {
+public class ResourceQueryClient<
+    I extends ID, R extends RestResource<I, R>, Q extends ResourceQueryParams>
+        implements ResourceQuery<I, R, Q> {
 
   private final WebServiceClient stub;
   private final WebServiceCallSpec callSpec;
@@ -65,6 +67,7 @@ public class ResourceQueryClient<I extends ID, R extends RestResource<I, R>, Q>
   private static <T> WebServiceCallSpec generateCallSpec(CallPath callPath) {
     return new WebServiceCallSpec.Builder(callPath)
         .supportsHttpMethod(HttpMethod.GET)
+//        .addQueryParam(TypedKeysQuery.QUERY_NAME)
         .addResponseBodyParam(TypedKeysQuery.RESOURCE_LIST)
         .build();
   }

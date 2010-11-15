@@ -32,6 +32,11 @@ import com.google.greaze.definition.rest.RestResource;
 @SuppressWarnings("rawtypes")
 public class TypedKeysQuery<I extends ID, R extends RestResource<I, R>> {
 
+  /**
+   * This key is used to specify the query parameter for the queryName
+   */
+  public static final TypedKey<String> QUERY_NAME = new TypedKey<String>("query", String.class);
+
   // TODO(inder): This should really be TypedKey<List<R>> 
   public static TypedKey<List> RESOURCE_LIST = new TypedKey<List>("resourceList", List.class);
 }

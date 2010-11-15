@@ -111,7 +111,7 @@ public class RestClientStub {
       throw new WebServiceSystemException(e);
     }
   }
-  
+
   private static void closeIgnoringErrors(HttpURLConnection conn) {
     if (conn != null) {
       conn.disconnect();
