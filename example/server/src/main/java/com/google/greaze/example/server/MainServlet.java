@@ -20,6 +20,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import com.google.greaze.definition.CallPath;
+import com.google.greaze.server.dispatcher.RequestType;
 
 /**
  * An example servlet that receives JSON web-service requests
@@ -28,24 +29,32 @@ import com.google.greaze.definition.CallPath;
  */
 @SuppressWarnings("serial")
 public class MainServlet extends HttpServlet {
-  private final RestDispatcher restDispatcher;
+  private final ResourceDepotDispatcher resourceDispatcher;
   private final WebServiceDispatcher wsDispatcher;
 
   public MainServlet() {
-    this.restDispatcher = new RestDispatcher();
+    this.resourceDispatcher = new ResourceDepotDispatcher();
     this.wsDispatcher = new WebServiceDispatcher();
   }
 
+  @SuppressWarnings("unchecked")
   @Override
   public void service(HttpServletRequest req, HttpServletResponse res) {
     String servletPath = req.getServletPath();
     int index = "/wsexampleserver".length();
     CallPath callPath = new CallPath(servletPath.substring(index));
-    String path = callPath.get();
-    if (path.startsWith("/rest")) {
-      restDispatcher.service(req, res, callPath);
-    } else if (path.startsWith("/procedure")) {
-      wsDispatcher.service(req, res);
+    String queryName = RequestType.getQueryName(req.getParameterMap());
+    RequestType requestType = RequestType.getRequestType(callPath, queryName, "/rest");
+    switch (requestType) {
+      case RESOURCE_ACCESS:
+        resourceDispatcher.service(req, res, callPath);
+      case RESOURCE_QUERY:
+        break;
+      case WEBSERVICE:
+        wsDispatcher.service(req, res);
+        break;
+      default:
+        throw new UnsupportedOperationException();
     }
   }
 }

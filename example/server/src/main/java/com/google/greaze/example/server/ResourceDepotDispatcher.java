@@ -43,7 +43,7 @@ import com.google.gson.GsonBuilder;
  *
  * @author Inderjeet Singh
  */
-public final class RestDispatcher {
+public final class ResourceDepotDispatcher {
   private static final double CURRENT_VERSION = 1D;
   private final ResourceMap resourceMap;
   private final ResponseBuilderMap responseBuilders;
@@ -51,7 +51,7 @@ public final class RestDispatcher {
   private final RestCallSpec orderSpec;
   private final Gson gson;
 
-  public RestDispatcher() {
+  public ResourceDepotDispatcher() {
     this.cartSpec = new RestCallSpec.Builder(ServicePaths.CART.getCallPath(), Cart.class)
       .setVersion(CURRENT_VERSION)
       .build();
