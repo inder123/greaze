@@ -18,7 +18,7 @@ package com.google.greaze.definition.rest;
 import java.lang.reflect.Type;
 
 /**
- * A factory to create {@link ValueBasedId)s
+ * A factory to create {@link ValueBasedId}s
  *
  * @author inder
  *

@@ -22,6 +22,9 @@ import com.google.greaze.definition.ContentBody;
 import com.google.greaze.definition.ParamMap;
 import com.google.greaze.definition.TypedKey;
 
+import java.lang.reflect.Type;
+import java.util.Map;
+
 /**
  * Definition of the request body of a {@link WebServiceCall}. The request body is what is sent out
  * in the output stream of the request (for example, with 

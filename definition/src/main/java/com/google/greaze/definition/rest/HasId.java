@@ -20,7 +20,7 @@ package com.google.greaze.definition.rest;
  *
  * @author inder
  *
- * @param <R> type of object
+ * @param <I> Id type
  */
 public interface HasId<I extends ID> {
   public I getId();
