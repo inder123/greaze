@@ -31,8 +31,9 @@ public final class HeaderMapSpec implements ParamMapSpec {
   public static class Builder {
     private final Map<String, Type> map = new LinkedHashMap<String, Type>();
   
-    public void put(String headerName, Type headerType) {
+    public Builder put(String headerName, Type headerType) {
       map.put(headerName, headerType);
+      return this;
     }
     
     public HeaderMapSpec build() {

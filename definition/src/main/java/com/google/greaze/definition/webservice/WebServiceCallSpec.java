@@ -15,15 +15,15 @@
  */
 package com.google.greaze.definition.webservice;
 
+import java.util.Arrays;
+import java.util.LinkedHashSet;
+import java.util.Set;
+
 import com.google.greaze.definition.CallPath;
 import com.google.greaze.definition.HeaderMapSpec;
 import com.google.greaze.definition.HttpMethod;
 import com.google.greaze.definition.TypedKey;
 import com.google.greaze.definition.internal.utils.GreazePreconditions;
-
-import java.util.Arrays;
-import java.util.LinkedHashSet;
-import java.util.Set;
 
 /**
  * Specification for a Json web service call. The call includes the relative path where the call 
@@ -38,6 +38,7 @@ public final class WebServiceCallSpec {
   public static class Builder {
 	private final CallPath callPath;
 	private final Set<HttpMethod> supportedHttpMethods = new LinkedHashSet<HttpMethod>();
+    private final HeaderMapSpec.Builder urlParamsSpecBuilder = new HeaderMapSpec.Builder();
     private final HeaderMapSpec.Builder reqParamsSpecBuilder = new HeaderMapSpec.Builder();
     private final RequestBodySpec.Builder reqBodySpecBuilder = new RequestBodySpec.Builder();
     private final HeaderMapSpec.Builder resParamsSpecBuilder = new HeaderMapSpec.Builder();
@@ -64,6 +65,11 @@ public final class WebServiceCallSpec {
       return this;
     }
 
+    public Builder addUrlParam(TypedKey<String> param) {
+      urlParamsSpecBuilder.put(param.getName(), param.getClassOfT());
+      return this;
+    }
+
     public <T> Builder addRequestBodyParam(TypedKey<T> param) {
       reqBodySpecBuilder.add(param.getName(), param.getClassOfT());
       return this;
@@ -83,8 +89,8 @@ public final class WebServiceCallSpec {
       if (supportedHttpMethods.isEmpty()) {
         supportedHttpMethods.addAll(Arrays.asList(HttpMethod.values()));
       }
-      RequestSpec requestSpec = 
-        new RequestSpec(reqParamsSpecBuilder.build(), reqBodySpecBuilder.build());
+      RequestSpec requestSpec = new RequestSpec(
+          reqParamsSpecBuilder.build(), urlParamsSpecBuilder.build(), reqBodySpecBuilder.build());
       ResponseSpec responseSpec = 
         new ResponseSpec(resParamsSpecBuilder.build(), resBodySpecBuilder.build());
       WebServiceCallSpec callSpec = new WebServiceCallSpec(supportedHttpMethods, callPath, 
@@ -112,7 +118,7 @@ public final class WebServiceCallSpec {
   public CallPath getPath() {
     return path;
   }
-  
+
   public Set<HttpMethod> getSupportedHttpMethods() {
     return supportedHttpMethods;
   }

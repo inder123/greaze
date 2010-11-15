@@ -46,10 +46,13 @@ public class ExampleClient {
 	HeaderMap requestHeaders = new HeaderMap.Builder(spec.getRequestSpec().getHeadersSpec())
 	    .put(TypedKeys.Request.AUTH_TOKEN, authToken)
 	    .build();
+	HeaderMap urlParams = new HeaderMap.Builder(spec.getRequestSpec().getUrlParamsSpec())
+	    .build();
 	RequestBody requestBody = new RequestBody.Builder(spec.getRequestSpec().getBodySpec())
 	    .put(TypedKeys.RequestBody.CART, cart)
 	    .build();
-	WebServiceRequest request = new WebServiceRequest(HttpMethod.POST, requestHeaders, requestBody);
+	WebServiceRequest request = new WebServiceRequest(
+	    HttpMethod.POST, requestHeaders, urlParams, requestBody);
 	WebServiceResponse response = wsClient.getResponse(spec, request);
 	return response.getBody().get(TypedKeys.ResponseBody.ORDER);
   }

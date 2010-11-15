@@ -48,7 +48,7 @@ public class OrderClient {
         new RestClientStub(serverConfig), CALL_PATH, Order.class, new Gson());
     ServerConfig wsServerConfig = new ServerConfig("http://localhost");
     queryClient = new ResourceQueryClient<ValueBasedId<Order>, Order, QueryOrdersByItemName>(
-        new WebServiceClient(wsServerConfig), CALL_PATH, gson); 
+        new WebServiceClient(wsServerConfig), CALL_PATH, QueryOrdersByItemName.class, gson); 
   }
 
   public Order placeOrder(Cart cart) {

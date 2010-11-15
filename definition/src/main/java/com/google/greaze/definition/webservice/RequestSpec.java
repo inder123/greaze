@@ -27,17 +27,25 @@ public final class RequestSpec {
 
   private final HeaderMapSpec headersSpec;
   private final RequestBodySpec bodySpec;
+  private final HeaderMapSpec urlParamsSpec;
   
-  public RequestSpec(HeaderMapSpec headersSpec, RequestBodySpec bodySpec) {
+  public RequestSpec(HeaderMapSpec headersSpec, HeaderMapSpec urlParamSpec,
+      RequestBodySpec bodySpec) {
     GreazePreconditions.checkNotNull(headersSpec);
+    GreazePreconditions.checkNotNull(urlParamSpec);
     GreazePreconditions.checkNotNull(bodySpec);
     
     this.headersSpec = headersSpec;
+    this.urlParamsSpec = urlParamSpec;
     this.bodySpec = bodySpec;
   }
   
   public HeaderMapSpec getHeadersSpec() {
     return headersSpec;
+  }
+ 
+  public HeaderMapSpec getUrlParamsSpec() {
+    return urlParamsSpec;
   }
  
   public RequestBodySpec getBodySpec() {
@@ -46,9 +54,7 @@ public final class RequestSpec {
   
   @Override
   public String toString() {
-    StringBuilder sb = new StringBuilder("{headersSpec:");
-    sb.append(headersSpec).append(",bodySpec:");
-    sb.append(bodySpec).append("}");
-    return sb.toString();
+    return String.format("headers:%s, urlParams:%s, body: %s",
+        headersSpec, urlParamsSpec, bodySpec);
   }
 }

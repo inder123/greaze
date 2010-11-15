@@ -40,7 +40,8 @@ public class ParamMap {
     }
 
     public Builder<T> put(String paramName, Object content, Type typeOfContent) {
-      GreazePreconditions.checkArgument(spec.checkIfCompatible(paramName, typeOfContent));
+      GreazePreconditions.checkArgument(spec.checkIfCompatible(paramName, typeOfContent),
+          "Incompatible type: %s with spec: %s", typeOfContent, spec);
       contents.put(paramName, content);
       return this;
     }

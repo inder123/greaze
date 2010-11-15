@@ -16,12 +16,18 @@
 package com.google.greaze.webservice.client;
 
 import java.io.IOException;
+import java.io.UnsupportedEncodingException;
+import java.lang.reflect.Type;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.net.URLEncoder;
+import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import com.google.greaze.definition.HeaderMap;
+import com.google.greaze.definition.HeaderMapSpec;
 import com.google.greaze.definition.WebServiceSystemException;
 import com.google.greaze.definition.webservice.ResponseBody;
 import com.google.greaze.definition.webservice.ResponseBodyGsonConverter;
@@ -51,15 +57,48 @@ public class WebServiceClient {
     this.logLevel = logLevel;
   }
   
-  private URL getWebServiceUrl(WebServiceCallSpec callSpec) {
-    String url = config.getServiceBaseUrl() + callSpec.getPath().get();
+  private URL getWebServiceUrl(WebServiceCallSpec callSpec, WebServiceRequest request, Gson gson) {
+    String baseUrl = new String(config.getServiceBaseUrl() + callSpec.getPath().get());
     try {
-      return new URL(url);
+      return new URL(baseUrl + buildQueryParamString(gson, request.getUrlParameters()));
     } catch (MalformedURLException e) {
       throw new RuntimeException(e);
     }
   }
-  
+
+  /** Visible for testing only */
+  static String buildQueryParamString(Gson gson, HeaderMap urlParameters) {
+    StringBuilder url = new StringBuilder();
+    HeaderMapSpec spec = urlParameters.getSpec();
+    boolean first = true;
+    try {
+      for (Map.Entry<String, Object> entry : urlParameters.entrySet()) {
+        if (first) {
+          first = false;
+          url.append('?');
+        } else {
+          url.append('&');
+        }
+        String paramName = entry.getKey();
+        Type type = spec.getTypeFor(paramName);
+        Object value = entry.getValue();
+        String valueAsJson = gson.toJson(value, type);
+        String paramValue = stripQuotesIfString(valueAsJson);
+        url.append(paramName).append('=').append(URLEncoder.encode(paramValue, "UTF-8"));
+      }
+      return url.toString();
+    } catch (UnsupportedEncodingException e) {
+      throw new WebServiceSystemException(e);
+    }
+  }
+
+  /** Visible for testing only */
+  static String stripQuotesIfString(String valueAsJson) {
+    String paramValue = valueAsJson.startsWith("\"") ?
+        valueAsJson.substring(1, valueAsJson.length() -1) : valueAsJson;
+    return paramValue;
+  }
+
   public WebServiceResponse getResponse(WebServiceCallSpec callSpec, WebServiceRequest request) {
     Gson gson = new GsonBuilder()
         .registerTypeAdapter(ResponseBody.class,
@@ -71,7 +110,7 @@ public class WebServiceClient {
   public WebServiceResponse getResponse(
       WebServiceCallSpec callSpec, WebServiceRequest request, Gson gson) {
     try {
-      URL webServiceUrl = getWebServiceUrl(callSpec);
+      URL webServiceUrl = getWebServiceUrl(callSpec, request, gson);
       if (logger != null) {
         logger.log(logLevel, "Opening connection to " + webServiceUrl);
       }

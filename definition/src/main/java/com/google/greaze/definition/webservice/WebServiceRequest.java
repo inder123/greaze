@@ -29,14 +29,18 @@ import com.google.greaze.definition.TypedKey;
 public final class WebServiceRequest {
   private final HttpMethod method;
   private final HeaderMap headers;
+  private final HeaderMap urlParams;
   private final RequestBody body;
   private final RequestSpec spec;
   
-  public WebServiceRequest(HttpMethod method, HeaderMap requestHeaders, RequestBody requestBody) {
+  public WebServiceRequest(HttpMethod method, HeaderMap requestHeaders, HeaderMap urlParams,
+      RequestBody requestBody) {
     this.method = method;
     this.body = requestBody;
     this.headers = requestHeaders;
-    this.spec = new RequestSpec(requestHeaders.getSpec(), requestBody.getSpec());
+    this.urlParams = urlParams;
+    this.spec = new RequestSpec(requestHeaders.getSpec(), urlParams.getSpec(),
+        requestBody.getSpec());
   }
 
   public HttpMethod getMethod() {
@@ -59,6 +63,10 @@ public final class WebServiceRequest {
     return headers;
   }
 
+  public HeaderMap getUrlParameters() {
+    return urlParams;
+  }
+
   public String getContentType() {
     return ContentBodySpec.JSON_CONTENT_TYPE;
   }
@@ -72,6 +80,7 @@ public final class WebServiceRequest {
     StringBuilder sb = new StringBuilder("{");
     sb.append(method).append(",");
     sb.append(",headers:").append(headers);
+    sb.append(",urlParams:").append(urlParams);
     sb.append(",body:").append(body);
     sb.append("}");
     return sb.toString();
