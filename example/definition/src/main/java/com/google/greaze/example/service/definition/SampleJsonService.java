@@ -13,11 +13,11 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.google.greaze.example.definition.service;
+package com.google.greaze.example.service.definition;
 import com.google.greaze.definition.CallPath;
 import com.google.greaze.definition.HttpMethod;
 import com.google.greaze.definition.webservice.WebServiceCallSpec;
-import com.google.greaze.example.definition.model.TypedKeys;
+import com.google.greaze.example.webservice.definition.TypedKeys;
 
 /**
  * An example of a web-service definition

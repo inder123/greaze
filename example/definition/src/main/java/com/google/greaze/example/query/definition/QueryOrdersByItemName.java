@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.google.greaze.example.definition.model;
+package com.google.greaze.example.query.definition;
 
 import com.google.greaze.definition.rest.query.ResourceQueryParams;
 

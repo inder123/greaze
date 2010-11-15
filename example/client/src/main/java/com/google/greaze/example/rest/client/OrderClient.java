@@ -19,7 +19,7 @@ import com.google.greaze.definition.rest.ValueBasedId;
 import com.google.greaze.example.definition.model.Cart;
 import com.google.greaze.example.definition.model.LineItem;
 import com.google.greaze.example.definition.model.Order;
-import com.google.greaze.example.definition.model.QueryOrdersByItemName;
+import com.google.greaze.example.query.definition.QueryOrdersByItemName;
 import com.google.greaze.rest.client.ResourceDepotClient;
 import com.google.greaze.rest.client.RestClientStub;
 import com.google.greaze.rest.query.client.ResourceQueryClient;

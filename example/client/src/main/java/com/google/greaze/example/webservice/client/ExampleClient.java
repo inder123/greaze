@@ -24,8 +24,8 @@ import com.google.greaze.definition.webservice.WebServiceResponse;
 import com.google.greaze.example.definition.model.Cart;
 import com.google.greaze.example.definition.model.LineItem;
 import com.google.greaze.example.definition.model.Order;
-import com.google.greaze.example.definition.model.TypedKeys;
-import com.google.greaze.example.definition.service.SampleJsonService;
+import com.google.greaze.example.service.definition.SampleJsonService;
+import com.google.greaze.example.webservice.definition.TypedKeys;
 import com.google.greaze.webservice.client.ServerConfig;
 import com.google.greaze.webservice.client.WebServiceClient;
 

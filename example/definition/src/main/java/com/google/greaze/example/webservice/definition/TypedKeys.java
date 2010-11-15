@@ -13,9 +13,11 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.google.greaze.example.definition.model;
+package com.google.greaze.example.webservice.definition;
 
 import com.google.greaze.definition.TypedKey;
+import com.google.greaze.example.definition.model.Cart;
+import com.google.greaze.example.definition.model.Order;
 
 /**
  * Definition of various constants to be used for parameter names of request and response headers,

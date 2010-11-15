@@ -28,7 +28,7 @@ import com.google.greaze.definition.rest.RestResponse;
 import com.google.greaze.definition.rest.ValueBasedId;
 import com.google.greaze.example.definition.model.Cart;
 import com.google.greaze.example.definition.model.Order;
-import com.google.greaze.example.definition.service.ServicePaths;
+import com.google.greaze.example.service.definition.ServicePaths;
 import com.google.greaze.rest.server.Repository;
 import com.google.greaze.rest.server.RepositoryInMemory;
 import com.google.greaze.rest.server.ResponseBuilderMap;
