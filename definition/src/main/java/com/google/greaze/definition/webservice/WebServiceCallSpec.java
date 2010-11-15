@@ -71,7 +71,7 @@ public final class WebServiceCallSpec {
     }
 
     public <T> Builder addRequestBodyParam(TypedKey<T> param) {
-      reqBodySpecBuilder.add(param.getName(), param.getClassOfT());
+      reqBodySpecBuilder.put(param);
       return this;
     }
 
@@ -81,7 +81,7 @@ public final class WebServiceCallSpec {
     }
 
     public <T> Builder addResponseBodyParam(TypedKey<T> param) {
-      resBodySpecBuilder.add(param.getName(), param.getClassOfT());
+      resBodySpecBuilder.put(param);
       return this;
     }
 

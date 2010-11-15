@@ -15,13 +15,12 @@
  */
 package com.google.greaze.definition.webservice;
 
+import java.lang.reflect.Type;
+import java.util.Map;
+
 import com.google.greaze.definition.ContentBody;
 import com.google.greaze.definition.ParamMap;
 import com.google.greaze.definition.TypedKey;
-import com.google.greaze.definition.ParamMap.Builder;
-
-import java.lang.reflect.Type;
-import java.util.Map;
 
 /**
  * Definition of the request body of a {@link WebServiceCall}. The request body is what is sent out

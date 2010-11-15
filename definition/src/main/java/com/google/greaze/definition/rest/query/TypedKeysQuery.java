@@ -40,7 +40,7 @@ public class TypedKeysQuery<I extends ID, R extends RestResource<I, R>> {
   /**
    * This key is used to specify the URL parameter for the queryValue
    */
-  public static final TypedKey<String> QUERY_VALUE_AS_JSON = new TypedKey<String>("queryValueAsGson", String.class);
+  public static final TypedKey<String> QUERY_VALUE_AS_JSON = new TypedKey<String>("queryValueAsJson", String.class);
 
   // TODO(inder): This should really be TypedKey<List<R>> 
   public static TypedKey<List> RESOURCE_LIST = new TypedKey<List>("resourceList", List.class);

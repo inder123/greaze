@@ -16,11 +16,12 @@
 package com.google.greaze.definition.webservice;
 
 
-import com.google.greaze.definition.ContentBodySpec;
-
 import java.lang.reflect.Type;
 import java.util.LinkedHashMap;
 import java.util.Map;
+
+import com.google.greaze.definition.ContentBodySpec;
+import com.google.greaze.definition.TypedKey;
 
 /**
  * Specification of a {@link RequestBody}.
@@ -31,8 +32,9 @@ public final class RequestBodySpec extends ContentBodySpec {
   
   public static class Builder {
     private final Map<String, Type> paramsSpec = new LinkedHashMap<String, Type>();
-    public Builder add(String paramName, Type type) {
-      paramsSpec.put(paramName, type);
+
+    public <T> Builder put(TypedKey<T> param) {
+      paramsSpec.put(param.getName(), param.getClassOfT());
       return this;
     }
     
