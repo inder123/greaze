@@ -45,7 +45,7 @@ public class RequestReceiverTest extends TestCase {
   }
 
   public void testParseUrlParamInteger() {
-    int value = RequestReceiver.parseUrlParamValue("1", int.class, gson);
+    int value = (Integer) RequestReceiver.parseUrlParamValue("1", Integer.class, gson);
     assertEquals(1, value);
   }
 
