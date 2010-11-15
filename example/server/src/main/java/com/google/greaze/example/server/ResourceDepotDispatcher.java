@@ -91,8 +91,6 @@ public final class ResourceDepotDispatcher {
   @SuppressWarnings({"rawtypes", "unchecked"})
   public void service(HttpServletRequest req, HttpServletResponse res, CallPath callPath) {
     RestCallSpec callSpec = resourceMap.get(callPath).createCopy(callPath);
-    @SuppressWarnings("rawtypes")
-    RestRequestReceiver requestReceiver = new RestRequestReceiver(gson, callSpec.getRequestSpec());
     IDFactory<ValueBasedId<?>> idFactory = getIDFactory(callSpec);
     RestRequest<?, ?> restRequest = getRestRequest(gson, callSpec, callPath, req, idFactory);
     RestResponse.Builder response = new RestResponse.Builder(callSpec.getResponseSpec());
