@@ -15,6 +15,7 @@
  */
 package com.google.greaze.definition.rest.query;
 
+import java.lang.reflect.Type;
 import java.util.List;
 
 import com.google.greaze.definition.rest.ID;
@@ -31,4 +32,6 @@ public interface ResourceQuery<
    * Returns a list of resources matching the query
    */
   public List<R> query(Q query);
+
+  public Type getResourceType();
 }

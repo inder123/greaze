@@ -53,6 +53,7 @@ public class ResourceQueryClient<
   private final WebServiceClient stub;
   private final WebServiceCallSpec callSpec;
   private final Gson gson;
+  private final Type resourceType;
   private final Type queryType;
   private final UntypedKey keyForResourceList;
 
@@ -61,12 +62,13 @@ public class ResourceQueryClient<
    * @param callPath relative path to the resource
    */
   public ResourceQueryClient(WebServiceClient stub, CallPath callPath,
-      Type queryType, GsonBuilder gsonBuilder, Type typeOfListOfR) {
-    this(stub, generateCallSpec(callPath, typeOfListOfR), queryType, gsonBuilder, typeOfListOfR);
+      Type queryType, GsonBuilder gsonBuilder, Type resourceType, Type typeOfListOfR) {
+    this(stub, generateCallSpec(callPath, typeOfListOfR), queryType, gsonBuilder,
+        resourceType, typeOfListOfR);
   }
 
   protected ResourceQueryClient(WebServiceClient stub, WebServiceCallSpec callSpec,
-      Type queryType, GsonBuilder gsonBuilder, Type typeOfListOfR) {
+      Type queryType, GsonBuilder gsonBuilder, Type resourceType, Type typeOfListOfR) {
     this.stub = stub;
     this.callSpec = callSpec;
     this.gson = gsonBuilder
@@ -76,6 +78,7 @@ public class ResourceQueryClient<
           new ResponseBody.GsonTypeAdapter(callSpec.getResponseSpec().getBodySpec()))
       .create();
     this.queryType = queryType;
+    this.resourceType = resourceType;
     this.keyForResourceList = TypedKeysQuery.getKeyForResourceList(typeOfListOfR);
   }
 
@@ -107,5 +110,10 @@ public class ResourceQueryClient<
     ResponseBody body = response.getBody();
     List list = body.get(keyForResourceList);
     return list;
+  }
+
+  @Override
+  public Type getResourceType() {
+    return resourceType;
   }
 }

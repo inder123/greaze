@@ -53,7 +53,7 @@ public class OrderClient {
     Type typeOfListOfR = new TypeToken<List<Order>>(){}.getType();
     queryClient = new ResourceQueryClient<ValueBasedId<Order>, Order, QueryOrdersByItemName>(
         new WebServiceClient(wsServerConfig), CALL_PATH, QueryOrdersByItemName.class, gsonBuilder,
-        typeOfListOfR); 
+        Order.class, typeOfListOfR); 
   }
 
   public Order placeOrder(Cart cart) {
