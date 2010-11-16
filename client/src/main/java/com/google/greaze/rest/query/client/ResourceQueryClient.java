@@ -21,6 +21,7 @@ import java.util.List;
 import com.google.greaze.definition.CallPath;
 import com.google.greaze.definition.HeaderMap;
 import com.google.greaze.definition.HttpMethod;
+import com.google.greaze.definition.UntypedKey;
 import com.google.greaze.definition.rest.ID;
 import com.google.greaze.definition.rest.RestResource;
 import com.google.greaze.definition.rest.query.ResourceQuery;
@@ -34,6 +35,7 @@ import com.google.greaze.definition.webservice.WebServiceRequest;
 import com.google.greaze.definition.webservice.WebServiceResponse;
 import com.google.greaze.webservice.client.WebServiceClient;
 import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 
 /**
  * A client to invoke {@link ResourceQuery}s associated with a REST resource
@@ -52,29 +54,38 @@ public class ResourceQueryClient<
   private final WebServiceCallSpec callSpec;
   private final Gson gson;
   private final Type queryType;
+  private final UntypedKey keyForResourceList;
 
   /**
    * @param stub stub containing server info to access the rest client
    * @param callPath relative path to the resource
    */
-  public ResourceQueryClient(WebServiceClient stub, CallPath callPath, Type queryType, Gson gson) {
-    this(stub, generateCallSpec(callPath), queryType, gson);
+  public ResourceQueryClient(WebServiceClient stub, CallPath callPath,
+      Type queryType, GsonBuilder gsonBuilder, Type typeOfListOfR) {
+    this(stub, generateCallSpec(callPath, typeOfListOfR), queryType, gsonBuilder, typeOfListOfR);
   }
 
   protected ResourceQueryClient(WebServiceClient stub, WebServiceCallSpec callSpec,
-      Type queryType, Gson gson) {
+      Type queryType, GsonBuilder gsonBuilder, Type typeOfListOfR) {
     this.stub = stub;
     this.callSpec = callSpec;
-    this.gson = gson;
+    this.gson = gsonBuilder
+      .registerTypeAdapter(RequestBody.class,
+          new RequestBody.GsonTypeAdapter(callSpec.getRequestSpec().getBodySpec()))
+      .registerTypeAdapter(ResponseBody.class,
+          new ResponseBody.GsonTypeAdapter(callSpec.getResponseSpec().getBodySpec()))
+      .create();
     this.queryType = queryType;
+    this.keyForResourceList = TypedKeysQuery.getKeyForResourceList(typeOfListOfR);
   }
 
-  private static <T> WebServiceCallSpec generateCallSpec(CallPath callPath) {
+  private static WebServiceCallSpec generateCallSpec(CallPath callPath, Type typeOfListOfR) {
+    UntypedKey keyForResourceList = TypedKeysQuery.getKeyForResourceList(typeOfListOfR);
     return new WebServiceCallSpec.Builder(callPath)
         .supportsHttpMethod(HttpMethod.GET)
         .addUrlParam(TypedKeysQuery.QUERY_NAME)
         .addUrlParam(TypedKeysQuery.QUERY_VALUE_AS_JSON)
-        .addResponseBodyParam(TypedKeysQuery.RESOURCE_LIST)
+        .addResponseBodyParam(keyForResourceList)
         .build();
   }
 
@@ -94,7 +105,7 @@ public class ResourceQueryClient<
       new WebServiceRequest(HttpMethod.GET, requestHeaders, urlParams, requestBody);
     WebServiceResponse response = stub.getResponse(callSpec, request, gson);
     ResponseBody body = response.getBody();
-    List list = body.get(TypedKeysQuery.RESOURCE_LIST);
+    List list = body.get(keyForResourceList);
     return list;
   }
 }

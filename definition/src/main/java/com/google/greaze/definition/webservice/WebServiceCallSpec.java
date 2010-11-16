@@ -23,6 +23,7 @@ import com.google.greaze.definition.CallPath;
 import com.google.greaze.definition.HeaderMapSpec;
 import com.google.greaze.definition.HttpMethod;
 import com.google.greaze.definition.TypedKey;
+import com.google.greaze.definition.UntypedKey;
 import com.google.greaze.definition.internal.utils.GreazePreconditions;
 
 /**
@@ -81,6 +82,11 @@ public final class WebServiceCallSpec {
     }
 
     public <T> Builder addResponseBodyParam(TypedKey<T> param) {
+      resBodySpecBuilder.put(param);
+      return this;
+    }
+
+    public <T> Builder addResponseBodyParam(UntypedKey param) {
       resBodySpecBuilder.put(param);
       return this;
     }

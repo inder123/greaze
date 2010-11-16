@@ -21,6 +21,14 @@ import java.util.Map;
 import com.google.greaze.definition.ContentBody;
 import com.google.greaze.definition.ParamMap;
 import com.google.greaze.definition.TypedKey;
+import com.google.gson.InstanceCreator;
+import com.google.gson.JsonDeserializationContext;
+import com.google.gson.JsonDeserializer;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParseException;
+import com.google.gson.JsonSerializationContext;
+import com.google.gson.JsonSerializer;
 
 import java.lang.reflect.Type;
 import java.util.Map;
@@ -31,7 +39,7 @@ import java.util.Map;
  * {@link java.net.HttpURLConnection#getOutputStream()}) , and is read by the 
  * javax.servlet.http.HttpServletRequest#getInputStream().
  * This class omits the default constructor for use by Gson. Instead the user must use
- * {@link com.google.greaze.definition.webservice.RequestBodyGsonConverter}
+ * {@link #GsonTypeAdapter}
  * 
  * @author inder
  */
@@ -71,4 +79,50 @@ public final class RequestBody extends ContentBody {
   public RequestBodySpec getSpec() {
     return (RequestBodySpec) spec;
   }  
+
+  /**
+   * Gson type adapter for {@link RequestBody}. 
+   * 
+   * @author inder
+   */
+  public static final class GsonTypeAdapter implements JsonSerializer<RequestBody>, 
+    JsonDeserializer<RequestBody>, InstanceCreator<RequestBody> {
+
+    private final RequestBodySpec spec;
+
+    public GsonTypeAdapter(RequestBodySpec spec) {
+      this.spec = spec;
+    }
+    
+    @Override
+    public JsonElement serialize(RequestBody src, Type typeOfSrc, 
+        JsonSerializationContext context) {
+      JsonObject root = new JsonObject();
+      for(Map.Entry<String, Object> entry : src.entrySet()) {
+        String key = entry.getKey();
+        Type entryType = src.getSpec().getTypeFor(key);
+        JsonElement value = context.serialize(entry.getValue(), entryType);
+        root.add(key, value);        
+      }
+      return root;
+    }
+
+    @Override
+    public RequestBody deserialize(JsonElement json, Type typeOfT, 
+        JsonDeserializationContext context) throws JsonParseException {
+      RequestBody.Builder builder = new RequestBody.Builder(spec);
+      for (Map.Entry<String, JsonElement> entry : json.getAsJsonObject().entrySet()) {
+        String key = entry.getKey();
+        Type entryType = spec.getTypeFor(key);
+        Object value = context.deserialize(entry.getValue(), entryType);
+        builder.put(key, value);
+      }
+      return builder.build();
+    }
+
+    @Override
+    public RequestBody createInstance(Type type) {
+      return new RequestBody.Builder(spec).build();
+    }
+  }
 }

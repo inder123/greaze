@@ -50,6 +50,11 @@ public class ParamMap {
       contents.put(paramKey.getName(), param);
       return this;
     }
+
+    public Builder<T> put(UntypedKey paramKey, Object param) {
+      contents.put(paramKey.getName(), param);
+      return this;
+    }
   }
   
   protected final Map<String, Object> contents;
@@ -71,6 +76,11 @@ public class ParamMap {
   @SuppressWarnings("unchecked")
   public <T> T get(TypedKey<T> key) {
     return (T) get(key.getName(), key.getClassOfT());
+  }
+
+  @SuppressWarnings("unchecked")
+  public <T> T get(UntypedKey key) {
+    return (T) get(key.getName(), key.getTypeOfT());
   }
 
   @SuppressWarnings("unchecked")

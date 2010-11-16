@@ -30,7 +30,6 @@ import com.google.greaze.definition.HeaderMap;
 import com.google.greaze.definition.HeaderMapSpec;
 import com.google.greaze.definition.WebServiceSystemException;
 import com.google.greaze.definition.webservice.ResponseBody;
-import com.google.greaze.definition.webservice.ResponseBodyGsonConverter;
 import com.google.greaze.definition.webservice.WebServiceCallSpec;
 import com.google.greaze.definition.webservice.WebServiceRequest;
 import com.google.greaze.definition.webservice.WebServiceResponse;
@@ -102,7 +101,7 @@ public class WebServiceClient {
   public WebServiceResponse getResponse(WebServiceCallSpec callSpec, WebServiceRequest request) {
     Gson gson = new GsonBuilder()
         .registerTypeAdapter(ResponseBody.class,
-            new ResponseBodyGsonConverter(callSpec.getResponseSpec().getBodySpec()))
+            new ResponseBody.GsonTypeAdapter(callSpec.getResponseSpec().getBodySpec()))
         .create();
     return getResponse(callSpec, request, gson);
   }

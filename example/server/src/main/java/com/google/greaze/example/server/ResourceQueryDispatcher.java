@@ -25,19 +25,29 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import com.google.common.collect.ImmutableMap;
+import com.google.greaze.definition.CallPath;
 import com.google.greaze.definition.HeaderMap;
 import com.google.greaze.definition.HeaderMapSpec;
+import com.google.greaze.definition.UntypedKey;
 import com.google.greaze.definition.rest.query.ResourceQuery;
 import com.google.greaze.definition.rest.query.ResourceQueryParams;
 import com.google.greaze.definition.rest.query.TypedKeysQuery;
+import com.google.greaze.definition.webservice.RequestBody;
+import com.google.greaze.definition.webservice.RequestSpec;
 import com.google.greaze.definition.webservice.ResponseBody;
 import com.google.greaze.definition.webservice.ResponseBodySpec;
+import com.google.greaze.definition.webservice.ResponseSpec;
+import com.google.greaze.definition.webservice.WebServiceCallSpec;
+import com.google.greaze.definition.webservice.WebServiceRequest;
 import com.google.greaze.definition.webservice.WebServiceResponse;
 import com.google.greaze.example.query.definition.Queries;
 import com.google.greaze.example.query.definition.QueryOrdersByItemName;
+import com.google.greaze.rest.query.server.QueryHelperServer;
+import com.google.greaze.webservice.server.RequestReceiver;
 import com.google.greaze.webservice.server.ResponseSender;
 import com.google.gson.Gson;
-import com.google.inject.Inject;
+import com.google.gson.GsonBuilder;
+import com.google.gson.reflect.TypeToken;
 
 public class ResourceQueryDispatcher {
   private static final Logger log = Logger.getLogger(ResourceQueryDispatcher.class.getSimpleName());
@@ -50,29 +60,40 @@ public class ResourceQueryDispatcher {
     ImmutableMap.<Queries, ResourceQuery<?, ?, ?>>builder()
     .build();
 
-  private final Gson gson;
-
-  @Inject
-  public ResourceQueryDispatcher(Gson gson) {
-    this.gson = gson;
-  }
-
   @SuppressWarnings({"rawtypes", "unchecked"})
-  public void service(HttpServletRequest req, HttpServletResponse res, String queryName) {
+  public void service(HttpServletRequest req, HttpServletResponse res,
+      String queryName, CallPath callPath) {
     Queries query = Queries.getQuery(queryName);
     ResourceQuery resourceQuery = queryHandlers.get(query);
-    String jsonValue = req.getParameter(TypedKeysQuery.QUERY_VALUE_AS_JSON.getName());
+
+    // TODO(inder): use Types.of and use the actual List<ResourceType> here
+    Type typeOfListOfR = new TypeToken<List<?>>(){}.getType();
+
+    WebServiceCallSpec spec = QueryHelperServer.generateQueryCallSpec(callPath, typeOfListOfR);
+    RequestSpec requestSpec = spec.getRequestSpec();
+    ResponseSpec responseSpec = spec.getResponseSpec();
+    Gson gson = new GsonBuilder()
+        .registerTypeAdapter(RequestBody.class,
+            new RequestBody.GsonTypeAdapter(requestSpec.getBodySpec()))
+        .registerTypeAdapter(ResponseBody.class, 
+            new ResponseBody.GsonTypeAdapter(responseSpec.getBodySpec()))
+        .create();
+    RequestReceiver requestReceiver = new RequestReceiver(gson, requestSpec);
+    WebServiceRequest webServiceRequest = requestReceiver.receive(req);
+    
+    String jsonValue = webServiceRequest.getUrlParameters().get(TypedKeysQuery.QUERY_VALUE_AS_JSON);
     log.log(Level.INFO, "Received query: {0} with value: {1}", new Object[]{queryName, jsonValue});
     ResourceQueryParams queryParams = gson.fromJson(jsonValue, queryTypes.get(query));
     List results = resourceQuery.query(queryParams);
     HeaderMapSpec headerSpec = new HeaderMapSpec.Builder().build();
     HeaderMap responseHeaders = new HeaderMap.Builder(headerSpec).build();
+    UntypedKey keyForResourceList = TypedKeysQuery.getKeyForResourceList(typeOfListOfR);
     ResponseBodySpec bodySpec = new ResponseBodySpec.Builder()
-    .put(TypedKeysQuery.RESOURCE_LIST)
-    .build();
+      .put(keyForResourceList)
+      .build();
     ResponseBody responseBody = new ResponseBody.Builder(bodySpec)
-    .put(TypedKeysQuery.RESOURCE_LIST, results)
-    .build();
+      .put(keyForResourceList, results)
+      .build();
     WebServiceResponse response = new WebServiceResponse(responseHeaders, responseBody);
     ResponseSender responseSender = new ResponseSender(gson);
     responseSender.send(res, response);

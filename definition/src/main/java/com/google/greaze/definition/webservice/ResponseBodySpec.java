@@ -21,6 +21,7 @@ import java.util.Map;
 
 import com.google.greaze.definition.ContentBodySpec;
 import com.google.greaze.definition.TypedKey;
+import com.google.greaze.definition.UntypedKey;
 
 /**
  * Specification of a {@link ResponseBody}.
@@ -34,6 +35,11 @@ public final class ResponseBodySpec extends ContentBodySpec {
     
     public <T> Builder put(TypedKey<T> param) {
       paramsSpec.put(param.getName(), param.getClassOfT());
+      return this;
+    }
+    
+    public <T> Builder put(UntypedKey param) {
+      paramsSpec.put(param.getName(), param.getTypeOfT());
       return this;
     }
     

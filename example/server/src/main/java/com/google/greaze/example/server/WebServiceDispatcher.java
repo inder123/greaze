@@ -20,10 +20,8 @@ import javax.servlet.http.HttpServletResponse;
 
 import com.google.greaze.definition.HeaderMap;
 import com.google.greaze.definition.webservice.RequestBody;
-import com.google.greaze.definition.webservice.RequestBodyGsonConverter;
 import com.google.greaze.definition.webservice.RequestSpec;
 import com.google.greaze.definition.webservice.ResponseBody;
-import com.google.greaze.definition.webservice.ResponseBodyGsonConverter;
 import com.google.greaze.definition.webservice.ResponseSpec;
 import com.google.greaze.definition.webservice.WebServiceCallSpec;
 import com.google.greaze.definition.webservice.WebServiceRequest;
@@ -49,9 +47,9 @@ public final class WebServiceDispatcher {
     ResponseSpec responseSpec = spec.getResponseSpec();
     Gson gson = new GsonBuilder()
         .registerTypeAdapter(RequestBody.class,
-            new RequestBodyGsonConverter(requestSpec.getBodySpec()))
+            new RequestBody.GsonTypeAdapter(requestSpec.getBodySpec()))
         .registerTypeAdapter(ResponseBody.class, 
-            new ResponseBodyGsonConverter(responseSpec.getBodySpec()))
+            new ResponseBody.GsonTypeAdapter(responseSpec.getBodySpec()))
         .create();
     RequestReceiver requestReceiver = new RequestReceiver(gson, requestSpec);
     WebServiceRequest webServiceRequest = requestReceiver.receive(req);
