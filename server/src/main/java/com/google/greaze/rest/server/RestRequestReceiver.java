@@ -88,9 +88,10 @@ public final class RestRequestReceiver<I extends ID, R extends RestResource<I, R
     return paramsBuilder.build();
   }
   
+  @SuppressWarnings("unchecked")
   private R buildRequestBody(HttpServletRequest request) throws IOException {
     Reader reader = new BufferedReader(new InputStreamReader(request.getInputStream()));
-    R requestBody = gson.fromJson(reader, spec.getResourceType());
+    R requestBody = (R) gson.fromJson(reader, spec.getResourceType());
     return requestBody;
   }
 }
