@@ -34,4 +34,6 @@ public interface ResourceQuery<
   public List<R> query(Q query);
 
   public Type getResourceType();
+
+  public Type getQueryType();
 }

@@ -30,9 +30,6 @@ import com.google.gson.JsonParseException;
 import com.google.gson.JsonSerializationContext;
 import com.google.gson.JsonSerializer;
 
-import java.lang.reflect.Type;
-import java.util.Map;
-
 /**
  * Definition of the request body of a {@link WebServiceCall}. The request body is what is sent out
  * in the output stream of the request (for example, with 

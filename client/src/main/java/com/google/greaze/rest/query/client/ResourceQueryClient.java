@@ -116,4 +116,9 @@ public class ResourceQueryClient<
   public Type getResourceType() {
     return resourceType;
   }
+
+  @Override
+  public Type getQueryType() {
+    return queryType;
+  }
 }

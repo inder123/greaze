@@ -16,7 +16,6 @@
 package com.google.greaze.definition.rest.query;
 
 import java.lang.reflect.Type;
-import java.util.List;
 
 import com.google.greaze.definition.TypedKey;
 import com.google.greaze.definition.UntypedKey;
@@ -31,7 +30,6 @@ import com.google.greaze.definition.rest.RestResource;
  * @param <I> ID type of the REST resource
  * @param <R> The type of the REST resource
  */
-@SuppressWarnings("rawtypes")
 public class TypedKeysQuery<I extends ID, R extends RestResource<I, R>> {
 
   /**

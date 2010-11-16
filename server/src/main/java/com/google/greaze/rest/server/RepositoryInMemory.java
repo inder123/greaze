@@ -33,8 +33,12 @@ public class RepositoryInMemory<I extends ID, R extends RestResource<I, R>> impl
   private final IdMap<I, R> resources;
   private final MetaDataMap<I, R> metaDataMap;
 
-  public RepositoryInMemory(Class<? super I> classOfI, Class<? super R> classOfResource) {
-    this.resources = IdMap.create(classOfI, classOfResource);
+  /**
+   * @param rawClassOfI class for the Id type. For example, ValueBasedId.class
+   * @param classOfResource class of the resource. For example, Order.class
+   */
+  public RepositoryInMemory(Class<? super I> rawClassOfI, Class<? super R> classOfResource) {
+    this.resources = IdMap.create(rawClassOfI, classOfResource);
     this.metaDataMap = new MetaDataMap<I, R>();
   }
 
