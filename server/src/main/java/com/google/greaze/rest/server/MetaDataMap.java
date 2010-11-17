@@ -15,9 +15,12 @@
  */
 package com.google.greaze.rest.server;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
+import com.google.greaze.definition.TypedKey;
 import com.google.greaze.definition.rest.ID;
 import com.google.greaze.definition.rest.MetaData;
 import com.google.greaze.definition.rest.RestResource;
@@ -27,7 +30,7 @@ import com.google.greaze.definition.rest.RestResource;
  *
  * @author inder
  *
- * @param <R> the rest resource for whic the metadata is being stored
+ * @param <R> the rest resource for which the metadata is being stored
  */
 public class MetaDataMap<I extends ID, R extends RestResource<I, R>> {
   private final Map<I, MetaData<I, R>> map;
@@ -48,5 +51,29 @@ public class MetaDataMap<I extends ID, R extends RestResource<I, R>> {
   @Override
   public String toString() {
     return String.format("%s", map);
+  }
+
+  public <T> List<I> findByTypedKey(TypedKey<T> key, T value, int maxCount) {
+    List<I> result = new ArrayList<I>();
+    for (Map.Entry<I, MetaData<I, R>> entry : map.entrySet()) {
+      T retrieved = entry.getValue().getFromTransient(key);
+      if (isEqual(value, retrieved)) {
+        result.add(entry.getKey());
+        if (--maxCount == 0) {
+          break;
+        }
+      }
+    }
+    return result;
+  }
+
+  public static <T> boolean isEqual(T t1, T t2) {
+    if (t1 == null && t2 == null) {
+      return true;
+    }
+    if (t1 == null || t2 == null) {
+      return false;
+    }
+    return t1.equals(t2);
   }
 }

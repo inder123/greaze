@@ -19,6 +19,7 @@ import java.lang.reflect.Type;
 import java.util.HashMap;
 import java.util.Map;
 
+import com.google.greaze.definition.TypedKey;
 import com.google.gson.JsonDeserializationContext;
 import com.google.gson.JsonDeserializer;
 import com.google.gson.JsonElement;
@@ -86,8 +87,17 @@ public final class MetaData<I extends ID, R extends RestResource<I, R>> {
     return mapTransient.get(key);
   }
 
+  @SuppressWarnings("unchecked")
+  public <T> T getFromTransient(TypedKey<T> key) {
+    return (T) mapTransient.get(key.getName());
+  }
+
   public void putInTransient(Object key, Object value) {
     mapTransient.put(key, value);
+  }
+
+  public <T> void putInTransient(TypedKey<T> key, T value) {
+    mapTransient.put(key.getName(), value);
   }
 
   public void removeFromTransient(Object key) {

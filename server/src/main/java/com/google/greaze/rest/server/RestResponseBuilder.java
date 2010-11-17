@@ -17,7 +17,6 @@ package com.google.greaze.rest.server;
 
 import com.google.greaze.definition.HttpMethod;
 import com.google.greaze.definition.rest.ID;
-import com.google.greaze.definition.rest.RestCallSpec;
 import com.google.greaze.definition.rest.RestRequest;
 import com.google.greaze.definition.rest.RestResource;
 import com.google.greaze.definition.rest.RestResponse;
@@ -29,8 +28,7 @@ public class RestResponseBuilder<I extends ID, R extends RestResource<I, R>> {
     this.resources = resources;
   }
 
-  public void buildResponse(RestCallSpec callSpec, RestRequest<I, R> request,
-      RestResponse.Builder<I, R> responseBuilder) {
+  public void buildResponse(RestRequest<I, R> request, RestResponse.Builder<I, R> responseBuilder) {
     HttpMethod method = request.getMethod();
     R responseBody = null;
     switch (method) {
@@ -44,6 +42,8 @@ public class RestResponseBuilder<I extends ID, R extends RestResource<I, R>> {
         delete(request.getId());
         break;
       case PUT:
+        responseBody = put(request.getBody());
+        break;
       default:
         throw new IllegalStateException("Unexpected method: " + method);
     }
