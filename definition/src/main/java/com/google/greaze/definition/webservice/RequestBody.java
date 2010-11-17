@@ -36,9 +36,9 @@ import com.google.gson.JsonSerializer;
  * {@link java.net.HttpURLConnection#getOutputStream()}) , and is read by the 
  * javax.servlet.http.HttpServletRequest#getInputStream().
  * This class omits the default constructor for use by Gson. Instead the user must use
- * {@link #GsonTypeAdapter}
+ * {@link RequestBody.GsonTypeAdapter}
  * 
- * @author inder
+ * @author Inderjeet Singh
  */
 public final class RequestBody extends ContentBody {
 
@@ -79,8 +79,6 @@ public final class RequestBody extends ContentBody {
 
   /**
    * Gson type adapter for {@link RequestBody}. 
-   * 
-   * @author inder
    */
   public static final class GsonTypeAdapter implements JsonSerializer<RequestBody>, 
     JsonDeserializer<RequestBody>, InstanceCreator<RequestBody> {

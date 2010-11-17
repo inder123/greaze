@@ -34,9 +34,9 @@ import com.google.gson.JsonSerializer;
 /**
  * body of the response. This is written out as JSON to be sent out to the client. 
  * This class omits the default constructor for use by Gson. Instead the user must use
- * {@link #GsonTypeAdapter}
+ * {@link ResponseBody.GsonTypeAdapter}
  *
- * @author inder
+ * @author Inderjeet Singh
  */
 public final class ResponseBody extends ContentBody {
 
@@ -82,8 +82,6 @@ public final class ResponseBody extends ContentBody {
 
   /**
    * Gson type adapter for {@link ResponseBody}. 
-   * 
-   * @author inder
    */
   public static final class GsonTypeAdapter implements JsonSerializer<ResponseBody>, 
     JsonDeserializer<ResponseBody>, InstanceCreator<ResponseBody> {
