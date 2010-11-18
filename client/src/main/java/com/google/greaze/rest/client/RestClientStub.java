@@ -81,13 +81,18 @@ public class RestClientStub {
     HttpURLConnection conn = null;
     try {
       URL webServiceUrl = getWebServiceUrl(callSpec, request.getId());
-      conn = (HttpURLConnection) webServiceUrl.openConnection();
+      conn = createHttpURLConnection(webServiceUrl);
       return getResponse(callSpec, request, gson, conn);
     } catch (IOException e) {
       throw new WebServiceSystemException(e);
     } finally {
       closeIgnoringErrors(conn);
     }
+  }
+
+  /** Override this method to replace the stream being used for communication */
+  protected HttpURLConnection createHttpURLConnection(URL webServiceUrl) throws IOException {
+    return (HttpURLConnection) webServiceUrl.openConnection();
   }
 
   /**
