@@ -46,6 +46,7 @@ public class WebServiceCallSpec {
     private final RequestBodySpec.Builder reqBodySpecBuilder;
     private final HeaderMapSpec.Builder resParamsSpecBuilder;
     private final ResponseBodySpec.Builder resBodySpecBuilder;
+    private double version;
     
     public Builder(ContentBodyType contentBodyType, CallPath callPath) {
       this.callPath = callPath;
@@ -55,8 +56,14 @@ public class WebServiceCallSpec {
       reqBodySpecBuilder = new RequestBodySpec.Builder(contentBodyType);
       resParamsSpecBuilder = new HeaderMapSpec.Builder();
       resBodySpecBuilder = new ResponseBodySpec.Builder(contentBodyType);
+      this.version = -1D; 
     }
     
+    public Builder setVersion(double version) {
+      this.version = version;
+      return this;
+    }
+
     /**
      * If this method is not invoked, then it is assumed that the WebServiceCall supports all
      * methods specified in {@link HttpMethod#values()}.
@@ -108,7 +115,7 @@ public class WebServiceCallSpec {
       ResponseSpec responseSpec = 
         new ResponseSpec(resParamsSpecBuilder.build(), resBodySpecBuilder.build());
       WebServiceCallSpec callSpec = new WebServiceCallSpec(supportedHttpMethods, callPath, 
-          requestSpec, responseSpec);
+          requestSpec, responseSpec, version);
       return callSpec;
     }
   }

@@ -29,6 +29,7 @@ public class SampleJsonService {
 
   public static final WebServiceCallSpec PLACE_ORDER = new WebServiceCallSpec.Builder(
     ContentBodyType.MAP, new CallPath("/placeOrder"))
+      .setVersion(1.0)
       .supportsHttpMethod(HttpMethod.POST)
       .addRequestParam(TypedKeys.Request.AUTH_TOKEN)
       .addRequestBodyParam(TypedKeys.RequestBody.CART)
