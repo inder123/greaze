@@ -36,13 +36,13 @@ public class RestResponseBuilder<I extends ID, R extends RestResource<I, R>> {
         responseBody = get(request.getId());
         break;
       case POST:
-        responseBody = post(request.getBody());
+        responseBody = post(request.getResource());
         break;
       case DELETE:
         delete(request.getId());
         break;
       case PUT:
-        responseBody = put(request.getBody());
+        responseBody = put(request.getResource());
         break;
       default:
         throw new IllegalStateException("Unexpected method: " + method);

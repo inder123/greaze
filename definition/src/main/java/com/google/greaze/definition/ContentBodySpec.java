@@ -18,6 +18,7 @@ package com.google.greaze.definition;
 
 import java.lang.reflect.Type;
 import java.util.Collections;
+import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Set;
 
@@ -35,6 +36,9 @@ public class ContentBodySpec implements ParamMapSpec {
   private final ContentBodyType contentBodyType;
 
   protected ContentBodySpec(ContentBodyType contentBodyType, Map<String, Type> paramsSpec) {
+    if (paramsSpec == null) {
+      paramsSpec = new LinkedHashMap<String, Type>();
+    }
     this.paramsSpec = Collections.unmodifiableMap(paramsSpec);
     this.contentBodyType = contentBodyType;
   }

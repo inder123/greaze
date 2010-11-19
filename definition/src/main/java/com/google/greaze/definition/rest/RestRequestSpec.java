@@ -30,9 +30,15 @@ import java.lang.reflect.Type;
 public final class RestRequestSpec extends RequestSpec {
   private final Type resourceType;
 
-  public RestRequestSpec(HeaderMapSpec headersSpec, Type resourceClass) {
+  public RestRequestSpec(HeaderMapSpec headersSpec, Type resourceType) {
     super(headersSpec, buildUrlParamSpec(), buildBodySpec());
-    this.resourceType = resourceClass;
+    this.resourceType = resourceType;
+  }
+
+  public RestRequestSpec(HeaderMapSpec headersSpec, RequestBodySpec bodySpec,
+                         Type resourceType) {
+    super(headersSpec, buildUrlParamSpec(), bodySpec);
+    this.resourceType = resourceType;
   }
 
   private static HeaderMapSpec buildUrlParamSpec() {

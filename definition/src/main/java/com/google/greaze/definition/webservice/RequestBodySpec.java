@@ -33,10 +33,16 @@ public final class RequestBodySpec extends ContentBodySpec {
   
   public static class Builder {
     private final Map<String, Type> paramsSpec = new LinkedHashMap<String, Type>();
-    private ContentBodyType contentBodyType;
+    private final ContentBodyType contentBodyType;
+    private Type simpleBodyType; 
 
     public Builder(ContentBodyType contentBodyType) {
       this.contentBodyType = contentBodyType;
+    }
+
+    public Builder setSimpleBodyType(Type simpleBodyType) {
+      this.simpleBodyType = simpleBodyType;
+      return this;
     }
 
     public <T> Builder put(TypedKey<T> param) {
@@ -45,13 +51,23 @@ public final class RequestBodySpec extends ContentBodySpec {
     }
     
     public RequestBodySpec build() {
-      RequestBodySpec spec = new RequestBodySpec(contentBodyType, paramsSpec);
-      return spec;
+      return new RequestBodySpec(contentBodyType, paramsSpec, simpleBodyType);
     }    
   }
 
-  
-  public RequestBodySpec(ContentBodyType contentBodyType, Map<String, Type> paramsSpec) {
+  private final Type simpleBodyType;
+
+  /**
+   * @param contentBodyType the type of content expected in the body
+   * @param paramsSpec pass null if ContentBodyType is {@link ContentBodyType#SIMPLE}
+   */
+  public RequestBodySpec(ContentBodyType contentBodyType,
+                         Map<String, Type> paramsSpec, Type simpleBodyType) {
     super(contentBodyType, paramsSpec);
+    this.simpleBodyType = simpleBodyType;
+  }
+
+  public Type getSimpleBodyType() {
+    return simpleBodyType;
   }
 }

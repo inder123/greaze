@@ -74,7 +74,7 @@ public final class RestRequestSender {
       // before sending any data on the connection.
       conn.setDoInput(true);
       
-      R requestBody = request.getBody();
+      R requestBody = request.getResource();
       String requestBodyContents = "";
       if (method == HttpMethod.POST || method == HttpMethod.PUT) {
         // Android Java VM ignore Content-Length if setDoOutput is not set

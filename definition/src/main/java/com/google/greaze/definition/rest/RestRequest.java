@@ -15,11 +15,15 @@
  */
 package com.google.greaze.definition.rest;
 
-import java.lang.reflect.Type;
-
+import com.google.greaze.definition.ContentBodyType;
 import com.google.greaze.definition.HeaderMap;
+import com.google.greaze.definition.HeaderMapSpec;
 import com.google.greaze.definition.HttpMethod;
-import com.google.greaze.definition.TypedKey;
+import com.google.greaze.definition.webservice.RequestBody;
+import com.google.greaze.definition.webservice.RequestBodySpec;
+import com.google.greaze.definition.webservice.WebServiceRequest;
+
+import java.lang.reflect.Type;
 
 /**
  * The data associated with a Web service request. This includes HTTP request header parameters 
@@ -27,63 +31,41 @@ import com.google.greaze.definition.TypedKey;
  * 
  * @author inder
  */
-public class RestRequest<I extends ID, R extends RestResource<I, R>> {
-  public static final String JSON_CONTENT_TYPE = "application/json";
-
-  private final HttpMethod method;
-  private final HeaderMap headers;
+public class RestRequest<I extends ID, R extends RestResource<I, R>> extends WebServiceRequest {
   private final I id;
-  private final R body;
-  private final RestRequestSpec spec;
+  private final R resource;
   
   public RestRequest(HttpMethod method, HeaderMap requestHeaders,
       I resourceId, R requestBody, Type resourceType) {
-    this.method = method;
+    super(method, requestHeaders, createUrlParams(),
+      createBody(requestBody, resourceType),
+      new RestRequestSpec(requestHeaders.getSpec(), resourceType));
     this.id = resourceId;
-    this.body = requestBody;
-    this.headers = requestHeaders;
-    this.spec = new RestRequestSpec(requestHeaders.getSpec(), resourceType);
+    this.resource = requestBody;
+  }
+
+  private static HeaderMap createUrlParams() {
+    HeaderMapSpec spec = new HeaderMapSpec.Builder().build();
+    return new HeaderMap.Builder(spec).build();
+  }
+
+  private static<R> RequestBody createBody(R resource, Type resourceType) {
+    RequestBodySpec spec = new RequestBodySpec(ContentBodyType.SIMPLE, null, resourceType);
+    return new RequestBody.Builder(spec)
+        .setSimpleBody(resource)
+        .build();
+  }
+
+  @Override
+  public RestRequestSpec getSpec() {
+    return (RestRequestSpec)spec;
   }
 
   public I getId() {
     return id;
   }
 
-  public HttpMethod getMethod() {
-    return method;
-  }
-
-  public RestRequestSpec getSpec() {
-    return spec;
-  }
-
-  public HttpMethod getHttpMethod() {
-    return method;
-  }
-
-  public R getBody() {
-    return body;
-  }
-
-  public HeaderMap getHeaders() {
-    return headers;
-  }
-
-  public String getContentType() {
-    return JSON_CONTENT_TYPE;
-  }
-
-  public <T> T getHeader(TypedKey<T> key) {
-    return headers.get(key);
-  }
-
-  @SuppressWarnings("unchecked")
-  public <T> T getHeader(String headerName) {
-    return (T) headers.get(headerName);
-  }
-  
-  @Override
-  public String toString() {
-    return String.format("{method:%s,headers:%s,body:%s}", method, headers, body);
+  public R getResource() {
+    return resource;
   }
 }

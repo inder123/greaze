@@ -26,21 +26,28 @@ import com.google.greaze.definition.TypedKey;
  * 
  * @author inder
  */
-public final class WebServiceRequest {
-  private final HttpMethod method;
-  private final HeaderMap headers;
-  private final HeaderMap urlParams;
-  private final RequestBody body;
-  private final RequestSpec spec;
+public class WebServiceRequest {
+  protected final HttpMethod method;
+  protected final HeaderMap headers;
+  protected final HeaderMap urlParams;
+  protected final RequestBody body;
+  protected final RequestSpec spec;
   
-  public WebServiceRequest(HttpMethod method, HeaderMap requestHeaders, HeaderMap urlParams,
-      RequestBody requestBody) {
+  public WebServiceRequest(HttpMethod method, HeaderMap requestHeaders,
+                           HeaderMap urlParams, RequestBody requestBody) {
+    this(method, requestHeaders, urlParams, requestBody,
+      new RequestSpec(requestHeaders.getSpec(), urlParams.getSpec(),
+        requestBody.getSpec()));
+    
+  }
+  public WebServiceRequest(HttpMethod method, HeaderMap requestHeaders,
+                           HeaderMap urlParams, RequestBody requestBody,
+                           RequestSpec requestSpec) {
     this.method = method;
     this.body = requestBody;
     this.headers = requestHeaders;
     this.urlParams = urlParams;
-    this.spec = new RequestSpec(requestHeaders.getSpec(), urlParams.getSpec(),
-        requestBody.getSpec());
+    this.spec = requestSpec;
   }
 
   public HttpMethod getMethod() {
