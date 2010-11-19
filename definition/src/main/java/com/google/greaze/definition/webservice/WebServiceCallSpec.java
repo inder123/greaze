@@ -117,9 +117,10 @@ public class WebServiceCallSpec {
   protected final CallPath path;
   protected final ResponseSpec responseSpec;
   protected final RequestSpec requestSpec;
+  protected final double version;
   
   protected WebServiceCallSpec(Set<HttpMethod> supportedHttpMethods, CallPath path, 
-      RequestSpec requestSpec, ResponseSpec responseSpec) {
+      RequestSpec requestSpec, ResponseSpec responseSpec, double version) {
     GreazePreconditions.checkArgument(!supportedHttpMethods.isEmpty());
     GreazePreconditions.checkNotNull(path);
     
@@ -127,6 +128,7 @@ public class WebServiceCallSpec {
     this.path = path;
     this.requestSpec = requestSpec;
     this.responseSpec = responseSpec;
+    this.version = version;
   }
 
   public CallPath getPath() {
@@ -145,21 +147,14 @@ public class WebServiceCallSpec {
     return requestSpec;
   }
   
+  public double getVersion() {
+    return version;
+  }
+
   @Override
   public String toString() {
-    StringBuilder sb = new StringBuilder("{path:");
-    sb.append(path).append(",supportedHttpMethods:[");
-    boolean first = true;
-    for (HttpMethod method : supportedHttpMethods) {
-      if (first) {
-        first = false;
-      } else {
-        sb.append(",");
-      }
-      sb.append(method);
-    }
-    sb.append("],requestSpec:").append(requestSpec);
-    sb.append(",responseSpec:").append(responseSpec).append("}");
-    return sb.toString();
+    return String.format(
+      "path: %s, version: %.2f, requestSpec: %s, responseSpec: %s",
+      path, version, requestSpec, responseSpec);
   }
 }

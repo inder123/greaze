@@ -81,14 +81,12 @@ public final class RestCallSpec extends WebServiceCallSpec {
   }
 
   private final Type resourceType;
-  private final double version;
 
   private RestCallSpec(Set<HttpMethod> supportedHttpMethods, CallPath path,
       RestRequestSpec requestSpec, RestResponseSpec responseSpec,
       Type resourceType, double version) {
-    super(supportedHttpMethods, path, requestSpec, responseSpec);
+    super(supportedHttpMethods, path, requestSpec, responseSpec, version);
     this.resourceType = resourceType;
-    this.version = version;
   }
 
   @Override
@@ -105,15 +103,9 @@ public final class RestCallSpec extends WebServiceCallSpec {
     return resourceType;
   }
 
-  public double getVersion() {
-    return version;
-  }
-
   @Override
   public String toString() {
-    return String.format(
-      "path: %s, version: %.2f, resourceType: %s, requestSpec: %s, responseSpec: %s",
-      path, version, resourceType, requestSpec, responseSpec);
+    return String.format("resourceType: %s, %s", path, super.toString());
   }
 
   public RestCallSpec createCopy(CallPath callPath) {
