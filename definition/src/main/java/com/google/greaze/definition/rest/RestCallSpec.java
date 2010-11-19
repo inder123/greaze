@@ -15,23 +15,23 @@
  */
 package com.google.greaze.definition.rest;
 
-import java.lang.reflect.Type;
-import java.util.Arrays;
-import java.util.LinkedHashSet;
-import java.util.Set;
-
 import com.google.greaze.definition.CallPath;
 import com.google.greaze.definition.HeaderMapSpec;
 import com.google.greaze.definition.HttpMethod;
 import com.google.greaze.definition.TypedKey;
-import com.google.greaze.definition.internal.utils.GreazePreconditions;
+import com.google.greaze.definition.webservice.WebServiceCallSpec;
+
+import java.lang.reflect.Type;
+import java.util.Arrays;
+import java.util.LinkedHashSet;
+import java.util.Set;
 
 /**
  * Specification for a REST service
  *
  * @author inder
  */
-public final class RestCallSpec {
+public final class RestCallSpec extends WebServiceCallSpec {
   public static class Builder {
     private final CallPath callPath;
     private final Set<HttpMethod> supportedHttpMethods = new LinkedHashSet<HttpMethod>();
@@ -80,40 +80,25 @@ public final class RestCallSpec {
     }
   }
 
-  private final Set<HttpMethod> supportedHttpMethods;
-  private final CallPath path;
-  private final RestRequestSpec requestSpec;
-  private final RestResponseSpec responseSpec;
   private final Type resourceType;
   private final double version;
 
   private RestCallSpec(Set<HttpMethod> supportedHttpMethods, CallPath path,
       RestRequestSpec requestSpec, RestResponseSpec responseSpec,
       Type resourceType, double version) {
-    GreazePreconditions.checkArgument(!supportedHttpMethods.isEmpty());
-    GreazePreconditions.checkNotNull(path);
-    this.supportedHttpMethods = supportedHttpMethods;
-    this.path = path;
-    this.requestSpec = requestSpec;
-    this.responseSpec = responseSpec;
+    super(supportedHttpMethods, path, requestSpec, responseSpec);
     this.resourceType = resourceType;
     this.version = version;
   }
 
-  public CallPath getPath() {
-    return path;
-  }
-  
-  public Set<HttpMethod> getSupportedHttpMethods() {
-    return supportedHttpMethods;
+  @Override
+  public RestResponseSpec getResponseSpec() {
+    return (RestResponseSpec) responseSpec;
   }
 
-  public RestResponseSpec getResponseSpec() {
-    return responseSpec;
-  }
-  
+  @Override
   public RestRequestSpec getRequestSpec() {
-    return requestSpec;
+    return (RestRequestSpec) requestSpec;
   }
 
   public Type getResourceType() {
@@ -132,7 +117,7 @@ public final class RestCallSpec {
   }
 
   public RestCallSpec createCopy(CallPath callPath) {
-    return new RestCallSpec(supportedHttpMethods, callPath, requestSpec,
-        responseSpec, resourceType, version);
+    return new RestCallSpec(supportedHttpMethods, callPath, getRequestSpec(),
+        getResponseSpec(), resourceType, version);
   }
 }

@@ -33,7 +33,7 @@ import java.util.Set;
  * 
  * @author inder
  */
-public final class WebServiceCallSpec {
+public class WebServiceCallSpec {
   
   public static final WebServiceCallSpec NULL_SPEC =
     new Builder(ContentBodyType.SIMPLE, new CallPath("")).build();
@@ -113,12 +113,12 @@ public final class WebServiceCallSpec {
     }
   }
   
-  private final Set<HttpMethod> supportedHttpMethods;
-  private final CallPath path;
-  private final ResponseSpec responseSpec;
-  private final RequestSpec requestSpec;
+  protected final Set<HttpMethod> supportedHttpMethods;
+  protected final CallPath path;
+  protected final ResponseSpec responseSpec;
+  protected final RequestSpec requestSpec;
   
-  private WebServiceCallSpec(Set<HttpMethod> supportedHttpMethods, CallPath path, 
+  protected WebServiceCallSpec(Set<HttpMethod> supportedHttpMethods, CallPath path, 
       RequestSpec requestSpec, ResponseSpec responseSpec) {
     GreazePreconditions.checkArgument(!supportedHttpMethods.isEmpty());
     GreazePreconditions.checkNotNull(path);
