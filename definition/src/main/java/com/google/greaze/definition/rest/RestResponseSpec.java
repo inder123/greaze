@@ -15,34 +15,36 @@
  */
 package com.google.greaze.definition.rest;
 
-import java.lang.reflect.Type;
-
+import com.google.greaze.definition.ContentBodyType;
 import com.google.greaze.definition.HeaderMapSpec;
+import com.google.greaze.definition.webservice.ResponseBodySpec;
+import com.google.greaze.definition.webservice.ResponseSpec;
+
+import java.lang.reflect.Type;
 
 /**
  * Specification for a {@link RestResponse}.
  * 
- * @author inder
+ * @author Inderjeet Singh
  */
-public final class RestResponseSpec {
-  private final HeaderMapSpec headersSpec;
+public final class RestResponseSpec extends ResponseSpec {
   private final Type resourceType;
 
   public RestResponseSpec(HeaderMapSpec headersSpec, Type resourceType) {
-    this.headersSpec = headersSpec;
+    super(headersSpec, buildBodySpec());
     this.resourceType = resourceType;
+  }
+
+  private static ResponseBodySpec buildBodySpec() {
+    return new ResponseBodySpec.Builder(ContentBodyType.SIMPLE).build();
   }
 
   public Type getResourceType() {
     return resourceType;
   }
-
-  public HeaderMapSpec getHeadersSpec() {
-    return headersSpec;
-  }
   
   @Override
   public String toString() {
-    return String.format("{headersSpec:%s,resourceType:%s}", headersSpec, resourceType);
+    return String.format("{resourceType:%s}", resourceType);
   }
 }

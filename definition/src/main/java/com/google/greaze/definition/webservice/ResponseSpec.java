@@ -23,7 +23,7 @@ import com.google.greaze.definition.internal.utils.GreazePreconditions;
  * 
  * @author inder
  */
-public final class ResponseSpec {
+public class ResponseSpec {
   private final HeaderMapSpec headersSpec;
   private final ResponseBodySpec bodySpec;
 
