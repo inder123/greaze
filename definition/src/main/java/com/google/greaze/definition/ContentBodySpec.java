@@ -32,9 +32,11 @@ public class ContentBodySpec implements ParamMapSpec {
   public static final String JSON_CHARACTER_ENCODING = "utf-8";
   
   private final Map<String, Type> paramsSpec;
+  private final ContentBodyType contentBodyType;
 
-  protected ContentBodySpec(Map<String, Type> paramsSpec) {
+  protected ContentBodySpec(ContentBodyType contentBodyType, Map<String, Type> paramsSpec) {
     this.paramsSpec = Collections.unmodifiableMap(paramsSpec);
+    this.contentBodyType = contentBodyType;
   }
   
   @Override
@@ -56,7 +58,11 @@ public class ContentBodySpec implements ParamMapSpec {
   public Set<Map.Entry<String, Type>> entrySet() {
     return paramsSpec.entrySet();
   }
-  
+
+  public ContentBodyType getContentBodyType() {
+    return contentBodyType;
+  }
+
   @Override
   public int size() {
     return paramsSpec.size();

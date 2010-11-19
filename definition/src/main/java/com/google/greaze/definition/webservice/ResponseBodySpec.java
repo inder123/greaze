@@ -20,6 +20,7 @@ import java.util.LinkedHashMap;
 import java.util.Map;
 
 import com.google.greaze.definition.ContentBodySpec;
+import com.google.greaze.definition.ContentBodyType;
 import com.google.greaze.definition.TypedKey;
 import com.google.greaze.definition.UntypedKey;
 
@@ -32,7 +33,12 @@ public final class ResponseBodySpec extends ContentBodySpec {
   
   public static class Builder {
     private final Map<String, Type> paramsSpec = new LinkedHashMap<String, Type>();
-    
+    private final ContentBodyType contentBodyType;
+
+    public Builder(ContentBodyType contentBodyType) {
+      this.contentBodyType = contentBodyType;
+    }
+
     public <T> Builder put(TypedKey<T> param) {
       paramsSpec.put(param.getName(), param.getClassOfT());
       return this;
@@ -44,12 +50,12 @@ public final class ResponseBodySpec extends ContentBodySpec {
     }
     
     public ResponseBodySpec build() {
-      ResponseBodySpec spec = new ResponseBodySpec(paramsSpec);
+      ResponseBodySpec spec = new ResponseBodySpec(contentBodyType, paramsSpec);
       return spec;
     }    
   }
   
-  public ResponseBodySpec(Map<String, Type> paramsSpec) {
-    super(paramsSpec);
+  public ResponseBodySpec(ContentBodyType contentBodyType, Map<String, Type> paramsSpec) {
+    super(contentBodyType, paramsSpec);
   }
 }

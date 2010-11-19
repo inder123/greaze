@@ -15,12 +15,13 @@
  */
 package com.google.greaze.rest.query.server;
 
-import java.lang.reflect.Type;
-
 import com.google.greaze.definition.CallPath;
+import com.google.greaze.definition.ContentBodyType;
 import com.google.greaze.definition.HttpMethod;
 import com.google.greaze.definition.rest.query.TypedKeysQuery;
 import com.google.greaze.definition.webservice.WebServiceCallSpec;
+
+import java.lang.reflect.Type;
 
 /**
  * Class with common code for server-side query support
@@ -29,7 +30,7 @@ import com.google.greaze.definition.webservice.WebServiceCallSpec;
  */
 public final class QueryHelperServer {
   public static WebServiceCallSpec generateQueryCallSpec(CallPath callPath, Type typeOfListOfR) {
-    return new WebServiceCallSpec.Builder(callPath)
+    return new WebServiceCallSpec.Builder(ContentBodyType.LIST, callPath)
         .supportsHttpMethod(HttpMethod.GET)
         .addUrlParam(TypedKeysQuery.QUERY_NAME)
         .addUrlParam(TypedKeysQuery.QUERY_VALUE_AS_JSON)

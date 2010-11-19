@@ -25,6 +25,7 @@ import javax.servlet.http.HttpServletResponse;
 
 import com.google.common.base.Preconditions;
 import com.google.greaze.definition.CallPath;
+import com.google.greaze.definition.ContentBodyType;
 import com.google.greaze.definition.HeaderMap;
 import com.google.greaze.definition.HeaderMapSpec;
 import com.google.greaze.definition.UntypedKey;
@@ -86,7 +87,7 @@ public class ResourceQueryDispatcher {
     HeaderMapSpec headerSpec = new HeaderMapSpec.Builder().build();
     HeaderMap responseHeaders = new HeaderMap.Builder(headerSpec).build();
     UntypedKey keyForResourceList = TypedKeysQuery.getKeyForResourceList(typeOfListOfR);
-    ResponseBodySpec bodySpec = new ResponseBodySpec.Builder()
+    ResponseBodySpec bodySpec = new ResponseBodySpec.Builder(ContentBodyType.LIST)
       .put(keyForResourceList)
       .build();
     ResponseBody responseBody = new ResponseBody.Builder(bodySpec)

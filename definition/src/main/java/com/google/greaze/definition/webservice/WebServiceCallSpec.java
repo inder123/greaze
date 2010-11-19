@@ -15,16 +15,17 @@
  */
 package com.google.greaze.definition.webservice;
 
-import java.util.Arrays;
-import java.util.LinkedHashSet;
-import java.util.Set;
-
 import com.google.greaze.definition.CallPath;
+import com.google.greaze.definition.ContentBodyType;
 import com.google.greaze.definition.HeaderMapSpec;
 import com.google.greaze.definition.HttpMethod;
 import com.google.greaze.definition.TypedKey;
 import com.google.greaze.definition.UntypedKey;
 import com.google.greaze.definition.internal.utils.GreazePreconditions;
+
+import java.util.Arrays;
+import java.util.LinkedHashSet;
+import java.util.Set;
 
 /**
  * Specification for a Json web service call. The call includes the relative path where the call 
@@ -34,19 +35,26 @@ import com.google.greaze.definition.internal.utils.GreazePreconditions;
  */
 public final class WebServiceCallSpec {
   
-  public static final WebServiceCallSpec NULL_SPEC = new Builder(new CallPath("")).build();
+  public static final WebServiceCallSpec NULL_SPEC =
+    new Builder(ContentBodyType.SIMPLE, new CallPath("")).build();
   
   public static class Builder {
 	private final CallPath callPath;
-	private final Set<HttpMethod> supportedHttpMethods = new LinkedHashSet<HttpMethod>();
-    private final HeaderMapSpec.Builder urlParamsSpecBuilder = new HeaderMapSpec.Builder();
-    private final HeaderMapSpec.Builder reqParamsSpecBuilder = new HeaderMapSpec.Builder();
-    private final RequestBodySpec.Builder reqBodySpecBuilder = new RequestBodySpec.Builder();
-    private final HeaderMapSpec.Builder resParamsSpecBuilder = new HeaderMapSpec.Builder();
-    private final ResponseBodySpec.Builder resBodySpecBuilder = new ResponseBodySpec.Builder();
+	private final Set<HttpMethod> supportedHttpMethods;
+    private final HeaderMapSpec.Builder urlParamsSpecBuilder;
+    private final HeaderMapSpec.Builder reqParamsSpecBuilder;
+    private final RequestBodySpec.Builder reqBodySpecBuilder;
+    private final HeaderMapSpec.Builder resParamsSpecBuilder;
+    private final ResponseBodySpec.Builder resBodySpecBuilder;
     
-    public Builder(CallPath callPath) {
-      this.callPath = callPath;      
+    public Builder(ContentBodyType contentBodyType, CallPath callPath) {
+      this.callPath = callPath;
+      supportedHttpMethods = new LinkedHashSet<HttpMethod>();
+      urlParamsSpecBuilder = new HeaderMapSpec.Builder();
+      reqParamsSpecBuilder = new HeaderMapSpec.Builder();
+      reqBodySpecBuilder = new RequestBodySpec.Builder(contentBodyType);
+      resParamsSpecBuilder = new HeaderMapSpec.Builder();
+      resBodySpecBuilder = new ResponseBodySpec.Builder(contentBodyType);
     }
     
     /**

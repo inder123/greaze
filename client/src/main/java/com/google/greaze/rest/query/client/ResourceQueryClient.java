@@ -19,6 +19,7 @@ import java.lang.reflect.Type;
 import java.util.List;
 
 import com.google.greaze.definition.CallPath;
+import com.google.greaze.definition.ContentBodyType;
 import com.google.greaze.definition.HeaderMap;
 import com.google.greaze.definition.HttpMethod;
 import com.google.greaze.definition.UntypedKey;
@@ -84,7 +85,7 @@ public class ResourceQueryClient<
 
   private static WebServiceCallSpec generateCallSpec(CallPath callPath, Type typeOfListOfR) {
     UntypedKey keyForResourceList = TypedKeysQuery.getKeyForResourceList(typeOfListOfR);
-    return new WebServiceCallSpec.Builder(callPath)
+    return new WebServiceCallSpec.Builder(ContentBodyType.LIST, callPath)
         .supportsHttpMethod(HttpMethod.GET)
         .addUrlParam(TypedKeysQuery.QUERY_NAME)
         .addUrlParam(TypedKeysQuery.QUERY_VALUE_AS_JSON)
