@@ -15,7 +15,7 @@
  */
 package com.google.greaze.example.definition.model;
 
-import com.google.greaze.definition.rest.RestResource;
+import com.google.greaze.definition.rest.RestResourceValueBased;
 import com.google.greaze.definition.rest.ValueBasedId;
 
 import java.util.List;
@@ -25,7 +25,7 @@ import java.util.List;
  * 
  * @author inder
  */
-public class Cart implements RestResource<ValueBasedId<Cart>, Cart> {
+public class Cart implements RestResourceValueBased<Cart> {
   private final List<LineItem> lineItems;
   private final String buyerName;
   private final String creditCard;

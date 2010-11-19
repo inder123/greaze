@@ -15,16 +15,15 @@
  */
 package com.google.greaze.example.server;
 
+import com.google.greaze.definition.CallPath;
+import com.google.greaze.example.definition.model.Order;
+import com.google.greaze.rest.server.RepositoryInMemoryValueBased;
+import com.google.greaze.rest.server.RepositoryValueBased;
+import com.google.greaze.server.dispatcher.RequestType;
+
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-
-import com.google.greaze.definition.CallPath;
-import com.google.greaze.definition.rest.ValueBasedId;
-import com.google.greaze.example.definition.model.Order;
-import com.google.greaze.rest.server.Repository;
-import com.google.greaze.rest.server.RepositoryInMemory;
-import com.google.greaze.server.dispatcher.RequestType;
 
 /**
  * An example servlet that receives JSON web-service requests
@@ -35,13 +34,12 @@ import com.google.greaze.server.dispatcher.RequestType;
 public class MainServlet extends HttpServlet {
   private final ResourceDepotDispatcher resourceDispatcher;
   private final WebServiceDispatcher wsDispatcher;
-  private final Repository<ValueBasedId<Order>, Order> orders;
+  private final RepositoryValueBased<Order> orders;
 
   public MainServlet() {
     this.resourceDispatcher = new ResourceDepotDispatcher();
     this.wsDispatcher = new WebServiceDispatcher();
-    this.orders =
-      new RepositoryInMemory<ValueBasedId<Order>, Order>(ValueBasedId.class, Order.class);
+    this.orders = new RepositoryInMemoryValueBased<Order>(Order.class);
   }
 
   @SuppressWarnings("unchecked")
@@ -55,6 +53,7 @@ public class MainServlet extends HttpServlet {
     switch (requestType) {
       case RESOURCE_ACCESS:
         resourceDispatcher.service(req, res, callPath);
+        break;
       case RESOURCE_QUERY:
         ResourceQueryDispatcherExample queryDispatcher = new ResourceQueryDispatcherExample(orders);
         queryDispatcher.service(req, res, queryName, callPath);

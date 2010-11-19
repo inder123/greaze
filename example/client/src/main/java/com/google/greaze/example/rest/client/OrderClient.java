@@ -15,14 +15,12 @@
  */package com.google.greaze.example.rest.client;
 
 import com.google.greaze.definition.CallPath;
-import com.google.greaze.definition.rest.ValueBasedId;
 import com.google.greaze.example.definition.model.Cart;
 import com.google.greaze.example.definition.model.LineItem;
 import com.google.greaze.example.definition.model.Order;
 import com.google.greaze.example.query.definition.QueryOrdersByItemName;
 import com.google.greaze.rest.client.ResourceDepotClientValueBased;
 import com.google.greaze.rest.client.RestClientStub;
-import com.google.greaze.rest.query.client.ResourceQueryClient;
 import com.google.greaze.rest.query.client.ResourceQueryClientValueBased;
 import com.google.greaze.webservice.client.ServerConfig;
 import com.google.greaze.webservice.client.WebServiceClient;

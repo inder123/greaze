@@ -15,7 +15,7 @@
  */
 package com.google.greaze.example.definition.model;
 
-import com.google.greaze.definition.rest.RestResource;
+import com.google.greaze.definition.rest.RestResourceValueBased;
 import com.google.greaze.definition.rest.ValueBasedId;
 
 /**
@@ -23,7 +23,7 @@ import com.google.greaze.definition.rest.ValueBasedId;
  *
  * @author inder
  */
-public class Order implements RestResource<ValueBasedId<Order>, Order> {
+public class Order implements RestResourceValueBased<Order> {
   public final Cart postedCart;
   public final String orderNumber;
   private ValueBasedId<Order> id;

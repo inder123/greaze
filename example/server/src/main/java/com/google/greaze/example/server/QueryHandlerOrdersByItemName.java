@@ -15,30 +15,30 @@
  */
 package com.google.greaze.example.server;
 
-import java.lang.reflect.Type;
-import java.util.List;
-
 import com.google.common.collect.Lists;
 import com.google.greaze.definition.rest.ValueBasedId;
-import com.google.greaze.definition.rest.query.ResourceQuery;
+import com.google.greaze.definition.rest.query.ResourceQueryValueBased;
 import com.google.greaze.example.definition.model.LineItem;
 import com.google.greaze.example.definition.model.Order;
 import com.google.greaze.example.query.definition.QueryOrdersByItemName;
-import com.google.greaze.rest.server.Repository;
+import com.google.greaze.rest.server.RepositoryValueBased;
 import com.google.inject.Inject;
 
+import java.lang.reflect.Type;
+import java.util.List;
+
 /**
- * sample implementation of a query handler for {@link QUeryOrdersByItemName} query
+ * sample implementation of a query handler for {@link QueryOrdersByItemName} query
  *
  * @author Inderjeet Singh
  */
 public class QueryHandlerOrdersByItemName
-    implements ResourceQuery<ValueBasedId<Order>, Order, QueryOrdersByItemName> {
+    implements ResourceQueryValueBased<Order, QueryOrdersByItemName> {
 
-  private final Repository<ValueBasedId<Order>, Order> orders;
+  private final RepositoryValueBased<Order> orders;
 
   @Inject
-  public QueryHandlerOrdersByItemName(Repository<ValueBasedId<Order>, Order> orders) {
+  public QueryHandlerOrdersByItemName(RepositoryValueBased<Order> orders) {
     this.orders = orders;
   }
 

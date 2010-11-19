@@ -16,7 +16,7 @@
 package com.google.greaze.example.definition.model;
 
 /**
- * A line item in a cart
+ * A line item in a cart. This is not a rest resource, just a dependent object
  *
  * @author inder
  */
@@ -26,7 +26,8 @@ public class LineItem {
   private final long priceInMicros;
   private final String currencyCode;
 
-  public LineItem(String name, int quantity, long priceInMicros, String currencyCode) {
+  public LineItem(String name, int quantity, long priceInMicros,
+                  String currencyCode) {
     this.name = name;
     this.quantity = quantity;
     this.priceInMicros = priceInMicros;

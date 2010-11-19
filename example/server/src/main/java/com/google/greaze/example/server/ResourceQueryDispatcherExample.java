@@ -15,30 +15,29 @@
  */
 package com.google.greaze.example.server;
 
+import com.google.common.collect.ImmutableMap;
+import com.google.greaze.definition.CallPath;
+import com.google.greaze.definition.rest.query.ResourceQueryValueBased;
+import com.google.greaze.example.definition.model.Order;
+import com.google.greaze.example.query.definition.Queries;
+import com.google.greaze.rest.server.RepositoryValueBased;
+import com.google.greaze.server.dispatcher.ResourceQueryDispatcher;
+import com.google.gson.GsonBuilder;
+import com.google.inject.Inject;
+
 import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import com.google.common.collect.ImmutableMap;
-import com.google.greaze.definition.CallPath;
-import com.google.greaze.definition.rest.ValueBasedId;
-import com.google.greaze.definition.rest.query.ResourceQuery;
-import com.google.greaze.example.definition.model.Order;
-import com.google.greaze.example.query.definition.Queries;
-import com.google.greaze.rest.server.Repository;
-import com.google.greaze.server.dispatcher.ResourceQueryDispatcher;
-import com.google.gson.GsonBuilder;
-import com.google.inject.Inject;
-
 public class ResourceQueryDispatcherExample extends ResourceQueryDispatcher {
 
-  private final Map<Queries, ResourceQuery<?, ?, ?>> queryHandlers;
+  private final Map<Queries, ResourceQueryValueBased<?, ?>> queryHandlers;
 
   @Inject
-  public ResourceQueryDispatcherExample(Repository<ValueBasedId<Order>, Order> orders) {
+  public ResourceQueryDispatcherExample(RepositoryValueBased<Order> orders) {
     super(new GsonBuilder());
-    queryHandlers = ImmutableMap.<Queries, ResourceQuery<?, ?, ?>>builder()
+    queryHandlers = ImmutableMap.<Queries, ResourceQueryValueBased<?, ?>>builder()
       .put(Queries.FIND_ORDERS_BY_ITEM_NAME, new QueryHandlerOrdersByItemName(orders))
       .build();
 
@@ -47,7 +46,7 @@ public class ResourceQueryDispatcherExample extends ResourceQueryDispatcher {
   public void service(HttpServletRequest req, HttpServletResponse res,
       String queryName, CallPath callPath) {
     Queries query = Queries.getQuery(queryName);
-    ResourceQuery<?, ?, ?> resourceQuery = queryHandlers.get(query);
+    ResourceQueryValueBased<?, ?> resourceQuery = queryHandlers.get(query);
     super.service(req, res, queryName, callPath, resourceQuery);
   }
 }
