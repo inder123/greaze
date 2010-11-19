@@ -14,24 +14,25 @@
  * limitations under the License.
  */package com.google.greaze.example.rest.client;
 
-import java.lang.reflect.Type;
-import java.util.ArrayList;
-import java.util.List;
-
 import com.google.greaze.definition.CallPath;
 import com.google.greaze.definition.rest.ValueBasedId;
 import com.google.greaze.example.definition.model.Cart;
 import com.google.greaze.example.definition.model.LineItem;
 import com.google.greaze.example.definition.model.Order;
 import com.google.greaze.example.query.definition.QueryOrdersByItemName;
-import com.google.greaze.rest.client.ResourceDepotClient;
+import com.google.greaze.rest.client.ResourceDepotClientValueBased;
 import com.google.greaze.rest.client.RestClientStub;
 import com.google.greaze.rest.query.client.ResourceQueryClient;
+import com.google.greaze.rest.query.client.ResourceQueryClientValueBased;
 import com.google.greaze.webservice.client.ServerConfig;
 import com.google.greaze.webservice.client.WebServiceClient;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.reflect.TypeToken;
+
+import java.lang.reflect.Type;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * A sample client for the rest resource for {@link Order}
@@ -40,18 +41,17 @@ import com.google.gson.reflect.TypeToken;
  */
 public class OrderClient {
   public static final CallPath CALL_PATH = new CallPath("/rest/order");
-  private final ResourceDepotClient<ValueBasedId<Order>, Order> restClient;
-  private final ResourceQueryClient<
-      ValueBasedId<Order>, Order, QueryOrdersByItemName> queryClient;
+  private final ResourceDepotClientValueBased<Order> restClient;
+  private final ResourceQueryClientValueBased<Order, QueryOrdersByItemName> queryClient;
   public OrderClient() {
     ServerConfig serverConfig = new ServerConfig("http://localhost");
     GsonBuilder gsonBuilder = new GsonBuilder();
 
-    restClient = new ResourceDepotClient<ValueBasedId<Order>, Order>(
+    restClient = new ResourceDepotClientValueBased<Order>(
         new RestClientStub(serverConfig), CALL_PATH, Order.class, new Gson());
     ServerConfig wsServerConfig = new ServerConfig("http://localhost");
     Type typeOfListOfR = new TypeToken<List<Order>>(){}.getType();
-    queryClient = new ResourceQueryClient<ValueBasedId<Order>, Order, QueryOrdersByItemName>(
+    queryClient = new ResourceQueryClientValueBased<Order, QueryOrdersByItemName>(
         new WebServiceClient(wsServerConfig), CALL_PATH, QueryOrdersByItemName.class, gsonBuilder,
         Order.class, typeOfListOfR); 
   }

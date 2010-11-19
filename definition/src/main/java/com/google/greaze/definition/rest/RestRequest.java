@@ -27,7 +27,7 @@ import com.google.greaze.definition.TypedKey;
  * 
  * @author inder
  */
-public final class RestRequest<I extends ID, R extends RestResource<I, R>> {
+public class RestRequest<I extends ID, R extends RestResource<I, R>> {
   public static final String JSON_CONTENT_TYPE = "application/json";
 
   private final HttpMethod method;

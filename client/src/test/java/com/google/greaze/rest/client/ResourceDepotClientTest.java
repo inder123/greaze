@@ -16,7 +16,7 @@
 package com.google.greaze.rest.client;
 
 import com.google.greaze.definition.CallPath;
-import com.google.greaze.definition.rest.RestResource;
+import com.google.greaze.definition.rest.RestResourceValueBased;
 import com.google.greaze.definition.rest.ValueBasedId;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
@@ -30,7 +30,7 @@ import junit.framework.TestCase;
  */
 public class ResourceDepotClientTest extends TestCase {
   private Gson gson;
-  private ResourceDepotClient<ValueBasedId<MyResource>, MyResource> client;
+  private ResourceDepotClientValueBased<MyResource> client;
 
   @Override
   protected void setUp() throws Exception {
@@ -38,7 +38,7 @@ public class ResourceDepotClientTest extends TestCase {
     gson = new GsonBuilder()
         .create();
     RestClientStub stub = new RestClientStubFake();
-    client = new ResourceDepotClient<ValueBasedId<MyResource>, MyResource>(
+    client = new ResourceDepotClientValueBased<MyResource>(
         stub, MyResource.CALL_PATH, MyResource.class, gson);
   }
 
@@ -48,8 +48,7 @@ public class ResourceDepotClientTest extends TestCase {
     assertEquals(sent.value, received.value);
   }
 
-  private static class MyResource
-      implements RestResource<ValueBasedId<MyResource>, MyResource> {
+  private static class MyResource implements RestResourceValueBased<MyResource> {
     public static final CallPath CALL_PATH = new CallPath("/rest/myresource");
 
     private ValueBasedId<MyResource> id;

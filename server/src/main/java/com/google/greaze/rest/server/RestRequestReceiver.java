@@ -40,7 +40,7 @@ import com.google.gson.JsonParseException;
  * 
  * @author inder
  */
-public final class RestRequestReceiver<I extends ID, R extends RestResource<I, R>> {
+public class RestRequestReceiver<I extends ID, R extends RestResource<I, R>> {
 
   private final Gson gson;
   private final RestRequestSpec spec;

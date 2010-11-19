@@ -39,7 +39,7 @@ import com.google.gson.reflect.TypeToken;
  *
  * @param <R> The resource
  */
-public final class MetaData<I extends ID, R extends RestResource<I, R>> {
+public class MetaData<I extends ID, R extends RestResource<I, R>> {
 
   private final Map<String, String> map;
   private final transient Map<Object, Object> mapTransient;
@@ -57,7 +57,7 @@ public final class MetaData<I extends ID, R extends RestResource<I, R>> {
     this(new HashMap<String, String>());
   }
 
-  private MetaData(Map<String, String> values) {
+  protected MetaData(Map<String, String> values) {
     this.map = values == null ? new HashMap<String, String>() : values;
     this.mapTransient = new HashMap<Object, Object>();
   }
