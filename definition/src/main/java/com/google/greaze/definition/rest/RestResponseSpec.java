@@ -31,12 +31,14 @@ public final class RestResponseSpec extends ResponseSpec {
   private final Type resourceType;
 
   public RestResponseSpec(HeaderMapSpec headersSpec, Type resourceType) {
-    super(headersSpec, buildBodySpec());
+    super(headersSpec, buildBodySpec(resourceType));
     this.resourceType = resourceType;
   }
 
-  private static ResponseBodySpec buildBodySpec() {
-    return new ResponseBodySpec.Builder(ContentBodyType.SIMPLE).build();
+  private static ResponseBodySpec buildBodySpec(Type resourceType) {
+    return new ResponseBodySpec.Builder(ContentBodyType.SIMPLE)
+      .setSimpleBodyType(resourceType)
+      .build();
   }
 
   public Type getResourceType() {

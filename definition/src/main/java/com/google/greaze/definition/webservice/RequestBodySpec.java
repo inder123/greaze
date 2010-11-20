@@ -55,7 +55,6 @@ public final class RequestBodySpec extends ContentBodySpec {
     }    
   }
 
-  private final Type simpleBodyType;
 
   /**
    * @param contentBodyType the type of content expected in the body
@@ -63,11 +62,6 @@ public final class RequestBodySpec extends ContentBodySpec {
    */
   public RequestBodySpec(ContentBodyType contentBodyType,
                          Map<String, Type> paramsSpec, Type simpleBodyType) {
-    super(contentBodyType, paramsSpec);
-    this.simpleBodyType = simpleBodyType;
-  }
-
-  public Type getSimpleBodyType() {
-    return simpleBodyType;
+    super(contentBodyType, paramsSpec, simpleBodyType);
   }
 }

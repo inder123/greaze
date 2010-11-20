@@ -34,13 +34,16 @@ public class ContentBodySpec implements ParamMapSpec {
   
   private final Map<String, Type> paramsSpec;
   private final ContentBodyType contentBodyType;
+  private final Type simpleBodyType;
 
-  protected ContentBodySpec(ContentBodyType contentBodyType, Map<String, Type> paramsSpec) {
+  protected ContentBodySpec(ContentBodyType contentBodyType, Map<String, Type> paramsSpec,
+                            Type simpleBodyType) {
     if (paramsSpec == null) {
       paramsSpec = new LinkedHashMap<String, Type>();
     }
     this.paramsSpec = Collections.unmodifiableMap(paramsSpec);
     this.contentBodyType = contentBodyType;
+    this.simpleBodyType = simpleBodyType;
   }
   
   @Override
@@ -74,6 +77,10 @@ public class ContentBodySpec implements ParamMapSpec {
   
   public String getContentType() {
     return JSON_CONTENT_TYPE;
+  }
+
+  public Type getSimpleBodyType() {
+    return simpleBodyType;
   }
   
   public String getCharacterEncoding() {

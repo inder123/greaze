@@ -26,7 +26,7 @@ import java.util.Set;
  * 
  * @author inder
  */
-interface ParamMapSpec {
+public interface ParamMapSpec {
 
   Type getTypeFor(String paramName);
 

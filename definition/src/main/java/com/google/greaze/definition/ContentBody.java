@@ -16,6 +16,9 @@
 package com.google.greaze.definition;
 
 
+import java.lang.reflect.Type;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -26,9 +29,57 @@ import java.util.Map;
  * @author inder
  */
 public class ContentBody extends ParamMap {
-  
-  public ContentBody(ContentBodySpec spec, Map<String, Object> contents) {
-    super(spec, contents);
+
+  public static class Builder extends ParamMap.Builder<ContentBodySpec> {
+    protected Object simpleBody;
+    protected List<Object> listBody = new ArrayList<Object>();
+    
+    public Builder(ContentBodySpec spec) {
+      super(spec);
+    }
+
+    public ContentBodySpec getSpec() {
+      return spec;
+    }  
+
+    public Builder setSimpleBody(Object body) {
+      this.simpleBody = body;
+      return this;
+    }
+
+    public Builder addToListBody(Object element) {
+      this.listBody.add(element);
+      return this;
+    }
+
+    @Override
+    public Builder put(String paramName, Object content) {
+      return (Builder) super.put(paramName, content);
+    }
+
+    @Override
+    public Builder put(String paramName, Object content, Type typeOfContent) {
+      return (Builder) super.put(paramName, content, typeOfContent);
+    }
+
+    @Override
+    public <T> Builder put(TypedKey<T> paramKey, T param) {
+      return (Builder) super.put(paramKey, param);
+    }
+
+    public ContentBody build() {
+      return new ContentBody(spec, simpleBody, listBody, contents);
+    }
+  }
+
+  private final Object simpleBody;
+  private final List<Object> listBody;
+
+  public ContentBody(ContentBodySpec spec, Object simpleBody,
+      List<Object> listBody, Map<String, Object> mapBody) {
+    super(spec, mapBody);
+    this.simpleBody = simpleBody;
+    this.listBody = listBody;
   }
   
   @Override
@@ -40,6 +91,18 @@ public class ContentBody extends ParamMap {
     return getSpec().getContentType();
   }
   
+  public Object getSimpleBody() {
+    return simpleBody;
+  }
+
+  public List<Object> getListBody() {
+    return listBody;
+  }
+
+  public Map<String, Object> getMapBody() {
+    return contents;
+  }
+
   public String getCharacterEncoding() {
     return getSpec().getCharacterEncoding();
   }

@@ -16,14 +16,11 @@
 package com.google.greaze.definition.webservice;
 
 import com.google.greaze.definition.ContentBody;
-import com.google.greaze.definition.ParamMap;
 import com.google.greaze.definition.TypedKey;
-import com.google.gson.InstanceCreator;
-import com.google.gson.JsonArray;
+import com.google.greaze.definition.UntypedKey;
 import com.google.gson.JsonDeserializationContext;
 import com.google.gson.JsonDeserializer;
 import com.google.gson.JsonElement;
-import com.google.gson.JsonObject;
 import com.google.gson.JsonParseException;
 import com.google.gson.JsonSerializationContext;
 import com.google.gson.JsonSerializer;
@@ -45,7 +42,7 @@ import java.util.Map;
  */
 public final class RequestBody extends ContentBody {
 
-  public static class Builder extends ParamMap.Builder<RequestBodySpec> {    
+  public static class Builder extends ContentBody.Builder {    
     
     private Object simpleBody;
     private List<Object> listBody = new ArrayList<Object>();
@@ -54,14 +51,19 @@ public final class RequestBody extends ContentBody {
       super(spec);
     }
 
-    public Builder setSimpleBody(Object body) {
-      this.simpleBody = body;
-      return this;
+    @Override
+    public RequestBodySpec getSpec() {
+      return (RequestBodySpec) spec;
     }
 
+    @Override
+    public Builder setSimpleBody(Object body) {
+      return (Builder) super.setSimpleBody(body);
+    }
+
+    @Override
     public Builder addToListBody(Object element) {
-      this.listBody.add(element);
-      return this;
+      return (Builder) super.addToListBody(element);
     }
 
     @Override
@@ -79,19 +81,20 @@ public final class RequestBody extends ContentBody {
       return (Builder) super.put(paramKey, param);
     }
 
+    @Override
+    public Builder put(UntypedKey paramKey, Object param) {
+      return (Builder) super.put(paramKey, param);
+    }
+
+    @Override
     public RequestBody build() {
-      return new RequestBody(spec, simpleBody, listBody, contents);
+      return new RequestBody(getSpec(), simpleBody, listBody, contents);
     }    
   }
 
-  private final Object simpleBody;
-  private final List<Object> listBody;
-
   private RequestBody(RequestBodySpec spec, Object simpleBody,
-      List<Object> listBody, Map<String, Object> contents) {
-    super(spec, contents);
-    this.simpleBody = simpleBody;
-    this.listBody = listBody;
+      List<Object> listBody, Map<String, Object> mapBody) {
+    super(spec, simpleBody, listBody, mapBody);
   }
   
   @Override
@@ -99,19 +102,11 @@ public final class RequestBody extends ContentBody {
     return (RequestBodySpec) spec;
   }  
 
-  public Object getSimpleBody() {
-    return simpleBody;
-  }
-
-  public Object getBodyAsList() {
-    return listBody;
-  }
-
   /**
    * Gson type adapter for {@link RequestBody}. 
    */
   public static final class GsonTypeAdapter implements JsonSerializer<RequestBody>, 
-    JsonDeserializer<RequestBody>, InstanceCreator<RequestBody> {
+    JsonDeserializer<RequestBody> {
 
     private final RequestBodySpec spec;
 
@@ -122,61 +117,13 @@ public final class RequestBody extends ContentBody {
     @Override
     public JsonElement serialize(RequestBody src, Type typeOfSrc, 
         JsonSerializationContext context) {
-      switch(spec.getContentBodyType()) {
-        case SIMPLE:
-          return context.serialize(src.getSimpleBody());
-        case LIST:
-          JsonArray array = new JsonArray();
-          for(Object entry : src.listBody) {
-            array.add(context.serialize(entry, spec.getSimpleBodyType()));
-          }
-          return array;
-        case MAP:
-          JsonObject map = new JsonObject();
-          for(Map.Entry<String, Object> entry : src.entrySet()) {
-            String key = entry.getKey();
-            Type entryType = src.getSpec().getTypeFor(key);
-            JsonElement value = context.serialize(entry.getValue(), entryType);
-            map.add(key, value);        
-          }
-          return map;
-        default:
-          throw new UnsupportedOperationException();
-      }
+      return GsonHelper.serialize(src, typeOfSrc, context);
     }
 
     @Override
     public RequestBody deserialize(JsonElement json, Type typeOfT, 
         JsonDeserializationContext context) throws JsonParseException {
-      RequestBody.Builder builder = new RequestBody.Builder(spec);
-      switch(spec.getContentBodyType()) {
-        case SIMPLE:
-          builder.setSimpleBody(
-            context.deserialize(json, spec.getSimpleBodyType()));
-          break;
-        case LIST:
-          for (JsonElement element : json.getAsJsonArray()) {
-            builder.addToListBody(
-              context.<Object>deserialize(element, spec.getSimpleBodyType()));
-          }
-          break;
-        case MAP:
-          for (Map.Entry<String, JsonElement> entry : json.getAsJsonObject().entrySet()) {
-            String key = entry.getKey();
-            Type entryType = spec.getTypeFor(key);
-            Object value = context.deserialize(entry.getValue(), entryType);
-            builder.put(key, value);
-          }
-          break;
-        default:
-          throw new UnsupportedOperationException();
-      }
-      return builder.build();
-    }
-
-    @Override
-    public RequestBody createInstance(Type type) {
-      return new RequestBody.Builder(spec).build();
+      return GsonHelper.deserialize(json, typeOfT, context, new RequestBody.Builder(spec));
     }
   }
 }

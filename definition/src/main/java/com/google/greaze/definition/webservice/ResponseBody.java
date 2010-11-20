@@ -15,21 +15,20 @@
  */
 package com.google.greaze.definition.webservice;
 
-import java.lang.reflect.Type;
-import java.util.Map;
-
 import com.google.greaze.definition.ContentBody;
-import com.google.greaze.definition.ParamMap;
 import com.google.greaze.definition.TypedKey;
 import com.google.greaze.definition.UntypedKey;
-import com.google.gson.InstanceCreator;
 import com.google.gson.JsonDeserializationContext;
 import com.google.gson.JsonDeserializer;
 import com.google.gson.JsonElement;
-import com.google.gson.JsonObject;
 import com.google.gson.JsonParseException;
 import com.google.gson.JsonSerializationContext;
 import com.google.gson.JsonSerializer;
+
+import java.lang.reflect.Type;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
 
 /**
  * body of the response. This is written out as JSON to be sent out to the client. 
@@ -40,10 +39,17 @@ import com.google.gson.JsonSerializer;
  */
 public final class ResponseBody extends ContentBody {
 
-  public static class Builder extends ParamMap.Builder<ResponseBodySpec> {    
+  public static class Builder extends ContentBody.Builder {    
 
+    private Object simpleBody;
+    private List<Object> listBody = new ArrayList<Object>();
     public Builder(ResponseBodySpec spec) {
       super(spec);
+    }
+
+    @Override
+    public ResponseBodySpec getSpec() {
+      return (ResponseBodySpec) spec;
     }
 
     @Override
@@ -66,13 +72,15 @@ public final class ResponseBody extends ContentBody {
       return (Builder) super.put(paramKey, param);
     }
 
+    @Override
     public ResponseBody build() {
-      return new ResponseBody(spec, contents);
+      return new ResponseBody(getSpec(), simpleBody, listBody, contents);
     }    
   }
 
-  private ResponseBody(ResponseBodySpec spec, Map<String, Object> contents) {
-    super(spec, contents);
+  private ResponseBody(ResponseBodySpec spec, Object simpleBody,
+      List<Object> listBody, Map<String, Object> mapBody) {
+    super(spec, simpleBody, listBody, mapBody);
   }
   
   @Override
@@ -84,7 +92,7 @@ public final class ResponseBody extends ContentBody {
    * Gson type adapter for {@link ResponseBody}. 
    */
   public static final class GsonTypeAdapter implements JsonSerializer<ResponseBody>, 
-    JsonDeserializer<ResponseBody>, InstanceCreator<ResponseBody> {
+    JsonDeserializer<ResponseBody> {
 
     private final ResponseBodySpec spec;
 
@@ -95,32 +103,13 @@ public final class ResponseBody extends ContentBody {
     @Override
     public JsonElement serialize(ResponseBody src, Type typeOfSrc, 
         JsonSerializationContext context) {
-      JsonObject root = new JsonObject();
-      for(Map.Entry<String, Object> entry : src.entrySet()) {
-        String key = entry.getKey();
-        Type entryType = src.getSpec().getTypeFor(key);
-        JsonElement value = context.serialize(entry.getValue(), entryType);
-        root.add(key, value);        
-      }
-      return root;
+      return GsonHelper.serialize(src, typeOfSrc, context);
     }
 
     @Override
     public ResponseBody deserialize(JsonElement json, Type typeOfT, 
         JsonDeserializationContext context) throws JsonParseException {
-      ResponseBody.Builder responseBodyBuilder = new ResponseBody.Builder(spec);
-      for (Map.Entry<String, JsonElement> entry : json.getAsJsonObject().entrySet()) {
-        String key = entry.getKey();
-        Type entryType = spec.getTypeFor(key);
-        Object value = context.deserialize(entry.getValue(), entryType);
-        responseBodyBuilder.put(key, value, entryType);
-      }
-      return responseBodyBuilder.build();
+      return GsonHelper.deserialize(json, typeOfT, context, new ResponseBody.Builder(spec));
     }
-
-    @Override
-    public ResponseBody createInstance(Type type) {
-      return new ResponseBody.Builder(spec).build();
-    }  
   }
 }
