@@ -17,8 +17,6 @@ package com.google.greaze.definition.webservice;
 
 import junit.framework.TestCase;
 
-import java.lang.reflect.Constructor;
-
 /**
  * Unit tests for {@link ResponseBody}
  *
@@ -27,8 +25,7 @@ import java.lang.reflect.Constructor;
 public class ResponseBodyTest extends TestCase {
   public void testEnsureResponseBodyHasNoDefaultConstructor() throws Exception {
     try {
-      Constructor<ResponseBody> defaultConstructor =
-        ResponseBody.class.getConstructor();
+      ResponseBody.class.getConstructor();
     } catch (NoSuchMethodException expected) {}
   }
 }
