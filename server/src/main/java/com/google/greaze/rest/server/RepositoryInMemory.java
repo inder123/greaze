@@ -31,7 +31,7 @@ public class RepositoryInMemory<I extends ResourceId, R extends RestResourceBase
   private static final String METADATA_KEY_IS_FRESHLY_ASSIGNED_ID = "isFreshlyAssignedId";
 
   private final IdMapBase<I, R> resources;
-  private final MetaDataMap<I, R> metaDataMap;
+  private final MetaDataMapBase<I, R> metaDataMap;
 
   /**
    * @param rawClassOfI class for the Id type. For example, ValueBasedId.class
@@ -39,7 +39,7 @@ public class RepositoryInMemory<I extends ResourceId, R extends RestResourceBase
    */
   public RepositoryInMemory(Class<? super I> rawClassOfI, Class<? super R> classOfResource) {
     this.resources = IdMapBase.create(rawClassOfI, classOfResource);
-    this.metaDataMap = new MetaDataMap<I, R>();
+    this.metaDataMap = new MetaDataMapBase<I, R>();
   }
 
   @Override

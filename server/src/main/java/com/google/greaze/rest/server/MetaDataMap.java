@@ -15,75 +15,26 @@
  */
 package com.google.greaze.rest.server;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
-import com.google.greaze.definition.TypedKey;
-import com.google.greaze.definition.rest.ResourceId;
-import com.google.greaze.definition.rest.MetaDataBase;
-import com.google.greaze.definition.rest.RestResourceBase;
+import com.google.greaze.definition.rest.MetaData;
+import com.google.greaze.definition.rest.RestResource;
+import com.google.greaze.definition.rest.Id;
 
 /**
- * A map of resources to their MetaData. If you create a subclass of this class, you should
- * override {@link #createMetaData()} to ensure that the metadata objects are created for
- * the subclass type.
+ * A map of resources to their MetaData
  *
- * @author inder
+ * @author Inderjeet Singh
  *
  * @param <R> the rest resource for which the metadata is being stored
  */
-public class MetaDataMap<I extends ResourceId, R extends RestResourceBase<I, R>> {
-  protected final Map<I, MetaDataBase<I, R>> map;
+public class MetaDataMap<R extends RestResource<R>> extends MetaDataMapBase<Id<R>, R> {
 
-  public MetaDataMap() {
-    this.map = new HashMap<I, MetaDataBase<I, R>>();
-  }
-
-  public MetaDataBase<I, R> get(I resourceId) {
-    MetaDataBase<I, R> metaData = map.get(resourceId);
-    if (metaData == null) {
-      metaData = createMetaData();
-      map.put(resourceId, metaData);
-    }
-    return metaData;
+  @Override
+  public MetaData<R> get(Id<R> resourceId) {
+    return (MetaData<R>)super.get(resourceId);
   }
 
   @Override
-  public String toString() {
-    return String.format("%s", map);
-  }
-
-  public <T> List<I> findByTypedKey(TypedKey<T> key, T value, int maxCount) {
-    List<I> result = new ArrayList<I>();
-    for (Map.Entry<I, MetaDataBase<I, R>> entry : map.entrySet()) {
-      T retrieved = entry.getValue().getFromTransient(key);
-      if (isEqual(value, retrieved)) {
-        result.add(entry.getKey());
-        if (--maxCount == 0) {
-          break;
-        }
-      }
-    }
-    return result;
-  }
-
-  public static <T> boolean isEqual(T t1, T t2) {
-    if (t1 == null && t2 == null) {
-      return true;
-    }
-    if (t1 == null || t2 == null) {
-      return false;
-    }
-    return t1.equals(t2);
-  }
-
-  /**
-   * Override this method in subclasses to ensure that the metadata is created for the subclass
-   * type
-   */
-  protected MetaDataBase<I, R> createMetaData() {
-    return MetaDataBase.create();
+  protected MetaData<R> createMetaData() {
+    return MetaData.create();
   }
 }
