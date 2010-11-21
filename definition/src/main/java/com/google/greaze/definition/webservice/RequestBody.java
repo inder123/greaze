@@ -117,13 +117,13 @@ public final class RequestBody extends ContentBody {
     @Override
     public JsonElement serialize(RequestBody src, Type typeOfSrc, 
         JsonSerializationContext context) {
-      return GsonHelper.serialize(src, typeOfSrc, context);
+      return GsonHelper.serialize(src, context);
     }
 
     @Override
     public RequestBody deserialize(JsonElement json, Type typeOfT, 
         JsonDeserializationContext context) throws JsonParseException {
-      return GsonHelper.deserialize(json, typeOfT, context, new RequestBody.Builder(spec));
+      return GsonHelper.deserialize(json, context, new RequestBody.Builder(spec));
     }
   }
 }

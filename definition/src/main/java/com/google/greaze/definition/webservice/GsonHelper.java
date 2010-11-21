@@ -34,8 +34,7 @@ import java.util.Map;
  */
 final class GsonHelper {
 
-  static JsonElement serialize(ContentBody src, Type typeOfSrc, 
-      JsonSerializationContext context) {
+  static JsonElement serialize(ContentBody src, JsonSerializationContext context) {
     ContentBodySpec bodySpec = src.getSpec();
     switch(bodySpec.getContentBodyType()) {
       case SIMPLE:
@@ -62,7 +61,7 @@ final class GsonHelper {
 
   @SuppressWarnings("unchecked")
   static <T extends ContentBody, TB extends ContentBody.Builder> T deserialize(JsonElement json,
-      Type typeOfT, JsonDeserializationContext context, TB builder) throws JsonParseException {
+      JsonDeserializationContext context, TB builder) throws JsonParseException {
     ContentBodySpec spec = builder.getSpec();
     switch(spec.getContentBodyType()) {
       case SIMPLE:
