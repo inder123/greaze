@@ -26,14 +26,16 @@ import com.google.greaze.definition.rest.MetaData;
 import com.google.greaze.definition.rest.RestResource;
 
 /**
- * A map of resources to their MetaData
+ * A map of resources to their MetaData. If you create a subclass of this class, you should
+ * override {@link #createMetaData()} to ensure that the metadata objects are created for
+ * the subclass type.
  *
  * @author inder
  *
  * @param <R> the rest resource for which the metadata is being stored
  */
 public class MetaDataMap<I extends ID, R extends RestResource<I, R>> {
-  private final Map<I, MetaData<I, R>> map;
+  protected final Map<I, MetaData<I, R>> map;
 
   public MetaDataMap() {
     this.map = new HashMap<I, MetaData<I, R>>();
@@ -42,7 +44,7 @@ public class MetaDataMap<I extends ID, R extends RestResource<I, R>> {
   public MetaData<I, R> get(I resourceId) {
     MetaData<I, R> metaData = map.get(resourceId);
     if (metaData == null) {
-      metaData = MetaData.create();
+      metaData = createMetaData();
       map.put(resourceId, metaData);
     }
     return metaData;
@@ -75,5 +77,13 @@ public class MetaDataMap<I extends ID, R extends RestResource<I, R>> {
       return false;
     }
     return t1.equals(t2);
+  }
+
+  /**
+   * Override this method in subclasses to ensure that the metadata is created for the subclass
+   * type
+   */
+  protected MetaData<I, R> createMetaData() {
+    return MetaData.create();
   }
 }

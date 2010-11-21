@@ -15,6 +15,8 @@
  */
 package com.google.greaze.definition.rest;
 
+import java.util.Map;
+
 
 /**
  * Metadata associated with a repository for a rest resource. Metadata is of two types: persistent
@@ -32,5 +34,12 @@ public final class MetaDataValueBased<R extends RestResourceValueBased<R>>
 
   public static <RS extends RestResourceValueBased<RS>> MetaDataValueBased<RS> create() {
     return new MetaDataValueBased<RS>();
+  }
+
+  public MetaDataValueBased() {
+  }
+
+  MetaDataValueBased(Map<String, String> values) {
+    super(values);
   }
 }

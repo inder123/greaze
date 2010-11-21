@@ -15,6 +15,7 @@
  */
 package com.google.greaze.definition.rest;
 
+import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 import java.util.HashMap;
 import java.util.Map;
@@ -26,6 +27,7 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonParseException;
 import com.google.gson.JsonSerializationContext;
 import com.google.gson.JsonSerializer;
+import com.google.gson.JsonSyntaxException;
 import com.google.gson.reflect.TypeToken;
 
 /**
@@ -46,11 +48,6 @@ public class MetaData<I extends ID, R extends RestResource<I, R>> {
 
   public static <II extends ID, RS extends RestResource<II, RS>> MetaData<II, RS> create() {
     return new MetaData<II, RS>();
-  }
-
-  @SuppressWarnings({"unchecked", "rawtypes"})
-  private static MetaData<?, ?> createTypeUnsafe(Map<String, String> values) {
-    return new MetaData(values);
   }
 
   public MetaData() {
@@ -122,13 +119,23 @@ public class MetaData<I extends ID, R extends RestResource<I, R>> {
     public MetaData<?, ?> deserialize(JsonElement json, Type typeOfT,
         JsonDeserializationContext context) throws JsonParseException {
       Map<String, String> map = context.deserialize(json, MAP_TYPE);
-      return MetaData.createTypeUnsafe(map);
+      return createInstance(typeOfT, map);
     }
 
     @Override
     public JsonElement serialize(MetaData<?, ?> src, Type typeOfSrc,
         JsonSerializationContext context) {
       return context.serialize(src.map, MAP_TYPE);
+    }
+
+    @SuppressWarnings({"unchecked", "rawtypes"})
+    private static MetaData<?, ?> createInstance(Type typeOfT, Map<String, String> map) {
+      if (!(typeOfT instanceof ParameterizedType)) {
+        throw new JsonSyntaxException("Expecting MetaData<>, found: " + typeOfT);
+      }
+      Class<?> metaDataClass = (Class<?>) ((ParameterizedType) typeOfT).getRawType();
+      return MetaDataValueBased.class.isAssignableFrom(metaDataClass) ?
+          new MetaDataValueBased(map) : new MetaData(map);
     }
   }
 }
