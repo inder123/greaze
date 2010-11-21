@@ -15,13 +15,12 @@
  */
 package com.google.greaze.rest.client;
 
+import junit.framework.TestCase;
+
 import com.google.greaze.definition.CallPath;
-import com.google.greaze.definition.rest.RestResourceValueBased;
-import com.google.greaze.definition.rest.ValueBasedId;
+import com.google.greaze.definition.rest.RestResourceImpl;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
-
-import junit.framework.TestCase;
 
 /**
  * Unit tests for {@link ResourceDepotClient}
@@ -48,10 +47,9 @@ public class ResourceDepotClientTest extends TestCase {
     assertEquals(sent.value, received.value);
   }
 
-  private static class MyResource implements RestResourceValueBased<MyResource> {
+  private static class MyResource extends RestResourceImpl<MyResource> {
     public static final CallPath CALL_PATH = new CallPath("/rest/myresource");
 
-    private ValueBasedId<MyResource> id;
     int value;
 
     // For Gson
@@ -62,21 +60,6 @@ public class ResourceDepotClientTest extends TestCase {
 
     public MyResource(int value) {
       this.value = value;
-    }
-
-    @Override
-    public ValueBasedId<MyResource> getId() {
-      return id;
-    }
-
-    @Override
-    public void setId(ValueBasedId<MyResource> id) {
-      this.id = id;
-    }
-
-    @Override
-    public boolean hasId() {
-      return ValueBasedId.isValid(id);
     }
   }
 }

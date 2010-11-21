@@ -13,29 +13,31 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.google.greaze.example.definition.model;
-
-import com.google.greaze.definition.rest.RestResourceImpl;
+package com.google.greaze.definition.rest;
 
 /**
- * An order rest resource
+ * A base class to implement a REST resource that implements common id related methods.
  *
  * @author Inderjeet Singh
+ *
+ * @param <R> The intended resource
  */
-public class Order extends RestResourceImpl<Order> {
-  public final Cart postedCart;
-  public final String orderNumber;
- 
-  public Order(Cart postedCart, String orderNumber) {
-    this.postedCart = postedCart;
-    this.orderNumber = orderNumber;
+public class RestResourceImpl<R> implements RestResourceValueBased<R> {
+
+  protected ValueBasedId<R> id;
+
+  @Override
+  public ValueBasedId<R> getId() {
+    return id;
   }
 
-  public Cart getPostedCart() {
-    return postedCart;
+  @Override
+  public void setId(ValueBasedId<R> id) {
+    this.id = id;
   }
 
-  public String getOrderNumber() {
-    return orderNumber;
+  @Override
+  public boolean hasId() {
+    return ValueBasedId.isValid(id);
   }
 }
