@@ -29,7 +29,7 @@ import com.google.greaze.definition.HeaderMapSpec;
 import com.google.greaze.definition.HttpMethod;
 import com.google.greaze.definition.WebServiceSystemException;
 import com.google.greaze.definition.rest.ResourceId;
-import com.google.greaze.definition.rest.RestRequest;
+import com.google.greaze.definition.rest.RestRequestBase;
 import com.google.greaze.definition.rest.RestRequestSpec;
 import com.google.greaze.definition.rest.RestResourceBase;
 import com.google.gson.Gson;
@@ -50,7 +50,7 @@ public class RestRequestReceiver<I extends ResourceId, R extends RestResourceBas
     this.spec = spec;
   }
   
-  public RestRequest<I, R> receive(HttpServletRequest request, I resourceId) {
+  public RestRequestBase<I, R> receive(HttpServletRequest request, I resourceId) {
     try {
       HeaderMap requestParams = buildRequestParams(request);
       R requestBody = buildRequestBody(request);
@@ -60,7 +60,7 @@ public class RestRequestReceiver<I extends ResourceId, R extends RestResourceBas
       if (simulatedMethod != null && !simulatedMethod.equals("")) {
         method = HttpMethod.getMethod(simulatedMethod);
       }
-      return new RestRequest<I, R>(method, requestParams, resourceId, requestBody, spec.getResourceType());
+      return new RestRequestBase<I, R>(method, requestParams, resourceId, requestBody, spec.getResourceType());
     } catch (IOException e) {
       throw new WebServiceSystemException(e);
     } catch (JsonParseException e) {

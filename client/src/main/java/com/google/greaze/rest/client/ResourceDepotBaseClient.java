@@ -23,7 +23,7 @@ import com.google.greaze.definition.HttpMethod;
 import com.google.greaze.definition.rest.ResourceId;
 import com.google.greaze.definition.rest.ResourceDepotBase;
 import com.google.greaze.definition.rest.RestCallSpec;
-import com.google.greaze.definition.rest.RestRequest;
+import com.google.greaze.definition.rest.RestRequestBase;
 import com.google.greaze.definition.rest.RestResourceBase;
 import com.google.greaze.definition.rest.RestResponse;
 import com.google.gson.Gson;
@@ -66,8 +66,8 @@ public class ResourceDepotBaseClient<I extends ResourceId, R extends RestResourc
   public R get(I resourceId) {
     HeaderMap requestHeaders =
       new HeaderMap.Builder(callSpec.getRequestSpec().getHeadersSpec()).build();
-    RestRequest<I, R> request =
-      new RestRequest<I, R>(HttpMethod.GET, requestHeaders, resourceId, null, resourceType);
+    RestRequestBase<I, R> request =
+      new RestRequestBase<I, R>(HttpMethod.GET, requestHeaders, resourceId, null, resourceType);
     RestResponse<I, R> response = stub.getResponse(callSpec, request, gson);
     return response.getBody();
   }
@@ -76,7 +76,7 @@ public class ResourceDepotBaseClient<I extends ResourceId, R extends RestResourc
   public R post(R resource) {
     HeaderMap requestHeaders =
       new HeaderMap.Builder(callSpec.getRequestSpec().getHeadersSpec()).build();
-    RestRequest<I, R> request = new RestRequest<I, R>(HttpMethod.POST, requestHeaders,
+    RestRequestBase<I, R> request = new RestRequestBase<I, R>(HttpMethod.POST, requestHeaders,
         resource.getId(), resource, resourceType);
     RestResponse<I, R> response = stub.getResponse(callSpec, request, gson);
     return response.getBody();
@@ -86,7 +86,7 @@ public class ResourceDepotBaseClient<I extends ResourceId, R extends RestResourc
   public R put(R resource) {
     HeaderMap requestHeaders =
       new HeaderMap.Builder(callSpec.getRequestSpec().getHeadersSpec()).build();
-    RestRequest<I, R> request = new RestRequest<I, R>(HttpMethod.PUT, requestHeaders,
+    RestRequestBase<I, R> request = new RestRequestBase<I, R>(HttpMethod.PUT, requestHeaders,
         resource.getId(), resource, resourceType);
     RestResponse<I, R> response = stub.getResponse(callSpec, request, gson);
     return response.getBody();
@@ -96,8 +96,8 @@ public class ResourceDepotBaseClient<I extends ResourceId, R extends RestResourc
   public void delete(I resourceId) {
     HeaderMap requestHeaders =
       new HeaderMap.Builder(callSpec.getRequestSpec().getHeadersSpec()).build();
-    RestRequest<I, R> request =
-      new RestRequest<I, R>(HttpMethod.DELETE, requestHeaders, resourceId, null, resourceType);
+    RestRequestBase<I, R> request =
+      new RestRequestBase<I, R>(HttpMethod.DELETE, requestHeaders, resourceId, null, resourceType);
     stub.getResponse(callSpec, request, gson);
   }
 }

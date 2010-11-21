@@ -18,7 +18,7 @@ package com.google.greaze.rest.client;
 import com.google.greaze.definition.WebServiceSystemException;
 import com.google.greaze.definition.rest.ResourceId;
 import com.google.greaze.definition.rest.RestCallSpec;
-import com.google.greaze.definition.rest.RestRequest;
+import com.google.greaze.definition.rest.RestRequestBase;
 import com.google.greaze.definition.rest.RestResourceBase;
 import com.google.greaze.definition.rest.RestResponse;
 import com.google.greaze.webservice.client.ServerConfig;
@@ -71,13 +71,13 @@ public class RestClientStub {
   }
   
   public <I extends ResourceId, R extends RestResourceBase<I, R>> RestResponse<I, R> getResponse(
-      RestCallSpec callSpec, RestRequest<I, R> request) {
+      RestCallSpec callSpec, RestRequestBase<I, R> request) {
     Gson gson = new GsonBuilder().setVersion(callSpec.getVersion()).create();
     return getResponse(callSpec, request, gson);
   }
 
   public <I extends ResourceId, R extends RestResourceBase<I, R>> RestResponse<I, R> getResponse(
-      RestCallSpec callSpec, RestRequest<I, R> request, Gson gson) {
+      RestCallSpec callSpec, RestRequestBase<I, R> request, Gson gson) {
     HttpURLConnection conn = null;
     try {
       URL webServiceUrl = getWebServiceUrl(callSpec, request.getId());
@@ -100,7 +100,7 @@ public class RestClientStub {
    * want to use HTTP pipelining.
    */
   public <I extends ResourceId, R extends RestResourceBase<I, R>> RestResponse<I, R> getResponse(
-      RestCallSpec callSpec, RestRequest<I, R> request, Gson gson,
+      RestCallSpec callSpec, RestRequestBase<I, R> request, Gson gson,
       HttpURLConnection conn) {
     try {
       if (logger != null) {

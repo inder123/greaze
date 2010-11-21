@@ -28,7 +28,7 @@ import com.google.greaze.definition.HeaderMapSpec;
 import com.google.greaze.definition.HttpMethod;
 import com.google.greaze.definition.WebServiceSystemException;
 import com.google.greaze.definition.rest.ResourceId;
-import com.google.greaze.definition.rest.RestRequest;
+import com.google.greaze.definition.rest.RestRequestBase;
 import com.google.greaze.definition.rest.RestResourceBase;
 import com.google.gson.Gson;
 
@@ -56,7 +56,7 @@ public final class RestRequestSender {
   }
   
   public <I extends ResourceId, R extends RestResourceBase<I, R>> void send(
-      HttpURLConnection conn, RestRequest<I, R> request) {    
+      HttpURLConnection conn, RestRequestBase<I, R> request) {    
     try {
       HttpMethod method = request.getHttpMethod();
       if (SIMULATE_PUT_WITH_POST && method == HttpMethod.PUT) {

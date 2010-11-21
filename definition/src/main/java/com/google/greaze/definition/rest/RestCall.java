@@ -24,10 +24,10 @@ package com.google.greaze.definition.rest;
 public final class RestCall<I extends ResourceId, R extends RestResourceBase<I, R>> {
   
   private final RestCallSpec callSpec;
-  private final RestRequest<I, R> request;
+  private final RestRequestBase<I, R> request;
   private final RestResponse<I, R> response;
   
-  public RestCall(RestCallSpec callSpec, RestRequest<I, R> request, RestResponse<I, R> response) {
+  public RestCall(RestCallSpec callSpec, RestRequestBase<I, R> request, RestResponse<I, R> response) {
     this.callSpec = callSpec;
     this.request = request;
     this.response = response;
@@ -37,7 +37,7 @@ public final class RestCall<I extends ResourceId, R extends RestResourceBase<I, 
     return callSpec;
   }
   
-  public RestRequest<I, R> getRequest() {
+  public RestRequestBase<I, R> getRequest() {
     return request;
   }
 

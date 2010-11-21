@@ -15,57 +15,21 @@
  */
 package com.google.greaze.definition.rest;
 
-import com.google.greaze.definition.ContentBodyType;
 import com.google.greaze.definition.HeaderMap;
-import com.google.greaze.definition.HeaderMapSpec;
 import com.google.greaze.definition.HttpMethod;
-import com.google.greaze.definition.webservice.RequestBody;
-import com.google.greaze.definition.webservice.RequestBodySpec;
-import com.google.greaze.definition.webservice.WebServiceRequest;
 
 import java.lang.reflect.Type;
 
 /**
- * The data associated with a Web service request. This includes HTTP request header parameters 
- * (form and URL parameters), and request body. 
+ * The data associated with a Web service request. This includes HTTP request
+ * header parameters (form and URL parameters), and request body. 
  * 
- * @author inder
+ * @author Inderjeet Singh
  */
-public class RestRequest<I extends ResourceId, R extends RestResourceBase<I, R>> extends WebServiceRequest {
-  private final I id;
-  private final R resource;
-  
+public final class RestRequest<R extends RestResource<R>> extends RestRequestBase<Id<R>, R> {
+
   public RestRequest(HttpMethod method, HeaderMap requestHeaders,
-      I resourceId, R requestBody, Type resourceType) {
-    super(method, requestHeaders, createUrlParams(),
-      createBody(requestBody, resourceType),
-      new RestRequestSpec(requestHeaders.getSpec(), resourceType));
-    this.id = resourceId;
-    this.resource = requestBody;
-  }
-
-  private static HeaderMap createUrlParams() {
-    HeaderMapSpec spec = new HeaderMapSpec.Builder().build();
-    return new HeaderMap.Builder(spec).build();
-  }
-
-  private static<R> RequestBody createBody(R resource, Type resourceType) {
-    RequestBodySpec spec = new RequestBodySpec(ContentBodyType.SIMPLE, null, resourceType);
-    return new RequestBody.Builder(spec)
-        .setSimpleBody(resource)
-        .build();
-  }
-
-  @Override
-  public RestRequestSpec getSpec() {
-    return (RestRequestSpec)spec;
-  }
-
-  public I getId() {
-    return id;
-  }
-
-  public R getResource() {
-    return resource;
+      Id<R> resourceId, R requestBody, Type resourceType) {
+    super(method, requestHeaders, resourceId, requestBody, resourceType);
   }
 }

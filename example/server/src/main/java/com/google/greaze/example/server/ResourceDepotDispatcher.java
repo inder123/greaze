@@ -23,7 +23,7 @@ import com.google.greaze.definition.rest.ResourceIdFactory;
 import com.google.greaze.definition.rest.MetaDataBase;
 import com.google.greaze.definition.rest.ResourceMap;
 import com.google.greaze.definition.rest.RestCallSpec;
-import com.google.greaze.definition.rest.RestRequest;
+import com.google.greaze.definition.rest.RestRequestBase;
 import com.google.greaze.definition.rest.RestResponse;
 import com.google.greaze.definition.rest.Id;
 import com.google.greaze.example.definition.model.Cart;
@@ -82,7 +82,7 @@ public final class ResourceDepotDispatcher {
   }
 
   @SuppressWarnings({"rawtypes", "unchecked"})
-  public RestRequest getRestRequest(Gson gson, RestCallSpec callSpec, CallPath callPath,
+  public RestRequestBase getRestRequest(Gson gson, RestCallSpec callSpec, CallPath callPath,
       HttpServletRequest request, ResourceIdFactory<Id<?>> idFactory) {
     RestRequestReceiver requestReceiver = new RestRequestReceiver(gson, callSpec.getRequestSpec());
     return requestReceiver.receive(request, idFactory.createId(callPath.getResourceId()));
@@ -92,7 +92,7 @@ public final class ResourceDepotDispatcher {
   public void service(HttpServletRequest req, HttpServletResponse res, CallPath callPath) {
     RestCallSpec callSpec = resourceMap.get(callPath).createCopy(callPath);
     ResourceIdFactory<Id<?>> idFactory = getIDFactory(callSpec);
-    RestRequest<?, ?> restRequest = getRestRequest(gson, callSpec, callPath, req, idFactory);
+    RestRequestBase<?, ?> restRequest = getRestRequest(gson, callSpec, callPath, req, idFactory);
     RestResponse.Builder response = new RestResponse.Builder(callSpec.getResponseSpec());
     RestResponseBuilder responseBuilder = responseBuilders.get(callSpec.getResourceType());
     responseBuilder.buildResponse(restRequest, response);
