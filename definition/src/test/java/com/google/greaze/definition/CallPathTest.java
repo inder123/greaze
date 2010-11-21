@@ -18,7 +18,7 @@ package com.google.greaze.definition;
 import junit.framework.TestCase;
 
 import com.google.greaze.definition.CallPath;
-import com.google.greaze.definition.rest.ID;
+import com.google.greaze.definition.rest.ResourceId;
 
 /**
  * Unit test for {@link CallPath}
@@ -31,14 +31,14 @@ public class CallPathTest extends TestCase {
     CallPath path = new CallPath("/1.0/rest/service1");
     assertEquals("/rest/service1", path.get());
     assertEquals(1D, path.getVersion());
-    assertEquals(ID.INVALID_ID, path.getResourceId());
+    assertEquals(ResourceId.INVALID_ID, path.getResourceId());
   }
 
   public void testVersionNotPresent() {
     CallPath path = new CallPath("/rest/service1");
     assertEquals("/rest/service1", path.get());
     assertEquals(CallPath.IGNORE_VERSION, path.getVersion());
-    assertEquals(ID.INVALID_ID, path.getResourceId());
+    assertEquals(ResourceId.INVALID_ID, path.getResourceId());
   }
   
   public void testResourceIdPresent() {
@@ -63,21 +63,21 @@ public class CallPathTest extends TestCase {
   public void testNullPath() {
     CallPath path = new CallPath(null);
     assertEquals(CallPath.IGNORE_VERSION, path.getVersion());
-    assertEquals(ID.INVALID_ID, path.getResourceId());
+    assertEquals(ResourceId.INVALID_ID, path.getResourceId());
     assertNull(path.get());
   }
 
   public void testEmptyPath() {
     CallPath path = new CallPath("");
     assertEquals(CallPath.IGNORE_VERSION, path.getVersion());
-    assertEquals(ID.INVALID_ID, path.getResourceId());
+    assertEquals(ResourceId.INVALID_ID, path.getResourceId());
     assertEquals("", path.get());
   }
 
   public void testWhiteSpacePath() {
     CallPath path = new CallPath("\r\n");
     assertEquals(CallPath.IGNORE_VERSION, path.getVersion());
-    assertEquals(ID.INVALID_ID, path.getResourceId());
+    assertEquals(ResourceId.INVALID_ID, path.getResourceId());
     assertEquals("\r\n", path.get());
   }
 }

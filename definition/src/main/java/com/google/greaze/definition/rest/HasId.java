@@ -22,7 +22,7 @@ package com.google.greaze.definition.rest;
  *
  * @param <I> Id type
  */
-public interface HasId<I extends ID> {
+public interface HasId<I extends ResourceId> {
   public I getId();
   public void setId(I id);
   public boolean hasId();

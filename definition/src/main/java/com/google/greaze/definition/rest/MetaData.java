@@ -41,12 +41,12 @@ import com.google.gson.reflect.TypeToken;
  *
  * @param <R> The resource
  */
-public class MetaData<I extends ID, R extends RestResource<I, R>> {
+public class MetaData<I extends ResourceId, R extends RestResource<I, R>> {
 
   private final Map<String, String> map;
   private final transient Map<Object, Object> mapTransient;
 
-  public static <II extends ID, RS extends RestResource<II, RS>> MetaData<II, RS> create() {
+  public static <II extends ResourceId, RS extends RestResource<II, RS>> MetaData<II, RS> create() {
     return new MetaData<II, RS>();
   }
 

@@ -26,13 +26,13 @@ import com.google.greaze.definition.TypedKey;
  * 
  * @author inder
  */
-public final class RestResponse<I extends ID, R extends RestResource<I, R>> {
+public final class RestResponse<I extends ResourceId, R extends RestResource<I, R>> {
   
   private final HeaderMap headers;
   private final R body;
   private final RestResponseSpec spec;
   
-  public static class Builder<II extends ID, RS extends RestResource<II, RS>> {
+  public static class Builder<II extends ResourceId, RS extends RestResource<II, RS>> {
     private final HeaderMap.Builder headers;
     private RS body;
     private final RestResponseSpec spec;

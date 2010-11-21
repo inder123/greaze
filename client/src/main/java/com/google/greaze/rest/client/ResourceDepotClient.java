@@ -20,7 +20,7 @@ import java.lang.reflect.Type;
 import com.google.greaze.definition.CallPath;
 import com.google.greaze.definition.HeaderMap;
 import com.google.greaze.definition.HttpMethod;
-import com.google.greaze.definition.rest.ID;
+import com.google.greaze.definition.rest.ResourceId;
 import com.google.greaze.definition.rest.ResourceDepot;
 import com.google.greaze.definition.rest.RestCallSpec;
 import com.google.greaze.definition.rest.RestRequest;
@@ -33,7 +33,7 @@ import com.google.gson.Gson;
  *
  * @author Inderjeet Singh
  */
-public class ResourceDepotClient<I extends ID, R extends RestResource<I, R>>
+public class ResourceDepotClient<I extends ResourceId, R extends RestResource<I, R>>
     implements ResourceDepot<I, R> {
   private final RestClientStub stub;
   private final RestCallSpec callSpec;

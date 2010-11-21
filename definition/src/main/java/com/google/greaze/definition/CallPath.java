@@ -16,7 +16,7 @@
 package com.google.greaze.definition;
 
 import com.google.greaze.definition.internal.utils.GreazePair;
-import com.google.greaze.definition.rest.ID;
+import com.google.greaze.definition.rest.ResourceId;
 
 /**
  * Encapsulation of a Web service path that is sent by the client.
@@ -35,7 +35,7 @@ public final class CallPath {
     if (path == null || path.trim().equals("")) {
       this.path = path;
       version = IGNORE_VERSION;
-      resourceId = ID.INVALID_ID;
+      resourceId = ResourceId.INVALID_ID;
     } else {
       GreazePair<Double, String> path2 = extractVersion(path);
       this.version = path2.first;
@@ -65,7 +65,7 @@ public final class CallPath {
   }
 
   private static GreazePair<Long, String> extractId(String path) {
-    GreazePair<Long, String> originalPath = GreazePair.create(ID.INVALID_ID, path);
+    GreazePair<Long, String> originalPath = GreazePair.create(ResourceId.INVALID_ID, path);
     int end = path.endsWith("/") ? path.length() - 1 : path.length();
     int begin = path.substring(0, end-1).lastIndexOf('/') + 1;
     if (begin < 0 || end < 0 || begin >= end) {

@@ -16,12 +16,12 @@
 package com.google.greaze.rest.server;
 
 import com.google.greaze.definition.HttpMethod;
-import com.google.greaze.definition.rest.ID;
+import com.google.greaze.definition.rest.ResourceId;
 import com.google.greaze.definition.rest.RestRequest;
 import com.google.greaze.definition.rest.RestResource;
 import com.google.greaze.definition.rest.RestResponse;
 
-public class RestResponseBuilder<I extends ID, R extends RestResource<I, R>> {
+public class RestResponseBuilder<I extends ResourceId, R extends RestResource<I, R>> {
   protected final Repository<I, R> resources;
 
   public RestResponseBuilder(Repository<I, R> resources) {

@@ -21,7 +21,7 @@ package com.google.greaze.definition.rest;
  * 
  * @author inder
  */
-public final class RestCall<I extends ID, R extends RestResource<I, R>> {
+public final class RestCall<I extends ResourceId, R extends RestResource<I, R>> {
   
   private final RestCallSpec callSpec;
   private final RestRequest<I, R> request;

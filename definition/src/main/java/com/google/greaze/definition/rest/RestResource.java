@@ -22,5 +22,5 @@ package com.google.greaze.definition.rest;
  *
  * @param <R> the rest resource type
  */
-public interface RestResource<I extends ID, R> extends HasId<I> {
+public interface RestResource<I extends ResourceId, R> extends HasId<I> {
 }

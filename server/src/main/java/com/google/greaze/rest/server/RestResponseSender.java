@@ -25,7 +25,7 @@ import javax.servlet.http.HttpServletResponse;
 import com.google.greaze.definition.ContentBodySpec;
 import com.google.greaze.definition.HeaderMap;
 import com.google.greaze.definition.HeaderMapSpec;
-import com.google.greaze.definition.rest.ID;
+import com.google.greaze.definition.rest.ResourceId;
 import com.google.greaze.definition.rest.RestResource;
 import com.google.greaze.definition.rest.RestResponse;
 import com.google.gson.Gson;
@@ -35,7 +35,7 @@ import com.google.gson.Gson;
  * 
  * @author inder
  */
-public final class RestResponseSender<I extends ID, R extends RestResource<I, R>> {
+public final class RestResponseSender<I extends ResourceId, R extends RestResource<I, R>> {
   private static final Logger logger = Logger.getLogger(RestResponseSender.class.getCanonicalName());
 
   private Gson gson;

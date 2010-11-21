@@ -19,7 +19,7 @@ import java.lang.reflect.Type;
 
 import com.google.greaze.definition.TypedKey;
 import com.google.greaze.definition.UntypedKey;
-import com.google.greaze.definition.rest.ID;
+import com.google.greaze.definition.rest.ResourceId;
 import com.google.greaze.definition.rest.RestResource;
 
 /**
@@ -30,7 +30,7 @@ import com.google.greaze.definition.rest.RestResource;
  * @param <I> ID type of the REST resource
  * @param <R> The type of the REST resource
  */
-public class TypedKeysQuery<I extends ID, R extends RestResource<I, R>> {
+public class TypedKeysQuery<I extends ResourceId, R extends RestResource<I, R>> {
 
   /**
    * This key is used to specify the URL parameter for the queryName

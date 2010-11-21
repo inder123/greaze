@@ -34,7 +34,7 @@ import com.google.gson.JsonSerializer;
  *
  * @param <R> type variable for the rest resource
  */
-public final class ValueBasedId<R> implements ID {
+public final class ValueBasedId<R> implements ResourceId {
   private final long value;
   private final Type typeOfId;
 

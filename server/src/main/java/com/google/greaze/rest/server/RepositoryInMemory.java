@@ -16,7 +16,7 @@
 package com.google.greaze.rest.server;
 
 import com.google.common.base.Preconditions;
-import com.google.greaze.definition.rest.ID;
+import com.google.greaze.definition.rest.ResourceId;
 import com.google.greaze.definition.rest.MetaData;
 import com.google.greaze.definition.rest.RestResource;
 
@@ -27,7 +27,7 @@ import com.google.greaze.definition.rest.RestResource;
  *
  * @param <R> Type variable for the resource
  */
-public class RepositoryInMemory<I extends ID, R extends RestResource<I, R>> implements Repository<I, R> {
+public class RepositoryInMemory<I extends ResourceId, R extends RestResource<I, R>> implements Repository<I, R> {
   private static final String METADATA_KEY_IS_FRESHLY_ASSIGNED_ID = "isFreshlyAssignedId";
 
   private final IdMap<I, R> resources;

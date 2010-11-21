@@ -24,7 +24,7 @@ import java.lang.reflect.Type;
  *
  * @param <I>
  */
-public class IDFactory<I extends ID> {
+public class IDFactory<I extends ResourceId> {
   private final Class<? super I> classOfI;
   private final Type typeOfId;
 

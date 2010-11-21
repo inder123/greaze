@@ -23,7 +23,7 @@ import com.google.greaze.definition.ContentBodyType;
 import com.google.greaze.definition.HeaderMap;
 import com.google.greaze.definition.HttpMethod;
 import com.google.greaze.definition.UntypedKey;
-import com.google.greaze.definition.rest.ID;
+import com.google.greaze.definition.rest.ResourceId;
 import com.google.greaze.definition.rest.RestResource;
 import com.google.greaze.definition.rest.query.ResourceQuery;
 import com.google.greaze.definition.rest.query.ResourceQueryParams;
@@ -48,7 +48,7 @@ import com.google.gson.GsonBuilder;
  * @param <Q> Query parameters
  */
 public class ResourceQueryClient<
-    I extends ID, R extends RestResource<I, R>, Q extends ResourceQueryParams>
+    I extends ResourceId, R extends RestResource<I, R>, Q extends ResourceQueryParams>
         implements ResourceQuery<I, R, Q> {
 
   private final WebServiceClient stub;

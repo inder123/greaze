@@ -22,7 +22,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import com.google.greaze.definition.rest.HasId;
-import com.google.greaze.definition.rest.ID;
+import com.google.greaze.definition.rest.ResourceId;
 import com.google.greaze.definition.rest.IDFactory;
 
 /**
@@ -32,7 +32,7 @@ import com.google.greaze.definition.rest.IDFactory;
  *
  * @param <T> the type of the objects being kept in the map
  */
-public class IdMap<I extends ID, T extends HasId<I>> {
+public class IdMap<I extends ResourceId, T extends HasId<I>> {
   public static final Logger LOG = Logger.getLogger(IdMap.class.getName());
   public static final long ID_START_VALUE = 1L;
   protected final Map<I, T> map;
@@ -73,7 +73,7 @@ public class IdMap<I extends ID, T extends HasId<I>> {
     return idFactory.createId(id);
   }
 
-  public static <II extends ID, S extends HasId<II>> IdMap<II, S> create(Class<? super II> classOfII, Type typeOfId) {
+  public static <II extends ResourceId, S extends HasId<II>> IdMap<II, S> create(Class<? super II> classOfII, Type typeOfId) {
     return new IdMap<II, S>(classOfII, typeOfId);
   }
 }

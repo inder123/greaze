@@ -15,7 +15,7 @@
  */
 package com.google.greaze.definition.rest;
 
-public interface ResourceDepot<I extends ID, R extends RestResource<I, R>> {
+public interface ResourceDepot<I extends ResourceId, R extends RestResource<I, R>> {
 
   public R get(I resourceId);
 

@@ -19,7 +19,7 @@ import java.lang.reflect.Type;
 import java.util.HashMap;
 import java.util.Map;
 
-import com.google.greaze.definition.rest.ID;
+import com.google.greaze.definition.rest.ResourceId;
 import com.google.greaze.definition.rest.RestCallSpec;
 import com.google.greaze.definition.rest.RestResource;
 
@@ -34,7 +34,7 @@ public final class ResponseBuilderMap {
     private final Map<Type, RestResponseBuilder<?, ?>> map =
       new HashMap<Type, RestResponseBuilder<?, ?>>();
     
-    public <I extends ID, R extends RestResource<I, R>> Builder set(
+    public <I extends ResourceId, R extends RestResource<I, R>> Builder set(
         Type resourceType, RestResponseBuilder<I, R> responseBuilder) {
       map.put(resourceType, responseBuilder);
       return this;

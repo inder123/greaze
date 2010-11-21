@@ -16,7 +16,7 @@
 package com.google.greaze.rest.server;
 
 import com.google.greaze.definition.rest.HasId;
-import com.google.greaze.definition.rest.ID;
+import com.google.greaze.definition.rest.ResourceId;
 
 /**
  * An interface for a repository of rest resources. Meant for abstracting the server-side
@@ -26,7 +26,7 @@ import com.google.greaze.definition.rest.ID;
  *
  * @param <R> the type of rest resource
  */
-public interface Repository<I extends ID, R extends HasId<I>> {
+public interface Repository<I extends ResourceId, R extends HasId<I>> {
   public R get(I resourceId);
 
   /**

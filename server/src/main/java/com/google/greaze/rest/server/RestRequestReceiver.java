@@ -28,7 +28,7 @@ import com.google.greaze.definition.HeaderMap;
 import com.google.greaze.definition.HeaderMapSpec;
 import com.google.greaze.definition.HttpMethod;
 import com.google.greaze.definition.WebServiceSystemException;
-import com.google.greaze.definition.rest.ID;
+import com.google.greaze.definition.rest.ResourceId;
 import com.google.greaze.definition.rest.RestRequest;
 import com.google.greaze.definition.rest.RestRequestSpec;
 import com.google.greaze.definition.rest.RestResource;
@@ -40,7 +40,7 @@ import com.google.gson.JsonParseException;
  * 
  * @author inder
  */
-public class RestRequestReceiver<I extends ID, R extends RestResource<I, R>> {
+public class RestRequestReceiver<I extends ResourceId, R extends RestResource<I, R>> {
 
   private final Gson gson;
   private final RestRequestSpec spec;
