@@ -24,18 +24,18 @@ import com.google.greaze.definition.rest.RestCallSpec;
 import com.google.greaze.definition.rest.RestResourceBase;
 
 /**
- * A map of {@link RestCallSpec}, {@link RestResponseBuilder} to help figure out which
- * {@link RestResponseBuilder} to use for a {@link RestCallSpec}.
+ * A map of {@link RestCallSpec}, {@link RestResponseBaseBuilder} to help figure out which
+ * {@link RestResponseBaseBuilder} to use for a {@link RestCallSpec}.
  *
  * @author Inderjeet Singh
  */
 public final class ResponseBuilderMap {
   public static final class Builder {
-    private final Map<Type, RestResponseBuilder<?, ?>> map =
-      new HashMap<Type, RestResponseBuilder<?, ?>>();
+    private final Map<Type, RestResponseBaseBuilder<?, ?>> map =
+      new HashMap<Type, RestResponseBaseBuilder<?, ?>>();
     
     public <I extends ResourceId, R extends RestResourceBase<I, R>> Builder set(
-        Type resourceType, RestResponseBuilder<I, R> responseBuilder) {
+        Type resourceType, RestResponseBaseBuilder<I, R> responseBuilder) {
       map.put(resourceType, responseBuilder);
       return this;
     }
@@ -45,13 +45,13 @@ public final class ResponseBuilderMap {
     }
   }
 
-  private final Map<Type, RestResponseBuilder<?, ?>> map;
+  private final Map<Type, RestResponseBaseBuilder<?, ?>> map;
 
-  public ResponseBuilderMap(Map<Type, RestResponseBuilder<?, ?>> map) {
+  public ResponseBuilderMap(Map<Type, RestResponseBaseBuilder<?, ?>> map) {
     this.map = map;
   }
   
-  public RestResponseBuilder<?, ?> get(Type resourceType) {
+  public RestResponseBaseBuilder<?, ?> get(Type resourceType) {
     return map.get(resourceType);
   }
 }

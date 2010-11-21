@@ -15,54 +15,20 @@
  */
 package com.google.greaze.rest.server;
 
-import com.google.greaze.definition.HttpMethod;
-import com.google.greaze.definition.rest.ResourceId;
-import com.google.greaze.definition.rest.RestRequestBase;
-import com.google.greaze.definition.rest.RestResourceBase;
-import com.google.greaze.definition.rest.RestResponse;
+import com.google.greaze.definition.rest.RestResource;
+import com.google.greaze.definition.rest.Id;
 
-public class RestResponseBuilder<I extends ResourceId, R extends RestResourceBase<I, R>> {
-  protected final RepositoryBase<I, R> resources;
+/**
+ * A class that builds response for a REST resource.
+ *
+ * @author Inderjeet Singh
+ *
+ * @param <R> The type of the rest resource
+ */
+public class RestResponseBuilder<R extends RestResource<R>>
+    extends RestResponseBaseBuilder<Id<R>, R>{
 
-  public RestResponseBuilder(RepositoryBase<I, R> resources) {
-    this.resources = resources;
-  }
-
-  public void buildResponse(RestRequestBase<I, R> request, RestResponse.Builder<I, R> responseBuilder) {
-    HttpMethod method = request.getMethod();
-    R responseBody = null;
-    switch (method) {
-      case GET:
-        responseBody = get(request.getId());
-        break;
-      case POST:
-        responseBody = post(request.getResource());
-        break;
-      case DELETE:
-        delete(request.getId());
-        break;
-      case PUT:
-        responseBody = put(request.getResource());
-        break;
-      default:
-        throw new IllegalStateException("Unexpected method: " + method);
-    }
-    responseBuilder.setBody(responseBody);
-  }
-
-  public R get(I resourceId) {
-    return resources.get(resourceId);
-  }
-
-  public R post(R resource) {
-    return resources.put(resource);
-  }
-
-  public void delete(I resourceId) {
-    resources.delete(resourceId);
-  }
-
-  public R put(R resource) {
-    return resources.put(resource);
+  public RestResponseBuilder(Repository<R> resources) {
+    super(resources);
   }
 }

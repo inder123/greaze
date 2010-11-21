@@ -33,7 +33,7 @@ import com.google.greaze.rest.server.RepositoryBase;
 import com.google.greaze.rest.server.RepositoryInMemoryBase;
 import com.google.greaze.rest.server.ResponseBuilderMap;
 import com.google.greaze.rest.server.RestRequestBaseReceiver;
-import com.google.greaze.rest.server.RestResponseBuilder;
+import com.google.greaze.rest.server.RestResponseBaseBuilder;
 import com.google.greaze.rest.server.RestResponseSender;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
@@ -72,8 +72,8 @@ public final class ResourceDepotDispatcher {
     RepositoryBase<Id<Order>, Order> orders =
       new RepositoryInMemoryBase<Id<Order>, Order>(Id.class, Order.class);
     responseBuilders = new ResponseBuilderMap.Builder()
-        .set(cartSpec.getResourceType(), new RestResponseBuilder<Id<Cart>, Cart>(carts))
-        .set(orderSpec.getResourceType(), new RestResponseBuilder<Id<Order>, Order>(orders))
+        .set(cartSpec.getResourceType(), new RestResponseBaseBuilder<Id<Cart>, Cart>(carts))
+        .set(orderSpec.getResourceType(), new RestResponseBaseBuilder<Id<Order>, Order>(orders))
         .build();
   }
 
@@ -94,7 +94,7 @@ public final class ResourceDepotDispatcher {
     ResourceIdFactory<Id<?>> idFactory = getIDFactory(callSpec);
     RestRequestBase<?, ?> restRequest = getRestRequest(gson, callSpec, callPath, req, idFactory);
     RestResponse.Builder response = new RestResponse.Builder(callSpec.getResponseSpec());
-    RestResponseBuilder responseBuilder = responseBuilders.get(callSpec.getResourceType());
+    RestResponseBaseBuilder responseBuilder = responseBuilders.get(callSpec.getResourceType());
     responseBuilder.buildResponse(restRequest, response);
     RestResponse restResponse = response.build();
     RestResponseSender responseSender = new RestResponseSender(gson);
