@@ -31,7 +31,7 @@ import java.lang.reflect.Type;
  * 
  * @author inder
  */
-public class RestRequest<I extends ResourceId, R extends RestResource<I, R>> extends WebServiceRequest {
+public class RestRequest<I extends ResourceId, R extends RestResourceBase<I, R>> extends WebServiceRequest {
   private final I id;
   private final R resource;
   

@@ -29,10 +29,10 @@ import java.util.Map;
  *
  * @param <R> The resource
  */
-public final class MetaDataValueBased<R extends RestResourceValueBased<R>>
+public final class MetaDataValueBased<R extends RestResource<R>>
     extends MetaData<ValueBasedId<R>, R> {
 
-  public static <RS extends RestResourceValueBased<RS>> MetaDataValueBased<RS> create() {
+  public static <RS extends RestResource<RS>> MetaDataValueBased<RS> create() {
     return new MetaDataValueBased<RS>();
   }
 

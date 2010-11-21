@@ -19,7 +19,7 @@ import com.google.greaze.definition.WebServiceSystemException;
 import com.google.greaze.definition.rest.ResourceId;
 import com.google.greaze.definition.rest.RestCallSpec;
 import com.google.greaze.definition.rest.RestRequest;
-import com.google.greaze.definition.rest.RestResource;
+import com.google.greaze.definition.rest.RestResourceBase;
 import com.google.greaze.definition.rest.RestResponse;
 import com.google.greaze.webservice.client.ServerConfig;
 import com.google.gson.Gson;
@@ -70,13 +70,13 @@ public class RestClientStub {
     }
   }
   
-  public <I extends ResourceId, R extends RestResource<I, R>> RestResponse<I, R> getResponse(
+  public <I extends ResourceId, R extends RestResourceBase<I, R>> RestResponse<I, R> getResponse(
       RestCallSpec callSpec, RestRequest<I, R> request) {
     Gson gson = new GsonBuilder().setVersion(callSpec.getVersion()).create();
     return getResponse(callSpec, request, gson);
   }
 
-  public <I extends ResourceId, R extends RestResource<I, R>> RestResponse<I, R> getResponse(
+  public <I extends ResourceId, R extends RestResourceBase<I, R>> RestResponse<I, R> getResponse(
       RestCallSpec callSpec, RestRequest<I, R> request, Gson gson) {
     HttpURLConnection conn = null;
     try {
@@ -99,7 +99,7 @@ public class RestClientStub {
    * Use this method if you want to mange the HTTP Connection yourself. This is useful when you
    * want to use HTTP pipelining.
    */
-  public <I extends ResourceId, R extends RestResource<I, R>> RestResponse<I, R> getResponse(
+  public <I extends ResourceId, R extends RestResourceBase<I, R>> RestResponse<I, R> getResponse(
       RestCallSpec callSpec, RestRequest<I, R> request, Gson gson,
       HttpURLConnection conn) {
     try {

@@ -21,7 +21,7 @@ import java.util.Map;
 
 import com.google.greaze.definition.rest.ResourceId;
 import com.google.greaze.definition.rest.RestCallSpec;
-import com.google.greaze.definition.rest.RestResource;
+import com.google.greaze.definition.rest.RestResourceBase;
 
 /**
  * A map of {@link RestCallSpec}, {@link RestResponseBuilder} to help figure out which
@@ -34,7 +34,7 @@ public final class ResponseBuilderMap {
     private final Map<Type, RestResponseBuilder<?, ?>> map =
       new HashMap<Type, RestResponseBuilder<?, ?>>();
     
-    public <I extends ResourceId, R extends RestResource<I, R>> Builder set(
+    public <I extends ResourceId, R extends RestResourceBase<I, R>> Builder set(
         Type resourceType, RestResponseBuilder<I, R> responseBuilder) {
       map.put(resourceType, responseBuilder);
       return this;

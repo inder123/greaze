@@ -29,7 +29,7 @@ import com.google.greaze.definition.HttpMethod;
 import com.google.greaze.definition.WebServiceSystemException;
 import com.google.greaze.definition.rest.ResourceId;
 import com.google.greaze.definition.rest.RestRequest;
-import com.google.greaze.definition.rest.RestResource;
+import com.google.greaze.definition.rest.RestResourceBase;
 import com.google.gson.Gson;
 
 /**
@@ -55,7 +55,7 @@ public final class RestRequestSender {
     this.logLevel = logLevel;
   }
   
-  public <I extends ResourceId, R extends RestResource<I, R>> void send(
+  public <I extends ResourceId, R extends RestResourceBase<I, R>> void send(
       HttpURLConnection conn, RestRequest<I, R> request) {    
     try {
       HttpMethod method = request.getHttpMethod();

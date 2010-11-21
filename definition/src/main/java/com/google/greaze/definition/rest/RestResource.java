@@ -16,11 +16,9 @@
 package com.google.greaze.definition.rest;
 
 /**
- * An interface implemented by an object that is intended to be a rest resource
+ * A REST resource that uses {@link ValueBasedId} as its Id class
  *
- * @author inder
- *
- * @param <R> the rest resource type
+ * @author Inderjeet Singh
  */
-public interface RestResource<I extends ResourceId, R> extends HasId<I> {
+public interface RestResource<R> extends RestResourceBase<ValueBasedId<R>, R>{
 }

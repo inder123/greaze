@@ -22,7 +22,7 @@ package com.google.greaze.definition.rest;
  *
  * @param <R> The intended resource
  */
-public class RestResourceImpl<R> implements RestResourceValueBased<R> {
+public class RestResourceImpl<R> implements RestResource<R> {
 
   protected ValueBasedId<R> id;
 

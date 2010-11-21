@@ -26,7 +26,7 @@ import java.lang.reflect.Type;
  * 
  * @author Inderjeet Singh
  */
-public final class RestRequestValueBased<R extends RestResourceValueBased<R>>
+public final class RestRequestValueBased<R extends RestResource<R>>
     extends RestRequest<ValueBasedId<R>, R> {
   public RestRequestValueBased(HttpMethod method, HeaderMap requestHeaders,
       ValueBasedId<R> resourceId, R requestBody, Type resourceType) {

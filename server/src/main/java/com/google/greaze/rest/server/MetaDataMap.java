@@ -23,7 +23,7 @@ import java.util.Map;
 import com.google.greaze.definition.TypedKey;
 import com.google.greaze.definition.rest.ResourceId;
 import com.google.greaze.definition.rest.MetaData;
-import com.google.greaze.definition.rest.RestResource;
+import com.google.greaze.definition.rest.RestResourceBase;
 
 /**
  * A map of resources to their MetaData. If you create a subclass of this class, you should
@@ -34,7 +34,7 @@ import com.google.greaze.definition.rest.RestResource;
  *
  * @param <R> the rest resource for which the metadata is being stored
  */
-public class MetaDataMap<I extends ResourceId, R extends RestResource<I, R>> {
+public class MetaDataMap<I extends ResourceId, R extends RestResourceBase<I, R>> {
   protected final Map<I, MetaData<I, R>> map;
 
   public MetaDataMap() {

@@ -15,7 +15,7 @@
  */
 package com.google.greaze.rest.server;
 
-import com.google.greaze.definition.rest.RestResourceValueBased;
+import com.google.greaze.definition.rest.RestResource;
 import com.google.greaze.definition.rest.ValueBasedId;
 
 /**
@@ -25,7 +25,7 @@ import com.google.greaze.definition.rest.ValueBasedId;
  *
  * @param <R> Type variable for the resource
  */
-public class RepositoryInMemoryValueBased<R extends RestResourceValueBased<R>>
+public class RepositoryInMemoryValueBased<R extends RestResource<R>>
     extends RepositoryInMemory<ValueBasedId<R>, R>
     implements RepositoryValueBased<R> {
 

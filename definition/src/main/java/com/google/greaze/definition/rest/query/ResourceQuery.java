@@ -19,7 +19,7 @@ import java.lang.reflect.Type;
 import java.util.List;
 
 import com.google.greaze.definition.rest.ResourceId;
-import com.google.greaze.definition.rest.RestResource;
+import com.google.greaze.definition.rest.RestResourceBase;
 
 /**
  * A query for a list of rest resources.
@@ -27,7 +27,7 @@ import com.google.greaze.definition.rest.RestResource;
  * @author Inderjeet Singh
  */
 public interface ResourceQuery<
-    I extends ResourceId, R extends RestResource<I, R>, Q extends ResourceQueryParams> {
+    I extends ResourceId, R extends RestResourceBase<I, R>, Q extends ResourceQueryParams> {
   /**
    * Returns a list of resources matching the query
    */

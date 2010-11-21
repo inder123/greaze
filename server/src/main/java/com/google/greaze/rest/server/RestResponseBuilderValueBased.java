@@ -15,7 +15,7 @@
  */
 package com.google.greaze.rest.server;
 
-import com.google.greaze.definition.rest.RestResourceValueBased;
+import com.google.greaze.definition.rest.RestResource;
 import com.google.greaze.definition.rest.ValueBasedId;
 
 /**
@@ -25,7 +25,7 @@ import com.google.greaze.definition.rest.ValueBasedId;
  *
  * @param <R> The type of the rest resource
  */
-public class RestResponseBuilderValueBased<R extends RestResourceValueBased<R>>
+public class RestResponseBuilderValueBased<R extends RestResource<R>>
     extends RestResponseBuilder<ValueBasedId<R>, R>{
   public RestResponseBuilderValueBased(RepositoryValueBased<R> resources) {
     super(resources);

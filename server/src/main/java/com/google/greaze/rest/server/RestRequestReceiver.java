@@ -31,7 +31,7 @@ import com.google.greaze.definition.WebServiceSystemException;
 import com.google.greaze.definition.rest.ResourceId;
 import com.google.greaze.definition.rest.RestRequest;
 import com.google.greaze.definition.rest.RestRequestSpec;
-import com.google.greaze.definition.rest.RestResource;
+import com.google.greaze.definition.rest.RestResourceBase;
 import com.google.gson.Gson;
 import com.google.gson.JsonParseException;
 
@@ -40,7 +40,7 @@ import com.google.gson.JsonParseException;
  * 
  * @author inder
  */
-public class RestRequestReceiver<I extends ResourceId, R extends RestResource<I, R>> {
+public class RestRequestReceiver<I extends ResourceId, R extends RestResourceBase<I, R>> {
 
   private final Gson gson;
   private final RestRequestSpec spec;

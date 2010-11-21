@@ -24,7 +24,7 @@ import com.google.greaze.definition.rest.ResourceId;
 import com.google.greaze.definition.rest.ResourceDepot;
 import com.google.greaze.definition.rest.RestCallSpec;
 import com.google.greaze.definition.rest.RestRequest;
-import com.google.greaze.definition.rest.RestResource;
+import com.google.greaze.definition.rest.RestResourceBase;
 import com.google.greaze.definition.rest.RestResponse;
 import com.google.gson.Gson;
 
@@ -33,7 +33,7 @@ import com.google.gson.Gson;
  *
  * @author Inderjeet Singh
  */
-public class ResourceDepotClient<I extends ResourceId, R extends RestResource<I, R>>
+public class ResourceDepotClient<I extends ResourceId, R extends RestResourceBase<I, R>>
     implements ResourceDepot<I, R> {
   private final RestClientStub stub;
   private final RestCallSpec callSpec;
