@@ -24,8 +24,8 @@ import java.lang.reflect.Type;
  *
  * @param <T>
  */
-public class ValueBasedIDFactory<T> extends IDFactory<Id<T>> {
-  public ValueBasedIDFactory(Type typeOfId) {
+public class IdFactory<T> extends ResourceIdFactory<Id<T>> {
+  public IdFactory(Type typeOfId) {
     super(Id.class, typeOfId);
   }
 }

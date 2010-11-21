@@ -24,11 +24,11 @@ import java.lang.reflect.Type;
  *
  * @param <I>
  */
-public class IDFactory<I extends ResourceId> {
+public class ResourceIdFactory<I extends ResourceId> {
   private final Class<? super I> classOfI;
   private final Type typeOfId;
 
-  public IDFactory(Class<? super I> classOfI, Type typeOfId) {
+  public ResourceIdFactory(Class<? super I> classOfI, Type typeOfId) {
     this.classOfI = classOfI;
     this.typeOfId = typeOfId;
   }

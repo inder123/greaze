@@ -19,7 +19,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import com.google.greaze.definition.CallPath;
-import com.google.greaze.definition.rest.IDFactory;
+import com.google.greaze.definition.rest.ResourceIdFactory;
 import com.google.greaze.definition.rest.MetaDataBase;
 import com.google.greaze.definition.rest.ResourceMap;
 import com.google.greaze.definition.rest.RestCallSpec;
@@ -77,13 +77,13 @@ public final class ResourceDepotDispatcher {
         .build();
   }
 
-  public IDFactory<Id<?>> getIDFactory(RestCallSpec callSpec) {
-    return new IDFactory<Id<?>>(Id.class, callSpec.getResourceType());
+  public ResourceIdFactory<Id<?>> getIDFactory(RestCallSpec callSpec) {
+    return new ResourceIdFactory<Id<?>>(Id.class, callSpec.getResourceType());
   }
 
   @SuppressWarnings({"rawtypes", "unchecked"})
   public RestRequest getRestRequest(Gson gson, RestCallSpec callSpec, CallPath callPath,
-      HttpServletRequest request, IDFactory<Id<?>> idFactory) {
+      HttpServletRequest request, ResourceIdFactory<Id<?>> idFactory) {
     RestRequestReceiver requestReceiver = new RestRequestReceiver(gson, callSpec.getRequestSpec());
     return requestReceiver.receive(request, idFactory.createId(callPath.getResourceId()));
   }
@@ -91,7 +91,7 @@ public final class ResourceDepotDispatcher {
   @SuppressWarnings({"rawtypes", "unchecked"})
   public void service(HttpServletRequest req, HttpServletResponse res, CallPath callPath) {
     RestCallSpec callSpec = resourceMap.get(callPath).createCopy(callPath);
-    IDFactory<Id<?>> idFactory = getIDFactory(callSpec);
+    ResourceIdFactory<Id<?>> idFactory = getIDFactory(callSpec);
     RestRequest<?, ?> restRequest = getRestRequest(gson, callSpec, callPath, req, idFactory);
     RestResponse.Builder response = new RestResponse.Builder(callSpec.getResponseSpec());
     RestResponseBuilder responseBuilder = responseBuilders.get(callSpec.getResourceType());

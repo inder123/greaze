@@ -23,7 +23,7 @@ import java.util.logging.Logger;
 
 import com.google.greaze.definition.rest.HasId;
 import com.google.greaze.definition.rest.ResourceId;
-import com.google.greaze.definition.rest.IDFactory;
+import com.google.greaze.definition.rest.ResourceIdFactory;
 
 /**
  * This class provides a type-safe map to access values associated with Ids
@@ -37,7 +37,7 @@ public class IdMapBase<I extends ResourceId, T extends HasId<I>> {
   public static final long ID_START_VALUE = 1L;
   protected final Map<I, T> map;
   private volatile long nextAvailableId;
-  private final IDFactory<I> idFactory;
+  private final ResourceIdFactory<I> idFactory;
 
   /**
    * Use create(Type) instead of constructor
@@ -45,7 +45,7 @@ public class IdMapBase<I extends ResourceId, T extends HasId<I>> {
   protected IdMapBase(Class<? super I> classOfI, Type typeOfId) {
     map = new ConcurrentHashMap<I, T>();
     nextAvailableId = ID_START_VALUE;
-    this.idFactory = new IDFactory<I>(classOfI, typeOfId);
+    this.idFactory = new ResourceIdFactory<I>(classOfI, typeOfId);
   }
 
   public T get(I id) {
