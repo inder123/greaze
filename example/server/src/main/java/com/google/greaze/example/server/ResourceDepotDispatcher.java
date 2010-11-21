@@ -30,7 +30,7 @@ import com.google.greaze.example.definition.model.Cart;
 import com.google.greaze.example.definition.model.Order;
 import com.google.greaze.example.service.definition.ServicePaths;
 import com.google.greaze.rest.server.RepositoryBase;
-import com.google.greaze.rest.server.RepositoryInMemory;
+import com.google.greaze.rest.server.RepositoryInMemoryBase;
 import com.google.greaze.rest.server.ResponseBuilderMap;
 import com.google.greaze.rest.server.RestRequestReceiver;
 import com.google.greaze.rest.server.RestResponseBuilder;
@@ -68,9 +68,9 @@ public final class ResourceDepotDispatcher {
       .registerTypeAdapter(MetaDataBase.class, new MetaDataBase.GsonTypeAdapter())
       .create();
     RepositoryBase<Id<Cart>, Cart> carts =
-      new RepositoryInMemory<Id<Cart>, Cart>(Id.class, Cart.class);
+      new RepositoryInMemoryBase<Id<Cart>, Cart>(Id.class, Cart.class);
     RepositoryBase<Id<Order>, Order> orders =
-      new RepositoryInMemory<Id<Order>, Order>(Id.class, Order.class);
+      new RepositoryInMemoryBase<Id<Order>, Order>(Id.class, Order.class);
     responseBuilders = new ResponseBuilderMap.Builder()
         .set(cartSpec.getResourceType(), new RestResponseBuilder<Id<Cart>, Cart>(carts))
         .set(orderSpec.getResourceType(), new RestResponseBuilder<Id<Order>, Order>(orders))

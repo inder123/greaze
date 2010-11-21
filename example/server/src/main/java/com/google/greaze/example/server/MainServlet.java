@@ -17,7 +17,7 @@ package com.google.greaze.example.server;
 
 import com.google.greaze.definition.CallPath;
 import com.google.greaze.example.definition.model.Order;
-import com.google.greaze.rest.server.RepositoryInMemoryValueBased;
+import com.google.greaze.rest.server.RepositoryInMemory;
 import com.google.greaze.rest.server.Repository;
 import com.google.greaze.server.dispatcher.RequestType;
 
@@ -39,7 +39,7 @@ public class MainServlet extends HttpServlet {
   public MainServlet() {
     this.resourceDispatcher = new ResourceDepotDispatcher();
     this.wsDispatcher = new WebServiceDispatcher();
-    this.orders = new RepositoryInMemoryValueBased<Order>(Order.class);
+    this.orders = new RepositoryInMemory<Order>(Order.class);
   }
 
   @SuppressWarnings("unchecked")
