@@ -15,6 +15,9 @@
  */
 package com.google.greaze.example.server;
 
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
 import com.google.greaze.definition.CallPath;
 import com.google.greaze.definition.rest.IDFactory;
 import com.google.greaze.definition.rest.MetaData;
@@ -26,18 +29,14 @@ import com.google.greaze.definition.rest.ValueBasedId;
 import com.google.greaze.example.definition.model.Cart;
 import com.google.greaze.example.definition.model.Order;
 import com.google.greaze.example.service.definition.ServicePaths;
-import com.google.greaze.rest.server.RepositoryInMemoryValueBased;
-import com.google.greaze.rest.server.RepositoryValueBased;
+import com.google.greaze.rest.server.Repository;
+import com.google.greaze.rest.server.RepositoryInMemory;
 import com.google.greaze.rest.server.ResponseBuilderMap;
 import com.google.greaze.rest.server.RestRequestReceiver;
 import com.google.greaze.rest.server.RestResponseBuilder;
-import com.google.greaze.rest.server.RestResponseBuilderValueBased;
 import com.google.greaze.rest.server.RestResponseSender;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
-
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 
 /**
  * A dispatcher for all the REST requests
@@ -68,11 +67,13 @@ public final class ResourceDepotDispatcher {
       .registerTypeAdapter(ValueBasedId.class, new ValueBasedId.GsonTypeAdapter())
       .registerTypeAdapter(MetaData.class, new MetaData.GsonTypeAdapter())
       .create();
-    RepositoryValueBased<Cart> carts = new RepositoryInMemoryValueBased<Cart>(Cart.class);
-    RepositoryValueBased<Order> orders = new RepositoryInMemoryValueBased<Order>(Order.class);
+    Repository<ValueBasedId<Cart>, Cart> carts =
+      new RepositoryInMemory<ValueBasedId<Cart>, Cart>(ValueBasedId.class, Cart.class);
+    Repository<ValueBasedId<Order>, Order> orders =
+      new RepositoryInMemory<ValueBasedId<Order>, Order>(ValueBasedId.class, Order.class);
     responseBuilders = new ResponseBuilderMap.Builder()
-        .set(cartSpec.getResourceType(), new RestResponseBuilderValueBased<Cart>(carts))
-        .set(orderSpec.getResourceType(), new RestResponseBuilderValueBased<Order>(orders))
+        .set(cartSpec.getResourceType(), new RestResponseBuilder<ValueBasedId<Cart>, Cart>(carts))
+        .set(orderSpec.getResourceType(), new RestResponseBuilder<ValueBasedId<Order>, Order>(orders))
         .build();
   }
 
