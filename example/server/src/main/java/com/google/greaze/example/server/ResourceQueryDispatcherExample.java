@@ -17,7 +17,7 @@ package com.google.greaze.example.server;
 
 import com.google.common.collect.ImmutableMap;
 import com.google.greaze.definition.CallPath;
-import com.google.greaze.definition.rest.query.ResourceQueryValueBased;
+import com.google.greaze.definition.rest.query.ResourceQuery;
 import com.google.greaze.example.definition.model.Order;
 import com.google.greaze.example.query.definition.Queries;
 import com.google.greaze.rest.server.RepositoryValueBased;
@@ -32,12 +32,12 @@ import javax.servlet.http.HttpServletResponse;
 
 public class ResourceQueryDispatcherExample extends ResourceQueryDispatcher {
 
-  private final Map<Queries, ResourceQueryValueBased<?, ?>> queryHandlers;
+  private final Map<Queries, ResourceQuery<?, ?>> queryHandlers;
 
   @Inject
   public ResourceQueryDispatcherExample(RepositoryValueBased<Order> orders) {
     super(new GsonBuilder());
-    queryHandlers = ImmutableMap.<Queries, ResourceQueryValueBased<?, ?>>builder()
+    queryHandlers = ImmutableMap.<Queries, ResourceQuery<?, ?>>builder()
       .put(Queries.FIND_ORDERS_BY_ITEM_NAME, new QueryHandlerOrdersByItemName(orders))
       .build();
 
@@ -46,7 +46,7 @@ public class ResourceQueryDispatcherExample extends ResourceQueryDispatcher {
   public void service(HttpServletRequest req, HttpServletResponse res,
       String queryName, CallPath callPath) {
     Queries query = Queries.getQuery(queryName);
-    ResourceQueryValueBased<?, ?> resourceQuery = queryHandlers.get(query);
+    ResourceQuery<?, ?> resourceQuery = queryHandlers.get(query);
     super.service(req, res, queryName, callPath, resourceQuery);
   }
 }

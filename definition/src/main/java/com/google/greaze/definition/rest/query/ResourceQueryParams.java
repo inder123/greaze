@@ -16,7 +16,7 @@
 package com.google.greaze.definition.rest.query;
 
 /**
- * This interface is implemented by all the query parameter types used for a {@link ResourceQuery}
+ * This interface is implemented by all the query parameter types used for a {@link ResourceQueryBase}
  * 
  * @author Inderjeet Singh
  */

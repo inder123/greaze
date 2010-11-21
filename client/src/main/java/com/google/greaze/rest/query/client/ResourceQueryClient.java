@@ -25,7 +25,7 @@ import com.google.greaze.definition.HttpMethod;
 import com.google.greaze.definition.UntypedKey;
 import com.google.greaze.definition.rest.ResourceId;
 import com.google.greaze.definition.rest.RestResourceBase;
-import com.google.greaze.definition.rest.query.ResourceQuery;
+import com.google.greaze.definition.rest.query.ResourceQueryBase;
 import com.google.greaze.definition.rest.query.ResourceQueryParams;
 import com.google.greaze.definition.rest.query.TypedKeysQuery;
 import com.google.greaze.definition.webservice.RequestBody;
@@ -39,7 +39,7 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 
 /**
- * A client to invoke {@link ResourceQuery}s associated with a REST resource
+ * A client to invoke {@link ResourceQueryBase}s associated with a REST resource
  * 
  * @author Inderjeet Singh
  *
@@ -49,7 +49,7 @@ import com.google.gson.GsonBuilder;
  */
 public class ResourceQueryClient<
     I extends ResourceId, R extends RestResourceBase<I, R>, Q extends ResourceQueryParams>
-        implements ResourceQuery<I, R, Q> {
+        implements ResourceQueryBase<I, R, Q> {
 
   private final WebServiceClient stub;
   private final WebServiceCallSpec callSpec;

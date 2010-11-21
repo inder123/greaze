@@ -17,7 +17,7 @@ package com.google.greaze.example.server;
 
 import com.google.common.collect.Lists;
 import com.google.greaze.definition.rest.Id;
-import com.google.greaze.definition.rest.query.ResourceQueryValueBased;
+import com.google.greaze.definition.rest.query.ResourceQuery;
 import com.google.greaze.example.definition.model.LineItem;
 import com.google.greaze.example.definition.model.Order;
 import com.google.greaze.example.query.definition.QueryOrdersByItemName;
@@ -33,7 +33,7 @@ import java.util.List;
  * @author Inderjeet Singh
  */
 public class QueryHandlerOrdersByItemName
-    implements ResourceQueryValueBased<Order, QueryOrdersByItemName> {
+    implements ResourceQuery<Order, QueryOrdersByItemName> {
 
   private final RepositoryValueBased<Order> orders;
 

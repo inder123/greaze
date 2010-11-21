@@ -15,15 +15,25 @@
  */
 package com.google.greaze.definition.rest.query;
 
+import java.lang.reflect.Type;
+import java.util.List;
+
+import com.google.greaze.definition.rest.ResourceId;
 import com.google.greaze.definition.rest.RestResourceBase;
-import com.google.greaze.definition.rest.Id;
 
 /**
- * A query for a list of resources
- *
+ * A query for a list of rest resources.
+ * 
  * @author Inderjeet Singh
  */
-public interface ResourceQueryValueBased<
-    R extends RestResourceBase<Id<R>, R>, Q extends ResourceQueryParams>
-        extends ResourceQuery<Id<R>, R, Q>{
+public interface ResourceQueryBase<
+    I extends ResourceId, R extends RestResourceBase<I, R>, Q extends ResourceQueryParams> {
+  /**
+   * Returns a list of resources matching the query
+   */
+  public List<R> query(Q query);
+
+  public Type getResourceType();
+
+  public Type getQueryType();
 }

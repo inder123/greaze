@@ -29,7 +29,7 @@ import com.google.greaze.definition.ContentBodyType;
 import com.google.greaze.definition.HeaderMap;
 import com.google.greaze.definition.HeaderMapSpec;
 import com.google.greaze.definition.UntypedKey;
-import com.google.greaze.definition.rest.query.ResourceQuery;
+import com.google.greaze.definition.rest.query.ResourceQueryBase;
 import com.google.greaze.definition.rest.query.ResourceQueryParams;
 import com.google.greaze.definition.rest.query.TypedKeysQuery;
 import com.google.greaze.definition.webservice.RequestBody;
@@ -63,7 +63,7 @@ public class ResourceQueryDispatcher {
 
   @SuppressWarnings({"rawtypes", "unchecked"})
   public void service(HttpServletRequest req, HttpServletResponse res,
-      String queryName, CallPath callPath, ResourceQuery resourceQuery) {
+      String queryName, CallPath callPath, ResourceQueryBase resourceQuery) {
     Preconditions.checkNotNull(resourceQuery);
     Type typeOfListOfR = Types.listOf(resourceQuery.getResourceType());
 
