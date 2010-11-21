@@ -15,7 +15,7 @@
  */
 package com.google.greaze.rest.server;
 
-import com.google.greaze.definition.rest.MetaDataValueBased;
+import com.google.greaze.definition.rest.MetaData;
 import com.google.greaze.definition.rest.RestResource;
 import com.google.greaze.definition.rest.Id;
 
@@ -29,12 +29,12 @@ import com.google.greaze.definition.rest.Id;
 public class MetaDataMapValueBased<R extends RestResource<R>>
     extends MetaDataMap<Id<R>, R> {
   @Override
-  public MetaDataValueBased<R> get(Id<R> resourceId) {
-    return (MetaDataValueBased<R>)super.get(resourceId);
+  public MetaData<R> get(Id<R> resourceId) {
+    return (MetaData<R>)super.get(resourceId);
   }
 
   @Override
-  protected MetaDataValueBased<R> createMetaData() {
-    return MetaDataValueBased.create();
+  protected MetaData<R> createMetaData() {
+    return MetaData.create();
   }
 }

@@ -22,7 +22,7 @@ import java.util.Map;
 
 import com.google.greaze.definition.TypedKey;
 import com.google.greaze.definition.rest.ResourceId;
-import com.google.greaze.definition.rest.MetaData;
+import com.google.greaze.definition.rest.MetaDataBase;
 import com.google.greaze.definition.rest.RestResourceBase;
 
 /**
@@ -35,14 +35,14 @@ import com.google.greaze.definition.rest.RestResourceBase;
  * @param <R> the rest resource for which the metadata is being stored
  */
 public class MetaDataMap<I extends ResourceId, R extends RestResourceBase<I, R>> {
-  protected final Map<I, MetaData<I, R>> map;
+  protected final Map<I, MetaDataBase<I, R>> map;
 
   public MetaDataMap() {
-    this.map = new HashMap<I, MetaData<I, R>>();
+    this.map = new HashMap<I, MetaDataBase<I, R>>();
   }
 
-  public MetaData<I, R> get(I resourceId) {
-    MetaData<I, R> metaData = map.get(resourceId);
+  public MetaDataBase<I, R> get(I resourceId) {
+    MetaDataBase<I, R> metaData = map.get(resourceId);
     if (metaData == null) {
       metaData = createMetaData();
       map.put(resourceId, metaData);
@@ -57,7 +57,7 @@ public class MetaDataMap<I extends ResourceId, R extends RestResourceBase<I, R>>
 
   public <T> List<I> findByTypedKey(TypedKey<T> key, T value, int maxCount) {
     List<I> result = new ArrayList<I>();
-    for (Map.Entry<I, MetaData<I, R>> entry : map.entrySet()) {
+    for (Map.Entry<I, MetaDataBase<I, R>> entry : map.entrySet()) {
       T retrieved = entry.getValue().getFromTransient(key);
       if (isEqual(value, retrieved)) {
         result.add(entry.getKey());
@@ -83,7 +83,7 @@ public class MetaDataMap<I extends ResourceId, R extends RestResourceBase<I, R>>
    * Override this method in subclasses to ensure that the metadata is created for the subclass
    * type
    */
-  protected MetaData<I, R> createMetaData() {
-    return MetaData.create();
+  protected MetaDataBase<I, R> createMetaData() {
+    return MetaDataBase.create();
   }
 }

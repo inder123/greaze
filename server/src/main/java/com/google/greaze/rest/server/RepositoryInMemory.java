@@ -17,7 +17,7 @@ package com.google.greaze.rest.server;
 
 import com.google.common.base.Preconditions;
 import com.google.greaze.definition.rest.ResourceId;
-import com.google.greaze.definition.rest.MetaData;
+import com.google.greaze.definition.rest.MetaDataBase;
 import com.google.greaze.definition.rest.RestResourceBase;
 
 /**
@@ -48,7 +48,7 @@ public class RepositoryInMemory<I extends ResourceId, R extends RestResourceBase
   }
 
   public boolean isFreshlyAssignedId(I resourceId) {
-    MetaData<I, R> metaData = metaDataMap.get(resourceId);
+    MetaDataBase<I, R> metaData = metaDataMap.get(resourceId);
     if (metaData == null) {
       return false;
     }

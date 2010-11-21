@@ -15,20 +15,8 @@
  */
 package com.google.greaze.definition.rest;
 
-import java.lang.reflect.ParameterizedType;
-import java.lang.reflect.Type;
-import java.util.HashMap;
 import java.util.Map;
 
-import com.google.greaze.definition.TypedKey;
-import com.google.gson.JsonDeserializationContext;
-import com.google.gson.JsonDeserializer;
-import com.google.gson.JsonElement;
-import com.google.gson.JsonParseException;
-import com.google.gson.JsonSerializationContext;
-import com.google.gson.JsonSerializer;
-import com.google.gson.JsonSyntaxException;
-import com.google.gson.reflect.TypeToken;
 
 /**
  * Metadata associated with a repository for a rest resource. Metadata is of two types: persistent
@@ -37,105 +25,20 @@ import com.google.gson.reflect.TypeToken;
  * {@link #getFromTransient(Object)}, {@link #putInTransient(Object, Object)},
  * and {@link #removeFromTransient(Object)} methods.
  *
- * @author inder
+ * @author Inderjeet Singh
  *
  * @param <R> The resource
  */
-public class MetaData<I extends ResourceId, R extends RestResourceBase<I, R>> {
+public final class MetaData<R extends RestResource<R>> extends MetaDataBase<Id<R>, R> {
 
-  private final Map<String, String> map;
-  private final transient Map<Object, Object> mapTransient;
-
-  public static <II extends ResourceId, RS extends RestResourceBase<II, RS>> MetaData<II, RS> create() {
-    return new MetaData<II, RS>();
+  public static <RS extends RestResource<RS>> MetaData<RS> create() {
+    return new MetaData<RS>();
   }
 
   public MetaData() {
-    this(new HashMap<String, String>());
   }
 
-  protected MetaData(Map<String, String> values) {
-    this.map = values == null ? new HashMap<String, String>() : values;
-    this.mapTransient = new HashMap<Object, Object>();
-  }
-
-  public String getString(String key) {
-    return map.get(key);
-  }
-
-  public void putString(String key, String value) {
-    map.put(key, value);
-  }
-
-  public boolean getBoolean(String key) {
-    String value = map.get(key);
-    return value == null ? false : Boolean.parseBoolean(value);
-  }
-
-  public void putBoolean(String key, boolean value) {
-    map.put(key, String.valueOf(value));
-  }
-
-  public void remove(String key) {
-    map.remove(key);
-  }
-
-  public Object getFromTransient(Object key) {
-    return mapTransient.get(key);
-  }
-
-  @SuppressWarnings("unchecked")
-  public <T> T getFromTransient(TypedKey<T> key) {
-    return (T) mapTransient.get(key.getName());
-  }
-
-  public void putInTransient(Object key, Object value) {
-    mapTransient.put(key, value);
-  }
-
-  public <T> void putInTransient(TypedKey<T> key, T value) {
-    mapTransient.put(key.getName(), value);
-  }
-
-  public void removeFromTransient(Object key) {
-    mapTransient.remove(key);
-  }
-
-  @Override
-  public String toString() {
-    return new StringBuilder().append(map).append(',').append(mapTransient).toString();
-  }
-
-  /**
-   * Gson Type adapter for {@link MetaData}. The serialized representation on wire is just a
-   * Map<String, String>
-   */
-  public static final class GsonTypeAdapter implements JsonSerializer<MetaData<?, ?>>,
-    JsonDeserializer<MetaData<?, ?>>{
-
-    private static final Type MAP_TYPE = new TypeToken<Map<String, String>>(){}.getType();
-
-    @Override
-    public MetaData<?, ?> deserialize(JsonElement json, Type typeOfT,
-        JsonDeserializationContext context) throws JsonParseException {
-      Map<String, String> map = context.deserialize(json, MAP_TYPE);
-      return createInstance(typeOfT, map);
-    }
-
-    @Override
-    public JsonElement serialize(MetaData<?, ?> src, Type typeOfSrc,
-        JsonSerializationContext context) {
-      return context.serialize(src.map, MAP_TYPE);
-    }
-
-    @SuppressWarnings({"unchecked", "rawtypes"})
-    private static MetaData<?, ?> createInstance(Type typeOfT, Map<String, String> map) {
-      if (!(typeOfT instanceof ParameterizedType)) {
-        throw new JsonSyntaxException("Expecting MetaData<>, found: " + typeOfT);
-      }
-      Class<?> metaDataClass = (Class<?>) ((ParameterizedType) typeOfT).getRawType();
-      return MetaDataValueBased.class.isAssignableFrom(metaDataClass) ?
-          new MetaDataValueBased(map) : new MetaData(map);
-    }
+  MetaData(Map<String, String> values) {
+    super(values);
   }
 }

@@ -20,7 +20,7 @@ import javax.servlet.http.HttpServletResponse;
 
 import com.google.greaze.definition.CallPath;
 import com.google.greaze.definition.rest.IDFactory;
-import com.google.greaze.definition.rest.MetaData;
+import com.google.greaze.definition.rest.MetaDataBase;
 import com.google.greaze.definition.rest.ResourceMap;
 import com.google.greaze.definition.rest.RestCallSpec;
 import com.google.greaze.definition.rest.RestRequest;
@@ -65,7 +65,7 @@ public final class ResourceDepotDispatcher {
     gson = new GsonBuilder()
       .setVersion(CURRENT_VERSION)
       .registerTypeAdapter(Id.class, new Id.GsonTypeAdapter())
-      .registerTypeAdapter(MetaData.class, new MetaData.GsonTypeAdapter())
+      .registerTypeAdapter(MetaDataBase.class, new MetaDataBase.GsonTypeAdapter())
       .create();
     Repository<Id<Cart>, Cart> carts =
       new RepositoryInMemory<Id<Cart>, Cart>(Id.class, Cart.class);

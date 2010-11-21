@@ -24,11 +24,11 @@ import com.google.gson.GsonBuilder;
 import com.google.gson.reflect.TypeToken;
 
 /**
- * Unit test for {@link MetaDataValueBased}
+ * Unit test for {@link MetaData}
  *
  * @author Inderjeet Singh
  */
-public class MetaDataValueBasedTest extends TestCase {
+public class MetaDataTest extends TestCase {
 
   private Gson gson;
 
@@ -36,12 +36,12 @@ public class MetaDataValueBasedTest extends TestCase {
   protected void setUp() throws Exception {
     super.setUp();
     this.gson = new GsonBuilder()
-      .registerTypeHierarchyAdapter(MetaData.class, new MetaData.GsonTypeAdapter())
+      .registerTypeHierarchyAdapter(MetaDataBase.class, new MetaDataBase.GsonTypeAdapter())
       .create();
   }
 
   public void testSerialize() {
-    MetaDataValueBased<MyResource> metaData = MetaDataValueBased.create();
+    MetaData<MyResource> metaData = MetaData.create();
     metaData.putBoolean("booleanValue", true);
     String json = gson.toJson(metaData);
     System.out.println(json);
@@ -49,8 +49,8 @@ public class MetaDataValueBasedTest extends TestCase {
 
   public void testDeserialize() {
     String json = "{booleanValue:true}";
-    Type metaDataType = new TypeToken<MetaDataValueBased<MyResource>>(){}.getType();
-    MetaDataValueBased<MyResource> metaData = gson.fromJson(json, metaDataType);
+    Type metaDataType = new TypeToken<MetaData<MyResource>>(){}.getType();
+    MetaData<MyResource> metaData = gson.fromJson(json, metaDataType);
     assertTrue(metaData.getBoolean("booleanValue"));
   }
 
