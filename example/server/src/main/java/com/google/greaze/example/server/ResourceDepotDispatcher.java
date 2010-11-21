@@ -32,7 +32,7 @@ import com.google.greaze.example.service.definition.ServicePaths;
 import com.google.greaze.rest.server.RepositoryBase;
 import com.google.greaze.rest.server.RepositoryInMemoryBase;
 import com.google.greaze.rest.server.ResponseBuilderMap;
-import com.google.greaze.rest.server.RestRequestReceiver;
+import com.google.greaze.rest.server.RestRequestBaseReceiver;
 import com.google.greaze.rest.server.RestResponseBuilder;
 import com.google.greaze.rest.server.RestResponseSender;
 import com.google.gson.Gson;
@@ -84,7 +84,7 @@ public final class ResourceDepotDispatcher {
   @SuppressWarnings({"rawtypes", "unchecked"})
   public RestRequestBase getRestRequest(Gson gson, RestCallSpec callSpec, CallPath callPath,
       HttpServletRequest request, ResourceIdFactory<Id<?>> idFactory) {
-    RestRequestReceiver requestReceiver = new RestRequestReceiver(gson, callSpec.getRequestSpec());
+    RestRequestBaseReceiver requestReceiver = new RestRequestBaseReceiver(gson, callSpec.getRequestSpec());
     return requestReceiver.receive(request, idFactory.createId(callPath.getResourceId()));
   }
 

@@ -15,83 +15,23 @@
  */
 package com.google.greaze.rest.server;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.io.Reader;
-import java.lang.reflect.Type;
-import java.util.Map;
+import com.google.greaze.definition.rest.RestRequestSpec;
+import com.google.greaze.definition.rest.RestResource;
+import com.google.greaze.definition.rest.Id;
+import com.google.gson.Gson;
 
 import javax.servlet.http.HttpServletRequest;
 
-import com.google.greaze.definition.HeaderMap;
-import com.google.greaze.definition.HeaderMapSpec;
-import com.google.greaze.definition.HttpMethod;
-import com.google.greaze.definition.WebServiceSystemException;
-import com.google.greaze.definition.rest.ResourceId;
-import com.google.greaze.definition.rest.RestRequestBase;
-import com.google.greaze.definition.rest.RestRequestSpec;
-import com.google.greaze.definition.rest.RestResourceBase;
-import com.google.gson.Gson;
-import com.google.gson.JsonParseException;
-
 /**
- * Receives and parses a request at the server side on a {@link HttpServletRequest}.  
+ * Receives and parses a request at the server side on a
+ * {@link HttpServletRequest}.  
  * 
- * @author inder
+ * @author Inderjeet Singh
  */
-public class RestRequestReceiver<I extends ResourceId, R extends RestResourceBase<I, R>> {
-
-  private final Gson gson;
-  private final RestRequestSpec spec;
+public final class RestRequestReceiver<R extends RestResource<R>>
+    extends RestRequestBaseReceiver<Id<R>, R> {
 
   public RestRequestReceiver(Gson gson, RestRequestSpec spec) {
-    this.gson = gson;
-    this.spec = spec;
-  }
-  
-  public RestRequestBase<I, R> receive(HttpServletRequest request, I resourceId) {
-    try {
-      HeaderMap requestParams = buildRequestParams(request);
-      R requestBody = buildRequestBody(request);
-
-      HttpMethod method = HttpMethod.getMethod(request.getMethod());
-      String simulatedMethod = request.getHeader(HttpMethod.SIMULATED_METHOD_HEADER);
-      if (simulatedMethod != null && !simulatedMethod.equals("")) {
-        method = HttpMethod.getMethod(simulatedMethod);
-      }
-      return new RestRequestBase<I, R>(method, requestParams, resourceId, requestBody, spec.getResourceType());
-    } catch (IOException e) {
-      throw new WebServiceSystemException(e);
-    } catch (JsonParseException e) {
-      // Not a Web service request
-      throw new WebServiceSystemException(e);
-    }
-  }
-  
-  private HeaderMap buildRequestParams(HttpServletRequest request) {
-    HeaderMapSpec paramsSpec = this.spec.getHeadersSpec();
-    HeaderMap.Builder paramsBuilder = new HeaderMap.Builder(paramsSpec);
-    for (Map.Entry<String, Type> param : paramsSpec.entrySet()) {
-      String name = param.getKey();
-      Type type = param.getValue();
-      String header = request.getHeader(name);
-      if (header == null || header.equals("")) {
-        // check parameter map for the value
-        header = request.getParameter(name);
-      }
-      if (header != null && !header.equals("")) { 
-        Object value = gson.fromJson(header, type);
-        paramsBuilder.put(name, value);
-      }
-    }
-    return paramsBuilder.build();
-  }
-  
-  @SuppressWarnings("unchecked")
-  private R buildRequestBody(HttpServletRequest request) throws IOException {
-    Reader reader = new BufferedReader(new InputStreamReader(request.getInputStream()));
-    R requestBody = (R) gson.fromJson(reader, spec.getResourceType());
-    return requestBody;
+    super(gson, spec);
   }
 }
