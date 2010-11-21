@@ -30,7 +30,7 @@ import com.google.greaze.definition.rest.RestResourceBase;
 public class RepositoryInMemory<I extends ResourceId, R extends RestResourceBase<I, R>> implements Repository<I, R> {
   private static final String METADATA_KEY_IS_FRESHLY_ASSIGNED_ID = "isFreshlyAssignedId";
 
-  private final IdMap<I, R> resources;
+  private final IdMapBase<I, R> resources;
   private final MetaDataMap<I, R> metaDataMap;
 
   /**
@@ -38,7 +38,7 @@ public class RepositoryInMemory<I extends ResourceId, R extends RestResourceBase
    * @param classOfResource class of the resource. For example, Order.class
    */
   public RepositoryInMemory(Class<? super I> rawClassOfI, Class<? super R> classOfResource) {
-    this.resources = IdMap.create(rawClassOfI, classOfResource);
+    this.resources = IdMapBase.create(rawClassOfI, classOfResource);
     this.metaDataMap = new MetaDataMap<I, R>();
   }
 
