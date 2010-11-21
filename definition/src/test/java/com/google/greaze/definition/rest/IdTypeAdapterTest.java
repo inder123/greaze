@@ -22,24 +22,24 @@ import java.util.List;
 
 import junit.framework.TestCase;
 
-import com.google.greaze.definition.rest.ValueBasedId;
+import com.google.greaze.definition.rest.Id;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.reflect.TypeToken;
 
 /**
- * Unit tests for {@link ValueBasedId.GsonTypeAdapter}
+ * Unit tests for {@link Id.GsonTypeAdapter}
  *
  * @author inder
  */
 public class IdTypeAdapterTest extends TestCase {
-  private static final ValueBasedId<Student> STUDENT1_ID = ValueBasedId.get(5L, Student.class);
-  private static final ValueBasedId<Student> STUDENT2_ID = ValueBasedId.get(6L, Student.class);
+  private static final Id<Student> STUDENT1_ID = Id.get(5L, Student.class);
+  private static final Id<Student> STUDENT2_ID = Id.get(6L, Student.class);
   private static final Student STUDENT1 = new Student(STUDENT1_ID, "first");
   private static final Student STUDENT2 = new Student(STUDENT2_ID, "second");
   private static final Type TYPE_COURSE_HISTORY =
     new TypeToken<Course<HistoryCourse>>(){}.getType(); 
-  private static final ValueBasedId<Course<HistoryCourse>> COURSE_ID = ValueBasedId.get(10L, TYPE_COURSE_HISTORY);
+  private static final Id<Course<HistoryCourse>> COURSE_ID = Id.get(10L, TYPE_COURSE_HISTORY);
 
   private Gson gson;
   private Course<HistoryCourse> course;
@@ -47,7 +47,7 @@ public class IdTypeAdapterTest extends TestCase {
   @Override
   protected void setUp() {
     gson = new GsonBuilder()
-        .registerTypeAdapter(ValueBasedId.class, new ValueBasedId.GsonTypeAdapter())
+        .registerTypeAdapter(Id.class, new Id.GsonTypeAdapter())
         .create();
     course = new Course<HistoryCourse>(COURSE_ID, 4,
         new Assignment<HistoryCourse>(null, null), createList(STUDENT1, STUDENT2));
@@ -71,13 +71,13 @@ public class IdTypeAdapterTest extends TestCase {
 
   @SuppressWarnings("unused")
   private static class Student {
-    ValueBasedId<Student> id;
+    Id<Student> id;
     String name;
 
     private Student() {
       this(null, null);
     }
-    public Student(ValueBasedId<Student> id, String name) {
+    public Student(Id<Student> id, String name) {
       this.id = id;
       this.name = name;
     }
@@ -85,7 +85,7 @@ public class IdTypeAdapterTest extends TestCase {
   @SuppressWarnings("unused")
   private static class Course<T> {
     final List<Student> students;
-    private final ValueBasedId<Course<T>> courseId;
+    private final Id<Course<T>> courseId;
     private final int numAssignments;
     private final Assignment<T> assignment;
 
@@ -93,14 +93,14 @@ public class IdTypeAdapterTest extends TestCase {
       this(null, 0, null, new ArrayList<Student>());
     }
 
-    public Course(ValueBasedId<Course<T>> courseId, int numAssignments,
+    public Course(Id<Course<T>> courseId, int numAssignments,
         Assignment<T> assignment, List<Student> players) {
       this.courseId = courseId;
       this.numAssignments = numAssignments;
       this.assignment = assignment;
       this.students = players;
     }
-    public ValueBasedId<Course<T>> getId() {
+    public Id<Course<T>> getId() {
       return courseId;
     }
     List<Student> getStudents() {
@@ -110,13 +110,13 @@ public class IdTypeAdapterTest extends TestCase {
 
   @SuppressWarnings("unused")
   private static class Assignment<T> {
-    private final ValueBasedId<Assignment<T>> id;
+    private final Id<Assignment<T>> id;
     private final T data;
 
     private Assignment() {
       this(null, null);
     }
-    public Assignment(ValueBasedId<Assignment<T>> id, T data) {
+    public Assignment(Id<Assignment<T>> id, T data) {
       this.id = id;
       this.data = data;
     }

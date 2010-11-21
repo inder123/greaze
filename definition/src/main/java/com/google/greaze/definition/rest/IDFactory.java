@@ -18,7 +18,7 @@ package com.google.greaze.definition.rest;
 import java.lang.reflect.Type;
 
 /**
- * A factory to create {@link ValueBasedId}s
+ * A factory to create {@link Id}s
  *
  * @author inder
  *
@@ -35,8 +35,8 @@ public class IDFactory<I extends ResourceId> {
 
   @SuppressWarnings("unchecked")
   public I createId(long value) {
-    if (classOfI.isAssignableFrom(ValueBasedId.class)) {
-      return (I)ValueBasedId.get(value, typeOfId);
+    if (classOfI.isAssignableFrom(Id.class)) {
+      return (I)Id.get(value, typeOfId);
     } 
     throw new UnsupportedOperationException();
   }

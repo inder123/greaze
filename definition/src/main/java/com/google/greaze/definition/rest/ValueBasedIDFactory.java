@@ -18,14 +18,14 @@ package com.google.greaze.definition.rest;
 import java.lang.reflect.Type;
 
 /**
- * A factory to create {@link ValueBasedId}s
+ * A factory to create {@link Id}s
  *
  * @author Inderjeet Singh
  *
  * @param <T>
  */
-public class ValueBasedIDFactory<T> extends IDFactory<ValueBasedId<T>> {
+public class ValueBasedIDFactory<T> extends IDFactory<Id<T>> {
   public ValueBasedIDFactory(Type typeOfId) {
-    super(ValueBasedId.class, typeOfId);
+    super(Id.class, typeOfId);
   }
 }

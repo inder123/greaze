@@ -16,7 +16,7 @@
 package com.google.greaze.rest.server;
 
 import com.google.greaze.definition.rest.RestResource;
-import com.google.greaze.definition.rest.ValueBasedId;
+import com.google.greaze.definition.rest.Id;
 
 /**
  * An in-memory map of rest resources
@@ -26,13 +26,13 @@ import com.google.greaze.definition.rest.ValueBasedId;
  * @param <R> Type variable for the resource
  */
 public class RepositoryInMemoryValueBased<R extends RestResource<R>>
-    extends RepositoryInMemory<ValueBasedId<R>, R>
+    extends RepositoryInMemory<Id<R>, R>
     implements RepositoryValueBased<R> {
 
   /**
    * @param classOfResource class of the resource. For example, Order.class
    */
   public RepositoryInMemoryValueBased(Class<? super R> classOfResource) {
-    super(ValueBasedId.class, classOfResource);
+    super(Id.class, classOfResource);
   }
 }

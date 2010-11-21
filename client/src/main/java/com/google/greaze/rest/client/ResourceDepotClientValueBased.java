@@ -18,7 +18,7 @@ package com.google.greaze.rest.client;
 import com.google.greaze.definition.CallPath;
 import com.google.greaze.definition.rest.RestCallSpec;
 import com.google.greaze.definition.rest.RestResourceBase;
-import com.google.greaze.definition.rest.ValueBasedId;
+import com.google.greaze.definition.rest.Id;
 import com.google.gson.Gson;
 
 import java.lang.reflect.Type;
@@ -28,8 +28,8 @@ import java.lang.reflect.Type;
  *
  * @author Inderjeet Singh
  */
-public class ResourceDepotClientValueBased<R extends RestResourceBase<ValueBasedId<R>, R>>
-    extends ResourceDepotClient<ValueBasedId<R>, R> {
+public class ResourceDepotClientValueBased<R extends RestResourceBase<Id<R>, R>>
+    extends ResourceDepotClient<Id<R>, R> {
 
   /**
    * @param stub stub containing server info to access the rest client

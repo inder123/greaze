@@ -24,20 +24,20 @@ package com.google.greaze.definition.rest;
  */
 public class RestResourceImpl<R> implements RestResource<R> {
 
-  protected ValueBasedId<R> id;
+  protected Id<R> id;
 
   @Override
-  public ValueBasedId<R> getId() {
+  public Id<R> getId() {
     return id;
   }
 
   @Override
-  public void setId(ValueBasedId<R> id) {
+  public void setId(Id<R> id) {
     this.id = id;
   }
 
   @Override
   public boolean hasId() {
-    return ValueBasedId.isValid(id);
+    return Id.isValid(id);
   }
 }

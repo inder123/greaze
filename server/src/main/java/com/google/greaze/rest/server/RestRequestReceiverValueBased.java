@@ -17,7 +17,7 @@ package com.google.greaze.rest.server;
 
 import com.google.greaze.definition.rest.RestRequestSpec;
 import com.google.greaze.definition.rest.RestResource;
-import com.google.greaze.definition.rest.ValueBasedId;
+import com.google.greaze.definition.rest.Id;
 import com.google.gson.Gson;
 
 import javax.servlet.http.HttpServletRequest;
@@ -29,7 +29,7 @@ import javax.servlet.http.HttpServletRequest;
  * @author Inderjeet Singh
  */
 public final class RestRequestReceiverValueBased<R extends RestResource<R>>
-    extends RestRequestReceiver<ValueBasedId<R>, R> {
+    extends RestRequestReceiver<Id<R>, R> {
 
   public RestRequestReceiverValueBased(Gson gson, RestRequestSpec spec) {
     super(gson, spec);

@@ -17,7 +17,7 @@ package com.google.greaze.rest.query.client;
 
 import com.google.greaze.definition.CallPath;
 import com.google.greaze.definition.rest.RestResource;
-import com.google.greaze.definition.rest.ValueBasedId;
+import com.google.greaze.definition.rest.Id;
 import com.google.greaze.definition.rest.query.ResourceQuery;
 import com.google.greaze.definition.rest.query.ResourceQueryParams;
 import com.google.greaze.definition.webservice.WebServiceCallSpec;
@@ -36,7 +36,7 @@ import java.lang.reflect.Type;
  */
 public class ResourceQueryClientValueBased<
         R extends RestResource<R>, Q extends ResourceQueryParams>
-    extends ResourceQueryClient<ValueBasedId<R>, R, Q> {
+    extends ResourceQueryClient<Id<R>, R, Q> {
 
   /**
    * @param stub stub containing server info to access the rest client

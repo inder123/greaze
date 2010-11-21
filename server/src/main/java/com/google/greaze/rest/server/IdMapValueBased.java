@@ -16,7 +16,7 @@
 package com.google.greaze.rest.server;
 
 import com.google.greaze.definition.rest.HasId;
-import com.google.greaze.definition.rest.ValueBasedId;
+import com.google.greaze.definition.rest.Id;
 
 import java.lang.reflect.Type;
 
@@ -27,16 +27,16 @@ import java.lang.reflect.Type;
  *
  * @param <T> the type of the objects being kept in the map
  */
-public class IdMapValueBased<T extends HasId<ValueBasedId<T>>>
-    extends IdMap<ValueBasedId<T>, T> {
+public class IdMapValueBased<T extends HasId<Id<T>>>
+    extends IdMap<Id<T>, T> {
   /**
    * Use create(Type) instead of constructor
    */
   protected IdMapValueBased(Type typeOfId) {
-    super(ValueBasedId.class, typeOfId);
+    super(Id.class, typeOfId);
   }
 
-  public static <S extends HasId<ValueBasedId<S>>> IdMapValueBased<S> create(
+  public static <S extends HasId<Id<S>>> IdMapValueBased<S> create(
     Type typeOfId) {
     return new IdMapValueBased<S>(typeOfId);
   }

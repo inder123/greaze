@@ -16,7 +16,7 @@
 package com.google.greaze.rest.server;
 
 import com.google.greaze.definition.rest.HasId;
-import com.google.greaze.definition.rest.ValueBasedId;
+import com.google.greaze.definition.rest.Id;
 
 /**
  * An interface for a repository of rest resources. Meant for abstracting the
@@ -26,6 +26,6 @@ import com.google.greaze.definition.rest.ValueBasedId;
  *
  * @param <R> the type of rest resource
  */
-public interface RepositoryValueBased<R extends HasId<ValueBasedId<R>>>
-    extends Repository<ValueBasedId<R>, R> {
+public interface RepositoryValueBased<R extends HasId<Id<R>>>
+    extends Repository<Id<R>, R> {
 }

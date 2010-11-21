@@ -25,7 +25,7 @@ import com.google.greaze.definition.rest.ResourceMap;
 import com.google.greaze.definition.rest.RestCallSpec;
 import com.google.greaze.definition.rest.RestRequest;
 import com.google.greaze.definition.rest.RestResponse;
-import com.google.greaze.definition.rest.ValueBasedId;
+import com.google.greaze.definition.rest.Id;
 import com.google.greaze.example.definition.model.Cart;
 import com.google.greaze.example.definition.model.Order;
 import com.google.greaze.example.service.definition.ServicePaths;
@@ -64,26 +64,26 @@ public final class ResourceDepotDispatcher {
       .build();
     gson = new GsonBuilder()
       .setVersion(CURRENT_VERSION)
-      .registerTypeAdapter(ValueBasedId.class, new ValueBasedId.GsonTypeAdapter())
+      .registerTypeAdapter(Id.class, new Id.GsonTypeAdapter())
       .registerTypeAdapter(MetaData.class, new MetaData.GsonTypeAdapter())
       .create();
-    Repository<ValueBasedId<Cart>, Cart> carts =
-      new RepositoryInMemory<ValueBasedId<Cart>, Cart>(ValueBasedId.class, Cart.class);
-    Repository<ValueBasedId<Order>, Order> orders =
-      new RepositoryInMemory<ValueBasedId<Order>, Order>(ValueBasedId.class, Order.class);
+    Repository<Id<Cart>, Cart> carts =
+      new RepositoryInMemory<Id<Cart>, Cart>(Id.class, Cart.class);
+    Repository<Id<Order>, Order> orders =
+      new RepositoryInMemory<Id<Order>, Order>(Id.class, Order.class);
     responseBuilders = new ResponseBuilderMap.Builder()
-        .set(cartSpec.getResourceType(), new RestResponseBuilder<ValueBasedId<Cart>, Cart>(carts))
-        .set(orderSpec.getResourceType(), new RestResponseBuilder<ValueBasedId<Order>, Order>(orders))
+        .set(cartSpec.getResourceType(), new RestResponseBuilder<Id<Cart>, Cart>(carts))
+        .set(orderSpec.getResourceType(), new RestResponseBuilder<Id<Order>, Order>(orders))
         .build();
   }
 
-  public IDFactory<ValueBasedId<?>> getIDFactory(RestCallSpec callSpec) {
-    return new IDFactory<ValueBasedId<?>>(ValueBasedId.class, callSpec.getResourceType());
+  public IDFactory<Id<?>> getIDFactory(RestCallSpec callSpec) {
+    return new IDFactory<Id<?>>(Id.class, callSpec.getResourceType());
   }
 
   @SuppressWarnings({"rawtypes", "unchecked"})
   public RestRequest getRestRequest(Gson gson, RestCallSpec callSpec, CallPath callPath,
-      HttpServletRequest request, IDFactory<ValueBasedId<?>> idFactory) {
+      HttpServletRequest request, IDFactory<Id<?>> idFactory) {
     RestRequestReceiver requestReceiver = new RestRequestReceiver(gson, callSpec.getRequestSpec());
     return requestReceiver.receive(request, idFactory.createId(callPath.getResourceId()));
   }
@@ -91,7 +91,7 @@ public final class ResourceDepotDispatcher {
   @SuppressWarnings({"rawtypes", "unchecked"})
   public void service(HttpServletRequest req, HttpServletResponse res, CallPath callPath) {
     RestCallSpec callSpec = resourceMap.get(callPath).createCopy(callPath);
-    IDFactory<ValueBasedId<?>> idFactory = getIDFactory(callSpec);
+    IDFactory<Id<?>> idFactory = getIDFactory(callSpec);
     RestRequest<?, ?> restRequest = getRestRequest(gson, callSpec, callPath, req, idFactory);
     RestResponse.Builder response = new RestResponse.Builder(callSpec.getResponseSpec());
     RestResponseBuilder responseBuilder = responseBuilders.get(callSpec.getResourceType());

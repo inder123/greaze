@@ -19,35 +19,35 @@ import java.lang.reflect.ParameterizedType;
 
 import junit.framework.TestCase;
 
-import com.google.greaze.definition.rest.ValueBasedId;
+import com.google.greaze.definition.rest.Id;
 import com.google.gson.reflect.TypeToken;
 
 /**
- * Unit test for {@link ValueBasedId}
+ * Unit test for {@link Id}
  *
  * @author inder
  */
 public class IdTest extends TestCase {
 
   public void testRawTypeNotEqualToParameterizedOfConcreteType() {
-    ParameterizedType type = (ParameterizedType) new TypeToken<ValueBasedId<Foo>>(){}.getType(); 
-    assertFalse(ValueBasedId.areEquivalentTypes(type, ValueBasedId.class));
+    ParameterizedType type = (ParameterizedType) new TypeToken<Id<Foo>>(){}.getType(); 
+    assertFalse(Id.areEquivalentTypes(type, Id.class));
   }
 
   public void testRawTypeEqualToParameterizedOfWildcardType() {
-    ParameterizedType fooType = (ParameterizedType) new TypeToken<ValueBasedId<?>>(){}.getType(); 
-    assertTrue(ValueBasedId.areEquivalentTypes(fooType, ValueBasedId.class));
+    ParameterizedType fooType = (ParameterizedType) new TypeToken<Id<?>>(){}.getType(); 
+    assertTrue(Id.areEquivalentTypes(fooType, Id.class));
   }
 
   public void testStaticEquals() {
-    ValueBasedId<Foo> id1 = ValueBasedId.get(3L, Foo.class);
-    ValueBasedId<Foo> id2 = ValueBasedId.get(3L, Foo.class);
-    ValueBasedId<Foo> id3 = ValueBasedId.get(4L, Foo.class);
-    assertTrue(ValueBasedId.equals(id1, id2));
-    assertFalse(ValueBasedId.equals(null, id2));
-    assertFalse(ValueBasedId.equals(id1, null));
-    assertTrue(ValueBasedId.equals(null, null));
-    assertFalse(ValueBasedId.equals(id1, id3));
+    Id<Foo> id1 = Id.get(3L, Foo.class);
+    Id<Foo> id2 = Id.get(3L, Foo.class);
+    Id<Foo> id3 = Id.get(4L, Foo.class);
+    assertTrue(Id.equals(id1, id2));
+    assertFalse(Id.equals(null, id2));
+    assertFalse(Id.equals(id1, null));
+    assertTrue(Id.equals(null, null));
+    assertFalse(Id.equals(id1, id3));
   }
 
   private static class Foo {

@@ -16,7 +16,7 @@
 package com.google.greaze.definition.rest.query;
 
 import com.google.greaze.definition.rest.RestResourceBase;
-import com.google.greaze.definition.rest.ValueBasedId;
+import com.google.greaze.definition.rest.Id;
 
 /**
  * A query for a list of resources
@@ -24,6 +24,6 @@ import com.google.greaze.definition.rest.ValueBasedId;
  * @author Inderjeet Singh
  */
 public interface ResourceQueryValueBased<
-    R extends RestResourceBase<ValueBasedId<R>, R>, Q extends ResourceQueryParams>
-        extends ResourceQuery<ValueBasedId<R>, R, Q>{
+    R extends RestResourceBase<Id<R>, R>, Q extends ResourceQueryParams>
+        extends ResourceQuery<Id<R>, R, Q>{
 }

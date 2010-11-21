@@ -16,7 +16,7 @@
 package com.google.greaze.example.server;
 
 import com.google.common.collect.Lists;
-import com.google.greaze.definition.rest.ValueBasedId;
+import com.google.greaze.definition.rest.Id;
 import com.google.greaze.definition.rest.query.ResourceQueryValueBased;
 import com.google.greaze.example.definition.model.LineItem;
 import com.google.greaze.example.definition.model.Order;
@@ -47,7 +47,7 @@ public class QueryHandlerOrdersByItemName
     long repoSize = orders.getNextId().getValue();
     List<Order> results = Lists.newArrayList();
     for (int i = 0; i < repoSize; ++i) {
-      ValueBasedId<Order> orderId = ValueBasedId.get(i, Order.class);
+      Id<Order> orderId = Id.get(i, Order.class);
       Order order = orders.get(orderId);
       for (LineItem item : order.getPostedCart().getLineItems()) {
         if (item.getName().equals(query.getItemName())) {
