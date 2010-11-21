@@ -15,7 +15,15 @@
  */
 package com.google.greaze.definition.rest;
 
-public interface ResourceDepot<I extends ResourceId, R extends RestResourceBase<I, R>> {
+/**
+ * A place to access a REST resource for GET, PUT, POST, DELETE
+ *
+ * @author Inderjeet Singh
+ *
+ * @param <I> Id type of the resource
+ * @param <R> The resource
+ */
+public interface ResourceDepotBase<I extends ResourceId, R extends RestResourceBase<I, R>> {
 
   public R get(I resourceId);
 
