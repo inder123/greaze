@@ -15,21 +15,23 @@
  */
 package com.google.greaze.rest.client;
 
-import com.google.greaze.definition.CallPath;
-import com.google.greaze.definition.rest.RestCallSpec;
-import com.google.greaze.definition.rest.RestResourceBase;
-import com.google.greaze.definition.rest.Id;
-import com.google.gson.Gson;
-
 import java.lang.reflect.Type;
+
+import com.google.greaze.definition.CallPath;
+import com.google.greaze.definition.rest.Id;
+import com.google.greaze.definition.rest.ResourceDepot;
+import com.google.greaze.definition.rest.RestCallSpec;
+import com.google.greaze.definition.rest.RestResource;
+import com.google.gson.Gson;
 
 /**
  * A client class to access a rest resource
  *
  * @author Inderjeet Singh
  */
-public class ResourceDepotClient<R extends RestResourceBase<Id<R>, R>>
-    extends ResourceDepotBaseClient<Id<R>, R> {
+public class ResourceDepotClient<R extends RestResource<R>>
+    extends ResourceDepotBaseClient<Id<R>, R> 
+    implements ResourceDepot<R> {
 
   /**
    * @param stub stub containing server info to access the rest client
