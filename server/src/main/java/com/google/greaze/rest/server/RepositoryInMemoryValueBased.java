@@ -27,7 +27,7 @@ import com.google.greaze.definition.rest.Id;
  */
 public class RepositoryInMemoryValueBased<R extends RestResource<R>>
     extends RepositoryInMemory<Id<R>, R>
-    implements RepositoryValueBased<R> {
+    implements Repository<R> {
 
   /**
    * @param classOfResource class of the resource. For example, Order.class

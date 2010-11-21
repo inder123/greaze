@@ -22,9 +22,9 @@ import com.google.greaze.definition.rest.RestResourceBase;
 import com.google.greaze.definition.rest.RestResponse;
 
 public class RestResponseBuilder<I extends ResourceId, R extends RestResourceBase<I, R>> {
-  protected final Repository<I, R> resources;
+  protected final RepositoryBase<I, R> resources;
 
-  public RestResponseBuilder(Repository<I, R> resources) {
+  public RestResponseBuilder(RepositoryBase<I, R> resources) {
     this.resources = resources;
   }
 

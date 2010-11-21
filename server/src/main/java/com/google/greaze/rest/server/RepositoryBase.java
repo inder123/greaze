@@ -16,16 +16,34 @@
 package com.google.greaze.rest.server;
 
 import com.google.greaze.definition.rest.HasId;
-import com.google.greaze.definition.rest.Id;
+import com.google.greaze.definition.rest.ResourceId;
 
 /**
- * An interface for a repository of rest resources. Meant for abstracting the
- * server-side storage of rest resources.
+ * An interface for a repository of rest resources. Meant for abstracting the server-side
+ * storage of rest resources.
  *
- * @author Inderjeet Singh
+ * @author inder
  *
  * @param <R> the type of rest resource
  */
-public interface RepositoryValueBased<R extends HasId<Id<R>>>
-    extends Repository<Id<R>, R> {
+public interface RepositoryBase<I extends ResourceId, R extends HasId<I>> {
+
+  public R get(I resourceId);
+
+  /**
+   * if resource.getId() == null, inserts the resource after assigning it a new id.
+   * Otherwise, updates the resource ensuring that it pre-exists.
+   */
+  public R put(R resource);
+
+  public void delete(I resourceId);
+  
+  public boolean exists(I resourceId);
+
+  /**
+   * Ensures that the specified resource has a valid id that will be used when it is saved
+   */
+  public I assignId(R resource);
+
+  public I getNextId();
 }

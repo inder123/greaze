@@ -27,7 +27,7 @@ import com.google.greaze.definition.rest.RestResourceBase;
  *
  * @param <R> Type variable for the resource
  */
-public class RepositoryInMemory<I extends ResourceId, R extends RestResourceBase<I, R>> implements Repository<I, R> {
+public class RepositoryInMemory<I extends ResourceId, R extends RestResourceBase<I, R>> implements RepositoryBase<I, R> {
   private static final String METADATA_KEY_IS_FRESHLY_ASSIGNED_ID = "isFreshlyAssignedId";
 
   private final IdMapBase<I, R> resources;

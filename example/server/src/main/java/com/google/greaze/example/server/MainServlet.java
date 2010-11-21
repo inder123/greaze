@@ -18,7 +18,7 @@ package com.google.greaze.example.server;
 import com.google.greaze.definition.CallPath;
 import com.google.greaze.example.definition.model.Order;
 import com.google.greaze.rest.server.RepositoryInMemoryValueBased;
-import com.google.greaze.rest.server.RepositoryValueBased;
+import com.google.greaze.rest.server.Repository;
 import com.google.greaze.server.dispatcher.RequestType;
 
 import javax.servlet.http.HttpServlet;
@@ -34,7 +34,7 @@ import javax.servlet.http.HttpServletResponse;
 public class MainServlet extends HttpServlet {
   private final ResourceDepotDispatcher resourceDispatcher;
   private final WebServiceDispatcher wsDispatcher;
-  private final RepositoryValueBased<Order> orders;
+  private final Repository<Order> orders;
 
   public MainServlet() {
     this.resourceDispatcher = new ResourceDepotDispatcher();

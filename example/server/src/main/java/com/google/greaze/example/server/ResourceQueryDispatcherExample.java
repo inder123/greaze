@@ -20,7 +20,7 @@ import com.google.greaze.definition.CallPath;
 import com.google.greaze.definition.rest.query.ResourceQuery;
 import com.google.greaze.example.definition.model.Order;
 import com.google.greaze.example.query.definition.Queries;
-import com.google.greaze.rest.server.RepositoryValueBased;
+import com.google.greaze.rest.server.Repository;
 import com.google.greaze.server.dispatcher.ResourceQueryDispatcher;
 import com.google.gson.GsonBuilder;
 import com.google.inject.Inject;
@@ -35,7 +35,7 @@ public class ResourceQueryDispatcherExample extends ResourceQueryDispatcher {
   private final Map<Queries, ResourceQuery<?, ?>> queryHandlers;
 
   @Inject
-  public ResourceQueryDispatcherExample(RepositoryValueBased<Order> orders) {
+  public ResourceQueryDispatcherExample(Repository<Order> orders) {
     super(new GsonBuilder());
     queryHandlers = ImmutableMap.<Queries, ResourceQuery<?, ?>>builder()
       .put(Queries.FIND_ORDERS_BY_ITEM_NAME, new QueryHandlerOrdersByItemName(orders))

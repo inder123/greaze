@@ -27,7 +27,7 @@ import com.google.greaze.definition.rest.Id;
  */
 public class RestResponseBuilderValueBased<R extends RestResource<R>>
     extends RestResponseBuilder<Id<R>, R>{
-  public RestResponseBuilderValueBased(RepositoryValueBased<R> resources) {
+  public RestResponseBuilderValueBased(Repository<R> resources) {
     super(resources);
   }
 }

@@ -21,7 +21,7 @@ import com.google.greaze.definition.rest.query.ResourceQuery;
 import com.google.greaze.example.definition.model.LineItem;
 import com.google.greaze.example.definition.model.Order;
 import com.google.greaze.example.query.definition.QueryOrdersByItemName;
-import com.google.greaze.rest.server.RepositoryValueBased;
+import com.google.greaze.rest.server.Repository;
 import com.google.inject.Inject;
 
 import java.lang.reflect.Type;
@@ -35,10 +35,10 @@ import java.util.List;
 public class QueryHandlerOrdersByItemName
     implements ResourceQuery<Order, QueryOrdersByItemName> {
 
-  private final RepositoryValueBased<Order> orders;
+  private final Repository<Order> orders;
 
   @Inject
-  public QueryHandlerOrdersByItemName(RepositoryValueBased<Order> orders) {
+  public QueryHandlerOrdersByItemName(Repository<Order> orders) {
     this.orders = orders;
   }
 
