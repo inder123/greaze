@@ -19,7 +19,7 @@ import com.google.greaze.example.definition.model.Cart;
 import com.google.greaze.example.definition.model.LineItem;
 import com.google.greaze.example.definition.model.Order;
 import com.google.greaze.example.query.definition.QueryOrdersByItemName;
-import com.google.greaze.rest.client.ResourceDepotClientValueBased;
+import com.google.greaze.rest.client.ResourceDepotClient;
 import com.google.greaze.rest.client.RestClientStub;
 import com.google.greaze.rest.query.client.ResourceQueryClient;
 import com.google.greaze.webservice.client.ServerConfig;
@@ -39,13 +39,13 @@ import java.util.List;
  */
 public class OrderClient {
   public static final CallPath CALL_PATH = new CallPath("/rest/order");
-  private final ResourceDepotClientValueBased<Order> restClient;
+  private final ResourceDepotClient<Order> restClient;
   private final ResourceQueryClient<Order, QueryOrdersByItemName> queryClient;
   public OrderClient() {
     ServerConfig serverConfig = new ServerConfig("http://localhost");
     GsonBuilder gsonBuilder = new GsonBuilder();
 
-    restClient = new ResourceDepotClientValueBased<Order>(
+    restClient = new ResourceDepotClient<Order>(
         new RestClientStub(serverConfig), CALL_PATH, Order.class, new Gson());
     ServerConfig wsServerConfig = new ServerConfig("http://localhost");
     Type typeOfListOfR = new TypeToken<List<Order>>(){}.getType();

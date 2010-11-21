@@ -23,13 +23,13 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 
 /**
- * Unit tests for {@link ResourceDepotClient}
+ * Unit tests for {@link ResourceDepotBaseClient}
  * 
  * @author Inderjeet Singh
  */
 public class ResourceDepotClientTest extends TestCase {
   private Gson gson;
-  private ResourceDepotClientValueBased<MyResource> client;
+  private ResourceDepotClient<MyResource> client;
 
   @Override
   protected void setUp() throws Exception {
@@ -37,7 +37,7 @@ public class ResourceDepotClientTest extends TestCase {
     gson = new GsonBuilder()
         .create();
     RestClientStub stub = new RestClientStubFake();
-    client = new ResourceDepotClientValueBased<MyResource>(
+    client = new ResourceDepotClient<MyResource>(
         stub, MyResource.CALL_PATH, MyResource.class, gson);
   }
 
