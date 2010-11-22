@@ -26,7 +26,7 @@ import com.google.greaze.definition.internal.utils.GreazePreconditions;
  *
  * @author inder
  */
-public final class ResourceMap {
+public final class RestCallSpecMap {
 
   public static final class Builder {
     private final Map<CallPath, RestCallSpec> resources =
@@ -38,14 +38,14 @@ public final class ResourceMap {
       return this;
     }
 
-    public ResourceMap build() {
-      return new ResourceMap(resources);
+    public RestCallSpecMap build() {
+      return new RestCallSpecMap(resources);
     }
   }
 
   private final Map<CallPath, RestCallSpec> resources;
 
-  public ResourceMap(Map<CallPath, RestCallSpec> resources) {
+  public RestCallSpecMap(Map<CallPath, RestCallSpec> resources) {
     this.resources = resources;
   }
 

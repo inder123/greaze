@@ -21,7 +21,7 @@ import javax.servlet.http.HttpServletResponse;
 import com.google.greaze.definition.CallPath;
 import com.google.greaze.definition.rest.ResourceIdFactory;
 import com.google.greaze.definition.rest.MetaDataBase;
-import com.google.greaze.definition.rest.ResourceMap;
+import com.google.greaze.definition.rest.RestCallSpecMap;
 import com.google.greaze.definition.rest.RestCallSpec;
 import com.google.greaze.definition.rest.RestRequestBase;
 import com.google.greaze.definition.rest.RestResponseBase;
@@ -45,7 +45,7 @@ import com.google.gson.GsonBuilder;
  */
 public final class ResourceDepotDispatcher {
   private static final double CURRENT_VERSION = 1D;
-  private final ResourceMap resourceMap;
+  private final RestCallSpecMap resourceMap;
   private final ResponseBuilderMap responseBuilders;
   private final RestCallSpec cartSpec;
   private final RestCallSpec orderSpec;
@@ -58,7 +58,7 @@ public final class ResourceDepotDispatcher {
     this.orderSpec = new RestCallSpec.Builder(ServicePaths.CART.getCallPath(), Cart.class)
       .setVersion(CURRENT_VERSION)
       .build(); 
-    this.resourceMap = new ResourceMap.Builder()
+    this.resourceMap = new RestCallSpecMap.Builder()
       .set(ServicePaths.CART.getCallPath(), cartSpec)
       .set(ServicePaths.ORDER.getCallPath(), orderSpec)
       .build();
