@@ -15,22 +15,26 @@
  */
 package com.google.greaze.rest.client;
 
-import com.google.greaze.definition.WebServiceSystemException;
-import com.google.greaze.definition.rest.ResourceId;
-import com.google.greaze.definition.rest.RestCallSpec;
-import com.google.greaze.definition.rest.RestRequestBase;
-import com.google.greaze.definition.rest.RestResourceBase;
-import com.google.greaze.definition.rest.RestResponseBase;
-import com.google.greaze.webservice.client.ServerConfig;
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
-
 import java.io.IOException;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+
+import com.google.greaze.definition.WebServiceSystemException;
+import com.google.greaze.definition.rest.Id;
+import com.google.greaze.definition.rest.ResourceId;
+import com.google.greaze.definition.rest.RestCallSpec;
+import com.google.greaze.definition.rest.RestRequest;
+import com.google.greaze.definition.rest.RestRequestBase;
+import com.google.greaze.definition.rest.RestResource;
+import com.google.greaze.definition.rest.RestResourceBase;
+import com.google.greaze.definition.rest.RestResponse;
+import com.google.greaze.definition.rest.RestResponseBase;
+import com.google.greaze.webservice.client.ServerConfig;
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 
 /**
  * A stub to access the rest service
@@ -70,10 +74,20 @@ public class RestClientStub {
     }
   }
   
+  public <R extends RestResource<R>> RestResponse<R> getResponse(
+      RestCallSpec callSpec, RestRequest<R> request) {
+    return (RestResponse<R>) getResponse(callSpec, (RestRequestBase<Id<R>, R>)request);
+  }
+
   public <I extends ResourceId, R extends RestResourceBase<I, R>> RestResponseBase<I, R> getResponse(
       RestCallSpec callSpec, RestRequestBase<I, R> request) {
     Gson gson = new GsonBuilder().setVersion(callSpec.getVersion()).create();
     return getResponse(callSpec, request, gson);
+  }
+
+  public <R extends RestResource<R>> RestResponse<R> getResponse(
+      RestCallSpec callSpec, RestRequest<R> request, Gson gson) {
+    return (RestResponse<R>) getResponse(callSpec, (RestRequestBase<Id<R>, R>) request, gson);
   }
 
   public <I extends ResourceId, R extends RestResourceBase<I, R>> RestResponseBase<I, R> getResponse(
@@ -93,6 +107,15 @@ public class RestClientStub {
   /** Override this method to replace the stream being used for communication */
   protected HttpURLConnection createHttpURLConnection(URL webServiceUrl) throws IOException {
     return (HttpURLConnection) webServiceUrl.openConnection();
+  }
+
+  /**
+   * Use this method if you want to mange the HTTP Connection yourself. This is useful when you
+   * want to use HTTP pipelining.
+   */
+  public <R extends RestResource<R>> RestResponse<R> getResponse(
+      RestCallSpec callSpec, RestRequest<R> request, Gson gson, HttpURLConnection conn) {
+    return (RestResponse<R>) getResponse(callSpec, (RestRequestBase<Id<R>, R>) request, gson, conn);
   }
 
   /**
