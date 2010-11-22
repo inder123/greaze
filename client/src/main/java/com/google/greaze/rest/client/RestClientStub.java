@@ -109,8 +109,8 @@ public class RestClientStub {
       }
       RestRequestSender requestSender = new RestRequestSender(gson, logLevel);
       requestSender.send(conn, request);
-      RestResponseReceiver<I, R> responseReceiver =
-        new RestResponseReceiver<I, R>(gson, callSpec.getResponseSpec(), logLevel);
+      RestResponseBaseReceiver<I, R> responseReceiver =
+        new RestResponseBaseReceiver<I, R>(gson, callSpec.getResponseSpec(), logLevel);
       return responseReceiver.receive(conn);
     } catch (IllegalArgumentException e) {
       throw new WebServiceSystemException(e);

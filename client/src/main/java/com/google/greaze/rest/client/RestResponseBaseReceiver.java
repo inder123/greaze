@@ -39,21 +39,21 @@ import com.google.gson.Gson;
 /**
  * Receives a response coming on an {@link HttpURLConnection}.
  * 
- * @author inder
+ * @author Inderjeet Singh
  */
-public final class RestResponseReceiver<I extends ResourceId, R extends RestResourceBase<I, R>> {
+public class RestResponseBaseReceiver<I extends ResourceId, R extends RestResourceBase<I, R>> {
   private final Gson gson;
   private final RestResponseSpec spec;
   private final Logger logger;
   private final Level logLevel;
 
-  public RestResponseReceiver(Gson gson, RestResponseSpec spec) {
+  public RestResponseBaseReceiver(Gson gson, RestResponseSpec spec) {
     this(gson, spec, null);
   }
-  public RestResponseReceiver(Gson gson, RestResponseSpec spec, Level logLevel) {
+  public RestResponseBaseReceiver(Gson gson, RestResponseSpec spec, Level logLevel) {
     this.gson = gson;
     this.spec = spec;
-    this.logger = logLevel == null ? null : Logger.getLogger(RestResponseReceiver.class.getName());
+    this.logger = logLevel == null ? null : Logger.getLogger(RestResponseBaseReceiver.class.getName());
     this.logLevel = logLevel;
   }
   
