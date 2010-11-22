@@ -64,7 +64,7 @@ public final class RestResponseReceiver<I extends ResourceId, R extends RestReso
       // read response
       HeaderMap responseParams = readResponseHeaders(conn, paramSpec);
       R responseBody = readResponseBody(conn, bodyType);
-      return new RestResponseBase<I, R>(responseParams, responseBody, bodyType);
+      return new RestResponseBase<I, R>(spec, responseParams, responseBody);
     } catch (IOException e) {
       throw new WebServiceSystemException(e);
     }

@@ -15,8 +15,6 @@
  */
 package com.google.greaze.definition.rest;
 
-import java.lang.reflect.Type;
-
 import com.google.greaze.definition.HeaderMap;
 import com.google.greaze.definition.TypedKey;
 
@@ -53,11 +51,7 @@ public class RestResponse<R extends RestResource<R>> extends RestResponseBase<Id
     }
   }
   
-  private RestResponse(RestResponseSpec spec, HeaderMap headers, R body) {
+  public RestResponse(RestResponseSpec spec, HeaderMap headers, R body) {
     super(spec, headers, body);
-  }
-  
-  public RestResponse(HeaderMap responseHeaders, R responseBody, Type responseBodyType) {
-    super(responseHeaders, responseBody, responseBodyType);
   }
 }

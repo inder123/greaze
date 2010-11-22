@@ -47,7 +47,7 @@ public final class RestResponseSender<I extends ResourceId, R extends RestResour
   public void send(HttpServletResponse conn, RestResponseBase<I, R> response) {
     try {
       sendHeaders(conn, response.getHeaders());
-      sendBody(conn, response.getBody());
+      sendBody(conn, response.getResource());
     } catch (IOException e) {
       throw new RuntimeException(e);
     }

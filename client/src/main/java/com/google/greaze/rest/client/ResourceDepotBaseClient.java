@@ -69,7 +69,7 @@ public class ResourceDepotBaseClient<I extends ResourceId, R extends RestResourc
     RestRequestBase<I, R> request =
       new RestRequestBase<I, R>(HttpMethod.GET, requestHeaders, resourceId, null, resourceType);
     RestResponseBase<I, R> response = stub.getResponse(callSpec, request, gson);
-    return response.getBody();
+    return response.getResource();
   }
 
   @Override
@@ -79,7 +79,7 @@ public class ResourceDepotBaseClient<I extends ResourceId, R extends RestResourc
     RestRequestBase<I, R> request = new RestRequestBase<I, R>(HttpMethod.POST, requestHeaders,
         resource.getId(), resource, resourceType);
     RestResponseBase<I, R> response = stub.getResponse(callSpec, request, gson);
-    return response.getBody();
+    return response.getResource();
   }
 
   @Override
@@ -89,7 +89,7 @@ public class ResourceDepotBaseClient<I extends ResourceId, R extends RestResourc
     RestRequestBase<I, R> request = new RestRequestBase<I, R>(HttpMethod.PUT, requestHeaders,
         resource.getId(), resource, resourceType);
     RestResponseBase<I, R> response = stub.getResponse(callSpec, request, gson);
-    return response.getBody();
+    return response.getResource();
   }
 
   @Override

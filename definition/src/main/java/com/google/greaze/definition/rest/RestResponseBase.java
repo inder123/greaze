@@ -17,8 +17,12 @@ package com.google.greaze.definition.rest;
 
 import java.lang.reflect.Type;
 
+import com.google.greaze.definition.ContentBodyType;
 import com.google.greaze.definition.HeaderMap;
 import com.google.greaze.definition.TypedKey;
+import com.google.greaze.definition.webservice.ResponseBody;
+import com.google.greaze.definition.webservice.ResponseBodySpec;
+import com.google.greaze.definition.webservice.WebServiceResponse;
 
 /**
  * The data associated with a REST Web service response. This includes http response header
@@ -26,11 +30,10 @@ import com.google.greaze.definition.TypedKey;
  * 
  * @author inder
  */
-public class RestResponseBase<I extends ResourceId, R extends RestResourceBase<I, R>> {
+public class RestResponseBase<I extends ResourceId, R extends RestResourceBase<I, R>>
+    extends WebServiceResponse {
   
-  private final HeaderMap headers;
-  private final R body;
-  private final RestResponseSpec spec;
+  private final R resource;
   
   public static class Builder<II extends ResourceId, RS extends RestResourceBase<II, RS>> {
     private final HeaderMap.Builder headers;
@@ -57,37 +60,23 @@ public class RestResponseBase<I extends ResourceId, R extends RestResourceBase<I
     }
   }
   
-  protected RestResponseBase(RestResponseSpec spec, HeaderMap headers, R body) {
-    this.spec = spec;
-    this.headers = headers;
-    this.body = body;
+  public RestResponseBase(RestResponseSpec spec, HeaderMap responseHeaders, R resource) {
+    super(spec, responseHeaders, createBody(resource, spec.getResourceType()));
+    this.resource = resource;
   }
   
-  public RestResponseBase(HeaderMap responseHeaders, R responseBody, Type responseBodyType) {
-    this.spec = new RestResponseSpec(responseHeaders.getSpec(), responseBodyType);
-    this.headers = responseHeaders;
-    this.body = responseBody;
+  private static<R> ResponseBody createBody(R resource, Type resourceType) {
+    ResponseBodySpec spec = new ResponseBodySpec(ContentBodyType.SIMPLE, null, resourceType);
+    return new ResponseBody.Builder(spec)
+        .setSimpleBody(resource)
+        .build();
   }
 
   public RestResponseSpec getSpec() {
-    return spec;
+    return (RestResponseSpec) super.getSpec();
   }
 
-  public HeaderMap getHeaders() {
-    return headers;
-  }
-  
-  public R getBody() {
-    return body;
-  }
-
-  @SuppressWarnings("unchecked")
-  public <T> T getHeader(String headerName) {
-    return (T) headers.get(headerName);
-  }
-  
-  @Override
-  public String toString() {
-    return String.format("{headers:%s, body:%s}", headers, body);
+  public R getResource() {
+    return resource;
   }
 }

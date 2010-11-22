@@ -15,6 +15,11 @@
  */
 package com.google.greaze.definition.webservice;
 
+import java.lang.reflect.Type;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+
 import com.google.greaze.definition.ContentBody;
 import com.google.greaze.definition.TypedKey;
 import com.google.greaze.definition.UntypedKey;
@@ -24,11 +29,6 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonParseException;
 import com.google.gson.JsonSerializationContext;
 import com.google.gson.JsonSerializer;
-
-import java.lang.reflect.Type;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
 
 /**
  * body of the response. This is written out as JSON to be sent out to the client. 
@@ -50,6 +50,10 @@ public final class ResponseBody extends ContentBody {
     @Override
     public ResponseBodySpec getSpec() {
       return (ResponseBodySpec) spec;
+    }
+
+    public Builder setSimpleBody(Object body) {
+      return (Builder) super.setSimpleBody(body);
     }
 
     @Override

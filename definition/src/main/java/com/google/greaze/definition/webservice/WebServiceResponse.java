@@ -26,7 +26,7 @@ import java.lang.reflect.Type;
  * 
  * @author inder
  */
-public final class WebServiceResponse {
+public class WebServiceResponse {
   
   private final HeaderMap headers;
   private final ResponseBody body;
@@ -72,7 +72,7 @@ public final class WebServiceResponse {
     }
   }
   
-  private WebServiceResponse(ResponseSpec spec, HeaderMap headers, ResponseBody body) {
+  protected WebServiceResponse(ResponseSpec spec, HeaderMap headers, ResponseBody body) {
     this.spec = spec;
     this.headers = headers;
     this.body = body;
