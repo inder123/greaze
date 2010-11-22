@@ -21,13 +21,14 @@ package com.google.greaze.definition.rest;
  * 
  * @author inder
  */
-public final class RestCall<I extends ResourceId, R extends RestResourceBase<I, R>> {
+public class RestCallBase<I extends ResourceId, R extends RestResourceBase<I, R>> {
   
-  private final RestCallSpec callSpec;
-  private final RestRequestBase<I, R> request;
-  private final RestResponseBase<I, R> response;
+  protected final RestCallSpec callSpec;
+  protected final RestRequestBase<I, R> request;
+  protected final RestResponseBase<I, R> response;
   
-  public RestCall(RestCallSpec callSpec, RestRequestBase<I, R> request, RestResponseBase<I, R> response) {
+  public RestCallBase(RestCallSpec callSpec, RestRequestBase<I, R> request,
+      RestResponseBase<I, R> response) {
     this.callSpec = callSpec;
     this.request = request;
     this.response = response;
