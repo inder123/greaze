@@ -25,9 +25,9 @@ public final class RestCall<I extends ResourceId, R extends RestResourceBase<I, 
   
   private final RestCallSpec callSpec;
   private final RestRequestBase<I, R> request;
-  private final RestResponse<I, R> response;
+  private final RestResponseBase<I, R> response;
   
-  public RestCall(RestCallSpec callSpec, RestRequestBase<I, R> request, RestResponse<I, R> response) {
+  public RestCall(RestCallSpec callSpec, RestRequestBase<I, R> request, RestResponseBase<I, R> response) {
     this.callSpec = callSpec;
     this.request = request;
     this.response = response;
@@ -41,7 +41,7 @@ public final class RestCall<I extends ResourceId, R extends RestResourceBase<I, 
     return request;
   }
 
-  public RestResponse<I, R> getResponse() {
+  public RestResponseBase<I, R> getResponse() {
     return response;
   }
 }

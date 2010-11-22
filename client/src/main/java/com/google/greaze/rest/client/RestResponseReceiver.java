@@ -32,7 +32,7 @@ import com.google.greaze.definition.HeaderMapSpec;
 import com.google.greaze.definition.WebServiceSystemException;
 import com.google.greaze.definition.rest.ResourceId;
 import com.google.greaze.definition.rest.RestResourceBase;
-import com.google.greaze.definition.rest.RestResponse;
+import com.google.greaze.definition.rest.RestResponseBase;
 import com.google.greaze.definition.rest.RestResponseSpec;
 import com.google.gson.Gson;
 
@@ -57,14 +57,14 @@ public final class RestResponseReceiver<I extends ResourceId, R extends RestReso
     this.logLevel = logLevel;
   }
   
-  public RestResponse<I, R> receive(HttpURLConnection conn) {
+  public RestResponseBase<I, R> receive(HttpURLConnection conn) {
     try {
       HeaderMapSpec paramSpec = spec.getHeadersSpec();
       Type bodyType = spec.getResourceType();
       // read response
       HeaderMap responseParams = readResponseHeaders(conn, paramSpec);
       R responseBody = readResponseBody(conn, bodyType);
-      return new RestResponse<I, R>(responseParams, responseBody, bodyType);
+      return new RestResponseBase<I, R>(responseParams, responseBody, bodyType);
     } catch (IOException e) {
       throw new WebServiceSystemException(e);
     }

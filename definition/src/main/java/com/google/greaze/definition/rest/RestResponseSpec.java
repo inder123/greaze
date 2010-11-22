@@ -23,7 +23,7 @@ import com.google.greaze.definition.webservice.ResponseSpec;
 import java.lang.reflect.Type;
 
 /**
- * Specification for a {@link RestResponse}.
+ * Specification for a {@link RestResponseBase}.
  * 
  * @author Inderjeet Singh
  */

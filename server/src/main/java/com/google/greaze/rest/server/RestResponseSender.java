@@ -27,7 +27,7 @@ import com.google.greaze.definition.HeaderMap;
 import com.google.greaze.definition.HeaderMapSpec;
 import com.google.greaze.definition.rest.ResourceId;
 import com.google.greaze.definition.rest.RestResourceBase;
-import com.google.greaze.definition.rest.RestResponse;
+import com.google.greaze.definition.rest.RestResponseBase;
 import com.google.gson.Gson;
 
 /**
@@ -44,7 +44,7 @@ public final class RestResponseSender<I extends ResourceId, R extends RestResour
     this.gson = gson;
   }
   
-  public void send(HttpServletResponse conn, RestResponse<I, R> response) {
+  public void send(HttpServletResponse conn, RestResponseBase<I, R> response) {
     try {
       sendHeaders(conn, response.getHeaders());
       sendBody(conn, response.getBody());

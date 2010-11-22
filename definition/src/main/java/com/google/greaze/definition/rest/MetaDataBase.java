@@ -21,6 +21,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import com.google.greaze.definition.TypedKey;
+import com.google.greaze.definition.internal.utils.GreazePreconditions;
 import com.google.gson.JsonDeserializationContext;
 import com.google.gson.JsonDeserializer;
 import com.google.gson.JsonElement;
@@ -130,10 +131,15 @@ public class MetaDataBase<I extends ResourceId, R extends RestResourceBase<I, R>
 
     @SuppressWarnings({"unchecked", "rawtypes"})
     private static MetaDataBase<?, ?> createInstance(Type typeOfT, Map<String, String> map) {
-      if (!(typeOfT instanceof ParameterizedType)) {
-        throw new JsonSyntaxException("Expecting MetaData<>, found: " + typeOfT);
+      Class<?> metaDataClass;
+      if (typeOfT instanceof Class) {
+        metaDataClass = (Class) typeOfT;
+      } else if (typeOfT instanceof ParameterizedType) {
+        metaDataClass = (Class<?>) ((ParameterizedType) typeOfT).getRawType();
+      } else {
+        throw new JsonSyntaxException("Expecting MetaData, found: " + typeOfT);
       }
-      Class<?> metaDataClass = (Class<?>) ((ParameterizedType) typeOfT).getRawType();
+      GreazePreconditions.checkArgument(MetaDataBase.class.isAssignableFrom(metaDataClass));
       return MetaData.class.isAssignableFrom(metaDataClass) ?
           new MetaData(map) : new MetaDataBase(map);
     }

@@ -25,7 +25,7 @@ import com.google.greaze.definition.rest.ResourceDepotBase;
 import com.google.greaze.definition.rest.RestCallSpec;
 import com.google.greaze.definition.rest.RestRequestBase;
 import com.google.greaze.definition.rest.RestResourceBase;
-import com.google.greaze.definition.rest.RestResponse;
+import com.google.greaze.definition.rest.RestResponseBase;
 import com.google.gson.Gson;
 
 /**
@@ -68,7 +68,7 @@ public class ResourceDepotBaseClient<I extends ResourceId, R extends RestResourc
       new HeaderMap.Builder(callSpec.getRequestSpec().getHeadersSpec()).build();
     RestRequestBase<I, R> request =
       new RestRequestBase<I, R>(HttpMethod.GET, requestHeaders, resourceId, null, resourceType);
-    RestResponse<I, R> response = stub.getResponse(callSpec, request, gson);
+    RestResponseBase<I, R> response = stub.getResponse(callSpec, request, gson);
     return response.getBody();
   }
 
@@ -78,7 +78,7 @@ public class ResourceDepotBaseClient<I extends ResourceId, R extends RestResourc
       new HeaderMap.Builder(callSpec.getRequestSpec().getHeadersSpec()).build();
     RestRequestBase<I, R> request = new RestRequestBase<I, R>(HttpMethod.POST, requestHeaders,
         resource.getId(), resource, resourceType);
-    RestResponse<I, R> response = stub.getResponse(callSpec, request, gson);
+    RestResponseBase<I, R> response = stub.getResponse(callSpec, request, gson);
     return response.getBody();
   }
 
@@ -88,7 +88,7 @@ public class ResourceDepotBaseClient<I extends ResourceId, R extends RestResourc
       new HeaderMap.Builder(callSpec.getRequestSpec().getHeadersSpec()).build();
     RestRequestBase<I, R> request = new RestRequestBase<I, R>(HttpMethod.PUT, requestHeaders,
         resource.getId(), resource, resourceType);
-    RestResponse<I, R> response = stub.getResponse(callSpec, request, gson);
+    RestResponseBase<I, R> response = stub.getResponse(callSpec, request, gson);
     return response.getBody();
   }
 

@@ -26,7 +26,7 @@ import com.google.greaze.definition.TypedKey;
  * 
  * @author inder
  */
-public final class RestResponse<I extends ResourceId, R extends RestResourceBase<I, R>> {
+public class RestResponseBase<I extends ResourceId, R extends RestResourceBase<I, R>> {
   
   private final HeaderMap headers;
   private final R body;
@@ -52,18 +52,18 @@ public final class RestResponse<I extends ResourceId, R extends RestResourceBase
       return this;
     }
 
-    public RestResponse<II, RS> build() {
-      return new RestResponse<II, RS>(spec, headers.build(), body);
+    public RestResponseBase<II, RS> build() {
+      return new RestResponseBase<II, RS>(spec, headers.build(), body);
     }
   }
   
-  private RestResponse(RestResponseSpec spec, HeaderMap headers, R body) {
+  protected RestResponseBase(RestResponseSpec spec, HeaderMap headers, R body) {
     this.spec = spec;
     this.headers = headers;
     this.body = body;
   }
   
-  public RestResponse(HeaderMap responseHeaders, R responseBody, Type responseBodyType) {
+  public RestResponseBase(HeaderMap responseHeaders, R responseBody, Type responseBodyType) {
     this.spec = new RestResponseSpec(responseHeaders.getSpec(), responseBodyType);
     this.headers = responseHeaders;
     this.body = responseBody;

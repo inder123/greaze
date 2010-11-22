@@ -19,7 +19,7 @@ import com.google.greaze.definition.HttpMethod;
 import com.google.greaze.definition.rest.ResourceId;
 import com.google.greaze.definition.rest.RestRequestBase;
 import com.google.greaze.definition.rest.RestResourceBase;
-import com.google.greaze.definition.rest.RestResponse;
+import com.google.greaze.definition.rest.RestResponseBase;
 
 public class RestResponseBaseBuilder<I extends ResourceId, R extends RestResourceBase<I, R>> {
   protected final RepositoryBase<I, R> resources;
@@ -28,7 +28,7 @@ public class RestResponseBaseBuilder<I extends ResourceId, R extends RestResourc
     this.resources = resources;
   }
 
-  public void buildResponse(RestRequestBase<I, R> request, RestResponse.Builder<I, R> responseBuilder) {
+  public void buildResponse(RestRequestBase<I, R> request, RestResponseBase.Builder<I, R> responseBuilder) {
     HttpMethod method = request.getMethod();
     R responseBody = null;
     switch (method) {

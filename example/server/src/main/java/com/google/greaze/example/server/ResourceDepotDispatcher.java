@@ -24,7 +24,7 @@ import com.google.greaze.definition.rest.MetaDataBase;
 import com.google.greaze.definition.rest.ResourceMap;
 import com.google.greaze.definition.rest.RestCallSpec;
 import com.google.greaze.definition.rest.RestRequestBase;
-import com.google.greaze.definition.rest.RestResponse;
+import com.google.greaze.definition.rest.RestResponseBase;
 import com.google.greaze.definition.rest.Id;
 import com.google.greaze.example.definition.model.Cart;
 import com.google.greaze.example.definition.model.Order;
@@ -93,10 +93,10 @@ public final class ResourceDepotDispatcher {
     RestCallSpec callSpec = resourceMap.get(callPath).createCopy(callPath);
     ResourceIdFactory<Id<?>> idFactory = getIDFactory(callSpec);
     RestRequestBase<?, ?> restRequest = getRestRequest(gson, callSpec, callPath, req, idFactory);
-    RestResponse.Builder response = new RestResponse.Builder(callSpec.getResponseSpec());
+    RestResponseBase.Builder response = new RestResponseBase.Builder(callSpec.getResponseSpec());
     RestResponseBaseBuilder responseBuilder = responseBuilders.get(callSpec.getResourceType());
     responseBuilder.buildResponse(restRequest, response);
-    RestResponse restResponse = response.build();
+    RestResponseBase restResponse = response.build();
     RestResponseSender responseSender = new RestResponseSender(gson);
     responseSender.send(res, restResponse);
   }

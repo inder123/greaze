@@ -44,7 +44,8 @@ public class MetaDataTest extends TestCase {
     MetaData<MyResource> metaData = MetaData.create();
     metaData.putBoolean("booleanValue", true);
     String json = gson.toJson(metaData);
-    System.out.println(json);
+    assertTrue(json.contains("booleanValue"));
+    assertTrue(json.contains("true"));
   }
 
   public void testDeserialize() {
@@ -52,6 +53,22 @@ public class MetaDataTest extends TestCase {
     Type metaDataType = new TypeToken<MetaData<MyResource>>(){}.getType();
     MetaData<MyResource> metaData = gson.fromJson(json, metaDataType);
     assertTrue(metaData.getBoolean("booleanValue"));
+  }
+
+  @SuppressWarnings("rawtypes")
+  public void testSerializeRaw() {
+    MetaData metaData = new MetaData();
+    metaData.putString("stringValue", "foo bar");
+    String json = gson.toJson(metaData);
+    assertTrue(json.contains("stringValue"));
+    assertTrue(json.contains("foo bar"));
+  }
+
+  @SuppressWarnings("rawtypes")
+  public void testDeserializeRaw() {
+    String json = "{stringValue:'bar bar'}";
+    MetaData metaData = gson.fromJson(json, MetaData.class);
+    assertEquals("bar bar", metaData.getString("stringValue"));
   }
 
   private static class MyResource extends RestResourceImpl<MyResource> {
