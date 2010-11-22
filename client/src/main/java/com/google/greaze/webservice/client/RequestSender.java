@@ -25,6 +25,7 @@ import java.util.logging.Logger;
 import com.google.greaze.client.internal.utils.Streams;
 import com.google.greaze.definition.HeaderMap;
 import com.google.greaze.definition.HeaderMapSpec;
+import com.google.greaze.definition.HttpMethod;
 import com.google.greaze.definition.WebServiceSystemException;
 import com.google.greaze.definition.webservice.RequestBody;
 import com.google.greaze.definition.webservice.WebServiceRequest;
@@ -36,6 +37,8 @@ import com.google.gson.Gson;
  * @author inder
  */
 public final class RequestSender {
+  private static final boolean SIMULATE_GET_WITH_POST = true;
+  private static final boolean SIMULATE_PUT_WITH_POST = true;
   private final Gson gson;
   private final Logger logger;
   private final Level logLevel;
@@ -52,6 +55,14 @@ public final class RequestSender {
   
   public void send(HttpURLConnection conn, WebServiceRequest request) {    
     try {
+      HttpMethod method = request.getHttpMethod();
+      if (SIMULATE_PUT_WITH_POST && method == HttpMethod.PUT) {
+        method = HttpMethod.POST;
+        setHeader(conn, HttpMethod.SIMULATED_METHOD_HEADER, HttpMethod.PUT.toString(), true);
+      } else  if (SIMULATE_GET_WITH_POST && method == HttpMethod.GET) {
+        method = HttpMethod.POST;
+        setHeader(conn, HttpMethod.SIMULATED_METHOD_HEADER, HttpMethod.GET.toString(), true);
+      }
       conn.setRequestMethod(request.getHttpMethod().toString());
       setHeader(conn, "Content-Type", request.getContentType(), true);
       
