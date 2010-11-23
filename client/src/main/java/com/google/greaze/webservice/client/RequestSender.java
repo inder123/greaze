@@ -36,7 +36,7 @@ import com.google.gson.Gson;
  * 
  * @author inder
  */
-public final class RequestSender {
+public class RequestSender {
   private static final boolean SIMULATE_GET_WITH_POST = true;
   private static final boolean SIMULATE_PUT_WITH_POST = true;
   private final Gson gson;
@@ -70,14 +70,10 @@ public final class RequestSender {
       // This is done here instead of in the response receiver because this property must be set
       // before sending any data on the connection.
       conn.setDoInput(true);
-      
       RequestBody requestBody = request.getBody();
-      String requestBodyContents = "";
+      String requestBodyContents = bodyToJson(requestBody);
       // Android Java VM ignore Content-Length if setDoOutput is not set
-      conn.setDoOutput(true);    
-      if (requestBody.getSpec().size() > 0) {
-        requestBodyContents = gson.toJson(requestBody);
-      }
+      conn.setDoOutput(true);
       String contentLength = String.valueOf(requestBodyContents.length());
       setHeader(conn, "Content-Length", contentLength, true);
       addRequestParams(conn, request.getHeaders());
@@ -87,6 +83,19 @@ public final class RequestSender {
       conn.connect();
     } catch (IOException e) {
       throw new WebServiceSystemException(e);
+    }
+  }
+
+  private String bodyToJson(RequestBody requestBody) {
+    switch (requestBody.getSpec().getContentBodyType()) {
+      case SIMPLE:
+        return gson.toJson(requestBody.getSimpleBody());
+      case LIST:
+        return gson.toJson(requestBody.getListBody());
+      case MAP:
+        return gson.toJson(requestBody);
+      default:
+        throw new UnsupportedOperationException();
     }
   }
 

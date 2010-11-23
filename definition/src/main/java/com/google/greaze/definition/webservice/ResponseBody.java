@@ -16,7 +16,6 @@
 package com.google.greaze.definition.webservice;
 
 import java.lang.reflect.Type;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -41,8 +40,6 @@ public final class ResponseBody extends ContentBody {
 
   public static class Builder extends ContentBody.Builder {    
 
-    private Object simpleBody;
-    private List<Object> listBody = new ArrayList<Object>();
     public Builder(ResponseBodySpec spec) {
       super(spec);
     }

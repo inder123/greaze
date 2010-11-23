@@ -15,21 +15,14 @@
  */
 package com.google.greaze.rest.client;
 
-import java.io.IOException;
-import java.lang.reflect.Type;
 import java.net.HttpURLConnection;
-import java.util.Map;
 import java.util.logging.Level;
-import java.util.logging.Logger;
 
-import com.google.greaze.client.internal.utils.Streams;
-import com.google.greaze.definition.HeaderMap;
-import com.google.greaze.definition.HeaderMapSpec;
-import com.google.greaze.definition.HttpMethod;
-import com.google.greaze.definition.WebServiceSystemException;
 import com.google.greaze.definition.rest.ResourceId;
 import com.google.greaze.definition.rest.RestRequestBase;
 import com.google.greaze.definition.rest.RestResourceBase;
+import com.google.greaze.definition.webservice.WebServiceRequest;
+import com.google.greaze.webservice.client.RequestSender;
 import com.google.gson.Gson;
 
 /**
@@ -37,83 +30,18 @@ import com.google.gson.Gson;
  * 
  * @author inder
  */
-public final class RestRequestSender {
-  private static final boolean SIMULATE_GET_WITH_POST = true;
-  private static final boolean SIMULATE_PUT_WITH_POST = true;
-
-  private final Gson gson;
-  private final Logger logger;
-  private final Level logLevel;
+public class RestRequestSender extends RequestSender {
 
   public RestRequestSender(Gson gson) {
     this(gson, null);
   }
 
   public RestRequestSender(Gson gson, Level logLevel) {
-    this.gson = gson;
-    logger = logLevel == null ? null : Logger.getLogger(RestRequestSender.class.getName());
-    this.logLevel = logLevel;
+    super(gson, logLevel);
   }
-  
+
   public <I extends ResourceId, R extends RestResourceBase<I, R>> void send(
-      HttpURLConnection conn, RestRequestBase<I, R> request) {    
-    try {
-      HttpMethod method = request.getHttpMethod();
-      if (SIMULATE_PUT_WITH_POST && method == HttpMethod.PUT) {
-        method = HttpMethod.POST;
-        setHeader(conn, HttpMethod.SIMULATED_METHOD_HEADER, HttpMethod.PUT.toString(), true);
-      } else  if (SIMULATE_GET_WITH_POST && method == HttpMethod.GET) {
-        method = HttpMethod.POST;
-        setHeader(conn, HttpMethod.SIMULATED_METHOD_HEADER, HttpMethod.GET.toString(), true);
-      }
-      conn.setRequestMethod(method.toString());
-      setHeader(conn, "Content-Type", request.getContentType(), true);
-      
-      // Assume conservatively that the response will need to be read.
-      // This is done here instead of in the response receiver because this property must be set
-      // before sending any data on the connection.
-      conn.setDoInput(true);
-      
-      R requestBody = request.getResource();
-      String requestBodyContents = "";
-      if (method == HttpMethod.POST || method == HttpMethod.PUT) {
-        // Android Java VM ignore Content-Length if setDoOutput is not set
-        conn.setDoOutput(true);
-      }
-      if (requestBody != null) {
-        requestBodyContents = gson.toJson(requestBody, request.getSpec().getResourceType());
-      }
-      String contentLength = String.valueOf(requestBodyContents.length());
-      setHeader(conn, "Content-Length", contentLength, true);
-      addRequestParams(conn, request.getHeaders());
-      Streams.copy(requestBodyContents, conn.getOutputStream(), false);
-
-      // Initiate the sending of the request.
-      conn.connect();
-    } catch (IOException e) {
-      throw new WebServiceSystemException(e);
-    }
+      HttpURLConnection conn, RestRequestBase<I, R> request) {
+    super.send(conn, (WebServiceRequest) request);
   }
-
-  private void addRequestParams(HttpURLConnection conn, HeaderMap requestParams) {
-    HeaderMapSpec spec = requestParams.getSpec();
-    for (Map.Entry<String, Object> entry : requestParams.entrySet()) {
-      String paramName = entry.getKey();
-      Type type = spec.getTypeFor(paramName);
-      Object value = entry.getValue();
-      String json = gson.toJson(value, type);
-      setHeader(conn, paramName, json, false);
-    }
-  }
-
-  private void setHeader(HttpURLConnection conn, String name, String value, boolean overwrite) {
-    if (logger != null) {
-      logger.log(logLevel, String.format("Request param: %s:%s", name, value));
-    }
-    if (overwrite) {
-      conn.setRequestProperty(name, value);
-    } else {
-      conn.addRequestProperty(name, value);
-    }
-  }  
 }

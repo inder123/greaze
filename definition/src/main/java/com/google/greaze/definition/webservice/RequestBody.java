@@ -44,9 +44,6 @@ public final class RequestBody extends ContentBody {
 
   public static class Builder extends ContentBody.Builder {    
     
-    private Object simpleBody;
-    private List<Object> listBody = new ArrayList<Object>();
-
     public Builder(RequestBodySpec spec) {
       super(spec);
     }
