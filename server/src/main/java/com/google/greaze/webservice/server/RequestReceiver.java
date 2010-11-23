@@ -42,12 +42,12 @@ import com.google.gson.JsonSyntaxException;
 /**
  * Receives and parses a request at the server side on a {@link HttpServletRequest}.  
  * 
- * @author inder
+ * @author Inderjeet Singh
  */
-public final class RequestReceiver {
+public class RequestReceiver {
 
-  private final Gson gson;
-  private final RequestSpec spec;
+  protected final Gson gson;
+  protected final RequestSpec spec;
 
   public RequestReceiver(Gson gson, RequestSpec spec) {
     this.gson = gson;
@@ -70,7 +70,7 @@ public final class RequestReceiver {
     }
   }
   
-  private HeaderMap buildRequestParams(HttpServletRequest request) {
+  protected HeaderMap buildRequestParams(HttpServletRequest request) {
     HeaderMapSpec paramsSpec = this.spec.getHeadersSpec();
     HeaderMap.Builder paramsBuilder = new HeaderMap.Builder(paramsSpec);
     for (Map.Entry<String, Type> param : paramsSpec.entrySet()) {
@@ -85,7 +85,7 @@ public final class RequestReceiver {
     return paramsBuilder.build();
   }
 
-  private HeaderMap buildUrlParams(HttpServletRequest request) {
+  protected HeaderMap buildUrlParams(HttpServletRequest request) {
     HeaderMapSpec paramsSpec = this.spec.getUrlParamsSpec();
     HeaderMap.Builder paramsBuilder = new HeaderMap.Builder(paramsSpec);
     for (Map.Entry<String, Type> param : paramsSpec.entrySet()) {
