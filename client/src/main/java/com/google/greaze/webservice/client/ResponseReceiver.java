@@ -26,6 +26,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import com.google.greaze.client.internal.utils.ConnectionPreconditions;
+import com.google.greaze.definition.ContentBodyType;
 import com.google.greaze.definition.HeaderMap;
 import com.google.greaze.definition.HeaderMapSpec;
 import com.google.greaze.definition.WebServiceSystemException;
@@ -40,11 +41,11 @@ import com.google.gson.Gson;
  * 
  * @author inder
  */
-public final class ResponseReceiver {
-  private final Gson gson;
-  private final ResponseSpec spec;
-  private final Logger logger;
-  private final Level logLevel;
+public class ResponseReceiver {
+  protected final Gson gson;
+  protected final ResponseSpec spec;
+  protected final Logger logger;
+  protected final Level logLevel;
 
   public ResponseReceiver(Gson gson, ResponseSpec spec) {
     this(gson, spec, null);
@@ -69,7 +70,7 @@ public final class ResponseReceiver {
     }
   }
 
-  private HeaderMap readResponseHeaders(HttpURLConnection conn, HeaderMapSpec paramsSpec) {    
+  protected HeaderMap readResponseHeaders(HttpURLConnection conn, HeaderMapSpec paramsSpec) {    
     HeaderMap.Builder paramsBuilder = new HeaderMap.Builder(paramsSpec);    
     for (Map.Entry<String, Type> entry : paramsSpec.entrySet()) {
       String paramName = entry.getKey();
@@ -86,15 +87,14 @@ public final class ResponseReceiver {
     return paramsBuilder.build();
   }
 
-  private ResponseBody readResponseBody(HttpURLConnection conn, ResponseBodySpec bodySpec) 
+  protected ResponseBody readResponseBody(HttpURLConnection conn, ResponseBodySpec bodySpec) 
       throws IOException {
-    if (bodySpec.size() == 0) {
+    if (bodySpec.size() == 0 && bodySpec.getContentBodyType() == ContentBodyType.MAP) {
       return new ResponseBody.Builder(bodySpec).build();
     }
     String connContentType = conn.getContentType();
     ConnectionPreconditions.checkArgument(connContentType.contains(bodySpec.getContentType()), conn);
     Reader reader = new BufferedReader(new InputStreamReader(conn.getInputStream()));
-    ResponseBody body = gson.fromJson(reader, ResponseBody.class);
-    return body;
+    return gson.fromJson(reader, ResponseBody.class);
   }
 }

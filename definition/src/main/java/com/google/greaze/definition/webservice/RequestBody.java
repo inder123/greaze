@@ -15,6 +15,10 @@
  */
 package com.google.greaze.definition.webservice;
 
+import java.lang.reflect.Type;
+import java.util.List;
+import java.util.Map;
+
 import com.google.greaze.definition.ContentBody;
 import com.google.greaze.definition.TypedKey;
 import com.google.greaze.definition.UntypedKey;
@@ -24,11 +28,6 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonParseException;
 import com.google.gson.JsonSerializationContext;
 import com.google.gson.JsonSerializer;
-
-import java.lang.reflect.Type;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
 
 /**
  * Definition of the request body of a {@link WebServiceCall}. The request body is what is sent out

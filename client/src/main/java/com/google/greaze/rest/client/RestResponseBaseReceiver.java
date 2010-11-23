@@ -21,9 +21,7 @@ import java.io.InputStreamReader;
 import java.io.Reader;
 import java.lang.reflect.Type;
 import java.net.HttpURLConnection;
-import java.util.Map;
 import java.util.logging.Level;
-import java.util.logging.Logger;
 
 import com.google.greaze.client.internal.utils.ConnectionPreconditions;
 import com.google.greaze.definition.ContentBodySpec;
@@ -34,6 +32,7 @@ import com.google.greaze.definition.rest.ResourceId;
 import com.google.greaze.definition.rest.RestResourceBase;
 import com.google.greaze.definition.rest.RestResponseBase;
 import com.google.greaze.definition.rest.RestResponseSpec;
+import com.google.greaze.webservice.client.ResponseReceiver;
 import com.google.gson.Gson;
 
 /**
@@ -41,52 +40,37 @@ import com.google.gson.Gson;
  * 
  * @author Inderjeet Singh
  */
-public class RestResponseBaseReceiver<I extends ResourceId, R extends RestResourceBase<I, R>> {
-  private final Gson gson;
-  private final RestResponseSpec spec;
-  private final Logger logger;
-  private final Level logLevel;
+public class RestResponseBaseReceiver<I extends ResourceId, R extends RestResourceBase<I, R>>
+    extends ResponseReceiver {
 
   public RestResponseBaseReceiver(Gson gson, RestResponseSpec spec) {
     this(gson, spec, null);
   }
   public RestResponseBaseReceiver(Gson gson, RestResponseSpec spec, Level logLevel) {
-    this.gson = gson;
-    this.spec = spec;
-    this.logger = logLevel == null ? null : Logger.getLogger(RestResponseBaseReceiver.class.getName());
-    this.logLevel = logLevel;
+    super(gson, spec, logLevel);
   }
-  
+
+  private RestResponseSpec getSpec() {
+    return (RestResponseSpec) spec;
+  }
+
+  @Override
   public RestResponseBase<I, R> receive(HttpURLConnection conn) {
     try {
-      HeaderMapSpec paramSpec = spec.getHeadersSpec();
-      Type bodyType = spec.getResourceType();
+      HeaderMapSpec paramSpec = getSpec().getHeadersSpec();
+      Type bodyType = getSpec().getResourceType();
       // read response
       HeaderMap responseParams = readResponseHeaders(conn, paramSpec);
       R responseBody = readResponseBody(conn, bodyType);
-      return new RestResponseBase<I, R>(spec, responseParams, responseBody);
+      return new RestResponseBase<I, R>(getSpec(), responseParams, responseBody);
     } catch (IOException e) {
       throw new WebServiceSystemException(e);
     }
   }
 
-  private HeaderMap readResponseHeaders(HttpURLConnection conn, HeaderMapSpec paramsSpec) {    
-    HeaderMap.Builder paramsBuilder = new HeaderMap.Builder(paramsSpec);    
-    for (Map.Entry<String, Type> entry : paramsSpec.entrySet()) {
-      String paramName = entry.getKey();
-      String json = conn.getHeaderField(paramName);
-      if (json != null) {
-        if (logger != null) {
-          logger.log(logLevel, String.format("Response Header: %s:%s\n", paramName, json));
-        }
-        Type typeOfT = paramsSpec.getTypeFor(paramName);
-        Object value = gson.fromJson(json, typeOfT);
-        paramsBuilder.put(paramName, value, typeOfT);
-      }
-    }
-    return paramsBuilder.build();
-  }
-
+  // We could reuse the base classes method, readResponseBody. However, that requires that
+  // a RequestBody.GsonTypeAdapter is registered. We avoid that registration for REST resources
+  // with this implementation
   @SuppressWarnings("unchecked")
   private R readResponseBody(
       HttpURLConnection conn, Type resourceType) throws IOException {
