@@ -33,10 +33,10 @@ import com.google.gson.Gson;
  * 
  * @author inder
  */
-public final class ResponseSender {
+public class ResponseSender {
   private static final Logger logger = Logger.getLogger(ResponseSender.class.getCanonicalName());
 
-  private Gson gson;
+  protected final Gson gson;
 
   public ResponseSender(Gson gson) {
     this.gson = gson;
@@ -51,7 +51,7 @@ public final class ResponseSender {
     }
   }
  
-  private void sendHeaders(HttpServletResponse conn, HeaderMap responseParams) {
+  protected void sendHeaders(HttpServletResponse conn, HeaderMap responseParams) {
     HeaderMapSpec spec = responseParams.getSpec();
     for (Map.Entry<String, Object> param : responseParams.entrySet()) {
       String paramName = param.getKey();
