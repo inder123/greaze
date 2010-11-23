@@ -28,9 +28,9 @@ import java.lang.reflect.Type;
  */
 public class WebServiceResponse {
   
-  private final HeaderMap headers;
-  private final ResponseBody body;
-  private final ResponseSpec spec;
+  protected final HeaderMap headers;
+  protected final ResponseBody body;
+  protected final ResponseSpec spec;
   
   public static class Builder {
     private final HeaderMap.Builder headers;

@@ -28,12 +28,10 @@ import com.google.greaze.definition.webservice.WebServiceResponse;
  * The data associated with a REST Web service response. This includes http response header
  * parameters, and the response body. 
  * 
- * @author inder
+ * @author Inderjeet Singh
  */
 public class RestResponseBase<I extends ResourceId, R extends RestResourceBase<I, R>>
     extends WebServiceResponse {
-  
-  private final R resource;
   
   public static class Builder<II extends ResourceId, RS extends RestResourceBase<II, RS>> {
     private final HeaderMap.Builder headers;
@@ -62,7 +60,6 @@ public class RestResponseBase<I extends ResourceId, R extends RestResourceBase<I
   
   public RestResponseBase(RestResponseSpec spec, HeaderMap responseHeaders, R resource) {
     super(spec, responseHeaders, createBody(resource, spec.getResourceType()));
-    this.resource = resource;
   }
   
   private static<R> ResponseBody createBody(R resource, Type resourceType) {
@@ -73,10 +70,11 @@ public class RestResponseBase<I extends ResourceId, R extends RestResourceBase<I
   }
 
   public RestResponseSpec getSpec() {
-    return (RestResponseSpec) super.getSpec();
+    return (RestResponseSpec) spec;
   }
 
+  @SuppressWarnings("unchecked")
   public R getResource() {
-    return resource;
+    return (R) body.getSimpleBody();
   }
 }

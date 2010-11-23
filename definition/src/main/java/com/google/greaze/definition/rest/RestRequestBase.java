@@ -34,7 +34,6 @@ import java.lang.reflect.Type;
 public class RestRequestBase<I extends ResourceId, R extends RestResourceBase<I, R>>
     extends WebServiceRequest {
   private final I id;
-  private final R resource;
   
   public RestRequestBase(HttpMethod method, HeaderMap requestHeaders,
       I resourceId, R requestBody, Type resourceType) {
@@ -42,7 +41,6 @@ public class RestRequestBase<I extends ResourceId, R extends RestResourceBase<I,
       createBody(requestBody, resourceType),
       new RestRequestSpec(requestHeaders.getSpec(), resourceType));
     this.id = resourceId;
-    this.resource = requestBody;
   }
 
   private static HeaderMap createUrlParams() {
@@ -66,7 +64,8 @@ public class RestRequestBase<I extends ResourceId, R extends RestResourceBase<I,
     return id;
   }
 
+  @SuppressWarnings("unchecked")
   public R getResource() {
-    return resource;
+    return (R) body.getSimpleBody();
   }
 }
