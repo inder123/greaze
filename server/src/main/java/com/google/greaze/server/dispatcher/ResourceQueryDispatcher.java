@@ -15,7 +15,6 @@
  */
 package com.google.greaze.server.dispatcher;
 
-import java.lang.reflect.Type;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -25,10 +24,8 @@ import javax.servlet.http.HttpServletResponse;
 
 import com.google.common.base.Preconditions;
 import com.google.greaze.definition.CallPath;
-import com.google.greaze.definition.ContentBodyType;
 import com.google.greaze.definition.HeaderMap;
 import com.google.greaze.definition.HeaderMapSpec;
-import com.google.greaze.definition.UntypedKey;
 import com.google.greaze.definition.rest.query.ResourceQueryBase;
 import com.google.greaze.definition.rest.query.ResourceQueryParams;
 import com.google.greaze.definition.rest.query.TypedKeysQuery;
@@ -45,7 +42,6 @@ import com.google.greaze.webservice.server.RequestReceiver;
 import com.google.greaze.webservice.server.ResponseSender;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
-import com.google.inject.util.Types;
 
 /**
  * A class to service incoming resource query requests using corresponding query handlers.
@@ -65,15 +61,14 @@ public class ResourceQueryDispatcher {
   public void service(HttpServletRequest req, HttpServletResponse res,
       String queryName, CallPath callPath, ResourceQueryBase resourceQuery) {
     Preconditions.checkNotNull(resourceQuery);
-    Type typeOfListOfR = Types.listOf(resourceQuery.getResourceType());
-
-    WebServiceCallSpec spec = QueryHelperServer.generateQueryCallSpec(callPath, typeOfListOfR);
+    WebServiceCallSpec spec = QueryHelperServer.generateQueryCallSpec(callPath,
+        resourceQuery.getResourceType());
     RequestSpec requestSpec = spec.getRequestSpec();
     ResponseSpec responseSpec = spec.getResponseSpec();
     Gson gson = gsonBuilder
-        .registerTypeAdapter(RequestBody.class,
+        .registerTypeHierarchyAdapter(RequestBody.class,
             new RequestBody.GsonTypeAdapter(requestSpec.getBodySpec()))
-        .registerTypeAdapter(ResponseBody.class, 
+        .registerTypeHierarchyAdapter(ResponseBody.class, 
             new ResponseBody.GsonTypeAdapter(responseSpec.getBodySpec()))
         .create();
     RequestReceiver requestReceiver = new RequestReceiver(gson, requestSpec);
@@ -86,12 +81,11 @@ public class ResourceQueryDispatcher {
     List results = resourceQuery.query(queryParams);
     HeaderMapSpec headerSpec = new HeaderMapSpec.Builder().build();
     HeaderMap responseHeaders = new HeaderMap.Builder(headerSpec).build();
-    UntypedKey keyForResourceList = TypedKeysQuery.getKeyForResourceList(typeOfListOfR);
-    ResponseBodySpec bodySpec = new ResponseBodySpec.Builder(ContentBodyType.LIST)
-      .put(keyForResourceList)
+    ResponseBodySpec bodySpec = new ResponseBodySpec.Builder()
+      .setListBody(resourceQuery.getResourceType())
       .build();
     ResponseBody responseBody = new ResponseBody.Builder(bodySpec)
-      .put(keyForResourceList, results)
+      .setListBody(results)
       .build();
     WebServiceResponse response = new WebServiceResponse(responseHeaders, responseBody);
     ResponseSender responseSender = new ResponseSender(gson);

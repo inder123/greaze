@@ -14,8 +14,8 @@
  * limitations under the License.
  */
 package com.google.greaze.example.service.definition;
+
 import com.google.greaze.definition.CallPath;
-import com.google.greaze.definition.ContentBodyType;
 import com.google.greaze.definition.HttpMethod;
 import com.google.greaze.definition.webservice.WebServiceCallSpec;
 import com.google.greaze.example.webservice.definition.TypedKeys;
@@ -28,7 +28,8 @@ import com.google.greaze.example.webservice.definition.TypedKeys;
 public class SampleJsonService {
 
   public static final WebServiceCallSpec PLACE_ORDER = new WebServiceCallSpec.Builder(
-    ContentBodyType.MAP, new CallPath("/placeOrder"))
+    new CallPath("/placeOrder"))
+      .setMapBody()
       .setVersion(1.0)
       .supportsHttpMethod(HttpMethod.POST)
       .addRequestParam(TypedKeys.Request.AUTH_TOKEN)

@@ -15,28 +15,27 @@
  */
 package com.google.greaze.definition.webservice;
 
+import java.lang.reflect.Type;
+import java.util.Arrays;
+import java.util.LinkedHashSet;
+import java.util.Set;
+
 import com.google.greaze.definition.CallPath;
-import com.google.greaze.definition.ContentBodyType;
 import com.google.greaze.definition.HeaderMapSpec;
 import com.google.greaze.definition.HttpMethod;
 import com.google.greaze.definition.TypedKey;
 import com.google.greaze.definition.UntypedKey;
 import com.google.greaze.definition.internal.utils.GreazePreconditions;
 
-import java.util.Arrays;
-import java.util.LinkedHashSet;
-import java.util.Set;
-
 /**
  * Specification for a Json web service call. The call includes the relative path where the call 
  * is available, the specification of requests, and responses. 
  * 
- * @author inder
+ * @author Inderjeet Singh
  */
 public class WebServiceCallSpec {
   
-  public static final WebServiceCallSpec NULL_SPEC =
-    new Builder(ContentBodyType.SIMPLE, new CallPath("")).build();
+  public static final WebServiceCallSpec NULL_SPEC = new Builder(new CallPath("")).build();
   
   public static class Builder {
 	private final CallPath callPath;
@@ -48,15 +47,33 @@ public class WebServiceCallSpec {
     private final ResponseBodySpec.Builder resBodySpecBuilder;
     private double version;
     
-    public Builder(ContentBodyType contentBodyType, CallPath callPath) {
+    public Builder(CallPath callPath) {
       this.callPath = callPath;
       supportedHttpMethods = new LinkedHashSet<HttpMethod>();
       urlParamsSpecBuilder = new HeaderMapSpec.Builder();
       reqParamsSpecBuilder = new HeaderMapSpec.Builder();
-      reqBodySpecBuilder = new RequestBodySpec.Builder(contentBodyType);
       resParamsSpecBuilder = new HeaderMapSpec.Builder();
-      resBodySpecBuilder = new ResponseBodySpec.Builder(contentBodyType);
+      reqBodySpecBuilder = new RequestBodySpec.Builder();
+      resBodySpecBuilder = new ResponseBodySpec.Builder();
       this.version = -1D; 
+    }
+    
+    public Builder setSimpleBody(Type simpleBodyType) {
+      reqBodySpecBuilder.setSimpleBody(simpleBodyType);
+      resBodySpecBuilder.setSimpleBody(simpleBodyType);
+      return this;
+    }
+    
+    public Builder setListBody(Type listElementType) {
+      reqBodySpecBuilder.setListBody(listElementType);
+      resBodySpecBuilder.setListBody(listElementType);
+      return this;
+    }
+    
+    public Builder setMapBody() {
+      reqBodySpecBuilder.setMapBody();
+      resBodySpecBuilder.setMapBody();
+      return this;
     }
     
     public Builder setVersion(double version) {

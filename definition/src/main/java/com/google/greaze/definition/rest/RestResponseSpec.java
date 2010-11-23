@@ -15,12 +15,11 @@
  */
 package com.google.greaze.definition.rest;
 
-import com.google.greaze.definition.ContentBodyType;
+import java.lang.reflect.Type;
+
 import com.google.greaze.definition.HeaderMapSpec;
 import com.google.greaze.definition.webservice.ResponseBodySpec;
 import com.google.greaze.definition.webservice.ResponseSpec;
-
-import java.lang.reflect.Type;
 
 /**
  * Specification for a {@link RestResponseBase}.
@@ -36,8 +35,8 @@ public final class RestResponseSpec extends ResponseSpec {
   }
 
   private static ResponseBodySpec buildBodySpec(Type resourceType) {
-    return new ResponseBodySpec.Builder(ContentBodyType.SIMPLE)
-      .setSimpleBodyType(resourceType)
+    return new ResponseBodySpec.Builder()
+      .setSimpleBody(resourceType)
       .build();
   }
 

@@ -27,23 +27,32 @@ import com.google.greaze.definition.UntypedKey;
 /**
  * Specification of a {@link ResponseBody}.
  * 
- * @author inder
+ * @author Inderjeet Singh
  */
 public final class ResponseBodySpec extends ContentBodySpec {
   
   public static class Builder {
     private final Map<String, Type> paramsSpec = new LinkedHashMap<String, Type>();
-    private final ContentBodyType contentBodyType;
+    private ContentBodyType contentBodyType;
     private Type simpleBodyType;
 
-    public Builder(ContentBodyType contentBodyType) {
-      this.contentBodyType = contentBodyType;
-    }
-
-    public Builder setSimpleBodyType(Type simpleBodyType) {
+    public Builder setSimpleBody(Type simpleBodyType) {
+      this.contentBodyType = ContentBodyType.SIMPLE;
       this.simpleBodyType = simpleBodyType;
       return this;
     }
+
+    public Builder setListBody(Type listElementType) {
+      this.contentBodyType = ContentBodyType.LIST;
+      this.simpleBodyType = listElementType;
+      return this;
+    }
+
+    public Builder setMapBody() {
+      this.contentBodyType = ContentBodyType.MAP;
+      return this;
+    }
+
     public <T> Builder put(TypedKey<T> param) {
       paramsSpec.put(param.getName(), param.getClassOfT());
       return this;
@@ -55,8 +64,7 @@ public final class ResponseBodySpec extends ContentBodySpec {
     }
     
     public ResponseBodySpec build() {
-      ResponseBodySpec spec = new ResponseBodySpec(contentBodyType, paramsSpec, simpleBodyType);
-      return spec;
+      return new ResponseBodySpec(contentBodyType, paramsSpec, simpleBodyType);
     }    
   }
   

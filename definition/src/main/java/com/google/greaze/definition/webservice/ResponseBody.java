@@ -49,8 +49,14 @@ public final class ResponseBody extends ContentBody {
       return (ResponseBodySpec) spec;
     }
 
+    @Override
     public Builder setSimpleBody(Object body) {
       return (Builder) super.setSimpleBody(body);
+    }
+
+    @Override
+    public Builder setListBody(List<Object> list) {
+      return (Builder) super.setListBody(list);
     }
 
     @Override

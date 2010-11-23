@@ -15,7 +15,6 @@
  */
 package com.google.greaze.definition;
 
-
 import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.List;
@@ -44,6 +43,11 @@ public class ContentBody extends ParamMap {
 
     public Builder setSimpleBody(Object body) {
       this.simpleBody = body;
+      return this;
+    }
+
+    public Builder setListBody(List<Object> list) {
+      this.listBody = list;
       return this;
     }
 

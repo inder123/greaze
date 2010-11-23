@@ -15,10 +15,7 @@
  */
 package com.google.greaze.definition.rest.query;
 
-import java.lang.reflect.Type;
-
 import com.google.greaze.definition.TypedKey;
-import com.google.greaze.definition.UntypedKey;
 import com.google.greaze.definition.rest.ResourceId;
 import com.google.greaze.definition.rest.RestResourceBase;
 
@@ -41,8 +38,4 @@ public class TypedKeysQuery<I extends ResourceId, R extends RestResourceBase<I, 
    * This key is used to specify the URL parameter for the queryValue
    */
   public static final TypedKey<String> QUERY_VALUE_AS_JSON = new TypedKey<String>("queryValueAsJson", String.class);
-
-  public static UntypedKey getKeyForResourceList(Type typeOfListOfR) {
-    return new UntypedKey("resourceList", typeOfListOfR);
-  }
 }

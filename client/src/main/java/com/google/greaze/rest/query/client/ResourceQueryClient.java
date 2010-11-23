@@ -42,12 +42,12 @@ public class ResourceQueryClient<R extends RestResource<R>, Q extends ResourceQu
    * @param callPath relative path to the resource
    */
   public ResourceQueryClient(WebServiceClient stub, CallPath callPath,
-      Type queryType, GsonBuilder gsonBuilder, Type resourceType, Type typeOfListOfR) {
-    super(stub, callPath, queryType, gsonBuilder, resourceType, typeOfListOfR);
+      Type queryType, GsonBuilder gsonBuilder, Type resourceType) {
+    super(stub, callPath, queryType, gsonBuilder, resourceType);
   }
 
   protected ResourceQueryClient(WebServiceClient stub, WebServiceCallSpec callSpec,
-      Type queryType, GsonBuilder gsonBuilder, Type resourceType, Type typeOfListOfR) {
-    super(stub, callSpec, queryType, gsonBuilder, resourceType, typeOfListOfR);
+      Type queryType, GsonBuilder gsonBuilder, Type resourceType) {
+    super(stub, callSpec, queryType, gsonBuilder, resourceType);
   }
 }

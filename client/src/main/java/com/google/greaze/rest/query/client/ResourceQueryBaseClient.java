@@ -19,10 +19,8 @@ import java.lang.reflect.Type;
 import java.util.List;
 
 import com.google.greaze.definition.CallPath;
-import com.google.greaze.definition.ContentBodyType;
 import com.google.greaze.definition.HeaderMap;
 import com.google.greaze.definition.HttpMethod;
-import com.google.greaze.definition.UntypedKey;
 import com.google.greaze.definition.rest.ResourceId;
 import com.google.greaze.definition.rest.RestResourceBase;
 import com.google.greaze.definition.rest.query.ResourceQueryBase;
@@ -56,20 +54,18 @@ public class ResourceQueryBaseClient<
   private final Gson gson;
   private final Type resourceType;
   private final Type queryType;
-  private final UntypedKey keyForResourceList;
 
   /**
    * @param stub stub containing server info to access the rest client
    * @param callPath relative path to the resource
    */
   public ResourceQueryBaseClient(WebServiceClient stub, CallPath callPath,
-      Type queryType, GsonBuilder gsonBuilder, Type resourceType, Type typeOfListOfR) {
-    this(stub, generateCallSpec(callPath, typeOfListOfR), queryType, gsonBuilder,
-        resourceType, typeOfListOfR);
+      Type queryType, GsonBuilder gsonBuilder, Type resourceType) {
+    this(stub, generateCallSpec(callPath, resourceType), queryType, gsonBuilder, resourceType);
   }
 
   protected ResourceQueryBaseClient(WebServiceClient stub, WebServiceCallSpec callSpec,
-      Type queryType, GsonBuilder gsonBuilder, Type resourceType, Type typeOfListOfR) {
+      Type queryType, GsonBuilder gsonBuilder, Type resourceType) {
     this.stub = stub;
     this.callSpec = callSpec;
     this.gson = gsonBuilder
@@ -80,20 +76,18 @@ public class ResourceQueryBaseClient<
       .create();
     this.queryType = queryType;
     this.resourceType = resourceType;
-    this.keyForResourceList = TypedKeysQuery.getKeyForResourceList(typeOfListOfR);
   }
 
-  private static WebServiceCallSpec generateCallSpec(CallPath callPath, Type typeOfListOfR) {
-    UntypedKey keyForResourceList = TypedKeysQuery.getKeyForResourceList(typeOfListOfR);
-    return new WebServiceCallSpec.Builder(ContentBodyType.LIST, callPath)
+  private static WebServiceCallSpec generateCallSpec(CallPath callPath, Type resourceType) {
+    return new WebServiceCallSpec.Builder(callPath)
+        .setListBody(resourceType)
         .supportsHttpMethod(HttpMethod.GET)
         .addUrlParam(TypedKeysQuery.QUERY_NAME)
         .addUrlParam(TypedKeysQuery.QUERY_VALUE_AS_JSON)
-        .addResponseBodyParam(keyForResourceList)
         .build();
   }
 
-  @SuppressWarnings({"unchecked", "rawtypes"})
+  @SuppressWarnings({"unchecked"})
   @Override
   public List<R> query(Q query) {
     RequestSpec requestSpec = callSpec.getRequestSpec();
@@ -109,8 +103,7 @@ public class ResourceQueryBaseClient<
       new WebServiceRequest(HttpMethod.GET, requestHeaders, urlParams, requestBody);
     WebServiceResponse response = stub.getResponse(callSpec, request, gson);
     ResponseBody body = response.getBody();
-    List list = body.get(keyForResourceList);
-    return list;
+    return (List<R>)body.getListBody();
   }
 
   @Override

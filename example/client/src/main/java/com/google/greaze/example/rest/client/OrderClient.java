@@ -14,6 +14,9 @@
  * limitations under the License.
  */package com.google.greaze.example.rest.client;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import com.google.greaze.definition.CallPath;
 import com.google.greaze.example.definition.model.Cart;
 import com.google.greaze.example.definition.model.LineItem;
@@ -26,11 +29,6 @@ import com.google.greaze.webservice.client.ServerConfig;
 import com.google.greaze.webservice.client.WebServiceClient;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
-import com.google.gson.reflect.TypeToken;
-
-import java.lang.reflect.Type;
-import java.util.ArrayList;
-import java.util.List;
 
 /**
  * A sample client for the rest resource for {@link Order}
@@ -48,10 +46,9 @@ public class OrderClient {
     restClient = new ResourceDepotClient<Order>(
         new RestClientStub(serverConfig), CALL_PATH, Order.class, new Gson());
     ServerConfig wsServerConfig = new ServerConfig("http://localhost");
-    Type typeOfListOfR = new TypeToken<List<Order>>(){}.getType();
     queryClient = new ResourceQueryClient<Order, QueryOrdersByItemName>(
         new WebServiceClient(wsServerConfig), CALL_PATH, QueryOrdersByItemName.class, gsonBuilder,
-        Order.class, typeOfListOfR); 
+        Order.class); 
   }
 
   public Order placeOrder(Cart cart) {

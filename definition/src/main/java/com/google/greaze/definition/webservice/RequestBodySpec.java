@@ -15,7 +15,6 @@
  */
 package com.google.greaze.definition.webservice;
 
-
 import java.lang.reflect.Type;
 import java.util.LinkedHashMap;
 import java.util.Map;
@@ -27,21 +26,29 @@ import com.google.greaze.definition.TypedKey;
 /**
  * Specification of a {@link RequestBody}.
  * 
- * @author inder
+ * @author Inderjeet Singh
  */
 public final class RequestBodySpec extends ContentBodySpec {
   
   public static class Builder {
     private final Map<String, Type> paramsSpec = new LinkedHashMap<String, Type>();
-    private final ContentBodyType contentBodyType;
+    private ContentBodyType contentBodyType;
     private Type simpleBodyType; 
 
-    public Builder(ContentBodyType contentBodyType) {
-      this.contentBodyType = contentBodyType;
+    public Builder setSimpleBody(Type simpleBodyType) {
+      this.contentBodyType = ContentBodyType.SIMPLE;
+      this.simpleBodyType = simpleBodyType;
+      return this;
     }
 
-    public Builder setSimpleBodyType(Type simpleBodyType) {
-      this.simpleBodyType = simpleBodyType;
+    public Builder setListBody(Type listElementType) {
+      this.contentBodyType = ContentBodyType.LIST;
+      this.simpleBodyType = listElementType;
+      return this;
+    }
+
+    public Builder setMapBody() {
+      this.contentBodyType = ContentBodyType.MAP;
       return this;
     }
 

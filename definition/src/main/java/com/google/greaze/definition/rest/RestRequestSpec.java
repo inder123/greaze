@@ -15,23 +15,22 @@
  */
 package com.google.greaze.definition.rest;
 
-import com.google.greaze.definition.ContentBodyType;
+import java.lang.reflect.Type;
+
 import com.google.greaze.definition.HeaderMapSpec;
 import com.google.greaze.definition.webservice.RequestBodySpec;
 import com.google.greaze.definition.webservice.RequestSpec;
 
-import java.lang.reflect.Type;
-
 /**
  * Specification for a {@link RestRequestBase}.
  * 
- * @author inder
+ * @author Inderjeet Singh
  */
 public final class RestRequestSpec extends RequestSpec {
   private final Type resourceType;
 
   public RestRequestSpec(HeaderMapSpec headersSpec, Type resourceType) {
-    super(headersSpec, buildUrlParamSpec(), buildBodySpec());
+    super(headersSpec, buildUrlParamSpec(), buildBodySpec(resourceType));
     this.resourceType = resourceType;
   }
 
@@ -45,9 +44,8 @@ public final class RestRequestSpec extends RequestSpec {
     return new HeaderMapSpec.Builder().build();
   }
 
-  private static RequestBodySpec buildBodySpec() {
-    return new RequestBodySpec.Builder(ContentBodyType.SIMPLE)
-      .build();
+  private static RequestBodySpec buildBodySpec(Type resourceType) {
+    return new RequestBodySpec.Builder().setSimpleBody(resourceType).build();
   }
 
   public Type getResourceType() {
