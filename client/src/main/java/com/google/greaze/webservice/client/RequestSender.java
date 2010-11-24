@@ -37,7 +37,6 @@ import com.google.gson.Gson;
  * @author inder
  */
 public class RequestSender {
-  private static final boolean SIMULATE_PUT_WITH_POST = true;
   private final Gson gson;
   private final Logger logger;
   private final Level logLevel;
@@ -55,10 +54,6 @@ public class RequestSender {
   public void send(HttpURLConnection conn, WebServiceRequest request) {    
     try {
       HttpMethod method = request.getHttpMethod();
-      if (SIMULATE_PUT_WITH_POST && method == HttpMethod.PUT) {
-        method = HttpMethod.POST;
-        setHeader(conn, HttpMethod.SIMULATED_METHOD_HEADER, HttpMethod.PUT.toString(), true);
-      }
       conn.setRequestMethod(method.toString());
       setHeader(conn, "Content-Type", request.getContentType(), true);
       

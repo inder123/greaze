@@ -40,6 +40,9 @@ public enum HttpMethod {
   /**
    * This header is used to indicate the real method that is channeled through the current
    * request. For example, you can use it to send PUT requests under a POST.
+   * You can do this by setting a Request header on HttpURLConnection:
+   * {@code conn.setRequestProperty(HttpMethod.SIMULATED_METHOD_HEADER, HttpMethod.PUT.toString());}
+   * You should then send the request method to POST: {@code conn.setRequestMethod("POST");}
    */
   public static final String SIMULATED_METHOD_HEADER = "SimulatedMethod";
 }
