@@ -37,7 +37,6 @@ import com.google.gson.Gson;
  * @author inder
  */
 public class RequestSender {
-  private static final boolean SIMULATE_GET_WITH_POST = true;
   private static final boolean SIMULATE_PUT_WITH_POST = true;
   private final Gson gson;
   private final Logger logger;
@@ -59,25 +58,24 @@ public class RequestSender {
       if (SIMULATE_PUT_WITH_POST && method == HttpMethod.PUT) {
         method = HttpMethod.POST;
         setHeader(conn, HttpMethod.SIMULATED_METHOD_HEADER, HttpMethod.PUT.toString(), true);
-      } else  if (SIMULATE_GET_WITH_POST && method == HttpMethod.GET) {
-        method = HttpMethod.POST;
-        setHeader(conn, HttpMethod.SIMULATED_METHOD_HEADER, HttpMethod.GET.toString(), true);
       }
-      conn.setRequestMethod(request.getHttpMethod().toString());
+      conn.setRequestMethod(method.toString());
       setHeader(conn, "Content-Type", request.getContentType(), true);
       
       // Assume conservatively that the response will need to be read.
       // This is done here instead of in the response receiver because this property must be set
       // before sending any data on the connection.
       conn.setDoInput(true);
-      RequestBody requestBody = request.getBody();
-      String requestBodyContents = bodyToJson(requestBody);
-      // Android Java VM ignore Content-Length if setDoOutput is not set
-      conn.setDoOutput(true);
-      String contentLength = String.valueOf(requestBodyContents.length());
-      setHeader(conn, "Content-Length", contentLength, true);
-      addRequestParams(conn, request.getHeaders());
-      Streams.copy(requestBodyContents, conn.getOutputStream(), false);
+      if (method != HttpMethod.GET) {
+        RequestBody requestBody = request.getBody();
+        String requestBodyContents = bodyToJson(requestBody);
+        // Android Java VM ignore Content-Length if setDoOutput is not set
+        conn.setDoOutput(true);
+        String contentLength = String.valueOf(requestBodyContents.length());
+        setHeader(conn, "Content-Length", contentLength, true);
+        addRequestParams(conn, request.getHeaders());
+        Streams.copy(requestBodyContents, conn.getOutputStream(), false);
+      }
       
       // Initiate the sending of the request.
       conn.connect();
