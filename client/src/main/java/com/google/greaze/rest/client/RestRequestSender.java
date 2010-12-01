@@ -15,15 +15,14 @@
  */
 package com.google.greaze.rest.client;
 
-import java.net.HttpURLConnection;
-import java.util.logging.Level;
-
 import com.google.greaze.definition.rest.ResourceId;
 import com.google.greaze.definition.rest.RestRequestBase;
 import com.google.greaze.definition.rest.RestResourceBase;
-import com.google.greaze.definition.webservice.WebServiceRequest;
 import com.google.greaze.webservice.client.RequestSender;
 import com.google.gson.Gson;
+
+import java.net.HttpURLConnection;
+import java.util.logging.Level;
 
 /**
  * Class to send Web service requests on a {@link HttpURLConnection}.
@@ -42,6 +41,6 @@ public class RestRequestSender extends RequestSender {
 
   public <I extends ResourceId, R extends RestResourceBase<I, R>> void send(
       HttpURLConnection conn, RestRequestBase<I, R> request) {
-    super.send(conn, (WebServiceRequest) request);
+    super.send(conn, request);
   }
 }

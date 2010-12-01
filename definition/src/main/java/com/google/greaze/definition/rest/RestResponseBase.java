@@ -69,6 +69,7 @@ public class RestResponseBase<I extends ResourceId, R extends RestResourceBase<I
         .build();
   }
 
+  @Override
   public RestResponseSpec getSpec() {
     return (RestResponseSpec) spec;
   }
