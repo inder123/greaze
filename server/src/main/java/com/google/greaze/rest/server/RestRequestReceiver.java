@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2008 Google Inc.
+ * Copyright (C) 2008-2010 Google Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,12 +15,15 @@
  */
 package com.google.greaze.rest.server;
 
+import javax.servlet.http.HttpServletRequest;
+
+import com.google.greaze.definition.HeaderMap;
+import com.google.greaze.definition.HttpMethod;
+import com.google.greaze.definition.rest.Id;
+import com.google.greaze.definition.rest.RestRequest;
 import com.google.greaze.definition.rest.RestRequestSpec;
 import com.google.greaze.definition.rest.RestResource;
-import com.google.greaze.definition.rest.Id;
 import com.google.gson.Gson;
-
-import javax.servlet.http.HttpServletRequest;
 
 /**
  * Receives and parses a request at the server side on a
@@ -33,5 +36,12 @@ public final class RestRequestReceiver<R extends RestResource<R>>
 
   public RestRequestReceiver(Gson gson, RestRequestSpec spec) {
     super(gson, spec);
+  }
+
+  @Override
+  protected RestRequest<R> createRequest(HttpMethod method, HeaderMap requestParams,
+      Id<R> resourceId, R requestBody) {
+    return new RestRequest<R>(
+        method, requestParams, resourceId, requestBody, getSpec().getResourceType());
   }
 }
