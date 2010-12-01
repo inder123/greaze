@@ -45,7 +45,7 @@ public class RestRequestBaseReceiver<I extends ResourceId, R extends RestResourc
     super(gson, spec);
   }
 
-  private RestRequestSpec getSpec() {
+  protected RestRequestSpec getSpec() {
     return (RestRequestSpec) spec;
   }
 
@@ -59,8 +59,7 @@ public class RestRequestBaseReceiver<I extends ResourceId, R extends RestResourc
       if (simulatedMethod != null && !simulatedMethod.equals("")) {
         method = HttpMethod.getMethod(simulatedMethod);
       }
-      return new RestRequestBase<I, R>(
-          method, requestParams, resourceId, requestBody, getSpec().getResourceType());
+      return createRequest(method, requestParams, resourceId, requestBody);
     } catch (IOException e) {
       throw new WebServiceSystemException(e);
     } catch (JsonParseException e) {
@@ -68,7 +67,13 @@ public class RestRequestBaseReceiver<I extends ResourceId, R extends RestResourc
       throw new WebServiceSystemException(e);
     }
   }
-  
+
+  protected RestRequestBase<I, R> createRequest(HttpMethod method, HeaderMap requestParams,
+      I resourceId, R requestBody) {
+    return new RestRequestBase<I, R>(
+        method, requestParams, resourceId, requestBody, getSpec().getResourceType());
+  }
+
   // We could reuse the base classes method, buildRequestBody. However, that requires that
   // a RequestBody.GsonTypeAdapter is registered. We avoid that registration for REST resources
   // with this implementation

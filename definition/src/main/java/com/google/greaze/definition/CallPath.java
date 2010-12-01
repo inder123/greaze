@@ -109,7 +109,11 @@ public final class CallPath {
     if (obj == null) {
       return false;
     }
-    return getClass() == obj.getClass() && equal(path, ((CallPath)obj).path);
+    CallPath other = (CallPath)obj;
+    return getClass() == obj.getClass()
+      && version == other.version
+      && resourceId == other.resourceId
+      && equal(path, other.path);
   }
 
   private static boolean equal(String s1, String s2) {

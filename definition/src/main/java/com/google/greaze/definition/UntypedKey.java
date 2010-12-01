@@ -24,7 +24,7 @@ import com.google.greaze.definition.internal.utils.GreazePreconditions;
  *
  * @author Inderjeet Singh
  */
-public class UntypedKey {
+public final class UntypedKey {
   private final String name;
   private final Type typeOfT;
 
