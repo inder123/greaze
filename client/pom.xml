@@ -35,7 +35,7 @@
     <dependency>
       <groupId>com.google.code.gson</groupId>
       <artifactId>gson</artifactId>
-      <version>1.6</version>
+      <version>1.7</version>
       <scope>compile</scope>
     </dependency>
     <dependency>
@@ -72,7 +72,6 @@
           <downloadJavadocs>true</downloadJavadocs>
           <workspace>../eclipse-ws</workspace>
           <workspaceCodeStylesURL>file:///${basedir}/../lib/formatting-styles.xml</workspaceCodeStylesURL>
-          <wtpversion>1.5</wtpversion>
         </configuration>
       </plugin>
       <plugin>
