@@ -49,17 +49,27 @@ public final class CallPath {
    * Returns path after consuming version number from the begining
    */
   private static GreazePair<Double, String> extractVersion(String path) {
+    String versionStr = null;
+    int index2;
     int index1 = path.indexOf('/');
-    int index2 = path.substring(index1+1).indexOf('/');
-    String versionStr = path.substring(index1+1, index2+1);
+    if (index1 == -1) {
+      index2 = -1;
+    } else {
+      index2 = index1 + path.substring(index1+1).indexOf('/');
+      if (index2 != -1) {
+        versionStr = path.substring(index1+1, index2+1);
+      }
+    }
     double extractedVersion = -1.0D;
     String revisedPath = path;
-    try {
-      // Skip over the version number from the URL
-      extractedVersion = Double.parseDouble(versionStr);
-      revisedPath = path.substring(index2+1);
-    } catch (NumberFormatException e) {
-      // Assume that version number wasn't specified
+    if (versionStr != null) {
+      try {
+        // Skip over the version number from the URL
+        extractedVersion = Double.parseDouble(versionStr);
+        revisedPath = path.substring(index2+1);
+      } catch (NumberFormatException e) {
+        // Assume that version number wasn't specified
+      }
     }
     return GreazePair.create(extractedVersion, revisedPath);
   }
