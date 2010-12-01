@@ -41,7 +41,7 @@ public class MetaDataTest extends TestCase {
   }
 
   public void testSerialize() {
-    MetaData<MyResource> metaData = MetaData.create();
+    MetaData<MyResource> metaData = new MetaData<MyResource>();
     metaData.putBoolean("booleanValue", true);
     String json = gson.toJson(metaData);
     assertTrue(json.contains("booleanValue"));

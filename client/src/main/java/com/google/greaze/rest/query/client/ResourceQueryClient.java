@@ -15,16 +15,17 @@
  */
 package com.google.greaze.rest.query.client;
 
+import java.lang.reflect.Type;
+
 import com.google.greaze.definition.CallPath;
-import com.google.greaze.definition.rest.RestResource;
 import com.google.greaze.definition.rest.Id;
+import com.google.greaze.definition.rest.RestResource;
+import com.google.greaze.definition.rest.query.ResourceQuery;
 import com.google.greaze.definition.rest.query.ResourceQueryBase;
 import com.google.greaze.definition.rest.query.ResourceQueryParams;
 import com.google.greaze.definition.webservice.WebServiceCallSpec;
 import com.google.greaze.webservice.client.WebServiceClient;
 import com.google.gson.GsonBuilder;
-
-import java.lang.reflect.Type;
 
 /**
  * A client to invoke {@link ResourceQueryBase}s associated with a REST resource
@@ -35,7 +36,7 @@ import java.lang.reflect.Type;
  * @param <Q> Query parameters
  */
 public class ResourceQueryClient<R extends RestResource<R>, Q extends ResourceQueryParams>
-    extends ResourceQueryBaseClient<Id<R>, R, Q> {
+    extends ResourceQueryBaseClient<Id<R>, R, Q> implements ResourceQuery<R, Q> {
 
   /**
    * @param stub stub containing server info to access the rest client

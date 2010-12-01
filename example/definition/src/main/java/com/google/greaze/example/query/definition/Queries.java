@@ -15,6 +15,8 @@
  */
 package com.google.greaze.example.query.definition;
 
+import com.google.greaze.definition.internal.utils.GreazeStrings;
+
 public enum Queries {
   FIND_ORDERS_BY_ITEM_NAME("find_orders_by_item_name");
 
@@ -29,7 +31,7 @@ public enum Queries {
   }
 
   public static Queries getQuery(String queryName) {
-    if (queryName == null || queryName.isEmpty()) {
+    if (queryName == null || GreazeStrings.isEmpty(queryName)) {
       return null;
     }
     if ("find_orders_by_item_name".equals(queryName)) {
@@ -37,4 +39,5 @@ public enum Queries {
     }
     return null;
   }
+  
 }

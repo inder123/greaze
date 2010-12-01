@@ -31,39 +31,6 @@ import java.lang.reflect.Type;
 final class TypeUtils {
 
   /**
-   * Returns the actual type matching up with the first type variable.
-   * So, for a {@code typeInfo} instance defined as:
-   * <pre>
-   *   class Foo<A, B> {
-   *   }
-   *   Type fooType = new TypeToken<Foo<Integer, String>>() {}.getType();
-   * </pre>
-   * <code>TypeUtils.getActualTypeForFirstTypeVariable(fooType)</code> will return Integer.class.
-   */
-  static Type getActualTypeForFirstTypeVariable(Type type) {
-    if (type instanceof Class) {
-      return Object.class;
-    } else if (type instanceof ParameterizedType) {
-      return ((ParameterizedType)type).getActualTypeArguments()[0];
-    } else if (type instanceof GenericArrayType) {
-      return getActualTypeForFirstTypeVariable(((GenericArrayType)type).getGenericComponentType());
-    } else {
-      throw new IllegalArgumentException("Type \'" + type + "\' is not a Class, "
-          + "ParameterizedType, or GenericArrayType. Can't extract class.");
-    }
-  }
-
-  static boolean isArray(Type type) {
-    if (type instanceof Class) {
-      return ((Class<?>)type).isArray();
-    } else if (type instanceof GenericArrayType) {
-      return true;
-    } else {
-      return false;
-    }
-  }
-
-  /**
    * This method returns the actual raw class associated with the specified type.
    */
   static Class<?> toRawClass(Type type) {
@@ -82,7 +49,7 @@ final class TypeUtils {
     }
   }
 
-  static Class<?> wrapWithArray(Class<?> rawClass) {
+  private static Class<?> wrapWithArray(Class<?> rawClass) {
     return Array.newInstance(rawClass, 0).getClass();
   }
 
