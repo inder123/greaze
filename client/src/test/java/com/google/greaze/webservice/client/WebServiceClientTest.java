@@ -15,39 +15,66 @@
  */
 package com.google.greaze.webservice.client;
 
-import junit.framework.TestCase;
-
+import com.google.greaze.definition.CallPath;
 import com.google.greaze.definition.HeaderMap;
 import com.google.greaze.definition.HeaderMapSpec;
+import com.google.greaze.definition.HttpMethod;
+import com.google.greaze.definition.webservice.RequestBody;
+import com.google.greaze.definition.webservice.RequestBodySpec;
+import com.google.greaze.definition.webservice.WebServiceCallSpec;
+import com.google.greaze.definition.webservice.WebServiceRequest;
 import com.google.gson.Gson;
 
+import junit.framework.TestCase;
+
+import java.net.URL;
+
+/**
+ * Unit tests for {@link WebServiceClient}
+ *
+ * @author Inderjeet Singh
+ */
 public class WebServiceClientTest extends TestCase {
 
+  private static final String SERVER_URL = "http://localhost";
+  private static final String CALL_PATH = "/resource";
   private Gson gson;
+  private WebServiceClient client;
+  private WebServiceCallSpec callSpec;
+  private HeaderMap requestHeaders;
+  private RequestBody requestBody;
 
   @Override
   protected void setUp() throws Exception {
     super.setUp();
     this.gson = new Gson();
+    ServerConfig serverConfig = new ServerConfig(SERVER_URL);
+    this.client = new WebServiceClient(serverConfig);
+
+    CallPath callPath = new CallPath(CALL_PATH);
+    callSpec = new WebServiceCallSpec.Builder(callPath).build();
+    HeaderMapSpec headerSpec = new HeaderMapSpec.Builder().build();
+    requestHeaders = new HeaderMap.Builder(headerSpec).build();
+    RequestBodySpec requestBodySpec = new RequestBodySpec.Builder().build();
+    requestBody = new RequestBody.Builder(requestBodySpec).build();
   }
 
   public void testNoUrlParams() {
-    HeaderMapSpec spec = new HeaderMapSpec.Builder().build();
-    HeaderMap urlParameters = new HeaderMap.Builder(spec).build();
-    String url = WebServiceClient.buildQueryParamString(gson, urlParameters);
-    assertEquals("", url);
+    HeaderMapSpec urlParamSpec = new HeaderMapSpec.Builder().build();
+    HeaderMap urlParams = new HeaderMap.Builder(urlParamSpec).build();
+    WebServiceRequest request =
+      new WebServiceRequest(HttpMethod.GET, requestHeaders, urlParams, requestBody);
+    URL url = client.getWebServiceUrl(callSpec, request, gson);
+    assertEquals(SERVER_URL + CALL_PATH, url.toExternalForm());
   }
 
   public void testOneUrlParam() {
-    HeaderMapSpec spec = new HeaderMapSpec.Builder().put("foo", String.class).build();
-    HeaderMap urlParameters = new HeaderMap.Builder(spec)
+    HeaderMapSpec urlParamSpec = new HeaderMapSpec.Builder().put("foo", String.class).build();
+    HeaderMap urlParams = new HeaderMap.Builder(urlParamSpec)
       .put("foo", "bar bar").build();
-    String url = WebServiceClient.buildQueryParamString(gson, urlParameters);
-    assertEquals("?foo=bar+bar", url);
-  }
-
-  /** Tests for {@link WebServiceClient#stripQuotesIfString(String)} */
-  public void testStripsQuotes() {
-    assertEquals("foo.bar", WebServiceClient.stripQuotesIfString("\"foo.bar\""));
+    WebServiceRequest request =
+      new WebServiceRequest(HttpMethod.GET, requestHeaders, urlParams, requestBody);
+    URL url = client.getWebServiceUrl(callSpec, request, gson);
+    assertEquals(SERVER_URL + CALL_PATH + "?foo=bar+bar", url.toExternalForm());
   }
 }
