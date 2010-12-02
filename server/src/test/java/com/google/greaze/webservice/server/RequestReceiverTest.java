@@ -15,9 +15,17 @@
  */
 package com.google.greaze.webservice.server;
 
+import com.google.greaze.definition.HeaderMapSpec;
+import com.google.greaze.definition.webservice.RequestBodySpec;
+import com.google.greaze.definition.webservice.RequestSpec;
+import com.google.greaze.definition.webservice.WebServiceRequest;
+import com.google.greaze.server.fixtures.HttpServletRequestFake;
+import com.google.gson.Gson;
+
 import junit.framework.TestCase;
 
-import com.google.gson.Gson;
+import javax.servlet.http.HttpServletRequest;
+
 
 /**
  * Unit tests for {@link RequestReceiver}
@@ -34,23 +42,16 @@ public class RequestReceiverTest extends TestCase {
     this.gson = new Gson();
   }
   
-  public void testParseUrlParamString() {
-    String str = RequestReceiver.parseUrlParamValue("foo+bar", String.class, gson);
-    assertEquals("foo bar", str);
-  }
-
-  public void testParseUrlParamStringWithOneWord() {
-    String str = RequestReceiver.parseUrlParamValue("foo", String.class, gson);
-    assertEquals("foo", str);
-  }
-
-  public void testParseUrlParamInteger() {
-    int value = (Integer) RequestReceiver.parseUrlParamValue("1", Integer.class, gson);
-    assertEquals(1, value);
-  }
-
-  public void testParseUrlParamEncodedString() {
-    String value = RequestReceiver.parseUrlParamValue("foo%2c+bar%2f", String.class, gson);
-    assertEquals("foo, bar/", value);
+  public void testUrlParams() {
+    HeaderMapSpec headersSpec = new HeaderMapSpec.Builder().build();
+    HeaderMapSpec urlParamSpec = new HeaderMapSpec.Builder().put("foo", String.class).build();
+    RequestBodySpec bodySpec = new RequestBodySpec.Builder().build();
+    RequestSpec spec = new RequestSpec(headersSpec, urlParamSpec, bodySpec);
+    RequestReceiver receiver = new RequestReceiver(gson, spec);
+    HttpServletRequest req = new HttpServletRequestFake()
+      .setRequestMethod("GET")
+      .setUrlParam("foo", "bar");
+    WebServiceRequest request = receiver.receive(req);
+    assertEquals("bar", request.getUrlParameters().get("foo"));
   }
 }

@@ -28,8 +28,8 @@ import java.lang.reflect.Type;
  */
 public final class RestRequest<R extends RestResource<R>> extends RestRequestBase<Id<R>, R> {
 
-  public RestRequest(HttpMethod method, HeaderMap requestHeaders,
+  public RestRequest(HttpMethod method, HeaderMap requestHeaders, HeaderMap urlParams,
       Id<R> resourceId, R requestBody, Type resourceType) {
-    super(method, requestHeaders, resourceId, requestBody, resourceType);
+    super(method, requestHeaders, urlParams, resourceId, requestBody, resourceType);
   }
 }

@@ -30,6 +30,7 @@ import com.google.greaze.definition.rest.RestRequestBase;
 import com.google.greaze.definition.rest.RestRequestSpec;
 import com.google.greaze.definition.rest.RestResourceBase;
 import com.google.greaze.webservice.server.RequestReceiver;
+import com.google.greaze.webservice.server.UrlParamsExtractor;
 import com.google.gson.Gson;
 import com.google.gson.JsonParseException;
 
@@ -52,6 +53,8 @@ public class RestRequestBaseReceiver<I extends ResourceId, R extends RestResourc
   public RestRequestBase<I, R> receive(HttpServletRequest request, I resourceId) {
     try {
       HeaderMap requestParams = buildRequestParams(request);
+      UrlParamsExtractor urlParamsExtractor = new UrlParamsExtractor(spec.getUrlParamsSpec(), gson);
+      HeaderMap urlParams = urlParamsExtractor.extractUrlParams(request);
       R requestBody = buildRequestBody(request);
 
       HttpMethod method = HttpMethod.getMethod(request.getMethod());
@@ -59,7 +62,7 @@ public class RestRequestBaseReceiver<I extends ResourceId, R extends RestResourc
       if (simulatedMethod != null && !simulatedMethod.equals("")) {
         method = HttpMethod.getMethod(simulatedMethod);
       }
-      return createRequest(method, requestParams, resourceId, requestBody);
+      return createRequest(method, requestParams, urlParams, resourceId, requestBody);
     } catch (IOException e) {
       throw new WebServiceSystemException(e);
     } catch (JsonParseException e) {
@@ -68,10 +71,10 @@ public class RestRequestBaseReceiver<I extends ResourceId, R extends RestResourc
     }
   }
 
-  protected RestRequestBase<I, R> createRequest(HttpMethod method, HeaderMap requestParams,
-      I resourceId, R requestBody) {
+  protected RestRequestBase<I, R> createRequest(HttpMethod method, HeaderMap requestHeaders,
+      HeaderMap urlParams, I resourceId, R requestBody) {
     return new RestRequestBase<I, R>(
-        method, requestParams, resourceId, requestBody, getSpec().getResourceType());
+        method, requestHeaders, urlParams, resourceId, requestBody, getSpec().getResourceType());
   }
 
   // We could reuse the base classes method, buildRequestBody. However, that requires that
