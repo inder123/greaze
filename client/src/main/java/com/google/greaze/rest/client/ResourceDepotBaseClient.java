@@ -15,18 +15,19 @@
  */
 package com.google.greaze.rest.client;
 
-import java.lang.reflect.Type;
-
 import com.google.greaze.definition.CallPath;
 import com.google.greaze.definition.HeaderMap;
 import com.google.greaze.definition.HttpMethod;
-import com.google.greaze.definition.rest.ResourceId;
 import com.google.greaze.definition.rest.ResourceDepotBase;
+import com.google.greaze.definition.rest.ResourceId;
 import com.google.greaze.definition.rest.RestCallSpec;
 import com.google.greaze.definition.rest.RestRequestBase;
+import com.google.greaze.definition.rest.RestRequestSpec;
 import com.google.greaze.definition.rest.RestResourceBase;
 import com.google.greaze.definition.rest.RestResponseBase;
 import com.google.gson.Gson;
+
+import java.lang.reflect.Type;
 
 /**
  * A client class to access a rest resource
@@ -64,40 +65,44 @@ public class ResourceDepotBaseClient<I extends ResourceId, R extends RestResourc
 
   @Override
   public R get(I resourceId) {
-    HeaderMap requestHeaders =
-      new HeaderMap.Builder(callSpec.getRequestSpec().getHeadersSpec()).build();
-    RestRequestBase<I, R> request =
-      new RestRequestBase<I, R>(HttpMethod.GET, requestHeaders, resourceId, null, resourceType);
+    RestRequestSpec requestSpec = callSpec.getRequestSpec();
+    HeaderMap requestHeaders = new HeaderMap.Builder(requestSpec.getHeadersSpec()).build();
+    HeaderMap urlParams = new HeaderMap.Builder(requestSpec.getUrlParamsSpec()).build();
+    RestRequestBase<I, R> request = new RestRequestBase<I, R>(
+        HttpMethod.GET, requestHeaders, urlParams, resourceId, null, resourceType);
     RestResponseBase<I, R> response = stub.getResponse(callSpec, request, gson);
     return response.getResource();
   }
 
   @Override
   public R post(R resource) {
-    HeaderMap requestHeaders =
-      new HeaderMap.Builder(callSpec.getRequestSpec().getHeadersSpec()).build();
-    RestRequestBase<I, R> request = new RestRequestBase<I, R>(HttpMethod.POST, requestHeaders,
-        resource.getId(), resource, resourceType);
+    RestRequestSpec requestSpec = callSpec.getRequestSpec();
+    HeaderMap requestHeaders = new HeaderMap.Builder(requestSpec.getHeadersSpec()).build();
+    HeaderMap urlParams = new HeaderMap.Builder(requestSpec.getUrlParamsSpec()).build();
+    RestRequestBase<I, R> request = new RestRequestBase<I, R>(
+        HttpMethod.POST, requestHeaders, urlParams, resource.getId(), resource, resourceType);
     RestResponseBase<I, R> response = stub.getResponse(callSpec, request, gson);
     return response.getResource();
   }
 
   @Override
   public R put(R resource) {
-    HeaderMap requestHeaders =
-      new HeaderMap.Builder(callSpec.getRequestSpec().getHeadersSpec()).build();
-    RestRequestBase<I, R> request = new RestRequestBase<I, R>(HttpMethod.PUT, requestHeaders,
-        resource.getId(), resource, resourceType);
+    RestRequestSpec requestSpec = callSpec.getRequestSpec();
+    HeaderMap requestHeaders = new HeaderMap.Builder(requestSpec.getHeadersSpec()).build();
+    HeaderMap urlParams = new HeaderMap.Builder(requestSpec.getUrlParamsSpec()).build();
+    RestRequestBase<I, R> request = new RestRequestBase<I, R>(
+        HttpMethod.PUT, requestHeaders, urlParams, resource.getId(), resource, resourceType);
     RestResponseBase<I, R> response = stub.getResponse(callSpec, request, gson);
     return response.getResource();
   }
 
   @Override
   public void delete(I resourceId) {
-    HeaderMap requestHeaders =
-      new HeaderMap.Builder(callSpec.getRequestSpec().getHeadersSpec()).build();
-    RestRequestBase<I, R> request =
-      new RestRequestBase<I, R>(HttpMethod.DELETE, requestHeaders, resourceId, null, resourceType);
+    RestRequestSpec requestSpec = callSpec.getRequestSpec();
+    HeaderMap requestHeaders = new HeaderMap.Builder(requestSpec.getHeadersSpec()).build();
+    HeaderMap urlParams = new HeaderMap.Builder(requestSpec.getUrlParamsSpec()).build();
+    RestRequestBase<I, R> request = new RestRequestBase<I, R>(
+        HttpMethod.DELETE, requestHeaders, urlParams, resourceId, null, resourceType);
     stub.getResponse(callSpec, request, gson);
   }
 }

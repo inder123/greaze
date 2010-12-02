@@ -15,29 +15,25 @@
  */
 package com.google.greaze.webservice.server;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.io.Reader;
-import java.io.UnsupportedEncodingException;
-import java.lang.reflect.Type;
-import java.net.URLDecoder;
-import java.util.Map;
-
-import javax.servlet.http.HttpServletRequest;
-
 import com.google.greaze.definition.HeaderMap;
 import com.google.greaze.definition.HeaderMapSpec;
 import com.google.greaze.definition.HttpMethod;
 import com.google.greaze.definition.WebServiceSystemException;
-import com.google.greaze.definition.internal.utils.GreazePreconditions;
 import com.google.greaze.definition.webservice.RequestBody;
 import com.google.greaze.definition.webservice.RequestBodySpec;
 import com.google.greaze.definition.webservice.RequestSpec;
 import com.google.greaze.definition.webservice.WebServiceRequest;
 import com.google.gson.Gson;
 import com.google.gson.JsonParseException;
-import com.google.gson.JsonSyntaxException;
+
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.io.Reader;
+import java.lang.reflect.Type;
+import java.util.Map;
+
+import javax.servlet.http.HttpServletRequest;
 
 /**
  * Receives and parses a request at the server side on a {@link HttpServletRequest}.  
@@ -57,7 +53,8 @@ public class RequestReceiver {
   public WebServiceRequest receive(HttpServletRequest request) {
     try {
       HeaderMap requestParams = buildRequestParams(request);
-      HeaderMap urlParams = buildUrlParams(request);
+      UrlParamsExtractor urlParamsExtractor = new UrlParamsExtractor(spec.getUrlParamsSpec(), gson);
+      HeaderMap urlParams = urlParamsExtractor.extractUrlParams(request);
       RequestBody requestBody = buildRequestBody(request);
       
       HttpMethod method = HttpMethod.getMethod(request.getMethod());
@@ -85,45 +82,6 @@ public class RequestReceiver {
     return paramsBuilder.build();
   }
 
-  protected HeaderMap buildUrlParams(HttpServletRequest request) {
-    HeaderMapSpec paramsSpec = this.spec.getUrlParamsSpec();
-    HeaderMap.Builder paramsBuilder = new HeaderMap.Builder(paramsSpec);
-    for (Map.Entry<String, Type> param : paramsSpec.entrySet()) {
-      String name = param.getKey();
-      Type type = param.getValue();
-      String[] urlParamValues = request.getParameterValues(name);
-      if (urlParamValues != null) {
-        GreazePreconditions.checkArgument(urlParamValues.length <= 1,
-            "Greaze supports only one URL parameter value per name. For %s, found: %s",
-            name, urlParamValues);
-        if (urlParamValues.length == 1) {
-          Object value = parseUrlParamValue(urlParamValues[0], type, gson);
-          paramsBuilder.put(name, value);
-        }
-      }
-    }
-    return paramsBuilder.build();
-  }
-
-  /** Visible for testing only */
-  @SuppressWarnings("unchecked")
-  static <T> T parseUrlParamValue(String urlParamValue, Type type, Gson gson) {
-    Object value;
-    try {
-      String json = URLDecoder.decode(urlParamValue, "UTF-8");
-      try {
-        value = gson.fromJson(json, type);
-      } catch (JsonSyntaxException e) {
-        // Probably an unquoted string, so try that 
-        json = '"' + json + '"';
-        value = gson.fromJson(json, type);
-      }
-    } catch (UnsupportedEncodingException e) {
-      throw new WebServiceSystemException(e);
-    }
-    return (T) value;
-  }
-  
   private RequestBody buildRequestBody(HttpServletRequest request) throws IOException {
     RequestBodySpec bodySpec = spec.getBodySpec();
     if (bodySpec.size() == 0) {

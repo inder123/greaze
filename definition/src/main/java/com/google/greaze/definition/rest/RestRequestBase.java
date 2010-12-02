@@ -17,7 +17,6 @@ package com.google.greaze.definition.rest;
 
 import com.google.greaze.definition.ContentBodyType;
 import com.google.greaze.definition.HeaderMap;
-import com.google.greaze.definition.HeaderMapSpec;
 import com.google.greaze.definition.HttpMethod;
 import com.google.greaze.definition.webservice.RequestBody;
 import com.google.greaze.definition.webservice.RequestBodySpec;
@@ -35,17 +34,11 @@ public class RestRequestBase<I extends ResourceId, R extends RestResourceBase<I,
     extends WebServiceRequest {
   private final I id;
   
-  public RestRequestBase(HttpMethod method, HeaderMap requestHeaders,
+  public RestRequestBase(HttpMethod method, HeaderMap requestHeaders, HeaderMap urlParams,
       I resourceId, R requestBody, Type resourceType) {
-    super(method, requestHeaders, createUrlParams(),
-      createBody(requestBody, resourceType),
+    super(method, requestHeaders, urlParams, createBody(requestBody, resourceType),
       new RestRequestSpec(requestHeaders.getSpec(), resourceType));
     this.id = resourceId;
-  }
-
-  private static HeaderMap createUrlParams() {
-    HeaderMapSpec spec = new HeaderMapSpec.Builder().build();
-    return new HeaderMap.Builder(spec).build();
   }
 
   private static<R> RequestBody createBody(R resource, Type resourceType) {

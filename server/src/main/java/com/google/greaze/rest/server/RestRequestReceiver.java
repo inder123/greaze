@@ -40,8 +40,8 @@ public final class RestRequestReceiver<R extends RestResource<R>>
 
   @Override
   protected RestRequest<R> createRequest(HttpMethod method, HeaderMap requestParams,
-      Id<R> resourceId, R requestBody) {
+    HeaderMap urlParams, Id<R> resourceId, R requestBody) {
     return new RestRequest<R>(
-        method, requestParams, resourceId, requestBody, getSpec().getResourceType());
+        method, requestParams, urlParams, resourceId, requestBody, getSpec().getResourceType());
   }
 }
