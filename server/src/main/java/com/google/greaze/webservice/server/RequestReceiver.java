@@ -23,6 +23,7 @@ import com.google.greaze.definition.webservice.RequestBody;
 import com.google.greaze.definition.webservice.RequestBodySpec;
 import com.google.greaze.definition.webservice.RequestSpec;
 import com.google.greaze.definition.webservice.WebServiceRequest;
+import com.google.greaze.server.internal.utils.UrlParamsExtractor;
 import com.google.gson.Gson;
 import com.google.gson.JsonParseException;
 

@@ -15,7 +15,11 @@
  */
 package com.google.greaze.server.fixtures;
 
+import com.google.greaze.definition.internal.utils.GreazeStrings;
+
 import java.io.BufferedReader;
+import java.io.UnsupportedEncodingException;
+import java.net.URLDecoder;
 import java.security.Principal;
 import java.util.Enumeration;
 import java.util.HashMap;
@@ -41,6 +45,27 @@ public class HttpServletRequestFake implements HttpServletRequest {
   public HttpServletRequestFake setUrlParam(String name, String value) {
     urlParams.put(name, value);
     return this;
+  }
+
+  public HttpServletRequestFake setUrlParams(String urlParamsString) {
+    if (GreazeStrings.isEmpty(urlParamsString)) {
+      return this;
+    }
+    if (urlParamsString.startsWith("?")) {
+      urlParamsString = urlParamsString.substring(1);
+    }
+    try {
+      String[] params = urlParamsString.split("&");
+      for (String param : params) {
+        String[] split = param.split("=");
+        String name = split[0];
+        String value = URLDecoder.decode(split[1], "UTF-8");
+        urlParams.put(name, value);
+      }
+      return this;
+    } catch (UnsupportedEncodingException e) {
+      throw new RuntimeException(e);
+    }
   }
 
   @Override

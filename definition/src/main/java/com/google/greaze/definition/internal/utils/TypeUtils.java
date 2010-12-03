@@ -15,7 +15,7 @@
  */
 
 // Copied from com.google.gson.TypeUtils
-package com.google.greaze.definition;
+package com.google.greaze.definition.internal.utils;
 
 import java.lang.reflect.Array;
 import java.lang.reflect.GenericArrayType;
@@ -28,12 +28,12 @@ import java.lang.reflect.Type;
  * @author Inderjeet Singh
  * @author Joel Leitch
  */
-final class TypeUtils {
+public final class TypeUtils {
 
   /**
    * This method returns the actual raw class associated with the specified type.
    */
-  static Class<?> toRawClass(Type type) {
+  public static Class<?> toRawClass(Type type) {
     if (type instanceof Class) {
       return (Class<?>) type;
     } else if (type instanceof ParameterizedType) {

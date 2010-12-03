@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.google.greaze.webservice.client;
+package com.google.greaze.client.internal.utils;
 
 import com.google.greaze.definition.HeaderMap;
 import com.google.greaze.definition.HeaderMapSpec;
@@ -28,20 +28,20 @@ import java.net.URLEncoder;
 import java.util.Map;
 
 /**
- * URL parameters for an HTTP request
+ * URL parameters for an HTTP request. This class is made public only for testing.
  *
  * @author Inderjeet Singh
  */
-final class UrlParamStringBuilder {
+public final class UrlParamStringBuilder {
   private final Gson gson;
   private boolean first = true;
   StringBuilder queryParamStr = new StringBuilder();
 
-  UrlParamStringBuilder(Gson gson) {
+  public UrlParamStringBuilder(Gson gson) {
     this.gson = gson;
   }
 
-  UrlParamStringBuilder add(HeaderMap urlParams) {
+  public UrlParamStringBuilder add(HeaderMap urlParams) {
     HeaderMapSpec spec = urlParams.getSpec();
     for (Map.Entry<String, Object> entry : urlParams.entrySet()) {
       Object value = entry.getValue();

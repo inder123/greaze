@@ -13,12 +13,12 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.google.greaze.webservice.client;
+package com.google.greaze.client.internal.utils;
 
+import com.google.greaze.client.internal.utils.UrlParamStringBuilder;
 import com.google.greaze.definition.HeaderMap;
 import com.google.greaze.definition.HeaderMapSpec;
 import com.google.greaze.definition.rest.Id;
-import com.google.greaze.webservice.client.UrlParamStringBuilder;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 
