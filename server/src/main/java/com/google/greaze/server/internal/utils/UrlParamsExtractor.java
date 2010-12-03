@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.google.greaze.webservice.server;
+package com.google.greaze.server.internal.utils;
 
 import com.google.greaze.definition.HeaderMap;
 import com.google.greaze.definition.HeaderMapSpec;
@@ -30,7 +30,7 @@ import java.util.Map;
 import javax.servlet.http.HttpServletRequest;
 
 /**
- * An analog of UrlParamStringBuilder that converts a URL parameter string into a {@link HeaderMap}
+ * An analog of UrlParamStringBuilder that converts URL parameters into a {@link HeaderMap}
  *
  * @author Inderjeet Singh
  */

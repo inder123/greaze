@@ -15,26 +15,30 @@
  */
 package com.google.greaze.rest.query.client;
 
-import java.lang.reflect.Type;
-import java.util.List;
-
 import com.google.greaze.definition.CallPath;
 import com.google.greaze.definition.HeaderMap;
 import com.google.greaze.definition.HttpMethod;
+import com.google.greaze.definition.UntypedKey;
+import com.google.greaze.definition.WebServiceSystemException;
+import com.google.greaze.definition.internal.utils.FieldNavigator;
 import com.google.greaze.definition.rest.ResourceId;
 import com.google.greaze.definition.rest.RestResourceBase;
 import com.google.greaze.definition.rest.query.ResourceQueryBase;
 import com.google.greaze.definition.rest.query.ResourceQueryParams;
-import com.google.greaze.definition.rest.query.TypedKeysQuery;
 import com.google.greaze.definition.webservice.RequestBody;
 import com.google.greaze.definition.webservice.RequestSpec;
 import com.google.greaze.definition.webservice.ResponseBody;
 import com.google.greaze.definition.webservice.WebServiceCallSpec;
+import com.google.greaze.definition.webservice.WebServiceCallSpec.Builder;
 import com.google.greaze.definition.webservice.WebServiceRequest;
 import com.google.greaze.definition.webservice.WebServiceResponse;
 import com.google.greaze.webservice.client.WebServiceClient;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+
+import java.lang.reflect.Field;
+import java.lang.reflect.Type;
+import java.util.List;
 
 /**
  * A client to invoke {@link ResourceQueryBase}s associated with a REST resource
@@ -61,7 +65,8 @@ public class ResourceQueryBaseClient<
    */
   public ResourceQueryBaseClient(WebServiceClient stub, CallPath callPath,
       Type queryType, GsonBuilder gsonBuilder, Type resourceType) {
-    this(stub, generateCallSpec(callPath, resourceType), queryType, gsonBuilder, resourceType);
+    this(stub, generateCallSpec(callPath, resourceType, queryType),
+      queryType, gsonBuilder, resourceType);
   }
 
   protected ResourceQueryBaseClient(WebServiceClient stub, WebServiceCallSpec callSpec,
@@ -78,13 +83,20 @@ public class ResourceQueryBaseClient<
     this.resourceType = resourceType;
   }
 
-  private static WebServiceCallSpec generateCallSpec(CallPath callPath, Type resourceType) {
-    return new WebServiceCallSpec.Builder(callPath)
+  private static WebServiceCallSpec generateCallSpec(CallPath callPath, Type resourceType,
+      Type resourceQueryParamsType) {
+    Builder urlParamSpecBuilder = new WebServiceCallSpec.Builder(callPath)
         .setListBody(resourceType)
-        .supportsHttpMethod(HttpMethod.GET)
-        .addUrlParam(TypedKeysQuery.QUERY_NAME)
-        .addUrlParam(TypedKeysQuery.QUERY_VALUE_AS_JSON)
-        .build();
+        .supportsHttpMethod(HttpMethod.GET);
+    registerTypeMembers(resourceQueryParamsType, urlParamSpecBuilder);
+    return urlParamSpecBuilder.build();
+  }
+
+  private static void registerTypeMembers(Type type, Builder urlParamSpecBuilder) {
+    FieldNavigator navigator = new FieldNavigator(type);
+    for (Field f : navigator.getFields()) {
+      urlParamSpecBuilder.addUrlParam(new UntypedKey(f.getName(), f.getGenericType()));
+    }
   }
 
   @SuppressWarnings({"unchecked"})
@@ -95,15 +107,26 @@ public class ResourceQueryBaseClient<
     RequestBody requestBody = new RequestBody.Builder(requestSpec.getBodySpec())
       .build();
     String queryUrlParamValue = gson.toJson(query, queryType);
-    HeaderMap urlParams = new HeaderMap.Builder(requestSpec.getUrlParamsSpec())
-      .put(TypedKeysQuery.QUERY_NAME, query.getQueryName())
-      .put(TypedKeysQuery.QUERY_VALUE_AS_JSON, queryUrlParamValue)
-      .build();
+    HeaderMap.Builder urlParams = new HeaderMap.Builder(requestSpec.getUrlParamsSpec());
+    populateQueryFieldsInUrlParams(query, urlParams);
     WebServiceRequest request =
-      new WebServiceRequest(HttpMethod.GET, requestHeaders, urlParams, requestBody);
+      new WebServiceRequest(HttpMethod.GET, requestHeaders, urlParams.build(), requestBody);
     WebServiceResponse response = stub.getResponse(callSpec, request, gson);
     ResponseBody body = response.getBody();
     return (List<R>)body.getListBody();
+  }
+
+  protected void populateQueryFieldsInUrlParams(Q query, HeaderMap.Builder urlParams) {
+    FieldNavigator navigator = new FieldNavigator(queryType);
+    for (Field f : navigator.getFields()) {
+      try {
+        urlParams.put(f.getName(), f.get(query));
+      } catch (IllegalArgumentException e) {
+        throw new WebServiceSystemException(e);
+      } catch (IllegalAccessException e) {
+        throw new WebServiceSystemException(e);
+      }
+    }
   }
 
   @Override

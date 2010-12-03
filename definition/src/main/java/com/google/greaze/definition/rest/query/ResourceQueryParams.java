@@ -20,6 +20,18 @@ package com.google.greaze.definition.rest.query;
  * 
  * @author Inderjeet Singh
  */
-public interface ResourceQueryParams {
-  public String getQueryName();
+public class ResourceQueryParams {
+
+  // Keep this in sync with the name of the variable queryName
+  public static final Object QUERY_NAME = "queryName";
+
+  private final String queryName;
+
+  public ResourceQueryParams(String queryName) {
+    this.queryName = queryName;
+  }
+
+  public String getQueryName() {
+    return queryName;
+  }
 }

@@ -15,6 +15,7 @@
  */
 package com.google.greaze.webservice.client;
 
+import com.google.greaze.client.internal.utils.UrlParamStringBuilder;
 import com.google.greaze.definition.WebServiceSystemException;
 import com.google.greaze.definition.webservice.ResponseBody;
 import com.google.greaze.definition.webservice.WebServiceCallSpec;

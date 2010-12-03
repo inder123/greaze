@@ -29,8 +29,8 @@ import com.google.greaze.definition.rest.ResourceId;
 import com.google.greaze.definition.rest.RestRequestBase;
 import com.google.greaze.definition.rest.RestRequestSpec;
 import com.google.greaze.definition.rest.RestResourceBase;
+import com.google.greaze.server.internal.utils.UrlParamsExtractor;
 import com.google.greaze.webservice.server.RequestReceiver;
-import com.google.greaze.webservice.server.UrlParamsExtractor;
 import com.google.gson.Gson;
 import com.google.gson.JsonParseException;
 

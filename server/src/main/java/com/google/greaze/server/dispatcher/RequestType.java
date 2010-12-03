@@ -15,11 +15,10 @@
  */
 package com.google.greaze.server.dispatcher;
 
-import java.util.Map;
-
 import com.google.common.base.Preconditions;
 import com.google.greaze.definition.CallPath;
-import com.google.greaze.definition.rest.query.TypedKeysQuery;
+
+import java.util.Map;
 
 /**
  * Enum indicating the type of the HttpServletRequest
@@ -51,7 +50,7 @@ public enum RequestType {
   }
 
   public static String getQueryName(Map<String, String[]> requestParameterMap) {
-    String[] queryNames = requestParameterMap.get(TypedKeysQuery.QUERY_NAME.getName());
+    String[] queryNames = requestParameterMap.get("queryName");
     Preconditions.checkArgument(queryNames == null || queryNames.length <= 1);
     return queryNames == null || queryNames.length == 0 ? null : queryNames[0];
   }

@@ -15,20 +15,12 @@
  */
 package com.google.greaze.server.dispatcher;
 
-import java.util.List;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-
 import com.google.common.base.Preconditions;
 import com.google.greaze.definition.CallPath;
 import com.google.greaze.definition.HeaderMap;
 import com.google.greaze.definition.HeaderMapSpec;
 import com.google.greaze.definition.rest.query.ResourceQueryBase;
 import com.google.greaze.definition.rest.query.ResourceQueryParams;
-import com.google.greaze.definition.rest.query.TypedKeysQuery;
 import com.google.greaze.definition.webservice.RequestBody;
 import com.google.greaze.definition.webservice.RequestSpec;
 import com.google.greaze.definition.webservice.ResponseBody;
@@ -42,6 +34,13 @@ import com.google.greaze.webservice.server.RequestReceiver;
 import com.google.greaze.webservice.server.ResponseSender;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+
+import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 
 /**
  * A class to service incoming resource query requests using corresponding query handlers.
@@ -62,7 +61,7 @@ public class ResourceQueryDispatcher {
       String queryName, CallPath callPath, ResourceQueryBase resourceQuery) {
     Preconditions.checkNotNull(resourceQuery);
     WebServiceCallSpec spec = QueryHelperServer.generateQueryCallSpec(callPath,
-        resourceQuery.getResourceType());
+        resourceQuery.getResourceType(), resourceQuery.getQueryType());
     RequestSpec requestSpec = spec.getRequestSpec();
     ResponseSpec responseSpec = spec.getResponseSpec();
     Gson gson = gsonBuilder
@@ -74,7 +73,8 @@ public class ResourceQueryDispatcher {
     RequestReceiver requestReceiver = new RequestReceiver(gson, requestSpec);
     WebServiceRequest webServiceRequest = requestReceiver.receive(req);
 
-    String jsonValue = webServiceRequest.getUrlParameters().get(TypedKeysQuery.QUERY_VALUE_AS_JSON);
+//    String jsonValue = webServiceRequest.getUrlParameters().get(TypedKeysQuery.QUERY_VALUE_AS_JSON);
+    String jsonValue = "";
     log.log(Level.INFO, "Received query: {0} with value: {1}", new Object[]{queryName, jsonValue});
 
     ResourceQueryParams queryParams = gson.fromJson(jsonValue, resourceQuery.getQueryType());

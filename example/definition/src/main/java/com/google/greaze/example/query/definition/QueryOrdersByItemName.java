@@ -22,7 +22,7 @@ import com.google.greaze.definition.rest.query.ResourceQueryParams;
  *
  * @author Inderjeet Singh
  */
-public class QueryOrdersByItemName implements ResourceQueryParams {
+public class QueryOrdersByItemName extends ResourceQueryParams {
   private final String itemName;
 
   public QueryOrdersByItemName() {
@@ -30,15 +30,11 @@ public class QueryOrdersByItemName implements ResourceQueryParams {
   }
 
   public QueryOrdersByItemName(String itemName) {
+    super("orders_by_item_name");
     this.itemName = itemName;
   }
   
   public String getItemName() {
     return itemName;
-  }
-
-  @Override
-  public String getQueryName() {
-    return "orders_by_item_name";
   }
 }

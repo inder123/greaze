@@ -103,6 +103,11 @@ public class WebServiceCallSpec {
       return this;
     }
 
+    public Builder addUrlParam(UntypedKey param) {
+      urlParamsSpecBuilder.put(param.getName(), param.getTypeOfT());
+      return this;
+    }
+
     public <T> Builder addRequestBodyParam(TypedKey<T> param) {
       reqBodySpecBuilder.put(param);
       return this;

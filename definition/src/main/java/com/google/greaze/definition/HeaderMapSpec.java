@@ -16,6 +16,8 @@
 package com.google.greaze.definition;
 
 
+import com.google.greaze.definition.internal.utils.TypeUtils;
+
 import java.lang.reflect.Type;
 import java.util.LinkedHashMap;
 import java.util.Map;
