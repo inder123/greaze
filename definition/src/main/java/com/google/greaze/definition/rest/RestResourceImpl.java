@@ -26,6 +26,12 @@ public class RestResourceImpl<R> implements RestResource<R> {
 
   protected Id<R> id;
 
+  public RestResourceImpl() { }
+
+  public RestResourceImpl(Id<R> id) {
+    this.id = id;
+  }
+
   @Override
   public Id<R> getId() {
     return id;
