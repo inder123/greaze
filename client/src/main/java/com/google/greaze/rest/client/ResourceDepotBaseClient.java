@@ -18,6 +18,8 @@ package com.google.greaze.rest.client;
 import com.google.greaze.definition.CallPath;
 import com.google.greaze.definition.HeaderMap;
 import com.google.greaze.definition.HttpMethod;
+import com.google.greaze.definition.UrlParams;
+import com.google.greaze.definition.UrlParamsSpec;
 import com.google.greaze.definition.rest.ResourceDepotBase;
 import com.google.greaze.definition.rest.ResourceId;
 import com.google.greaze.definition.rest.RestCallSpec;
@@ -67,7 +69,8 @@ public class ResourceDepotBaseClient<I extends ResourceId, R extends RestResourc
   public R get(I resourceId) {
     RestRequestSpec requestSpec = callSpec.getRequestSpec();
     HeaderMap requestHeaders = new HeaderMap.Builder(requestSpec.getHeadersSpec()).build();
-    HeaderMap urlParams = new HeaderMap.Builder(requestSpec.getUrlParamsSpec()).build();
+    UrlParamsSpec urlParamsSpec = new UrlParamsSpec.Builder().build();
+    UrlParams urlParams = new UrlParams.Builder(urlParamsSpec).build();
     RestRequestBase<I, R> request = new RestRequestBase<I, R>(
         HttpMethod.GET, requestHeaders, urlParams, resourceId, null, resourceType);
     RestResponseBase<I, R> response = stub.getResponse(callSpec, request, gson);
@@ -78,7 +81,8 @@ public class ResourceDepotBaseClient<I extends ResourceId, R extends RestResourc
   public R post(R resource) {
     RestRequestSpec requestSpec = callSpec.getRequestSpec();
     HeaderMap requestHeaders = new HeaderMap.Builder(requestSpec.getHeadersSpec()).build();
-    HeaderMap urlParams = new HeaderMap.Builder(requestSpec.getUrlParamsSpec()).build();
+    UrlParamsSpec urlParamsSpec = new UrlParamsSpec.Builder().build();
+    UrlParams urlParams = new UrlParams.Builder(urlParamsSpec).build();
     RestRequestBase<I, R> request = new RestRequestBase<I, R>(
         HttpMethod.POST, requestHeaders, urlParams, resource.getId(), resource, resourceType);
     RestResponseBase<I, R> response = stub.getResponse(callSpec, request, gson);
@@ -89,7 +93,8 @@ public class ResourceDepotBaseClient<I extends ResourceId, R extends RestResourc
   public R put(R resource) {
     RestRequestSpec requestSpec = callSpec.getRequestSpec();
     HeaderMap requestHeaders = new HeaderMap.Builder(requestSpec.getHeadersSpec()).build();
-    HeaderMap urlParams = new HeaderMap.Builder(requestSpec.getUrlParamsSpec()).build();
+    UrlParamsSpec urlParamsSpec = new UrlParamsSpec.Builder().build();
+    UrlParams urlParams = new UrlParams.Builder(urlParamsSpec).build();
     RestRequestBase<I, R> request = new RestRequestBase<I, R>(
         HttpMethod.PUT, requestHeaders, urlParams, resource.getId(), resource, resourceType);
     RestResponseBase<I, R> response = stub.getResponse(callSpec, request, gson);
@@ -100,7 +105,8 @@ public class ResourceDepotBaseClient<I extends ResourceId, R extends RestResourc
   public void delete(I resourceId) {
     RestRequestSpec requestSpec = callSpec.getRequestSpec();
     HeaderMap requestHeaders = new HeaderMap.Builder(requestSpec.getHeadersSpec()).build();
-    HeaderMap urlParams = new HeaderMap.Builder(requestSpec.getUrlParamsSpec()).build();
+    UrlParamsSpec urlParamsSpec = new UrlParamsSpec.Builder().build();
+    UrlParams urlParams = new UrlParams.Builder(urlParamsSpec).build();
     RestRequestBase<I, R> request = new RestRequestBase<I, R>(
         HttpMethod.DELETE, requestHeaders, urlParams, resourceId, null, resourceType);
     stub.getResponse(callSpec, request, gson);

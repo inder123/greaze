@@ -19,6 +19,8 @@ import com.google.greaze.definition.CallPath;
 import com.google.greaze.definition.HeaderMap;
 import com.google.greaze.definition.HeaderMapSpec;
 import com.google.greaze.definition.HttpMethod;
+import com.google.greaze.definition.UrlParams;
+import com.google.greaze.definition.UrlParamsSpec;
 import com.google.greaze.definition.webservice.RequestBody;
 import com.google.greaze.definition.webservice.RequestBodySpec;
 import com.google.greaze.definition.webservice.WebServiceCallSpec;
@@ -60,8 +62,8 @@ public class WebServiceClientTest extends TestCase {
   }
 
   public void testNoUrlParams() {
-    HeaderMapSpec urlParamSpec = new HeaderMapSpec.Builder().build();
-    HeaderMap urlParams = new HeaderMap.Builder(urlParamSpec).build();
+    UrlParamsSpec urlParamsSpec = new UrlParamsSpec.Builder().build();
+    UrlParams urlParams = new UrlParams.Builder(urlParamsSpec).build();
     WebServiceRequest request =
       new WebServiceRequest(HttpMethod.GET, requestHeaders, urlParams, requestBody);
     URL url = client.getWebServiceUrl(callSpec, request, gson);
@@ -69,9 +71,10 @@ public class WebServiceClientTest extends TestCase {
   }
 
   public void testOneUrlParam() {
-    HeaderMapSpec urlParamSpec = new HeaderMapSpec.Builder().put("foo", String.class).build();
-    HeaderMap urlParams = new HeaderMap.Builder(urlParamSpec)
-      .put("foo", "bar bar").build();
+    UrlParamsSpec urlParamSpec = new UrlParamsSpec.Builder().put("foo", String.class).build();
+    UrlParams urlParams = new UrlParams.Builder(urlParamSpec)
+      .put("foo", "bar bar")
+      .build();
     WebServiceRequest request =
       new WebServiceRequest(HttpMethod.GET, requestHeaders, urlParams, requestBody);
     URL url = client.getWebServiceUrl(callSpec, request, gson);

@@ -15,17 +15,18 @@
  */
 package com.google.greaze.definition.webservice;
 
-import java.lang.reflect.Type;
-import java.util.Arrays;
-import java.util.LinkedHashSet;
-import java.util.Set;
-
 import com.google.greaze.definition.CallPath;
 import com.google.greaze.definition.HeaderMapSpec;
 import com.google.greaze.definition.HttpMethod;
 import com.google.greaze.definition.TypedKey;
 import com.google.greaze.definition.UntypedKey;
+import com.google.greaze.definition.UrlParamsSpec;
 import com.google.greaze.definition.internal.utils.GreazePreconditions;
+
+import java.lang.reflect.Type;
+import java.util.Arrays;
+import java.util.LinkedHashSet;
+import java.util.Set;
 
 /**
  * Specification for a Json web service call. The call includes the relative path where the call 
@@ -40,7 +41,7 @@ public class WebServiceCallSpec {
   public static class Builder {
 	private final CallPath callPath;
 	private final Set<HttpMethod> supportedHttpMethods;
-    private final HeaderMapSpec.Builder urlParamsSpecBuilder;
+    private final UrlParamsSpec.Builder urlParamsSpecBuilder;
     private final HeaderMapSpec.Builder reqParamsSpecBuilder;
     private final RequestBodySpec.Builder reqBodySpecBuilder;
     private final HeaderMapSpec.Builder resParamsSpecBuilder;
@@ -50,7 +51,7 @@ public class WebServiceCallSpec {
     public Builder(CallPath callPath) {
       this.callPath = callPath;
       supportedHttpMethods = new LinkedHashSet<HttpMethod>();
-      urlParamsSpecBuilder = new HeaderMapSpec.Builder();
+      urlParamsSpecBuilder = new UrlParamsSpec.Builder();
       reqParamsSpecBuilder = new HeaderMapSpec.Builder();
       resParamsSpecBuilder = new HeaderMapSpec.Builder();
       reqBodySpecBuilder = new RequestBodySpec.Builder();

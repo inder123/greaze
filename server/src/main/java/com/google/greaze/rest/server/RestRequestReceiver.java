@@ -15,15 +15,16 @@
  */
 package com.google.greaze.rest.server;
 
-import javax.servlet.http.HttpServletRequest;
-
 import com.google.greaze.definition.HeaderMap;
 import com.google.greaze.definition.HttpMethod;
+import com.google.greaze.definition.UrlParams;
 import com.google.greaze.definition.rest.Id;
 import com.google.greaze.definition.rest.RestRequest;
 import com.google.greaze.definition.rest.RestRequestSpec;
 import com.google.greaze.definition.rest.RestResource;
 import com.google.gson.Gson;
+
+import javax.servlet.http.HttpServletRequest;
 
 /**
  * Receives and parses a request at the server side on a
@@ -40,7 +41,7 @@ public final class RestRequestReceiver<R extends RestResource<R>>
 
   @Override
   protected RestRequest<R> createRequest(HttpMethod method, HeaderMap requestParams,
-    HeaderMap urlParams, Id<R> resourceId, R requestBody) {
+    UrlParams urlParams, Id<R> resourceId, R requestBody) {
     return new RestRequest<R>(
         method, requestParams, urlParams, resourceId, requestBody, getSpec().getResourceType());
   }

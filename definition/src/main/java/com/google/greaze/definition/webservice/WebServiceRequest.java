@@ -19,6 +19,7 @@ import com.google.greaze.definition.ContentBodySpec;
 import com.google.greaze.definition.HeaderMap;
 import com.google.greaze.definition.HttpMethod;
 import com.google.greaze.definition.TypedKey;
+import com.google.greaze.definition.UrlParams;
 
 /**
  * The data associated with a Web service request. This includes HTTP request header parameters 
@@ -29,19 +30,19 @@ import com.google.greaze.definition.TypedKey;
 public class WebServiceRequest {
   protected final HttpMethod method;
   protected final HeaderMap headers;
-  protected final HeaderMap urlParams;
+  protected final UrlParams urlParams;
   protected final RequestBody body;
   protected final RequestSpec spec;
   
   public WebServiceRequest(HttpMethod method, HeaderMap requestHeaders,
-                           HeaderMap urlParams, RequestBody requestBody) {
+                           UrlParams urlParams, RequestBody requestBody) {
     this(method, requestHeaders, urlParams, requestBody,
       new RequestSpec(requestHeaders.getSpec(), urlParams.getSpec(),
         requestBody.getSpec()));
     
   }
   public WebServiceRequest(HttpMethod method, HeaderMap requestHeaders,
-                           HeaderMap urlParams, RequestBody requestBody,
+                           UrlParams urlParams, RequestBody requestBody,
                            RequestSpec requestSpec) {
     this.method = method;
     this.body = requestBody;
@@ -70,7 +71,7 @@ public class WebServiceRequest {
     return headers;
   }
 
-  public HeaderMap getUrlParameters() {
+  public UrlParams getUrlParameters() {
     return urlParams;
   }
 

@@ -15,11 +15,12 @@
  */
 package com.google.greaze.definition.rest;
 
-import java.lang.reflect.Type;
-
 import com.google.greaze.definition.HeaderMapSpec;
+import com.google.greaze.definition.UrlParamsSpec;
 import com.google.greaze.definition.webservice.RequestBodySpec;
 import com.google.greaze.definition.webservice.RequestSpec;
+
+import java.lang.reflect.Type;
 
 /**
  * Specification for a {@link RestRequestBase}.
@@ -40,8 +41,8 @@ public final class RestRequestSpec extends RequestSpec {
     this.resourceType = resourceType;
   }
 
-  private static HeaderMapSpec buildUrlParamSpec() {
-    return new HeaderMapSpec.Builder().build();
+  private static UrlParamsSpec buildUrlParamSpec() {
+    return new UrlParamsSpec.Builder().build();
   }
 
   private static RequestBodySpec buildBodySpec(Type resourceType) {

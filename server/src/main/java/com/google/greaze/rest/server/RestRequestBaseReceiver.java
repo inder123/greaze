@@ -15,15 +15,9 @@
  */
 package com.google.greaze.rest.server;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.io.Reader;
-
-import javax.servlet.http.HttpServletRequest;
-
 import com.google.greaze.definition.HeaderMap;
 import com.google.greaze.definition.HttpMethod;
+import com.google.greaze.definition.UrlParams;
 import com.google.greaze.definition.WebServiceSystemException;
 import com.google.greaze.definition.rest.ResourceId;
 import com.google.greaze.definition.rest.RestRequestBase;
@@ -33,6 +27,13 @@ import com.google.greaze.server.internal.utils.UrlParamsExtractor;
 import com.google.greaze.webservice.server.RequestReceiver;
 import com.google.gson.Gson;
 import com.google.gson.JsonParseException;
+
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.io.Reader;
+
+import javax.servlet.http.HttpServletRequest;
 
 /**
  * Receives and parses a REST request at the server side on a {@link HttpServletRequest}.  
@@ -54,7 +55,7 @@ public class RestRequestBaseReceiver<I extends ResourceId, R extends RestResourc
     try {
       HeaderMap requestParams = buildRequestParams(request);
       UrlParamsExtractor urlParamsExtractor = new UrlParamsExtractor(spec.getUrlParamsSpec(), gson);
-      HeaderMap urlParams = urlParamsExtractor.extractUrlParams(request);
+      UrlParams urlParams = urlParamsExtractor.extractUrlParams(request);
       R requestBody = buildRequestBody(request);
 
       HttpMethod method = HttpMethod.getMethod(request.getMethod());
@@ -72,7 +73,7 @@ public class RestRequestBaseReceiver<I extends ResourceId, R extends RestResourc
   }
 
   protected RestRequestBase<I, R> createRequest(HttpMethod method, HeaderMap requestHeaders,
-      HeaderMap urlParams, I resourceId, R requestBody) {
+      UrlParams urlParams, I resourceId, R requestBody) {
     return new RestRequestBase<I, R>(
         method, requestHeaders, urlParams, resourceId, requestBody, getSpec().getResourceType());
   }
