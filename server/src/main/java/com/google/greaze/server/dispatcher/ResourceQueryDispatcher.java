@@ -47,7 +47,7 @@ import javax.servlet.http.HttpServletResponse;
  *
  * @author Inderjeet Singh
  */
-public class ResourceQueryDispatcher {
+public abstract class ResourceQueryDispatcher {
   private static final Logger log = Logger.getLogger(ResourceQueryDispatcher.class.getSimpleName());
 
   protected final GsonBuilder gsonBuilder;
@@ -91,4 +91,7 @@ public class ResourceQueryDispatcher {
     ResponseSender responseSender = new ResponseSender(gson);
     responseSender.send(res, response);
   }
+
+  public abstract void service(HttpServletRequest req, HttpServletResponse res, String queryName,
+      CallPath callPath);
 }

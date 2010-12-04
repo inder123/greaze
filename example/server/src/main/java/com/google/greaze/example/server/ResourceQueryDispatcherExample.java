@@ -43,6 +43,7 @@ public class ResourceQueryDispatcherExample extends ResourceQueryDispatcher {
 
   }
 
+  @Override
   public void service(HttpServletRequest req, HttpServletResponse res,
       String queryName, CallPath callPath) {
     Queries query = Queries.getQuery(queryName);

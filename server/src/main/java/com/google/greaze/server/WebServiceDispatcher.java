@@ -13,12 +13,11 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.google.greaze.example.server;
+package com.google.greaze.server;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import com.google.greaze.definition.HeaderMap;
 import com.google.greaze.definition.webservice.RequestBody;
 import com.google.greaze.definition.webservice.RequestSpec;
 import com.google.greaze.definition.webservice.ResponseBody;
@@ -26,26 +25,30 @@ import com.google.greaze.definition.webservice.ResponseSpec;
 import com.google.greaze.definition.webservice.WebServiceCallSpec;
 import com.google.greaze.definition.webservice.WebServiceRequest;
 import com.google.greaze.definition.webservice.WebServiceResponse;
-import com.google.greaze.example.definition.model.Cart;
-import com.google.greaze.example.definition.model.Order;
-import com.google.greaze.example.service.definition.SampleJsonService;
-import com.google.greaze.example.webservice.definition.TypedKeys;
 import com.google.greaze.webservice.server.RequestReceiver;
 import com.google.greaze.webservice.server.ResponseSender;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import com.google.inject.Injector;
 
 /**
  * A dispatcher for all the procedural calls
  *
  * @author Inderjeet Singh
  */
-public final class WebServiceDispatcher {
+public abstract class WebServiceDispatcher {
+
+  private final Injector injector;
+
+  public WebServiceDispatcher(Injector injector) {
+    this.injector = injector;
+  }
+
   public void service(HttpServletRequest req, HttpServletResponse res) {
-    WebServiceCallSpec spec = SampleJsonService.PLACE_ORDER;
+    WebServiceCallSpec spec = injector.getInstance(WebServiceCallSpec.class);
     RequestSpec requestSpec = spec.getRequestSpec();
     ResponseSpec responseSpec = spec.getResponseSpec();
-    Gson gson = new GsonBuilder()
+    Gson gson = injector.getInstance(GsonBuilder.class)
         .registerTypeAdapter(RequestBody.class,
             new RequestBody.GsonTypeAdapter(requestSpec.getBodySpec()))
         .registerTypeAdapter(ResponseBody.class, 
@@ -54,23 +57,11 @@ public final class WebServiceDispatcher {
     RequestReceiver requestReceiver = new RequestReceiver(gson, requestSpec);
     WebServiceRequest webServiceRequest = requestReceiver.receive(req);
 
-    Cart cart = webServiceRequest.getBody().get(TypedKeys.RequestBody.CART);
-    String authToken = webServiceRequest.getHeader(TypedKeys.Request.AUTH_TOKEN);
-
-    Order order = placeOrder(cart, authToken);
-
-    // Empty headers per the spec
-    HeaderMap responseHeaders = new HeaderMap.Builder(responseSpec.getHeadersSpec()).build();
-    ResponseBody responseBody = new ResponseBody.Builder(responseSpec.getBodySpec())
-        .put(TypedKeys.ResponseBody.ORDER, order)
-        .build();
-    WebServiceResponse response = new WebServiceResponse(responseHeaders, responseBody);
     ResponseSender responseSender = new ResponseSender(gson);
+    WebServiceResponse response = buildResponse(responseSpec, webServiceRequest);
     responseSender.send(res, response);
   }
-  
-  private Order placeOrder(Cart cart, String authToken) {
-    // Create an order, in this case a dummy one.
-    return new Order(cart, "Order123");
-  }
+
+  protected abstract WebServiceResponse buildResponse(ResponseSpec responseSpec,
+      WebServiceRequest webServiceRequest);
 }

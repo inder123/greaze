@@ -18,10 +18,14 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.google.greaze.definition.CallPath;
+import com.google.greaze.definition.rest.Id;
+import com.google.greaze.definition.rest.MetaData;
+import com.google.greaze.definition.rest.MetaDataBase;
 import com.google.greaze.example.definition.model.Cart;
 import com.google.greaze.example.definition.model.LineItem;
 import com.google.greaze.example.definition.model.Order;
 import com.google.greaze.example.query.definition.QueryOrdersByItemName;
+import com.google.greaze.example.service.definition.SampleJsonService;
 import com.google.greaze.rest.client.ResourceDepotClient;
 import com.google.greaze.rest.client.RestClientStub;
 import com.google.greaze.rest.query.client.ResourceQueryClient;
@@ -37,23 +41,35 @@ import com.google.gson.GsonBuilder;
  */
 public class OrderClient {
   public static final CallPath CALL_PATH = new CallPath("/rest/order");
-  private final ResourceDepotClient<Order> restClient;
+  private final ResourceDepotClient<Cart> cartRestClient;
+  private final ResourceDepotClient<Order> orderRestClient;
   private final ResourceQueryClient<Order, QueryOrdersByItemName> queryClient;
   public OrderClient() {
-    ServerConfig serverConfig = new ServerConfig("http://localhost");
+    ServerConfig serverConfig = new ServerConfig(SampleJsonService.SERVER_BASE_URL);
     GsonBuilder gsonBuilder = new GsonBuilder();
 
-    restClient = new ResourceDepotClient<Order>(
-        new RestClientStub(serverConfig), CALL_PATH, Order.class, new Gson());
-    ServerConfig wsServerConfig = new ServerConfig("http://localhost");
+    Gson gson = new GsonBuilder()
+      .setVersion(SampleJsonService.CURRENT_VERSION)
+      .registerTypeAdapter(Id.class, new Id.GsonTypeAdapter())
+      .registerTypeAdapter(MetaData.class, new MetaDataBase.GsonTypeAdapter())
+      .create();
+    cartRestClient = new ResourceDepotClient<Cart>(
+        new RestClientStub(serverConfig), CALL_PATH, Cart.class, gson);
+    orderRestClient = new ResourceDepotClient<Order>(
+        new RestClientStub(serverConfig), CALL_PATH, Order.class, gson);
+    ServerConfig wsServerConfig = new ServerConfig(SampleJsonService.SERVER_BASE_URL);
     queryClient = new ResourceQueryClient<Order, QueryOrdersByItemName>(
         new WebServiceClient(wsServerConfig), CALL_PATH, QueryOrdersByItemName.class, gsonBuilder,
         Order.class); 
   }
 
+  private Cart createCart(Cart cart) {
+    return cartRestClient.post(cart);
+  }
+
   public Order placeOrder(Cart cart) {
     Order order = new Order(cart, cart.getId().getValueAsString());
-    return restClient.post(order);
+    return orderRestClient.post(order);
   }
 
   private List<Order> query(String itemName) {
@@ -66,6 +82,7 @@ public class OrderClient {
     String itemName = "item1";
     lineItems.add(new LineItem(itemName, 2, 1000000L, "USD"));
     Cart cart = new Cart(lineItems, "first last", "4111-1111-1111-1111");
+    cart = client.createCart(cart);
     Order order = client.placeOrder(cart);
     System.out.println("Placed order: " + order);
     List<Order> queriedOrders = client.query(itemName);
