@@ -48,6 +48,14 @@ public final class Id<R> implements ResourceId {
     return value;
   }
 
+  public static <T> Id<T> getNullValue(Class<T> idClass) {
+    return Id.get(INVALID_ID, idClass);
+  }
+
+  public static <T> Id<T> getNullValue(Type idType) {
+    return Id.get(INVALID_ID, idType);
+  }
+
   public static long getValue(Id<?> id) {
     return id == null ? INVALID_ID : id.getValue();
   }
