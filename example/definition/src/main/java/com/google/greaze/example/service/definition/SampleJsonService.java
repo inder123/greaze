@@ -17,7 +17,10 @@ package com.google.greaze.example.service.definition;
 
 import com.google.greaze.definition.CallPath;
 import com.google.greaze.definition.HttpMethod;
+import com.google.greaze.definition.rest.RestCallSpec;
+import com.google.greaze.definition.rest.RestCallSpecMap;
 import com.google.greaze.definition.webservice.WebServiceCallSpec;
+import com.google.greaze.example.definition.model.Cart;
 import com.google.greaze.example.webservice.definition.TypedKeys;
 
 /**
@@ -27,13 +30,37 @@ import com.google.greaze.example.webservice.definition.TypedKeys;
  */
 public class SampleJsonService {
 
+  /**
+   * Server where the JSON service is deployed. localhost:8888 is the address when the service
+   * is deployed to a local App engine instance. 
+   */
+  public static final String SERVER_BASE_URL = "http://localhost:8888/greazeexampleservice";
+
+  public static final double CURRENT_VERSION = 1.0;
+
   public static final WebServiceCallSpec PLACE_ORDER = new WebServiceCallSpec.Builder(
     new CallPath("/placeOrder"))
       .setMapBody()
-      .setVersion(1.0)
+      .setVersion(CURRENT_VERSION)
       .supportsHttpMethod(HttpMethod.POST)
       .addRequestParam(TypedKeys.Request.AUTH_TOKEN)
       .addRequestBodyParam(TypedKeys.RequestBody.CART)
       .addResponseBodyParam(TypedKeys.ResponseBody.ORDER)
+      .build();
+
+  public static final RestCallSpec CART_SPEC =
+    new RestCallSpec.Builder(ServicePaths.CART.getCallPath(), Cart.class)
+      .setVersion(CURRENT_VERSION)
+      .build();
+
+  public static final RestCallSpec ORDER_SPEC =
+    new RestCallSpec.Builder(ServicePaths.CART.getCallPath(), Cart.class)
+      .setVersion(CURRENT_VERSION)
+      .build(); 
+
+  public static final RestCallSpecMap REST_CALL_SPEC_MAP =
+    new RestCallSpecMap.Builder()
+      .set(ServicePaths.CART.getCallPath(), CART_SPEC)
+      .set(ServicePaths.ORDER.getCallPath(), ORDER_SPEC)
       .build();
 }
