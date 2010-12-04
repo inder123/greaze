@@ -17,6 +17,8 @@ package com.google.greaze.client.internal.utils;
 
 import com.google.greaze.definition.HeaderMap;
 import com.google.greaze.definition.HeaderMapSpec;
+import com.google.greaze.definition.UrlParams;
+import com.google.greaze.definition.UrlParamsSpec;
 import com.google.greaze.definition.WebServiceSystemException;
 import com.google.gson.Gson;
 import com.google.gson.JsonElement;
@@ -41,9 +43,20 @@ public final class UrlParamStringBuilder {
     this.gson = gson;
   }
 
-  public UrlParamStringBuilder add(HeaderMap urlParams) {
-    HeaderMapSpec spec = urlParams.getSpec();
-    for (Map.Entry<String, Object> entry : urlParams.entrySet()) {
+  public UrlParamStringBuilder add(UrlParams urlParams) {
+    UrlParamsSpec spec = urlParams.getSpec();
+    if (spec.hasParamsMap()) {
+      add(urlParams.getParamsMap());
+    }
+    if (spec.hasParamsObject()) {
+      addComposite(null, urlParams.getParamsObject(), spec.getType());
+    }
+    return this;
+  }
+
+  public UrlParamStringBuilder add(HeaderMap urlParamsMap) {
+    HeaderMapSpec spec = urlParamsMap.getSpec();
+    for (Map.Entry<String, Object> entry : urlParamsMap.entrySet()) {
       Object value = entry.getValue();
       String paramName = entry.getKey();
       Type type = spec.getTypeFor(paramName);

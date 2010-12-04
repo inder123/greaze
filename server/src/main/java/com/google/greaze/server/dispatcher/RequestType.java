@@ -17,6 +17,7 @@ package com.google.greaze.server.dispatcher;
 
 import com.google.common.base.Preconditions;
 import com.google.greaze.definition.CallPath;
+import com.google.greaze.definition.rest.query.ResourceQueryParams;
 
 import java.util.Map;
 
@@ -50,7 +51,7 @@ public enum RequestType {
   }
 
   public static String getQueryName(Map<String, String[]> requestParameterMap) {
-    String[] queryNames = requestParameterMap.get("queryName");
+    String[] queryNames = requestParameterMap.get(ResourceQueryParams.QUERY_NAME);
     Preconditions.checkArgument(queryNames == null || queryNames.length <= 1);
     return queryNames == null || queryNames.length == 0 ? null : queryNames[0];
   }

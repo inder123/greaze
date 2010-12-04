@@ -17,6 +17,7 @@ package com.google.greaze.definition.rest;
 
 import com.google.greaze.definition.HeaderMap;
 import com.google.greaze.definition.HttpMethod;
+import com.google.greaze.definition.UrlParams;
 
 import java.lang.reflect.Type;
 
@@ -28,7 +29,7 @@ import java.lang.reflect.Type;
  */
 public final class RestRequest<R extends RestResource<R>> extends RestRequestBase<Id<R>, R> {
 
-  public RestRequest(HttpMethod method, HeaderMap requestHeaders, HeaderMap urlParams,
+  public RestRequest(HttpMethod method, HeaderMap requestHeaders, UrlParams urlParams,
       Id<R> resourceId, R requestBody, Type resourceType) {
     super(method, requestHeaders, urlParams, resourceId, requestBody, resourceType);
   }

@@ -16,8 +16,8 @@
 package com.google.greaze.end2end;
 
 import com.google.greaze.client.internal.utils.UrlParamStringBuilder;
-import com.google.greaze.definition.HeaderMap;
-import com.google.greaze.definition.HeaderMapSpec;
+import com.google.greaze.definition.UrlParams;
+import com.google.greaze.definition.UrlParamsSpec;
 import com.google.greaze.definition.rest.Id;
 import com.google.greaze.server.fixtures.HttpServletRequestFake;
 import com.google.greaze.server.internal.utils.UrlParamsExtractor;
@@ -46,23 +46,23 @@ public class UrlParamTest extends TestCase {
 
   public void testNoParams() {
     String urlParamString = urlParamBuilder.build();
-    HeaderMapSpec spec = new HeaderMapSpec.Builder().build();
+    UrlParamsSpec spec = new UrlParamsSpec.Builder().build();
     UrlParamsExtractor extractor = new UrlParamsExtractor(spec, gson);
     HttpServletRequestFake request = new HttpServletRequestFake().setRequestMethod("GET");
-    HeaderMap urlParams = extractor.extractUrlParams(request);
-    assertEquals(0, urlParams.entrySet().size());
+    UrlParams urlParams = extractor.extractUrlParams(request);
+    assertEquals(0, urlParams.getParamsMap().entrySet().size());
   }
 
   public void testOneParam() {
-    HeaderMapSpec spec = new HeaderMapSpec.Builder().put("foo", String.class).build();
-    HeaderMap urlParameters = new HeaderMap.Builder(spec)
+    UrlParamsSpec spec = new UrlParamsSpec.Builder().put("foo", String.class).build();
+    UrlParams urlParameters = new UrlParams.Builder(spec)
       .put("foo", "bar bar").build();
     String urlParamsString = urlParamBuilder.add(urlParameters).build();
     UrlParamsExtractor extractor = new UrlParamsExtractor(spec, gson);
     HttpServletRequestFake request = new HttpServletRequestFake()
       .setRequestMethod("GET")
       .setUrlParams(urlParamsString);
-    HeaderMap urlParams = extractor.extractUrlParams(request);
-    assertEquals("bar bar", urlParams.get("foo"));
+    UrlParams urlParams = extractor.extractUrlParams(request);
+    assertEquals("bar bar", urlParams.getParamsMap().get("foo"));
   }
 }

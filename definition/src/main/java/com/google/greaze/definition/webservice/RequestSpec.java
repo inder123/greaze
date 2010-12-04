@@ -16,6 +16,7 @@
 package com.google.greaze.definition.webservice;
 
 import com.google.greaze.definition.HeaderMapSpec;
+import com.google.greaze.definition.UrlParamsSpec;
 import com.google.greaze.definition.internal.utils.GreazePreconditions;
 
 /**
@@ -26,10 +27,10 @@ import com.google.greaze.definition.internal.utils.GreazePreconditions;
 public class RequestSpec {
 
   private final HeaderMapSpec headersSpec;
+  private final UrlParamsSpec urlParamsSpec;
   private final RequestBodySpec bodySpec;
-  private final HeaderMapSpec urlParamsSpec;
   
-  public RequestSpec(HeaderMapSpec headersSpec, HeaderMapSpec urlParamSpec,
+  public RequestSpec(HeaderMapSpec headersSpec, UrlParamsSpec urlParamSpec,
       RequestBodySpec bodySpec) {
     GreazePreconditions.checkNotNull(headersSpec);
     GreazePreconditions.checkNotNull(urlParamSpec);
@@ -44,7 +45,7 @@ public class RequestSpec {
     return headersSpec;
   }
  
-  public HeaderMapSpec getUrlParamsSpec() {
+  public UrlParamsSpec getUrlParamsSpec() {
     return urlParamsSpec;
   }
  

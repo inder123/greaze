@@ -18,6 +18,7 @@ package com.google.greaze.webservice.server;
 import com.google.greaze.definition.HeaderMap;
 import com.google.greaze.definition.HeaderMapSpec;
 import com.google.greaze.definition.HttpMethod;
+import com.google.greaze.definition.UrlParams;
 import com.google.greaze.definition.WebServiceSystemException;
 import com.google.greaze.definition.webservice.RequestBody;
 import com.google.greaze.definition.webservice.RequestBodySpec;
@@ -55,7 +56,7 @@ public class RequestReceiver {
     try {
       HeaderMap requestParams = buildRequestParams(request);
       UrlParamsExtractor urlParamsExtractor = new UrlParamsExtractor(spec.getUrlParamsSpec(), gson);
-      HeaderMap urlParams = urlParamsExtractor.extractUrlParams(request);
+      UrlParams urlParams = urlParamsExtractor.extractUrlParams(request);
       RequestBody requestBody = buildRequestBody(request);
       
       HttpMethod method = HttpMethod.getMethod(request.getMethod());

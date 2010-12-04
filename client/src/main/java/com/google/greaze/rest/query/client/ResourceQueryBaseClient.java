@@ -19,7 +19,7 @@ import com.google.greaze.definition.CallPath;
 import com.google.greaze.definition.HeaderMap;
 import com.google.greaze.definition.HttpMethod;
 import com.google.greaze.definition.UntypedKey;
-import com.google.greaze.definition.WebServiceSystemException;
+import com.google.greaze.definition.UrlParams;
 import com.google.greaze.definition.internal.utils.FieldNavigator;
 import com.google.greaze.definition.rest.ResourceId;
 import com.google.greaze.definition.rest.RestResourceBase;
@@ -107,26 +107,12 @@ public class ResourceQueryBaseClient<
     RequestBody requestBody = new RequestBody.Builder(requestSpec.getBodySpec())
       .build();
     String queryUrlParamValue = gson.toJson(query, queryType);
-    HeaderMap.Builder urlParams = new HeaderMap.Builder(requestSpec.getUrlParamsSpec());
-    populateQueryFieldsInUrlParams(query, urlParams);
+    UrlParams urlParams = new UrlParams.Builder(requestSpec.getUrlParamsSpec(), query).build();
     WebServiceRequest request =
-      new WebServiceRequest(HttpMethod.GET, requestHeaders, urlParams.build(), requestBody);
+      new WebServiceRequest(HttpMethod.GET, requestHeaders, urlParams, requestBody);
     WebServiceResponse response = stub.getResponse(callSpec, request, gson);
     ResponseBody body = response.getBody();
     return (List<R>)body.getListBody();
-  }
-
-  protected void populateQueryFieldsInUrlParams(Q query, HeaderMap.Builder urlParams) {
-    FieldNavigator navigator = new FieldNavigator(queryType);
-    for (Field f : navigator.getFields()) {
-      try {
-        urlParams.put(f.getName(), f.get(query));
-      } catch (IllegalArgumentException e) {
-        throw new WebServiceSystemException(e);
-      } catch (IllegalAccessException e) {
-        throw new WebServiceSystemException(e);
-      }
-    }
   }
 
   @Override

@@ -17,6 +17,7 @@ package com.google.greaze.example.webservice.client;
 
 import com.google.greaze.definition.HeaderMap;
 import com.google.greaze.definition.HttpMethod;
+import com.google.greaze.definition.UrlParams;
 import com.google.greaze.definition.webservice.RequestBody;
 import com.google.greaze.definition.webservice.WebServiceCallSpec;
 import com.google.greaze.definition.webservice.WebServiceRequest;
@@ -46,7 +47,7 @@ public class ExampleClient {
 	HeaderMap requestHeaders = new HeaderMap.Builder(spec.getRequestSpec().getHeadersSpec())
 	    .put(TypedKeys.Request.AUTH_TOKEN, authToken)
 	    .build();
-	HeaderMap urlParams = new HeaderMap.Builder(spec.getRequestSpec().getUrlParamsSpec())
+	UrlParams urlParams = new UrlParams.Builder(spec.getRequestSpec().getUrlParamsSpec())
 	    .build();
 	RequestBody requestBody = new RequestBody.Builder(spec.getRequestSpec().getBodySpec())
 	    .put(TypedKeys.RequestBody.CART, cart)

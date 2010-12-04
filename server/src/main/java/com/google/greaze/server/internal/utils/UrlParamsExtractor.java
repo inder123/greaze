@@ -16,13 +16,17 @@
 package com.google.greaze.server.internal.utils;
 
 import com.google.greaze.definition.HeaderMap;
-import com.google.greaze.definition.HeaderMapSpec;
+import com.google.greaze.definition.UrlParams;
+import com.google.greaze.definition.UrlParamsSpec;
 import com.google.greaze.definition.WebServiceSystemException;
+import com.google.greaze.definition.internal.utils.FieldNavigator;
 import com.google.greaze.definition.internal.utils.GreazePreconditions;
+import com.google.greaze.definition.internal.utils.GreazeStrings;
 import com.google.gson.Gson;
 import com.google.gson.JsonSyntaxException;
 
 import java.io.UnsupportedEncodingException;
+import java.lang.reflect.Field;
 import java.lang.reflect.Type;
 import java.net.URLDecoder;
 import java.util.Map;
@@ -36,27 +40,53 @@ import javax.servlet.http.HttpServletRequest;
  */
 public final class UrlParamsExtractor {
 
-  private final HeaderMapSpec spec;
+  private final UrlParamsSpec spec;
   private final Gson gson;
 
-  public UrlParamsExtractor(HeaderMapSpec spec, Gson gson) {
+  public UrlParamsExtractor(UrlParamsSpec spec, Gson gson) {
     this.spec = spec;
     this.gson = gson;
   }
 
-  public HeaderMap extractUrlParams(HttpServletRequest request) {
-    HeaderMap.Builder paramsBuilder = new HeaderMap.Builder(spec);
-    for (Map.Entry<String, Type> param : spec.entrySet()) {
-      String name = param.getKey();
-      Type type = param.getValue();
-      String[] urlParamValues = request.getParameterValues(name);
-      if (urlParamValues != null) {
-        GreazePreconditions.checkArgument(urlParamValues.length <= 1,
+  public UrlParams extractUrlParams(HttpServletRequest request) {
+    UrlParams.Builder paramsBuilder = new UrlParams.Builder(spec);
+    if (spec.hasParamsObject()) {
+      Type paramType = spec.getType();
+      FieldNavigator navigator = new FieldNavigator(paramType);
+      StringBuilder json = new StringBuilder('{');
+      for (Field f : navigator.getFields()) {
+        String name = f.getName();
+        Type type = f.getGenericType();
+        String[] urlParamValues = request.getParameterValues(name);
+        if (urlParamValues != null) {
+          GreazePreconditions.checkArgument(urlParamValues.length <= 1,
             "Greaze supports only one URL parameter value per name. For %s, found: %s",
             name, urlParamValues);
-        if (urlParamValues.length == 1) {
-          Object value = parseUrlParamValue(urlParamValues[0], type, gson);
-          paramsBuilder.put(name, value);
+          if (urlParamValues.length == 1) {
+            Object value = parseUrlParamValue(urlParamValues[0], type, gson);
+            json.append(name).append(":'").append(value).append("'");
+          }
+        }
+        json.append('}');
+        Object obj = gson.fromJson(json.toString(), paramType);
+        paramsBuilder = new UrlParams.Builder(spec, obj);
+      }
+    } else {
+      paramsBuilder = new UrlParams.Builder(spec);
+    }
+    if (spec.hasParamsMap()) {
+      for (Map.Entry<String, Type> param : spec.getMapSpec().entrySet()) {
+        String name = param.getKey();
+        Type type = param.getValue();
+        String[] urlParamValues = request.getParameterValues(name);
+        if (urlParamValues != null) {
+          GreazePreconditions.checkArgument(urlParamValues.length <= 1,
+            "Greaze supports only one URL parameter value per name. For %s, found: %s",
+            name, urlParamValues);
+          if (urlParamValues.length == 1 && !GreazeStrings.isEmpty(urlParamValues[0])) {
+            Object value = parseUrlParamValue(urlParamValues[0], type, gson);
+            paramsBuilder.put(name, value);
+          }
         }
       }
     }

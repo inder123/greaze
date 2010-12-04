@@ -16,6 +16,7 @@
 package com.google.greaze.webservice.server;
 
 import com.google.greaze.definition.HeaderMapSpec;
+import com.google.greaze.definition.UrlParamsSpec;
 import com.google.greaze.definition.webservice.RequestBodySpec;
 import com.google.greaze.definition.webservice.RequestSpec;
 import com.google.greaze.definition.webservice.WebServiceRequest;
@@ -44,7 +45,7 @@ public class RequestReceiverTest extends TestCase {
   
   public void testUrlParams() {
     HeaderMapSpec headersSpec = new HeaderMapSpec.Builder().build();
-    HeaderMapSpec urlParamSpec = new HeaderMapSpec.Builder().put("foo", String.class).build();
+    UrlParamsSpec urlParamSpec = new UrlParamsSpec.Builder().put("foo", String.class).build();
     RequestBodySpec bodySpec = new RequestBodySpec.Builder().build();
     RequestSpec spec = new RequestSpec(headersSpec, urlParamSpec, bodySpec);
     RequestReceiver receiver = new RequestReceiver(gson, spec);
@@ -52,6 +53,6 @@ public class RequestReceiverTest extends TestCase {
       .setRequestMethod("GET")
       .setUrlParam("foo", "bar");
     WebServiceRequest request = receiver.receive(req);
-    assertEquals("bar", request.getUrlParameters().get("foo"));
+    assertEquals("bar", request.getUrlParameters().getParamsMap().get("foo"));
   }
 }
