@@ -45,6 +45,12 @@ public final class CallPath {
     }
   }
 
+  public CallPath(double version, String pathWithoutVersionAndResourceId, long resourceId) {
+    this.version = version;
+    this.path = pathWithoutVersionAndResourceId;
+    this.resourceId = resourceId;
+  }
+
   /**
    * Returns path after consuming version number from the begining
    */
