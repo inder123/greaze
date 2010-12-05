@@ -42,6 +42,7 @@ public class GreazeServerModule extends ServletModule {
   public GreazeServerModule(String pathToServlet) {
     this.pathToServlet = pathToServlet;
   }
+
   @Override
   protected void configureServlets() {
     serve(pathToServlet + "/*").with(GreazeDispatcherServlet.class);
@@ -73,7 +74,8 @@ public class GreazeServerModule extends ServletModule {
   @Provides
   public RestRequestBase getRestRequest(Gson gson, RestCallSpec callSpec, CallPath callPath,
       HttpServletRequest request, ResourceIdFactory<Id<?>> idFactory) {
-    RestRequestBaseReceiver requestReceiver = new RestRequestBaseReceiver(gson, callSpec.getRequestSpec());
+    RestRequestBaseReceiver requestReceiver =
+      new RestRequestBaseReceiver(gson, callSpec.getRequestSpec());
     return requestReceiver.receive(request, idFactory.createId(callPath.getResourceId()));
   }
 }
