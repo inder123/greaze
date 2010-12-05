@@ -91,7 +91,7 @@ public class RepositoryInMemoryBase<I extends ResourceId, R extends RestResource
 
   @Override
   public I assignId(R resource) {
-    if (resource.getId() == null) {
+    if (!resource.hasId()) {
       I id = resources.getNextId();
       resource.setId(id);
       metaDataMap.get(id).putBoolean(METADATA_KEY_IS_FRESHLY_ASSIGNED_ID, true);
