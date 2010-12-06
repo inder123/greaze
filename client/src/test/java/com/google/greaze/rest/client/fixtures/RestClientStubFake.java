@@ -13,8 +13,10 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.google.greaze.rest.client;
+package com.google.greaze.rest.client.fixtures;
 
+import com.google.greaze.definition.fixtures.HttpURLConnectionFake;
+import com.google.greaze.rest.client.RestClientStub;
 import com.google.greaze.webservice.client.ServerConfig;
 
 import java.net.HttpURLConnection;
