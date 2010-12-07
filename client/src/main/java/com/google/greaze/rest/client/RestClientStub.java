@@ -64,7 +64,7 @@ public class RestClientStub {
       url.append('/').append(version);
     }
     url.append(callSpec.getPath().get());
-    if (id != null) {
+    if (id != null && id.getValue() != ResourceId.INVALID_ID) {
       url.append('/').append(id.getValue());
     }
     try {

@@ -62,12 +62,6 @@ public class RepositoryInMemoryBase<I extends ResourceId, R extends RestResource
     if (!resource.hasId()) {
       // insert semantics
       assignId(resource);
-    } else {
-      I id = resource.getId();
-      if (!isFreshlyAssignedId(id)) {
-        // update semantics
-        Preconditions.checkState(resources.exists(resource.getId()));
-      }
     }
     resource = resources.put(resource);
     metaDataMap.get(resource.getId()).remove(METADATA_KEY_IS_FRESHLY_ASSIGNED_ID);
