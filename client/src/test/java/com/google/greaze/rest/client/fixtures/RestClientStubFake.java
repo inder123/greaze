@@ -15,8 +15,8 @@
  */
 package com.google.greaze.rest.client.fixtures;
 
-import com.google.greaze.definition.fixtures.ConnectionTransformer;
-import com.google.greaze.definition.fixtures.ConnectionTransformerPiped;
+import com.google.greaze.definition.fixtures.NetworkSwitcher;
+import com.google.greaze.definition.fixtures.NetworkSwitcherPiped;
 import com.google.greaze.rest.client.RestClientStub;
 import com.google.greaze.webservice.client.ServerConfig;
 
@@ -30,14 +30,14 @@ import java.net.URL;
  */
 public class RestClientStubFake extends RestClientStub {
 
-  private final ConnectionTransformer transformer;
+  private final NetworkSwitcher networkSwitcher;
   public RestClientStubFake() {
     super(new ServerConfig("http://localhost"));
-    transformer = new ConnectionTransformerPiped();
+    networkSwitcher = new NetworkSwitcherPiped();
   }
 
   @Override
   protected HttpURLConnection createHttpURLConnection(URL url) {
-    return transformer.get(url);
+    return networkSwitcher.get(url);
   }
 }
