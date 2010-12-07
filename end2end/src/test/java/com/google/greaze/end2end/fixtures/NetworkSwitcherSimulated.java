@@ -15,6 +15,16 @@
  */
 package com.google.greaze.end2end.fixtures;
 
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.InputStream;
+import java.io.OutputStream;
+import java.lang.reflect.Type;
+import java.net.HttpURLConnection;
+import java.net.URL;
+
+import javax.servlet.http.HttpServletRequest;
+
 import com.google.greaze.definition.CallPath;
 import com.google.greaze.definition.ContentBodySpec;
 import com.google.greaze.definition.fixtures.NetworkSwitcher;
@@ -24,19 +34,11 @@ import com.google.greaze.definition.rest.RestCallSpec;
 import com.google.greaze.definition.rest.RestRequestBase;
 import com.google.greaze.definition.rest.RestResource;
 import com.google.greaze.definition.rest.RestResponse;
+import com.google.greaze.rest.client.ResourceDepotBaseClient;
 import com.google.greaze.rest.server.RestResponseBuilder;
 import com.google.greaze.server.fixtures.HttpServletRequestFake;
 import com.google.greaze.server.inject.GreazeServerModule;
 import com.google.gson.Gson;
-
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
-import java.io.InputStream;
-import java.io.OutputStream;
-import java.net.HttpURLConnection;
-import java.net.URL;
-
-import javax.servlet.http.HttpServletRequest;
 
 /**
  * Connects a RequestReceiver to HttpURLConnection
@@ -47,11 +49,11 @@ public class NetworkSwitcherSimulated<R extends RestResource<R>> implements Netw
 
   private final RestResponseBuilder<R> responseBuilder;
   private final GreazeServerModule gsm;
-  private final RestCallSpec spec;
+  private final Type resourceType;
   private final Gson gson;
-  public NetworkSwitcherSimulated(RestResponseBuilder<R> responseBuilder, RestCallSpec spec, Gson gson) {
+  public NetworkSwitcherSimulated(RestResponseBuilder<R> responseBuilder, Type resourceType, Gson gson) {
     this.responseBuilder = responseBuilder;
-    this.spec = spec;
+    this.resourceType = resourceType;
     this.gson = gson;
     this.gsm = new GreazeServerModule("/fake");
   }
@@ -60,6 +62,7 @@ public class NetworkSwitcherSimulated<R extends RestResource<R>> implements Netw
   void switchNetwork() {
     HttpServletRequest req = new HttpServletRequestFake();
     CallPath callPath = gsm.getCallPath(req);
+    RestCallSpec spec = ResourceDepotBaseClient.generateRestCallSpec(callPath, resourceType);
     ResourceIdFactory<Id<?>> idFactory = gsm.getIDFactory(spec);
     RestRequestBase<Id<R>, R> request = gsm.getRestRequest(gson, spec, callPath, req, idFactory);
     RestResponse.Builder<R> resBuilder = null;

@@ -61,7 +61,7 @@ public class ResourceDepotBaseClient<I extends ResourceId, R extends RestResourc
     this.gson = gson;
   }
 
-  private static <T> RestCallSpec generateRestCallSpec(CallPath callPath, Type resourceType) {
+  public static <T> RestCallSpec generateRestCallSpec(CallPath callPath, Type resourceType) {
     return new RestCallSpec.Builder(callPath, resourceType).build();
   }
 
