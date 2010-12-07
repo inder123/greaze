@@ -26,26 +26,26 @@ import com.google.greaze.definition.TypedKey;
  */
 public class RestResponse<R extends RestResource<R>> extends RestResponseBase<Id<R>, R> {
   
-  public static class Builder<RS extends RestResource<RS>> {
-    private final HeaderMap.Builder headers;
-    private RS body;
-    private final RestResponseSpec spec;
+  public static class Builder<RS extends RestResource<RS>>
+      extends RestResponseBase.Builder<Id<RS>, RS> {
     
     public Builder(RestResponseSpec spec) {
-      this.spec = spec;
-      headers = new HeaderMap.Builder(spec.getHeadersSpec());
+      super(spec);
     }
     
+    @Override
     public <T> Builder<RS> putHeader(TypedKey<T> paramName, T content) {
-      headers.put(paramName.getName(), content, paramName.getClassOfT());
-      return this;
-    }
-    
-    public Builder<RS> setBody(RS body) {
-      this.body = body;
+      super.putHeader(paramName, content);
       return this;
     }
 
+    @Override
+    public Builder<RS> setBody(RS body) {
+      super.setBody(body);
+      return this;
+    }
+
+    @Override
     public RestResponse<RS> build() {
       return new RestResponse<RS>(spec, headers.build(), body);
     }
