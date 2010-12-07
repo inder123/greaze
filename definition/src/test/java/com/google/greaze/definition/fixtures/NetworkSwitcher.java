@@ -19,14 +19,10 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 
 /**
- * Pipes input into the output stream of HttpURLConnection
+ * Transforms an HttpURLConnection to respond on a request
  * 
  * @author Inderjeet Singh
  */
-public class ConnectionTransformerPiped implements ConnectionTransformer {
-
-  @Override
-  public HttpURLConnection get(URL url) {
-    return new HttpURLConnectionFake(url);
-  }
+public interface NetworkSwitcher {
+  public HttpURLConnection get(URL url);
 }
