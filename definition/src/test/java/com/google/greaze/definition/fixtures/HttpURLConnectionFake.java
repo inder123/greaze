@@ -29,10 +29,9 @@ import java.net.URL;
  *
  * @author Inderjeet Singh
  */
-public class HttpURLConnectionFake extends HttpURLConnection {
+final class HttpURLConnectionFake extends HttpURLConnection {
 
   private final ByteArrayOutputStream out;
-  
   public HttpURLConnectionFake(URL url) {
     super(url);
     out = new ByteArrayOutputStream();

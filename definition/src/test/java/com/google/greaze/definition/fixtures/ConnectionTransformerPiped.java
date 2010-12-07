@@ -13,31 +13,20 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.google.greaze.rest.client.fixtures;
-
-import com.google.greaze.definition.fixtures.ConnectionTransformer;
-import com.google.greaze.definition.fixtures.ConnectionTransformerPiped;
-import com.google.greaze.rest.client.RestClientStub;
-import com.google.greaze.webservice.client.ServerConfig;
+package com.google.greaze.definition.fixtures;
 
 import java.net.HttpURLConnection;
 import java.net.URL;
 
 /**
- * A fake for use in tests for {@link RestClientStub}
- *
+ * Pipes input into the output stream of HttpURLConnection
+ * 
  * @author Inderjeet Singh
  */
-public class RestClientStubFake extends RestClientStub {
-
-  private final ConnectionTransformer transformer;
-  public RestClientStubFake() {
-    super(new ServerConfig("http://localhost"));
-    transformer = new ConnectionTransformerPiped();
-  }
+public class ConnectionTransformerPiped implements ConnectionTransformer {
 
   @Override
-  protected HttpURLConnection createHttpURLConnection(URL url) {
-    return transformer.get(url);
+  public HttpURLConnection get(URL url) {
+    return new HttpURLConnectionFake(url);
   }
 }
