@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.google.greaze.rest.client;
+package com.google.greaze.definition.fixtures;
 
 import com.google.greaze.definition.ContentBodySpec;
 
@@ -29,11 +29,10 @@ import java.net.URL;
  *
  * @author Inderjeet Singh
  */
-public class HttpURLConnectionFake extends HttpURLConnection {
+final class HttpURLConnectionFake extends HttpURLConnection {
 
   private final ByteArrayOutputStream out;
-  
-  protected HttpURLConnectionFake(URL url) {
+  public HttpURLConnectionFake(URL url) {
     super(url);
     out = new ByteArrayOutputStream();
   }

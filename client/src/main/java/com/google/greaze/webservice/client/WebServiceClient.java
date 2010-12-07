@@ -79,19 +79,25 @@ public class WebServiceClient {
       if (logger != null) {
         logger.log(logLevel, "Opening connection to " + webServiceUrl);
       }
-      HttpURLConnection conn = (HttpURLConnection) webServiceUrl.openConnection();
+      HttpURLConnection conn = openConnection(webServiceUrl);
       RequestSender requestSender = new RequestSender(gson, logLevel);
       requestSender.send(conn, request);
       ResponseReceiver responseReceiver =
         new ResponseReceiver(gson, callSpec.getResponseSpec(), logLevel);
       return responseReceiver.receive(conn);
-    } catch (IOException e) {
-      throw new WebServiceSystemException(e);
     } catch (IllegalArgumentException e) {
       throw new WebServiceSystemException(e);
     }
   }
-  
+
+  protected HttpURLConnection openConnection(URL url) {
+    try {
+      return (HttpURLConnection) url.openConnection();
+    } catch (IOException e) {
+      throw new WebServiceSystemException(e);
+    }
+  }
+
   @Override
   public String toString() {
     return String.format("config:%s", config);

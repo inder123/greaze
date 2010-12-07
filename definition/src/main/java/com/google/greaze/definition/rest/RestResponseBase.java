@@ -34,9 +34,9 @@ public class RestResponseBase<I extends ResourceId, R extends RestResourceBase<I
     extends WebServiceResponse {
   
   public static class Builder<II extends ResourceId, RS extends RestResourceBase<II, RS>> {
-    private final HeaderMap.Builder headers;
-    private RS body;
-    private final RestResponseSpec spec;
+    protected final HeaderMap.Builder headers;
+    protected RS body;
+    protected final RestResponseSpec spec;
     
     public Builder(RestResponseSpec spec) {
       this.spec = spec;

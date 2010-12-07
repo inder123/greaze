@@ -13,26 +13,16 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.google.greaze.rest.client;
-
-import com.google.greaze.webservice.client.ServerConfig;
+package com.google.greaze.definition.fixtures;
 
 import java.net.HttpURLConnection;
 import java.net.URL;
 
 /**
- * A fake for use in tests for {@link RestClientStub}
- *
+ * Transforms an HttpURLConnection to respond on a request
+ * 
  * @author Inderjeet Singh
  */
-public class RestClientStubFake extends RestClientStub {
-
-  public RestClientStubFake() {
-    super(new ServerConfig("http://localhost"));
-  }
-
-  @Override
-  protected HttpURLConnection createHttpURLConnection(URL url) {
-    return new HttpURLConnectionFake(url);
-  }
+public interface NetworkSwitcher {
+  public HttpURLConnection get(URL url);
 }
