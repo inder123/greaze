@@ -19,6 +19,7 @@ import junit.framework.TestCase;
 
 import com.google.greaze.definition.CallPath;
 import com.google.greaze.definition.rest.RestResourceImpl;
+import com.google.greaze.rest.client.fixtures.RestClientStubFake;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 

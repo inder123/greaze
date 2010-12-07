@@ -38,6 +38,11 @@ public final class RestRequestReceiver<R extends RestResource<R>>
   public RestRequestReceiver(Gson gson, RestRequestSpec spec) {
     super(gson, spec);
   }
+  
+  @Override
+  public RestRequest<R> receive(HttpServletRequest request, Id<R> resourceId) {
+    return (RestRequest<R>) super.receive(request, resourceId);
+  }
 
   @Override
   protected RestRequest<R> createRequest(HttpMethod method, HeaderMap requestParams,
