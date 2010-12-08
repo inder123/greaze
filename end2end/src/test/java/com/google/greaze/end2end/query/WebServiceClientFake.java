@@ -21,7 +21,7 @@ import java.net.URL;
 
 import com.google.greaze.definition.fixtures.NetworkSwitcher;
 import com.google.greaze.definition.rest.RestResource;
-import com.google.greaze.end2end.fixtures.NetworkSwitcherSimulated;
+import com.google.greaze.end2end.fixtures.NetworkSwitcherResource;
 import com.google.greaze.rest.server.RestResponseBuilder;
 import com.google.greaze.webservice.client.ServerConfig;
 import com.google.greaze.webservice.client.WebServiceClient;
@@ -37,7 +37,7 @@ public class WebServiceClientFake<R extends RestResource<R>> extends WebServiceC
   private final NetworkSwitcher networkSwitcher;
   public WebServiceClientFake(RestResponseBuilder<R> responseBuilder, Type resourceType, Gson gson) {
     super(new ServerConfig("http://localhost"));
-    networkSwitcher = new NetworkSwitcherSimulated<R>(responseBuilder, resourceType, gson);
+    networkSwitcher = new NetworkSwitcherResource<R>(responseBuilder, resourceType, gson);
   }
 
   @Override

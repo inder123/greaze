@@ -15,19 +15,8 @@
  */
 package com.google.greaze.end2end.fixtures;
 
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
-import java.io.InputStream;
-import java.io.OutputStream;
-import java.lang.reflect.Type;
-import java.net.HttpURLConnection;
-import java.net.URL;
-
-import javax.servlet.http.HttpServletRequest;
-
 import com.google.greaze.definition.CallPath;
-import com.google.greaze.definition.ContentBodySpec;
-import com.google.greaze.definition.fixtures.NetworkSwitcher;
+import com.google.greaze.definition.fixtures.NetworkSwitcherPiped;
 import com.google.greaze.definition.rest.Id;
 import com.google.greaze.definition.rest.ResourceIdFactory;
 import com.google.greaze.definition.rest.RestCallSpec;
@@ -40,18 +29,22 @@ import com.google.greaze.server.fixtures.HttpServletRequestFake;
 import com.google.greaze.server.inject.GreazeServerModule;
 import com.google.gson.Gson;
 
+import java.lang.reflect.Type;
+
+import javax.servlet.http.HttpServletRequest;
+
 /**
  * Connects a RequestReceiver to HttpURLConnection
  * 
  * @author Inderjeet Singh
  */
-public class NetworkSwitcherSimulated<R extends RestResource<R>> implements NetworkSwitcher {
+public class NetworkSwitcherResource<R extends RestResource<R>> extends NetworkSwitcherPiped {
 
   private final RestResponseBuilder<R> responseBuilder;
   private final GreazeServerModule gsm;
   private final Type resourceType;
   private final Gson gson;
-  public NetworkSwitcherSimulated(RestResponseBuilder<R> responseBuilder, Type resourceType, Gson gson) {
+  public NetworkSwitcherResource(RestResponseBuilder<R> responseBuilder, Type resourceType, Gson gson) {
     this.responseBuilder = responseBuilder;
     this.resourceType = resourceType;
     this.gson = gson;
@@ -59,7 +52,8 @@ public class NetworkSwitcherSimulated<R extends RestResource<R>> implements Netw
   }
 
   @SuppressWarnings("unchecked")
-  void switchNetwork(HttpURLConnectionFake conn) {
+  @Override
+  protected void switchNetwork(HttpURLConnectionFake conn) {
     HttpServletRequest req = new HttpServletRequestFake()
       .setRequestMethod(conn.getRequestMethod())
       .setServletPath(conn.getURL().getPath())
@@ -70,47 +64,5 @@ public class NetworkSwitcherSimulated<R extends RestResource<R>> implements Netw
     RestRequestBase<Id<R>, R> request = gsm.getRestRequest(gson, spec, callPath, req, idFactory);
     RestResponse.Builder<R> resBuilder = new RestResponse.Builder<R>(spec.getResponseSpec());
     responseBuilder.buildResponse(request, resBuilder);
-  }
-
-  @Override
-  public HttpURLConnection get(URL url) {
-    return new HttpURLConnectionFake(url);
-  }
-  final class HttpURLConnectionFake extends HttpURLConnection {
-
-    private final ByteArrayOutputStream out;
-    public HttpURLConnectionFake(URL url) {
-      super(url);
-      out = new ByteArrayOutputStream();
-    }
-
-    @Override
-    public void disconnect() {
-    }
-
-    @Override
-    public boolean usingProxy() {
-      return false;
-    }
-
-    @Override
-    public String getContentType() {
-      return ContentBodySpec.JSON_CONTENT_TYPE;
-    }
-    
-    @Override
-    public InputStream getInputStream() {
-      return new ByteArrayInputStream(out.toByteArray());
-    }
-
-    @Override
-    public OutputStream getOutputStream() {
-      return out;
-    }
-
-    @Override
-    public void connect() {
-      switchNetwork(this);
-    }
   }
 }
