@@ -21,13 +21,17 @@ import com.google.greaze.definition.rest.query.ResourceQueryParams;
  *
  * @author Inderjeet Singh
  */
-public class QueryByName extends ResourceQueryParams {
+public class QueryEmployeeByName extends ResourceQueryParams {
   private final String name;
-  public QueryByName() {
+  public QueryEmployeeByName() {
     this(null);
   }
-  public QueryByName(String itemName) {
-    super("query_by_name");
+  public QueryEmployeeByName(String itemName) {
+    super("employee_by_name");
     this.name = itemName;
+  }
+
+  public String getName() {
+    return name;
   }
 }
