@@ -18,7 +18,7 @@ package com.google.greaze.end2end.query;
 
 import com.google.greaze.definition.CallPath;
 import com.google.greaze.end2end.definition.Employee;
-import com.google.greaze.end2end.definition.QueryByName;
+import com.google.greaze.end2end.definition.QueryEmployeeByName;
 import com.google.greaze.rest.query.client.ResourceQueryClient;
 import com.google.greaze.rest.server.Repository;
 import com.google.greaze.rest.server.RepositoryInMemory;
@@ -39,7 +39,7 @@ import java.util.List;
 public class QueryParamsTest extends TestCase {
 
   private static final CallPath QUERY_PATH = new CallPath("/rest/query");
-  private ResourceQueryClient<Employee, QueryByName> queryClient;
+  private ResourceQueryClient<Employee, QueryEmployeeByName> queryClient;
 
   @Override
   protected void setUp() throws Exception {
@@ -49,12 +49,12 @@ public class QueryParamsTest extends TestCase {
     Repository<Employee> employees = new RepositoryInMemory<Employee>(Employee.class);
     RestResponseBuilder<Employee> responseBuilder = new RestResponseBuilder<Employee>(employees);
     WebServiceClient stub = new WebServiceClientFake<Employee>(responseBuilder, Employee.class, gson);
-    queryClient = new ResourceQueryClient<Employee, QueryByName>(stub, QUERY_PATH,
-        QueryByName.class, gsonBuilder, Employee.class);
+    queryClient = new ResourceQueryClient<Employee, QueryEmployeeByName>(stub, QUERY_PATH,
+        QueryEmployeeByName.class, gsonBuilder, Employee.class);
   }
 
   public void testParamsRoundTrip() throws Exception {
-    QueryByName query = new QueryByName("foo");
+    QueryEmployeeByName query = new QueryEmployeeByName("foo");
     List<Employee> results = queryClient.query(query);
     assertTrue(results.size() > 0);
     for (Employee employee : results) {
