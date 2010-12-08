@@ -65,7 +65,7 @@ public class NetworkSwitcherSimulated<R extends RestResource<R>> implements Netw
     RestCallSpec spec = ResourceDepotBaseClient.generateRestCallSpec(callPath, resourceType);
     ResourceIdFactory<Id<?>> idFactory = gsm.getIDFactory(spec);
     RestRequestBase<Id<R>, R> request = gsm.getRestRequest(gson, spec, callPath, req, idFactory);
-    RestResponse.Builder<R> resBuilder = null;
+    RestResponse.Builder<R> resBuilder = new RestResponse.Builder<R>(spec.getResponseSpec());
     responseBuilder.buildResponse(request, resBuilder);
   }
 

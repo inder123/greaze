@@ -18,6 +18,7 @@ package com.google.greaze.server.fixtures;
 import com.google.greaze.definition.internal.utils.GreazeStrings;
 
 import java.io.BufferedReader;
+import java.io.InputStream;
 import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
 import java.security.Principal;
@@ -36,14 +37,26 @@ import javax.servlet.http.HttpSession;
 public class HttpServletRequestFake implements HttpServletRequest {
   private String method;
   private Map<String, String> urlParams = new HashMap<String, String>();
+  private String servletPath;
+  private ServletInputStream inputStream;
 
   public HttpServletRequestFake setRequestMethod(String method) {
     this.method = method;
     return this;
   }
 
+  public HttpServletRequestFake setServletPath(String path) {
+    this.servletPath = path;
+    return this;
+  }
+
   public HttpServletRequestFake setUrlParam(String name, String value) {
     urlParams.put(name, value);
+    return this;
+  }
+
+  public HttpServletRequestFake setInputStream(InputStream inputStream) {
+    this.inputStream = new ServletInputStreamPiped(inputStream);
     return this;
   }
 
@@ -99,7 +112,7 @@ public class HttpServletRequestFake implements HttpServletRequest {
 
   @Override
   public ServletInputStream getInputStream() {
-    return null;
+    return inputStream;
   }
 
   @Override
@@ -303,7 +316,7 @@ public class HttpServletRequestFake implements HttpServletRequest {
 
   @Override
   public String getServletPath() {
-    return null;
+    return servletPath;
   }
 
   @Override
