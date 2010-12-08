@@ -47,6 +47,9 @@ public class HttpServletRequestFake implements HttpServletRequest {
 
   public HttpServletRequestFake setServletPath(String path) {
     this.servletPath = path;
+    if (servletPath.contains("?")) {
+      setUrlParams(servletPath.substring(servletPath.indexOf('?')));
+    }
     return this;
   }
 
