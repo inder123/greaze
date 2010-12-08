@@ -16,7 +16,6 @@
 package com.google.greaze.end2end.fixtures;
 
 import com.google.greaze.definition.CallPath;
-import com.google.greaze.definition.fixtures.NetworkSwitcherPiped;
 import com.google.greaze.definition.rest.Id;
 import com.google.greaze.definition.rest.ResourceIdFactory;
 import com.google.greaze.definition.rest.RestCallSpec;
@@ -26,7 +25,6 @@ import com.google.greaze.definition.rest.RestResponse;
 import com.google.greaze.rest.client.ResourceDepotBaseClient;
 import com.google.greaze.rest.server.RestResponseBuilder;
 import com.google.greaze.server.fixtures.HttpServletRequestFake;
-import com.google.greaze.server.inject.GreazeServerModule;
 import com.google.gson.Gson;
 
 import java.lang.reflect.Type;
@@ -38,17 +36,14 @@ import javax.servlet.http.HttpServletRequest;
  * 
  * @author Inderjeet Singh
  */
-public class NetworkSwitcherResource<R extends RestResource<R>> extends NetworkSwitcherPiped {
+public class NetworkSwitcherResource<R extends RestResource<R>> extends NetworkSwitcherWebService {
 
   private final RestResponseBuilder<R> responseBuilder;
-  private final GreazeServerModule gsm;
   private final Type resourceType;
-  private final Gson gson;
   public NetworkSwitcherResource(RestResponseBuilder<R> responseBuilder, Type resourceType, Gson gson) {
+    super(gson);
     this.responseBuilder = responseBuilder;
     this.resourceType = resourceType;
-    this.gson = gson;
-    this.gsm = new GreazeServerModule("/fake");
   }
 
   @SuppressWarnings("unchecked")
