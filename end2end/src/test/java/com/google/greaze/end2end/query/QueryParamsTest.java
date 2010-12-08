@@ -16,18 +16,20 @@
 package com.google.greaze.end2end.query;
 
 
-import java.util.List;
-
-import junit.framework.TestCase;
-
 import com.google.greaze.definition.CallPath;
 import com.google.greaze.end2end.definition.Employee;
 import com.google.greaze.end2end.definition.QueryByName;
 import com.google.greaze.rest.query.client.ResourceQueryClient;
+import com.google.greaze.rest.server.Repository;
+import com.google.greaze.rest.server.RepositoryInMemory;
 import com.google.greaze.rest.server.RestResponseBuilder;
 import com.google.greaze.webservice.client.WebServiceClient;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+
+import junit.framework.TestCase;
+
+import java.util.List;
 
 /**
  * Functional tests for passing resource query parameters
@@ -44,7 +46,8 @@ public class QueryParamsTest extends TestCase {
     super.setUp();
     GsonBuilder gsonBuilder = new GsonBuilder();
     Gson gson = gsonBuilder.create();
-    RestResponseBuilder<Employee> responseBuilder = null;
+    Repository<Employee> employees = new RepositoryInMemory<Employee>(Employee.class);
+    RestResponseBuilder<Employee> responseBuilder = new RestResponseBuilder<Employee>(employees);
     WebServiceClient stub = new WebServiceClientFake<Employee>(responseBuilder, Employee.class, gson);
     queryClient = new ResourceQueryClient<Employee, QueryByName>(stub, QUERY_PATH,
         QueryByName.class, gsonBuilder, Employee.class);
