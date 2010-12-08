@@ -59,8 +59,11 @@ public class NetworkSwitcherSimulated<R extends RestResource<R>> implements Netw
   }
 
   @SuppressWarnings("unchecked")
-  void switchNetwork() {
-    HttpServletRequest req = new HttpServletRequestFake();
+  void switchNetwork(HttpURLConnectionFake conn) {
+    HttpServletRequest req = new HttpServletRequestFake()
+      .setRequestMethod(conn.getRequestMethod())
+      .setServletPath(conn.getURL().getPath())
+      .setInputStream(conn.getInputStream());
     CallPath callPath = gsm.getCallPath(req);
     RestCallSpec spec = ResourceDepotBaseClient.generateRestCallSpec(callPath, resourceType);
     ResourceIdFactory<Id<?>> idFactory = gsm.getIDFactory(spec);
@@ -107,7 +110,7 @@ public class NetworkSwitcherSimulated<R extends RestResource<R>> implements Netw
 
     @Override
     public void connect() {
-      switchNetwork();
+      switchNetwork(this);
     }
   }
 }
