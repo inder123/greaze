@@ -37,9 +37,9 @@ import java.util.logging.Logger;
  * @author inder
  */
 public class WebServiceClient {
-  private final ServerConfig config;
-  private final Logger logger;
-  private final Level logLevel;
+  protected final ServerConfig config;
+  protected final Logger logger;
+  protected final Level logLevel;
 
   public WebServiceClient(ServerConfig serverConfig) {
     this(serverConfig, null);
@@ -74,12 +74,13 @@ public class WebServiceClient {
 
   public WebServiceResponse getResponse(
       WebServiceCallSpec callSpec, WebServiceRequest request, Gson gson) {
+    HttpURLConnection conn = null;
     try {
       URL webServiceUrl = getWebServiceUrl(callSpec, request, gson);
       if (logger != null) {
         logger.log(logLevel, "Opening connection to " + webServiceUrl);
       }
-      HttpURLConnection conn = openConnection(webServiceUrl);
+      conn = openConnection(webServiceUrl);
       RequestSender requestSender = new RequestSender(gson, logLevel);
       requestSender.send(conn, request);
       ResponseReceiver responseReceiver =
@@ -87,6 +88,8 @@ public class WebServiceClient {
       return responseReceiver.receive(conn);
     } catch (IllegalArgumentException e) {
       throw new WebServiceSystemException(e);
+    } finally {
+      closeIgnoringErrors(conn);
     }
   }
 
@@ -101,5 +104,11 @@ public class WebServiceClient {
   @Override
   public String toString() {
     return String.format("config:%s", config);
+  }
+
+  protected static void closeIgnoringErrors(HttpURLConnection conn) {
+    if (conn != null) {
+      conn.disconnect();
+    }
   }
 }
