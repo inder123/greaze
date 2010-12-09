@@ -15,6 +15,8 @@
  */
 package com.google.greaze.client.internal.utils;
 
+import com.google.greaze.definition.internal.utils.Streams;
+
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;

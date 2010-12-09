@@ -22,11 +22,11 @@ import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import com.google.greaze.client.internal.utils.Streams;
 import com.google.greaze.definition.HeaderMap;
 import com.google.greaze.definition.HeaderMapSpec;
 import com.google.greaze.definition.HttpMethod;
 import com.google.greaze.definition.WebServiceSystemException;
+import com.google.greaze.definition.internal.utils.Streams;
 import com.google.greaze.definition.webservice.RequestBody;
 import com.google.greaze.definition.webservice.WebServiceRequest;
 import com.google.gson.Gson;

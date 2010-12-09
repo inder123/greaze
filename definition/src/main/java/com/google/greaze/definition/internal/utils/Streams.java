@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.google.greaze.client.internal.utils;
+package com.google.greaze.definition.internal.utils;
 
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
@@ -41,6 +41,16 @@ public final class Streams {
     } finally {
       if (closeInput) src.close();
       if (closeOutput) dst.close();
+    }
+  }
+
+  public static void closeIgnoringErrors(OutputStream closeable) {
+    try {
+      if (closeable != null) {
+        closeable.flush();
+        closeable.close();
+      }
+    } catch (Exception e) {
     }
   }
 
