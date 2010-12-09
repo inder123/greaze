@@ -15,13 +15,6 @@
  */
 package com.google.greaze.rest.client;
 
-import java.io.IOException;
-import java.net.HttpURLConnection;
-import java.net.MalformedURLException;
-import java.net.URL;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-
 import com.google.greaze.definition.WebServiceSystemException;
 import com.google.greaze.definition.rest.Id;
 import com.google.greaze.definition.rest.ResourceId;
@@ -33,31 +26,31 @@ import com.google.greaze.definition.rest.RestResourceBase;
 import com.google.greaze.definition.rest.RestResponse;
 import com.google.greaze.definition.rest.RestResponseBase;
 import com.google.greaze.webservice.client.ServerConfig;
+import com.google.greaze.webservice.client.WebServiceClient;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+
+import java.net.HttpURLConnection;
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.util.logging.Level;
 
 /**
  * A stub to access the rest service
  * 
  * @author inder
  */
-public class RestClientStub {
-  private final ServerConfig config;
-  private final Logger logger;
-  private final Level logLevel;
+public class RestClientStub extends WebServiceClient {
 
   public RestClientStub(ServerConfig serverConfig) {
     this(serverConfig, null);
   }
 
   public RestClientStub(ServerConfig serverConfig, Level logLevel) {
-    this.config = serverConfig;
-    this.logger = logLevel == null ? null : Logger.getLogger(RestClientStub.class.getName());
-    this.logLevel = logLevel;
+    super(serverConfig, logLevel);
   }
   
-  private <I extends ResourceId> URL getWebServiceUrl(
-      RestCallSpec callSpec, ResourceId id) {
+  private <I extends ResourceId> URL getWebServiceUrl(RestCallSpec callSpec, ResourceId id) {
     double version = callSpec.getVersion();
     StringBuilder url = new StringBuilder(config.getServiceBaseUrl());
     if (version != -1D) {
@@ -95,22 +88,15 @@ public class RestClientStub {
     HttpURLConnection conn = null;
     try {
       URL webServiceUrl = getWebServiceUrl(callSpec, request.getId());
-      conn = createHttpURLConnection(webServiceUrl);
+      conn = openConnection(webServiceUrl);
       return getResponse(callSpec, request, gson, conn);
-    } catch (IOException e) {
-      throw new WebServiceSystemException(e);
     } finally {
       closeIgnoringErrors(conn);
     }
   }
 
-  /** Override this method to replace the stream being used for communication */
-  protected HttpURLConnection createHttpURLConnection(URL webServiceUrl) throws IOException {
-    return (HttpURLConnection) webServiceUrl.openConnection();
-  }
-
   /**
-   * Use this method if you want to mange the HTTP Connection yourself. This is useful when you
+   * Use this method if you want to manage the HTTP Connection yourself. This is useful when you
    * want to use HTTP pipelining.
    */
   public <R extends RestResource<R>> RestResponse<R> getResponse(
@@ -119,12 +105,11 @@ public class RestClientStub {
   }
 
   /**
-   * Use this method if you want to mange the HTTP Connection yourself. This is useful when you
+   * Use this method if you want to manage the HTTP Connection yourself. This is useful when you
    * want to use HTTP pipelining.
    */
   public <I extends ResourceId, R extends RestResourceBase<I, R>> RestResponseBase<I, R> getResponse(
-      RestCallSpec callSpec, RestRequestBase<I, R> request, Gson gson,
-      HttpURLConnection conn) {
+      RestCallSpec callSpec, RestRequestBase<I, R> request, Gson gson, HttpURLConnection conn) {
     try {
       if (logger != null) {
         URL webServiceUrl = getWebServiceUrl(callSpec, request.getId());
@@ -138,16 +123,5 @@ public class RestClientStub {
     } catch (IllegalArgumentException e) {
       throw new WebServiceSystemException(e);
     }
-  }
-
-  private static void closeIgnoringErrors(HttpURLConnection conn) {
-    if (conn != null) {
-      conn.disconnect();
-    }
-  }
-
-  @Override
-  public String toString() {
-    return String.format("config:%s", config);
   }
 }
