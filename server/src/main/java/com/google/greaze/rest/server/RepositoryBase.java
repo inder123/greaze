@@ -46,4 +46,6 @@ public interface RepositoryBase<I extends ResourceId, R extends HasId<I>> {
   public I assignId(R resource);
 
   public I getNextId();
+
+  public long size();
 }

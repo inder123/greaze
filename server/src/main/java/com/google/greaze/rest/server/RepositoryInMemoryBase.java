@@ -91,4 +91,9 @@ public class RepositoryInMemoryBase<I extends ResourceId, R extends RestResource
     }
     return resource.getId();
   }
+
+  @Override
+  public long size() {
+    return resources.size();
+  }
 }
