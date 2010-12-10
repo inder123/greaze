@@ -73,6 +73,10 @@ public class IdMapBase<I extends ResourceId, T extends HasId<I>> {
     return idFactory.createId(id);
   }
 
+  public long size() {
+    return map.size();
+  }
+
   public static <II extends ResourceId, S extends HasId<II>> IdMapBase<II, S> create(Class<? super II> classOfII, Type typeOfId) {
     return new IdMapBase<II, S>(classOfII, typeOfId);
   }
