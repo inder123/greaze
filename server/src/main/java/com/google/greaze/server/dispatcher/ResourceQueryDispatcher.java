@@ -35,8 +35,6 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 
 import java.util.List;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -47,8 +45,6 @@ import javax.servlet.http.HttpServletResponse;
  * @author Inderjeet Singh
  */
 public class ResourceQueryDispatcher {
-  private static final Logger log = Logger.getLogger(ResourceQueryDispatcher.class.getSimpleName());
-
   protected final GsonBuilder gsonBuilder;
 
   public ResourceQueryDispatcher(GsonBuilder gsonBuilder) {
