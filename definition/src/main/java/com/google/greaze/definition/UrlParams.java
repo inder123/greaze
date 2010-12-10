@@ -15,10 +15,7 @@
  */
 package com.google.greaze.definition;
 
-import com.google.greaze.definition.internal.utils.FieldNavigator;
 import com.google.greaze.definition.internal.utils.GreazePreconditions;
-
-import java.lang.reflect.Field;
 
 /**
  * URL parameters
@@ -72,18 +69,5 @@ public class UrlParams {
 
   public HeaderMap getParamsMap() {
     return map;
-  }
-
-  protected void populateQueryFieldsInUrlParams(HeaderMap.Builder urlParams) {
-    FieldNavigator navigator = new FieldNavigator(spec.getType());
-    for (Field f : navigator.getFields()) {
-      try {
-        urlParams.put(f.getName(), f.get(params));
-      } catch (IllegalArgumentException e) {
-        throw new WebServiceSystemException(e);
-      } catch (IllegalAccessException e) {
-        throw new WebServiceSystemException(e);
-      }
-    }
   }
 }
