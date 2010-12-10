@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.google.greaze.end2end.query;
+package com.google.greaze.end2end.resources;
 
 
 import com.google.greaze.definition.CallPath;
