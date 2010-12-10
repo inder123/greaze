@@ -42,12 +42,11 @@ public class QueryHandlerEmployeeByName implements ResourceQuery<Employee, Query
 
   @Override
   public List<Employee> query(QueryEmployeeByName query) {
-    long repoSize = employees.getNextId().getValue();
     List<Employee> results = Lists.newArrayList();
-    for (int i = 0; i < repoSize; ++i) {
+    for (int i = 0; i < employees.size(); ++i) {
       Id<Employee> id = Id.get(i, Employee.class);
       Employee employee = employees.get(id);
-      if (employee.getName().equals(query.getName())) {
+      if (employee != null && employee.getName().equals(query.getName())) {
         results.add(employee);
       }
     }

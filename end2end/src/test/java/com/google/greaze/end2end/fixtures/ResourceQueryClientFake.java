@@ -15,28 +15,30 @@
  */
 package com.google.greaze.end2end.fixtures;
 
-import java.lang.reflect.Type;
-import java.net.HttpURLConnection;
-import java.net.URL;
-
 import com.google.greaze.definition.fixtures.NetworkSwitcher;
 import com.google.greaze.definition.rest.RestResource;
-import com.google.greaze.rest.server.RestResponseBuilder;
+import com.google.greaze.definition.rest.query.ResourceQuery;
+import com.google.greaze.definition.rest.query.ResourceQueryParams;
 import com.google.greaze.webservice.client.ServerConfig;
 import com.google.greaze.webservice.client.WebServiceClient;
-import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+
+import java.net.HttpURLConnection;
+import java.net.URL;
 
 /**
  * A test fixture for {@link WebServiceClient}
  *
  * @author Inderjeet Singh
  */
-public class WebServiceClientFake<R extends RestResource<R>> extends WebServiceClient {
+public class ResourceQueryClientFake<R extends RestResource<R>, Q extends ResourceQueryParams>
+    extends WebServiceClient {
 
   private final NetworkSwitcher networkSwitcher;
-  public WebServiceClientFake(RestResponseBuilder<R> responseBuilder, Type resourceType, Gson gson) {
+  public ResourceQueryClientFake(ResourceQuery<R, Q> responseBuilder, GsonBuilder gsonBuilder,
+      String restPrefix) {
     super(new ServerConfig("http://localhost"));
-    networkSwitcher = new NetworkSwitcherResource<R>(responseBuilder, resourceType, gson);
+    networkSwitcher = new NetworkSwitcherQuery<R, Q>(responseBuilder, gsonBuilder, restPrefix);
   }
 
   @Override
