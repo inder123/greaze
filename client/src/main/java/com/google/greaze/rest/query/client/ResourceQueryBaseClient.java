@@ -65,7 +65,7 @@ public class ResourceQueryBaseClient<
    */
   public ResourceQueryBaseClient(WebServiceClient stub, CallPath callPath,
       Type queryType, GsonBuilder gsonBuilder, Type resourceType) {
-    this(stub, generateCallSpec(callPath, resourceType, queryType),
+    this(stub, ResourceQueryParams.generateCallSpec(callPath, resourceType, queryType),
       queryType, gsonBuilder, resourceType);
   }
 
@@ -83,22 +83,6 @@ public class ResourceQueryBaseClient<
     this.resourceType = resourceType;
   }
 
-  public static WebServiceCallSpec generateCallSpec(CallPath callPath, Type resourceType,
-      Type resourceQueryParamsType) {
-    Builder urlParamSpecBuilder = new WebServiceCallSpec.Builder(callPath)
-        .setListBody(resourceType)
-        .supportsHttpMethod(HttpMethod.GET);
-    registerTypeMembers(resourceQueryParamsType, urlParamSpecBuilder);
-    return urlParamSpecBuilder.build();
-  }
-
-  private static void registerTypeMembers(Type type, Builder urlParamSpecBuilder) {
-    FieldNavigator navigator = new FieldNavigator(type);
-    for (Field f : navigator.getFields()) {
-      urlParamSpecBuilder.addUrlParam(new UntypedKey(f.getName(), f.getGenericType()));
-    }
-  }
-
   @SuppressWarnings({"unchecked"})
   @Override
   public List<R> query(Q query) {
@@ -106,7 +90,6 @@ public class ResourceQueryBaseClient<
     HeaderMap requestHeaders = new HeaderMap.Builder(requestSpec.getHeadersSpec()).build();
     RequestBody requestBody = new RequestBody.Builder(requestSpec.getBodySpec())
       .build();
-    String queryUrlParamValue = gson.toJson(query, queryType);
     UrlParams urlParams = new UrlParams.Builder(requestSpec.getUrlParamsSpec(), query).build();
     WebServiceRequest request =
       new WebServiceRequest(HttpMethod.GET, requestHeaders, urlParams, requestBody);
