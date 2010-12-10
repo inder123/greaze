@@ -19,6 +19,7 @@ package com.google.greaze.end2end.query;
 import com.google.greaze.definition.CallPath;
 import com.google.greaze.end2end.definition.Employee;
 import com.google.greaze.end2end.definition.QueryEmployeeByName;
+import com.google.greaze.end2end.fixtures.WebServiceClientFake;
 import com.google.greaze.rest.query.client.ResourceQueryClient;
 import com.google.greaze.rest.server.Repository;
 import com.google.greaze.rest.server.RepositoryInMemory;

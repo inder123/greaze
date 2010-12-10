@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.google.greaze.end2end.query;
+package com.google.greaze.end2end.fixtures;
 
 import java.lang.reflect.Type;
 import java.net.HttpURLConnection;
@@ -21,7 +21,6 @@ import java.net.URL;
 
 import com.google.greaze.definition.fixtures.NetworkSwitcher;
 import com.google.greaze.definition.rest.RestResource;
-import com.google.greaze.end2end.fixtures.NetworkSwitcherResource;
 import com.google.greaze.rest.server.RestResponseBuilder;
 import com.google.greaze.webservice.client.ServerConfig;
 import com.google.greaze.webservice.client.WebServiceClient;
