@@ -28,16 +28,16 @@ import java.net.URL;
  *
  * @author Inderjeet Singh
  */
-public class RestClientStubFake extends RestClientStub {
+public class RestClientStubClientSideFake extends RestClientStub {
 
   private final NetworkSwitcher networkSwitcher;
-  public RestClientStubFake() {
+  public RestClientStubClientSideFake() {
     super(new ServerConfig("http://localhost"));
     networkSwitcher = new NetworkSwitcherPiped();
   }
 
   @Override
-  protected HttpURLConnection createHttpURLConnection(URL url) {
+  protected HttpURLConnection openConnection(URL url) {
     return networkSwitcher.get(url);
   }
 }
