@@ -15,6 +15,8 @@
  */
 package com.google.greaze.definition.internal.utils;
 
+import com.google.gson.Types;
+
 import java.lang.reflect.AccessibleObject;
 import java.lang.reflect.Field;
 import java.lang.reflect.Type;
@@ -31,7 +33,7 @@ public final class FieldNavigator {
   private final Class<?> clazz;
 
   public FieldNavigator(Type type) {
-    this.clazz = TypeUtils.toRawClass(type);
+    this.clazz = Types.getRawType(type);
   }
 
   public List<Field> getFields() {
