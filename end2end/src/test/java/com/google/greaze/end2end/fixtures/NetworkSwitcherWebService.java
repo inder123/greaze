@@ -33,8 +33,4 @@ public class NetworkSwitcherWebService extends NetworkSwitcherPiped {
     this.gson = gson;
     this.gsm = new GreazeServerModule("/fake");
   }
-
-  @Override
-  protected void switchNetwork(HttpURLConnectionFake conn) {
-  }
 }
