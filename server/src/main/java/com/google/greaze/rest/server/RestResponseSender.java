@@ -51,10 +51,10 @@ public class RestResponseSender<I extends ResourceId, R extends RestResourceBase
     }
   }
 
-  public void send(HttpServletResponse conn, RestResponseBase<I, R> response) {
+  public void send(HttpServletResponse res, RestResponseBase<I, R> response) {
     try {
-      sendHeaders(conn, response.getHeaders());
-      sendBody(conn, response.getResource());
+      sendHeaders(res, response.getHeaders());
+      sendBody(res, response.getResource());
     } catch (IOException e) {
       throw new RuntimeException(e);
     }
@@ -63,11 +63,11 @@ public class RestResponseSender<I extends ResourceId, R extends RestResourceBase
   // We could reuse the base classes method, sendBody. However, that requires that
   // a ResponseBody.GsonTypeAdapter is registered. We avoid that registration for REST resources
   // with this implementation
-  private void sendBody(HttpServletResponse conn, R responseBody) throws IOException {
-    conn.setContentType(ContentBodySpec.JSON_CONTENT_TYPE);
-    conn.setCharacterEncoding(ContentBodySpec.JSON_CHARACTER_ENCODING);
+  private void sendBody(HttpServletResponse res, R responseBody) throws IOException {
+    res.setContentType(ContentBodySpec.JSON_CONTENT_TYPE);
+    res.setCharacterEncoding(ContentBodySpec.JSON_CHARACTER_ENCODING);
     String json = gson.toJson(responseBody);
     logger.fine("RESPONSE BODY:" + json);
-    conn.getWriter().append(json);
+    res.getWriter().append(json);
   }
 }
