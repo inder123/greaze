@@ -33,6 +33,11 @@ import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 
+/**
+ * A test fixture for {@link HttpServletRequest}
+ *
+ * @author Inderjeet Singh
+ */
 @SuppressWarnings({"rawtypes", "deprecation"})
 public class HttpServletRequestFake implements HttpServletRequest {
   private String method;
