@@ -30,6 +30,10 @@ public class Employee extends RestResourceImpl<Employee> {
     this(null, null);
   }
 
+  public Employee(String name) {
+    this(null, name);
+  }
+
   public Employee(Id<Employee> id, String name) {
     super(id);
     this.name = name;

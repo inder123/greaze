@@ -59,4 +59,25 @@ public class ResourceDepotFunctionalTest extends TestCase {
     Employee e = client.get(id);
     assertEquals("bob", e.getName());
   }
+
+  public void testPost() throws Exception {
+    Employee e = client.post(new Employee("bob"));
+    assertEquals("bob", e.getName());
+    assertTrue(Id.isValid(e.getId()));
+  }
+
+  public void testPut() throws Exception {
+    Employee bob = client.post(new Employee("bob"));
+    assertEquals("bob", bob.getName());
+    Employee sam = client.put(new Employee(bob.getId(), "sam"));
+    assertEquals("sam", sam.getName());
+    assertEquals(bob.getId(), sam.getId());
+  }
+
+  public void testDelete() throws Exception {
+    Employee bob = client.post(new Employee("bob"));
+    assertEquals("bob", bob.getName());
+    client.delete(bob.getId());
+    assertNull(client.get(bob.getId()));
+  }
 }
