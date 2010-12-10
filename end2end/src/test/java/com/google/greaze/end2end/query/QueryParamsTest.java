@@ -15,17 +15,15 @@
  */
 package com.google.greaze.end2end.query;
 
-
 import com.google.greaze.definition.CallPath;
+import com.google.greaze.definition.rest.Id;
 import com.google.greaze.end2end.definition.Employee;
 import com.google.greaze.end2end.definition.QueryEmployeeByName;
-import com.google.greaze.end2end.fixtures.WebServiceClientFake;
+import com.google.greaze.end2end.fixtures.ResourceQueryClientFake;
+import com.google.greaze.end2end.query.server.QueryHandlerEmployeeByName;
 import com.google.greaze.rest.query.client.ResourceQueryClient;
 import com.google.greaze.rest.server.Repository;
 import com.google.greaze.rest.server.RepositoryInMemory;
-import com.google.greaze.rest.server.RestResponseBuilder;
-import com.google.greaze.webservice.client.WebServiceClient;
-import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 
 import junit.framework.TestCase;
@@ -41,23 +39,28 @@ public class QueryParamsTest extends TestCase {
 
   private static final CallPath QUERY_PATH = new CallPath("/rest/query");
   private ResourceQueryClient<Employee, QueryEmployeeByName> queryClient;
+  private Repository<Employee> employees;
 
   @Override
   protected void setUp() throws Exception {
     super.setUp();
-    GsonBuilder gsonBuilder = new GsonBuilder();
-    Gson gson = gsonBuilder.create();
-    Repository<Employee> employees = new RepositoryInMemory<Employee>(Employee.class);
-    RestResponseBuilder<Employee> responseBuilder = new RestResponseBuilder<Employee>(employees);
-    WebServiceClient stub = new WebServiceClientFake<Employee>(responseBuilder, Employee.class, gson);
-    queryClient = new ResourceQueryClient<Employee, QueryEmployeeByName>(stub, QUERY_PATH,
-        QueryEmployeeByName.class, gsonBuilder, Employee.class);
+    GsonBuilder gsonBuilder = new GsonBuilder()
+      .registerTypeAdapter(Id.class, new Id.GsonTypeAdapter());
+    this.employees = new RepositoryInMemory<Employee>(Employee.class);
+    QueryHandlerEmployeeByName query = new QueryHandlerEmployeeByName(employees);
+    ResourceQueryClientFake<Employee, QueryEmployeeByName> stub =
+      new ResourceQueryClientFake<Employee, QueryEmployeeByName>(query, gsonBuilder, "/rest");
+    this.queryClient = new ResourceQueryClient<Employee, QueryEmployeeByName>(
+        stub, QUERY_PATH, QueryEmployeeByName.class, gsonBuilder, Employee.class);
   }
 
   public void testParamsRoundTrip() throws Exception {
+    employees.put(new Employee(null, "foo"));
+    employees.put(new Employee(null, "foo"));
+    employees.put(new Employee(null, "bar"));
     QueryEmployeeByName query = new QueryEmployeeByName("foo");
     List<Employee> results = queryClient.query(query);
-    assertTrue(results.size() > 0);
+    assertEquals(2, results.size());
     for (Employee employee : results) {
       assertEquals("foo", employee.getName());
     }

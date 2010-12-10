@@ -99,6 +99,14 @@ public class WebServiceCallSpec {
       return this;
     }
 
+    /**
+     * Add all fields of the specified type as name-value pairs for the URL parameters
+     */
+    public Builder setUrlParams(Type type) {
+      urlParamsSpecBuilder.setType(type);
+      return this;
+    }
+
     public Builder addUrlParam(TypedKey<String> param) {
       urlParamsSpecBuilder.put(param.getName(), param.getClassOfT());
       return this;

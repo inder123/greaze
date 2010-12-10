@@ -29,7 +29,6 @@ import com.google.greaze.definition.webservice.ResponseSpec;
 import com.google.greaze.definition.webservice.WebServiceCallSpec;
 import com.google.greaze.definition.webservice.WebServiceRequest;
 import com.google.greaze.definition.webservice.WebServiceResponse;
-import com.google.greaze.rest.query.server.QueryHelperServer;
 import com.google.greaze.webservice.server.RequestReceiver;
 import com.google.greaze.webservice.server.ResponseSender;
 import com.google.gson.Gson;
@@ -47,7 +46,7 @@ import javax.servlet.http.HttpServletResponse;
  *
  * @author Inderjeet Singh
  */
-public abstract class ResourceQueryDispatcher {
+public class ResourceQueryDispatcher {
   private static final Logger log = Logger.getLogger(ResourceQueryDispatcher.class.getSimpleName());
 
   protected final GsonBuilder gsonBuilder;
@@ -60,7 +59,7 @@ public abstract class ResourceQueryDispatcher {
   public void service(HttpServletRequest req, HttpServletResponse res,
       String queryName, CallPath callPath, ResourceQueryBase resourceQuery) {
     Preconditions.checkNotNull(resourceQuery);
-    WebServiceCallSpec spec = QueryHelperServer.generateQueryCallSpec(callPath,
+    WebServiceCallSpec spec = ResourceQueryParams.generateCallSpec(callPath,
         resourceQuery.getResourceType(), resourceQuery.getQueryType());
     RequestSpec requestSpec = spec.getRequestSpec();
     ResponseSpec responseSpec = spec.getResponseSpec();
@@ -73,11 +72,8 @@ public abstract class ResourceQueryDispatcher {
     RequestReceiver requestReceiver = new RequestReceiver(gson, requestSpec);
     WebServiceRequest webServiceRequest = requestReceiver.receive(req);
 
-//    String jsonValue = webServiceRequest.getUrlParameters().get(TypedKeysQuery.QUERY_VALUE_AS_JSON);
-    String jsonValue = "";
-    log.log(Level.INFO, "Received query: {0} with value: {1}", new Object[]{queryName, jsonValue});
-
-    ResourceQueryParams queryParams = gson.fromJson(jsonValue, resourceQuery.getQueryType());
+    ResourceQueryParams queryParams =
+      (ResourceQueryParams) webServiceRequest.getUrlParameters().getParamsObject();
     List results = resourceQuery.query(queryParams);
     HeaderMapSpec headerSpec = new HeaderMapSpec.Builder().build();
     HeaderMap responseHeaders = new HeaderMap.Builder(headerSpec).build();
@@ -92,6 +88,7 @@ public abstract class ResourceQueryDispatcher {
     responseSender.send(res, response);
   }
 
-  public abstract void service(HttpServletRequest req, HttpServletResponse res, String queryName,
-      CallPath callPath);
+  public void service(HttpServletRequest req, HttpServletResponse res, String queryName,
+      CallPath callPath) {
+  }
 }

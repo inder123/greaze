@@ -23,8 +23,13 @@ import com.google.greaze.definition.internal.utils.FieldNavigator;
 import com.google.greaze.definition.internal.utils.GreazePreconditions;
 import com.google.greaze.definition.internal.utils.GreazeStrings;
 import com.google.gson.Gson;
+import com.google.gson.JsonIOException;
 import com.google.gson.JsonSyntaxException;
+import com.google.gson.stream.JsonWriter;
+import com.google.gson.stream.MalformedJsonException;
 
+import java.io.IOException;
+import java.io.StringWriter;
 import java.io.UnsupportedEncodingException;
 import java.lang.reflect.Field;
 import java.lang.reflect.Type;
@@ -49,48 +54,58 @@ public final class UrlParamsExtractor {
   }
 
   public UrlParams extractUrlParams(HttpServletRequest request) {
-    UrlParams.Builder paramsBuilder = new UrlParams.Builder(spec);
-    if (spec.hasParamsObject()) {
-      Type paramType = spec.getType();
-      FieldNavigator navigator = new FieldNavigator(paramType);
-      StringBuilder json = new StringBuilder('{');
-      for (Field f : navigator.getFields()) {
-        String name = f.getName();
-        Type type = f.getGenericType();
-        String[] urlParamValues = request.getParameterValues(name);
-        if (urlParamValues != null) {
-          GreazePreconditions.checkArgument(urlParamValues.length <= 1,
-            "Greaze supports only one URL parameter value per name. For %s, found: %s",
-            name, urlParamValues);
-          if (urlParamValues.length == 1) {
-            Object value = parseUrlParamValue(urlParamValues[0], type, gson);
-            json.append(name).append(":'").append(value).append("'");
+    try {
+      UrlParams.Builder paramsBuilder = new UrlParams.Builder(spec);
+      if (spec.hasParamsObject()) {
+        Type paramType = spec.getType();
+        FieldNavigator navigator = new FieldNavigator(paramType);
+        StringWriter json = new StringWriter();
+        JsonWriter jsonWriter = new JsonWriter(json);
+        jsonWriter.beginObject();
+        for (Field f : navigator.getFields()) {
+          String name = f.getName();
+          Type type = f.getGenericType();
+          String[] urlParamValues = request.getParameterValues(name);
+          if (urlParamValues != null) {
+            GreazePreconditions.checkArgument(urlParamValues.length <= 1,
+              "Greaze supports only one URL parameter value per name. For %s, found: %s",
+              name, urlParamValues);
+            if (urlParamValues.length == 1) {
+              Object value = parseUrlParamValue(urlParamValues[0], type, gson);
+              jsonWriter.name(name);
+              jsonWriter.value(value.toString());
+            }
           }
         }
-        json.append('}');
+        jsonWriter.endObject();
+        jsonWriter.close();
         Object obj = gson.fromJson(json.toString(), paramType);
         paramsBuilder = new UrlParams.Builder(spec, obj);
+      } else {
+        paramsBuilder = new UrlParams.Builder(spec);
       }
-    } else {
-      paramsBuilder = new UrlParams.Builder(spec);
-    }
-    if (spec.hasParamsMap()) {
-      for (Map.Entry<String, Type> param : spec.getMapSpec().entrySet()) {
-        String name = param.getKey();
-        Type type = param.getValue();
-        String[] urlParamValues = request.getParameterValues(name);
-        if (urlParamValues != null) {
-          GreazePreconditions.checkArgument(urlParamValues.length <= 1,
-            "Greaze supports only one URL parameter value per name. For %s, found: %s",
-            name, urlParamValues);
-          if (urlParamValues.length == 1 && !GreazeStrings.isEmpty(urlParamValues[0])) {
-            Object value = parseUrlParamValue(urlParamValues[0], type, gson);
-            paramsBuilder.put(name, value);
+      if (spec.hasParamsMap()) {
+        for (Map.Entry<String, Type> param : spec.getMapSpec().entrySet()) {
+          String name = param.getKey();
+          Type type = param.getValue();
+          String[] urlParamValues = request.getParameterValues(name);
+          if (urlParamValues != null) {
+            GreazePreconditions.checkArgument(urlParamValues.length <= 1,
+              "Greaze supports only one URL parameter value per name. For %s, found: %s",
+              name, urlParamValues);
+            if (urlParamValues.length == 1 && !GreazeStrings.isEmpty(urlParamValues[0])) {
+              Object value = parseUrlParamValue(urlParamValues[0], type, gson);
+              paramsBuilder.put(name, value);
+            }
           }
         }
       }
+      return paramsBuilder.build();
+    } catch (MalformedJsonException e) {
+      throw new JsonSyntaxException(e);
+    } catch (IOException e) {
+      throw new JsonIOException(e);
     }
-    return paramsBuilder.build();
   }
 
   /** Visible for testing only */

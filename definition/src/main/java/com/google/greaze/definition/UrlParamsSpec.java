@@ -18,7 +18,7 @@ package com.google.greaze.definition;
 import java.lang.reflect.Type;
 
 /**
- * Specification for URL parameters for a Web service call
+ * Specification for URL parameters for a Web service call.
  *
  * @author Inderjeet Singh
  */
@@ -26,13 +26,14 @@ public class UrlParamsSpec {
 
   public static class Builder {
     private final HeaderMapSpec.Builder mapSpecBuilder = new HeaderMapSpec.Builder();
-    private final Type type;
+    private Type type;
 
-    public Builder() {
-      this(null);
-    }
-    public Builder(Type type) {
+    /**
+     * Add all fields of the specified type as name-value pairs in the spec
+     */
+    public Builder setType(Type type) {
       this.type = type;
+      return this;
     }
 
     public Builder put(String name, Type type) {
@@ -44,10 +45,11 @@ public class UrlParamsSpec {
       return new UrlParamsSpec(type, mapSpecBuilder.build());
     }
   }
+
   private final Type type;
   private final HeaderMapSpec spec;
 
-  public UrlParamsSpec(Type type, HeaderMapSpec spec) {
+  public UrlParamsSpec(/** Nullable */Type type, /** Nullable */HeaderMapSpec spec) {
     this.type = type;
     this.spec = spec;
   }
