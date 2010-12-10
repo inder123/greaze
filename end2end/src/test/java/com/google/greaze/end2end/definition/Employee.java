@@ -15,6 +15,7 @@
  */
 package com.google.greaze.end2end.definition;
 
+import com.google.greaze.definition.rest.Id;
 import com.google.greaze.definition.rest.RestResourceImpl;
 
 /**
@@ -26,14 +27,20 @@ public class Employee extends RestResourceImpl<Employee> {
   private final String name;
 
   public Employee() {
-    this(null);
+    this(null, null);
   }
 
-  public Employee(String name) {
+  public Employee(Id<Employee> id, String name) {
+    super(id);
     this.name = name;
   }
 
   public String getName() {
     return name;
+  }
+
+  @Override
+  public String toString() {
+    return String.format("%d,%s", Id.getValue(id), name);
   }
 }

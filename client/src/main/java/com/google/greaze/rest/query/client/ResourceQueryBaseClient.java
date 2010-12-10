@@ -83,7 +83,7 @@ public class ResourceQueryBaseClient<
     this.resourceType = resourceType;
   }
 
-  private static WebServiceCallSpec generateCallSpec(CallPath callPath, Type resourceType,
+  public static WebServiceCallSpec generateCallSpec(CallPath callPath, Type resourceType,
       Type resourceQueryParamsType) {
     Builder urlParamSpecBuilder = new WebServiceCallSpec.Builder(callPath)
         .setListBody(resourceType)
