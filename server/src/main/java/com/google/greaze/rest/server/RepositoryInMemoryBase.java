@@ -15,9 +15,8 @@
  */
 package com.google.greaze.rest.server;
 
-import com.google.common.base.Preconditions;
-import com.google.greaze.definition.rest.ResourceId;
 import com.google.greaze.definition.rest.MetaDataBase;
+import com.google.greaze.definition.rest.ResourceId;
 import com.google.greaze.definition.rest.RestResourceBase;
 
 /**
