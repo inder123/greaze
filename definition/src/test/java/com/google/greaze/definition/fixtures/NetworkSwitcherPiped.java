@@ -16,9 +16,9 @@
 package com.google.greaze.definition.fixtures;
 
 import com.google.greaze.definition.ContentBodySpec;
+import com.google.greaze.definition.internal.utils.Streams;
 
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
+import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.HttpURLConnection;
@@ -37,14 +37,22 @@ public class NetworkSwitcherPiped implements NetworkSwitcher {
   }
 
   protected void switchNetwork(HttpURLConnectionFake conn) {
+    try {
+      Streams.copy(conn.getForwardForInput(), conn.getReverseForOutput(), true, true);
+    } catch (IOException e) {
+      throw new RuntimeException(e);
+    }
   }
 
   public final class HttpURLConnectionFake extends HttpURLConnection {
 
-    private final ByteArrayOutputStream out;
+    private final ByteArrayPipedStream forward;
+    private final ByteArrayPipedStream reverse;
+
     public HttpURLConnectionFake(URL url) {
       super(url);
-      out = new ByteArrayOutputStream();
+      this.forward = new ByteArrayPipedStream();
+      this.reverse = new ByteArrayPipedStream();
     }
 
     @Override
@@ -63,12 +71,20 @@ public class NetworkSwitcherPiped implements NetworkSwitcher {
     
     @Override
     public InputStream getInputStream() {
-      return new ByteArrayInputStream(out.toByteArray());
+      return reverse.getInputStream();
+    }
+
+    public InputStream getForwardForInput() {
+      return forward.getInputStream();
+    }
+
+    public OutputStream getReverseForOutput() {
+      return reverse;
     }
 
     @Override
     public OutputStream getOutputStream() {
-      return out;
+      return forward;
     }
 
     @Override
