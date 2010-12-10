@@ -22,11 +22,15 @@ import com.google.greaze.definition.rest.RestCallSpec;
 import com.google.greaze.definition.rest.RestRequestBase;
 import com.google.greaze.definition.rest.RestResource;
 import com.google.greaze.definition.rest.RestResponse;
+import com.google.greaze.definition.rest.RestResponseBase;
 import com.google.greaze.rest.client.ResourceDepotBaseClient;
 import com.google.greaze.rest.server.RestResponseBuilder;
+import com.google.greaze.rest.server.RestResponseSender;
 import com.google.greaze.server.fixtures.HttpServletRequestFake;
+import com.google.greaze.server.fixtures.HttpServletResponseFake;
 import com.google.gson.Gson;
 
+import java.io.OutputStream;
 import java.lang.reflect.Type;
 
 import javax.servlet.http.HttpServletRequest;
@@ -46,18 +50,24 @@ public class NetworkSwitcherResource<R extends RestResource<R>> extends NetworkS
     this.resourceType = resourceType;
   }
 
-  @SuppressWarnings("unchecked")
+  @SuppressWarnings({"unchecked", "rawtypes"})
   @Override
   protected void switchNetwork(HttpURLConnectionFake conn) {
     HttpServletRequest req = new HttpServletRequestFake()
       .setRequestMethod(conn.getRequestMethod())
       .setServletPath(conn.getURL().getPath())
-      .setInputStream(conn.getInputStream());
+      .setInputStream(conn.getForwardForInput());
     CallPath callPath = gsm.getCallPath(req);
     RestCallSpec spec = ResourceDepotBaseClient.generateRestCallSpec(callPath, resourceType);
     ResourceIdFactory<Id<?>> idFactory = gsm.getIDFactory(spec);
     RestRequestBase<Id<R>, R> request = gsm.getRestRequest(gson, spec, callPath, req, idFactory);
-    RestResponse.Builder<R> resBuilder = new RestResponse.Builder<R>(spec.getResponseSpec());
-    responseBuilder.buildResponse(request, resBuilder);
+    RestResponse.Builder<R> response = new RestResponse.Builder<R>(spec.getResponseSpec());
+    responseBuilder.buildResponse(request, response);
+    RestResponseBase webServiceResponse = response.build();
+    RestResponseSender responseSender = new RestResponseSender(gson);
+    OutputStream reverseForOutput = conn.getReverseForOutput();
+    HttpServletResponseFake res = new HttpServletResponseFake(reverseForOutput);
+    responseSender.send(res, webServiceResponse);
+    res.flushBuffer();
   }
 }
