@@ -24,6 +24,8 @@ import java.net.URLDecoder;
 import java.security.Principal;
 import java.util.Enumeration;
 import java.util.HashMap;
+import java.util.LinkedList;
+import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 
@@ -41,7 +43,7 @@ import javax.servlet.http.HttpSession;
 @SuppressWarnings({"rawtypes", "deprecation"})
 public class HttpServletRequestFake implements HttpServletRequest {
   private String method;
-  private Map<String, String> urlParams = new HashMap<String, String>();
+  private Map<String, String[]> urlParams = new HashMap<String, String[]>();
   private String servletPath;
   private ServletInputStream inputStream;
 
@@ -59,7 +61,14 @@ public class HttpServletRequestFake implements HttpServletRequest {
   }
 
   public HttpServletRequestFake setUrlParam(String name, String value) {
-    urlParams.put(name, value);
+    String[] current = urlParams.get(name);
+    int arraySize = current == null ? 0 : current.length;
+    String[] revised = new String[arraySize + 1];
+    for (int i = 0; i < arraySize; ++i) {
+      revised[i] = current[i];
+    }
+    revised[arraySize] = value;
+    urlParams.put(name, revised);
     return this;
   }
 
@@ -81,7 +90,7 @@ public class HttpServletRequestFake implements HttpServletRequest {
         String[] split = param.split("=");
         String name = split[0];
         String value = URLDecoder.decode(split[1], "UTF-8");
-        urlParams.put(name, value);
+        setUrlParam(name, value);
       }
       return this;
     } catch (UnsupportedEncodingException e) {
@@ -135,12 +144,12 @@ public class HttpServletRequestFake implements HttpServletRequest {
 
   @Override
   public String[] getParameterValues(String name) {
-    return new String[]{urlParams.get(name)};
+    return urlParams.get(name);
   }
 
   @Override
   public Map getParameterMap() {
-    return null;
+    return urlParams;
   }
 
   @Override
