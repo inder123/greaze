@@ -86,7 +86,7 @@ public class GreazeExampleServerModule extends AbstractModule {
 
   // This can be made Singleton since it doesn't really have anything specific to the request.
   // However, in many real use-cases, Gson instance needs to be created per request.
-  @RequestScoped
+  @Singleton
   @Provides
   public GsonBuilder getGsonBuilder() {
     return new GsonBuilder()
@@ -103,7 +103,7 @@ public class GreazeExampleServerModule extends AbstractModule {
     return responseBuilders.get(callSpec.getResourceType());
   }
   
-  @RequestScoped
+  @Singleton
   @Provides
   public Gson getGson(GsonBuilder gsonBuilder) {
     return gsonBuilder.create();
