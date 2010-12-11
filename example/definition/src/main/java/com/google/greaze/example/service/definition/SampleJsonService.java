@@ -21,6 +21,7 @@ import com.google.greaze.definition.rest.RestCallSpec;
 import com.google.greaze.definition.rest.RestCallSpecMap;
 import com.google.greaze.definition.webservice.WebServiceCallSpec;
 import com.google.greaze.example.definition.model.Cart;
+import com.google.greaze.example.definition.model.Order;
 import com.google.greaze.example.webservice.definition.TypedKeys;
 
 /**
@@ -54,7 +55,7 @@ public class SampleJsonService {
       .build();
 
   public static final RestCallSpec ORDER_SPEC =
-    new RestCallSpec.Builder(ServicePaths.CART.getCallPath(), Cart.class)
+    new RestCallSpec.Builder(ServicePaths.ORDER.getCallPath(), Order.class)
       .setVersion(CURRENT_VERSION)
       .build(); 
 

@@ -49,6 +49,9 @@ public class QueryHandlerOrdersByItemName
     for (int i = 0; i < repoSize; ++i) {
       Id<Order> orderId = Id.get(i, Order.class);
       Order order = orders.get(orderId);
+      if (order == null) {
+        continue;
+      }
       for (LineItem item : order.getPostedCart().getLineItems()) {
         if (item.getName().equals(query.getItemName())) {
           results.add(order);

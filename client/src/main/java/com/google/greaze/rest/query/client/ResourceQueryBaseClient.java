@@ -18,9 +18,7 @@ package com.google.greaze.rest.query.client;
 import com.google.greaze.definition.CallPath;
 import com.google.greaze.definition.HeaderMap;
 import com.google.greaze.definition.HttpMethod;
-import com.google.greaze.definition.UntypedKey;
 import com.google.greaze.definition.UrlParams;
-import com.google.greaze.definition.internal.utils.FieldNavigator;
 import com.google.greaze.definition.rest.ResourceId;
 import com.google.greaze.definition.rest.RestResourceBase;
 import com.google.greaze.definition.rest.query.ResourceQueryBase;
@@ -29,14 +27,12 @@ import com.google.greaze.definition.webservice.RequestBody;
 import com.google.greaze.definition.webservice.RequestSpec;
 import com.google.greaze.definition.webservice.ResponseBody;
 import com.google.greaze.definition.webservice.WebServiceCallSpec;
-import com.google.greaze.definition.webservice.WebServiceCallSpec.Builder;
 import com.google.greaze.definition.webservice.WebServiceRequest;
 import com.google.greaze.definition.webservice.WebServiceResponse;
 import com.google.greaze.webservice.client.WebServiceClient;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 
-import java.lang.reflect.Field;
 import java.lang.reflect.Type;
 import java.util.List;
 
