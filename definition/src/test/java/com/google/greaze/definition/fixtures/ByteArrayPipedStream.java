@@ -55,7 +55,6 @@ public final class ByteArrayPipedStream extends ByteArrayOutputStream {
 
     @Override
     public int read(byte b[], int off, int len) {
-      int numRead = 0;
       if (readPosition >= getTotalCount()) {
         return -1;
       }

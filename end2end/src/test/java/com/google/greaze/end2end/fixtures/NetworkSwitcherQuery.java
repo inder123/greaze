@@ -62,7 +62,6 @@ public class NetworkSwitcherQuery<R extends RestResource<R>, Q extends ResourceQ
     HttpServletRequest req = buildRequest(conn);
     CallPath callPath = gsm.getCallPath(req);
     String queryName = RequestType.getQueryName(req.getParameterMap());
-    RequestType requestType = RequestType.getRequestType(callPath, queryName, restPrefix);
     OutputStream reverseForOutput = conn.getReverseForOutput();
     HttpServletResponseFake res = new HttpServletResponseFake(reverseForOutput);
     dispatcher.service(req, res, queryName, callPath, query);
