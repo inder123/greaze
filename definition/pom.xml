@@ -7,7 +7,7 @@
   <groupId>com.google.code.greaze</groupId>
   <artifactId>greaze-definition</artifactId>
   <packaging>jar</packaging>
-  <version>0.5</version>
+  <version>0.5-SNAPSHOT</version>
   <name>Greaze REST and Web Service Definition Framework</name>
   <description>A Framework for Defining JSON based REST resources and Web-services</description>
   <distributionManagement>
@@ -47,7 +47,7 @@
     <dependency>
       <groupId>com.google.code.gson</groupId>
       <artifactId>gson</artifactId>
-      <version>1.7</version>
+      <version>1.7-SNAPSHOT</version>
       <scope>compile</scope>
     </dependency>
 

@@ -7,7 +7,7 @@
   <groupId>com.google.code.greaze</groupId>
   <artifactId>greaze-example-server</artifactId>
   <packaging>war</packaging>
-  <version>0.5</version>
+  <version>0.5-SNAPSHOT</version>
   <name>Greaze server-side example</name>
   <description>An example for writing server that implments JSON based REST and web-services using Greaze</description>
   <distributionManagement>
@@ -35,25 +35,25 @@
     <dependency>
       <groupId>com.google.code.gson</groupId>
       <artifactId>gson</artifactId>
-      <version>1.7</version>
+      <version>1.7-SNAPSHOT</version>
       <scope>compile</scope>
     </dependency>
     <dependency>
       <groupId>com.google.code.greaze</groupId>
       <artifactId>greaze-definition</artifactId>
-      <version>0.5</version>
+      <version>0.5-SNAPSHOT</version>
       <scope>compile</scope>
     </dependency>
     <dependency>
       <groupId>com.google.code.greaze</groupId>
       <artifactId>greaze-server</artifactId>
-      <version>0.5</version>
+      <version>0.5-SNAPSHOT</version>
       <scope>compile</scope>
     </dependency>
     <dependency>
       <groupId>com.google.code.greaze</groupId>
       <artifactId>greaze-example-definition</artifactId>
-      <version>0.5</version>
+      <version>0.5-SNAPSHOT</version>
       <scope>compile</scope>
     </dependency>
 
