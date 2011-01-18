@@ -45,7 +45,6 @@ public class UrlParamTest extends TestCase {
   }
 
   public void testNoParams() {
-    String urlParamString = urlParamBuilder.build();
     UrlParamsSpec spec = new UrlParamsSpec.Builder().build();
     UrlParamsExtractor extractor = new UrlParamsExtractor(spec, gson);
     HttpServletRequestFake request = new HttpServletRequestFake().setRequestMethod("GET");
