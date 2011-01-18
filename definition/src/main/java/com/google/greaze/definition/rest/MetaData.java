@@ -31,10 +31,6 @@ import java.util.Map;
  */
 public final class MetaData<R extends RestResource<R>> extends MetaDataBase<Id<R>, R> {
 
-  public static <RS extends RestResource<RS>> MetaData<RS> create() {
-    return new MetaData<RS>();
-  }
-
   public MetaData() {
   }
 
