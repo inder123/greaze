@@ -91,7 +91,9 @@ public class ResourceQueryBaseClient<
       new WebServiceRequest(HttpMethod.GET, requestHeaders, urlParams, requestBody);
     WebServiceResponse response = stub.getResponse(callSpec, request, gson);
     ResponseBody body = response.getBody();
-    return (List<R>)body.getListBody();
+    // Using a local variable for listBody otherwise Maven freaks out while compiling 
+    List<Object> listBody = body.getListBody();
+    return (List<R>)listBody;
   }
 
   @Override
