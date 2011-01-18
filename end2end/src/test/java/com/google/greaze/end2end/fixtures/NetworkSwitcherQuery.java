@@ -39,20 +39,14 @@ import javax.servlet.http.HttpServletRequest;
 public class NetworkSwitcherQuery<R extends RestResource<R>, Q extends ResourceQueryParams>
     extends NetworkSwitcherPiped {
 
-  /**
-   * 
-   */
   private static final String SERVLET_BASE_PATH = "/fake";
   private final ResourceQuery<R, Q> query;
   private final GreazeServerModule gsm;
-  private final String restPrefix;
   private ResourceQueryDispatcher dispatcher;
 
-  public NetworkSwitcherQuery(ResourceQuery<R, Q> query, GsonBuilder gsonBuilder,
-      String restPrefix) {
+  public NetworkSwitcherQuery(ResourceQuery<R, Q> query, GsonBuilder gsonBuilder) {
     this.gsm = new GreazeServerModule(SERVLET_BASE_PATH);
     this.query = query;
-    this.restPrefix = restPrefix;
     this.dispatcher = new ResourceQueryDispatcher(gsonBuilder);
   }
 

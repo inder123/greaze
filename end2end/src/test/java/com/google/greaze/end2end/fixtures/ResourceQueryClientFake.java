@@ -38,7 +38,7 @@ public class ResourceQueryClientFake<R extends RestResource<R>, Q extends Resour
   public ResourceQueryClientFake(ResourceQuery<R, Q> responseBuilder, GsonBuilder gsonBuilder,
       String restPrefix) {
     super(new ServerConfig("http://localhost"));
-    networkSwitcher = new NetworkSwitcherQuery<R, Q>(responseBuilder, gsonBuilder, restPrefix);
+    networkSwitcher = new NetworkSwitcherQuery<R, Q>(responseBuilder, gsonBuilder);
   }
 
   @Override
