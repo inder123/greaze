@@ -35,6 +35,6 @@ public class MetaDataMap<R extends RestResource<R>> extends MetaDataMapBase<Id<R
 
   @Override
   protected MetaData<R> createMetaData() {
-    return MetaData.create();
+    return new MetaData<R>();
   }
 }
