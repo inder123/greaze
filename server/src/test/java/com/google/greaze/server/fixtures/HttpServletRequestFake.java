@@ -15,8 +15,6 @@
  */
 package com.google.greaze.server.fixtures;
 
-import com.google.greaze.definition.internal.utils.GreazeStrings;
-
 import java.io.BufferedReader;
 import java.io.InputStream;
 import java.io.UnsupportedEncodingException;
@@ -24,8 +22,6 @@ import java.net.URLDecoder;
 import java.security.Principal;
 import java.util.Enumeration;
 import java.util.HashMap;
-import java.util.LinkedList;
-import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 
@@ -34,6 +30,8 @@ import javax.servlet.ServletInputStream;
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
+
+import com.google.greaze.definition.internal.utils.GreazeStrings;
 
 /**
  * A test fixture for {@link HttpServletRequest}
