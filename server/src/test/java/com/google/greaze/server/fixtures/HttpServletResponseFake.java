@@ -129,13 +129,11 @@ public class HttpServletResponseFake implements HttpServletResponse {
     return null;
   }
 
-  @SuppressWarnings("deprecation")
   @Override
   public String encodeUrl(String url) {
     return null;
   }
 
-  @SuppressWarnings("deprecation")
   @Override
   public String encodeRedirectUrl(String url) {
     return null;
@@ -181,7 +179,6 @@ public class HttpServletResponseFake implements HttpServletResponse {
   public void setStatus(int sc) {
   }
 
-  @SuppressWarnings("deprecation")
   @Override
   public void setStatus(int sc, String sm) {
   }
