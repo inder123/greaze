@@ -93,7 +93,7 @@ public class ResourceQueryBaseClient<
     ResponseBody body = response.getBody();
     // Using a local variable for listBody otherwise Maven freaks out while compiling 
     List<Object> listBody = body.getListBody();
-    return (List<R>)listBody;
+    return (List)listBody;
   }
 
   @Override
