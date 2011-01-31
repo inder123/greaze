@@ -54,12 +54,6 @@
     </dependency>
     <dependency>
       <groupId>com.google.code.greaze</groupId>
-      <artifactId>greaze-client</artifactId>
-      <version>0.5-SNAPSHOT</version>
-      <scope>compile</scope>
-    </dependency>
-    <dependency>
-      <groupId>com.google.code.greaze</groupId>
       <artifactId>greaze-definition</artifactId>
       <version>0.5-SNAPSHOT</version>
       <scope>test</scope>
@@ -69,12 +63,11 @@
       <groupId>com.google.code.greaze</groupId>
       <artifactId>greaze-client</artifactId>
       <version>0.5-SNAPSHOT</version>
-      <scope>test</scope>
-      <classifier>tests</classifier>
+      <scope>compile</scope>
     </dependency>
     <dependency>
       <groupId>com.google.code.greaze</groupId>
-      <artifactId>greaze-server</artifactId>
+      <artifactId>greaze-client</artifactId>
       <version>0.5-SNAPSHOT</version>
       <scope>test</scope>
       <classifier>tests</classifier>
@@ -84,6 +77,13 @@
       <artifactId>greaze-server</artifactId>
       <version>0.5-SNAPSHOT</version>
       <scope>compile</scope>
+    </dependency>
+    <dependency>
+      <groupId>com.google.code.greaze</groupId>
+      <artifactId>greaze-server</artifactId>
+      <version>0.5-SNAPSHOT</version>
+      <scope>test</scope>
+      <classifier>tests</classifier>
     </dependency>
 
     <!-- Guice: Dependency injection -->
