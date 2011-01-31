@@ -35,7 +35,7 @@ public class RestClientStubFake<R extends RestResource<R>> extends RestClientStu
 
   private final NetworkSwitcher networkSwitcher;
   public RestClientStubFake(RestResponseBuilder<R> responseBuilder, Type resourceType, Gson gson) {
-    super(new ServerConfig("http://localhost"));
+    super(new ServerConfig("http://localhost/fake"));
     networkSwitcher = new NetworkSwitcherResource<R>(responseBuilder, resourceType, gson);
   }
 
