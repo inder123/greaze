@@ -112,7 +112,7 @@ public final class Id<R> implements ResourceId {
    * Returns true for equivalentTypes(Class<?>, Class)
    * Visible for testing only 
    */
-  @SuppressWarnings("rawtypes")
+  @SuppressWarnings({ "rawtypes", "unchecked" })
   static boolean equivalentTypes(Type type1, Type type2) {
     if (type1 instanceof ParameterizedType && type2 instanceof Class) {
       return areEquivalentTypes((ParameterizedType)type1, (Class)type2);
@@ -125,7 +125,7 @@ public final class Id<R> implements ResourceId {
   /**
    * Visible for testing only
    */
-  @SuppressWarnings("rawtypes")
+  @SuppressWarnings({ "rawtypes", "unchecked" })
   static boolean areEquivalentTypes(ParameterizedType type, Class clazz) {
     Class rawClass = (Class) type.getRawType();
     if (!clazz.equals(rawClass)) {
@@ -151,7 +151,7 @@ public final class Id<R> implements ResourceId {
     return String.format("{value:%s,type:%s}", value, typeAsString);
   }
 
-  @SuppressWarnings("rawtypes")
+  @SuppressWarnings({ "rawtypes", "unchecked" })
   private static String getSimpleTypeName(Type type) {
     if (type == null) {
       return "null";

@@ -55,7 +55,7 @@ public class MetaDataTest extends TestCase {
     assertTrue(metaData.getBoolean("booleanValue"));
   }
 
-  @SuppressWarnings("rawtypes")
+  @SuppressWarnings("unchecked")
   public void testSerializeRaw() {
     MetaData metaData = new MetaData();
     metaData.putString("stringValue", "foo bar");
@@ -64,7 +64,7 @@ public class MetaDataTest extends TestCase {
     assertTrue(json.contains("foo bar"));
   }
 
-  @SuppressWarnings("rawtypes")
+  @SuppressWarnings("unchecked")
   public void testDeserializeRaw() {
     String json = "{stringValue:'bar bar'}";
     MetaData metaData = gson.fromJson(json, MetaData.class);

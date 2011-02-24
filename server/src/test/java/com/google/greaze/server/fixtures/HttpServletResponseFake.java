@@ -30,6 +30,7 @@ import javax.servlet.http.HttpServletResponse;
  *
  * @author Inderjeet Singh
  */
+@SuppressWarnings("deprecation")
 public class HttpServletResponseFake implements HttpServletResponse {
 
   private final ServletOutputStream sos;

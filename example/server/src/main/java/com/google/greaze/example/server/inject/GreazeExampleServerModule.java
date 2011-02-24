@@ -95,7 +95,7 @@ public class GreazeExampleServerModule extends AbstractModule {
       .registerTypeAdapter(MetaData.class, new MetaDataBase.GsonTypeAdapter());
   }
 
-  @SuppressWarnings({"rawtypes"})
+  @SuppressWarnings({"unchecked"})
   @RequestScoped
   @Provides
   public RestResponseBaseBuilder getRestResponseBaseBuilder(RestCallSpec callSpec,
