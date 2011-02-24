@@ -10,6 +10,9 @@
   <version>0.5-SNAPSHOT</version>
   <name>Greaze End to End tests</name>
   <description>End to end tests for Greaze</description>
+  <properties>
+    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+  </properties>
   <distributionManagement>
     <repository>
       <id>local.repo</id>
@@ -144,6 +147,39 @@
             </goals>
           </execution>
         </executions>
+      </plugin>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-source-plugin</artifactId>
+        <version>2.1.2</version>
+        <executions>
+          <execution>
+            <id>attach-sources</id>
+            <goals>
+              <goal>jar</goal>
+            </goals>
+          </execution>
+        </executions>
+      </plugin>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-javadoc-plugin</artifactId>
+        <version>2.7</version>
+        <executions>
+          <execution>
+            <id>attach-javadocs</id>
+            <goals>
+              <goal>jar</goal>
+            </goals>
+          </execution>
+        </executions>
+        <configuration>
+          <links>
+            <link>http://download.oracle.com/javase/1.5.0/docs/api/</link>
+          </links>
+          <version>true</version>
+          <show>public</show>
+        </configuration>
       </plugin>
     </plugins>
   </build>
