@@ -13,13 +13,6 @@
   <properties>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
   </properties>
-  <distributionManagement>
-    <repository>
-      <id>local.repo</id>
-      <name>file repository to hg</name>
-      <url>file://${basedir}/../mavenrepo</url>
-    </repository>
-  </distributionManagement>
   <licenses>
     <license>
       <name>The Apache Software License, Version 2.0</name>
@@ -27,13 +20,17 @@
       <distribution>repo</distribution>
     </license>
   </licenses>
+  <scm>
+    <connection>scm:hg:http://greaze.googlecode.com/hg/client</connection>
+    <developerConnection>scm:hg:https://greaze.googlecode.com/hg/client</developerConnection>
+    <url>http://greaze.codegoogle.com/hg/client</url>
+  </scm>
   <issueManagement>
     <system>Google Code Issue Tracking</system>
-    <url>http://code.google.com/p/google-gson/issues/list</url>
+    <url>http://code.google.com/p/greaze/issues/list</url>
   </issueManagement>
   
   <dependencies>
-   
     <!--  Gson: Java to Json conversion -->
     <dependency>
       <groupId>com.google.code.gson</groupId>
@@ -64,7 +61,6 @@
   </dependencies>
 
   <build>
-    <finalName>greaze-client</finalName>
     <plugins>
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
