@@ -50,7 +50,7 @@ public class NetworkSwitcherQuery<R extends RestResource<R>, Q extends ResourceQ
     this.dispatcher = new ResourceQueryDispatcher(gsonBuilder);
   }
 
-  @SuppressWarnings({"unchecked", "rawtypes"})
+  @SuppressWarnings("unchecked")
   @Override
   protected void switchNetwork(HttpURLConnectionFake conn) {
     HttpServletRequest req = buildRequest(conn);
