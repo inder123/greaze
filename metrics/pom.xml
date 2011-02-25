@@ -22,9 +22,9 @@
     </license>
   </licenses>
   <scm>
-    <connection>scm:svn:http://greaze.googlecode.com/metrics</connection>
-    <developerConnection>scm:svn:https://greaze.googlecode.com/svn/metrics</developerConnection>
-    <url>http://greaze.codegoogle.com/svn/metrics</url>
+    <connection>scm:hg:http://greaze.googlecode.com/hg/metrics</connection>
+    <developerConnection>scm:hg:https://greaze.googlecode.com/hg/metrics</developerConnection>
+    <url>http://greaze.codegoogle.com/hg/metrics</url>
   </scm>
   <issueManagement>
     <system>Google Code Issue Tracking</system>
@@ -103,6 +103,7 @@
       <scope>test</scope>
     </dependency>
   </dependencies>
+
   <build>
     <defaultGoal>package</defaultGoal>
     <plugins>
@@ -160,6 +161,11 @@
           <version>true</version>
           <show>public</show>
         </configuration>
+      </plugin>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-release-plugin</artifactId>
+        <version>2.1</version>
       </plugin>
     </plugins>
   </build>
