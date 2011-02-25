@@ -10,6 +10,11 @@
   <version>0.5-SNAPSHOT</version>
   <name>Greaze Example Definition</name>
   <description>An example for Writing REST/Web-service definition using Greaze</description>
+  <parent>
+    <groupId>org.sonatype.oss</groupId>
+    <artifactId>oss-parent</artifactId>
+    <version>5</version>
+  </parent>
   <properties>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
   </properties>
