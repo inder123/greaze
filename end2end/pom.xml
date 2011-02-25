@@ -135,7 +135,6 @@
           <downloadJavadocs>true</downloadJavadocs>
           <workspace>../eclipse-ws</workspace>
           <workspaceCodeStylesURL>file:///${basedir}/../lib/formatting-styles.xml</workspaceCodeStylesURL>
-          <wtpversion>1.5</wtpversion>
         </configuration>
       </plugin>
       <plugin>
