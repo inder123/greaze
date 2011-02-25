@@ -10,6 +10,11 @@
   <version>0.5-SNAPSHOT</version>
   <name>Greaze REST and Web Service Definition Framework</name>
   <description>A Framework for Defining JSON based REST resources and Web-services</description>
+  <parent>
+    <groupId>org.sonatype.oss</groupId>
+    <artifactId>oss-parent</artifactId>
+    <version>5</version>
+  </parent>
   <properties>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
   </properties>

@@ -10,6 +10,11 @@
   <version>0.5-SNAPSHOT</version>
   <name>Greaze REST and Web service server-side framework</name>
   <description>A server-side framework for JSON based REST and Web services</description>
+  <parent>
+    <groupId>org.sonatype.oss</groupId>
+    <artifactId>oss-parent</artifactId>
+    <version>5</version>
+  </parent>
   <properties>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
   </properties>
