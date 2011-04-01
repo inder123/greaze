@@ -16,7 +16,7 @@
 package com.google.greaze.definition;
 
 
-import com.google.gson.Types;
+import com.google.gson.internal.$Types;
 
 import java.lang.reflect.Type;
 import java.util.LinkedHashMap;
@@ -64,8 +64,8 @@ public final class HeaderMapSpec implements ParamMapSpec {
     if (typeOfHeader == null) {
       return false;
     }
-    Class<?> rawClassOfHeader = Types.getRawType(typeOfHeader);
-    Class<?> rawClassOfTargetType = Types.getRawType(targetType);
+    Class<?> rawClassOfHeader = $Types.getRawType(typeOfHeader);
+    Class<?> rawClassOfTargetType = $Types.getRawType(targetType);
     return rawClassOfHeader.isAssignableFrom(rawClassOfTargetType);
   }
 
