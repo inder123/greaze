@@ -16,8 +16,6 @@
 
 package com.google.greaze.definition.internal.utils;
 
-import static com.google.gson.internal.$Preconditions.checkArgument;
-import static com.google.gson.internal.$Preconditions.checkNotNull;
 import java.io.Serializable;
 import java.lang.reflect.Array;
 import java.lang.reflect.GenericArrayType;
@@ -126,7 +124,7 @@ public final class $GreazeTypes {
       // Neal isn't either but suspects some pathological case related
       // to nested classes exists.
       Type rawType = parameterizedType.getRawType();
-      checkArgument(rawType instanceof Class);
+      GreazePreconditions.checkArgument(rawType instanceof Class);
       return (Class<?>) rawType;
 
     } else if (type instanceof GenericArrayType) {
@@ -267,7 +265,7 @@ public final class $GreazeTypes {
    * @param supertype a superclass of, or interface implemented by, this.
    */
   static Type getSupertype(Type context, Class<?> contextRawType, Class<?> supertype) {
-    checkArgument(supertype.isAssignableFrom(contextRawType));
+    GreazePreconditions.checkArgument(supertype.isAssignableFrom(contextRawType));
     return resolve(context, contextRawType,
         $GreazeTypes.getGenericSupertype(context, contextRawType, supertype));
   }
@@ -432,7 +430,7 @@ public final class $GreazeTypes {
   }
 
   private static void checkNotPrimitive(Type type) {
-    checkArgument(!(type instanceof Class<?>) || !((Class<?>) type).isPrimitive());
+    GreazePreconditions.checkArgument(!(type instanceof Class<?>) || !((Class<?>) type).isPrimitive());
   }
 
   private static class ParameterizedTypeImpl implements ParameterizedType, Serializable {
@@ -445,15 +443,15 @@ public final class $GreazeTypes {
       // require an owner type if the raw type needs it
       if (rawType instanceof Class<?>) {
         Class rawTypeAsClass = (Class) rawType;
-        checkArgument(ownerType != null || rawTypeAsClass.getEnclosingClass() == null);
-        checkArgument(ownerType == null || rawTypeAsClass.getEnclosingClass() != null);
+        GreazePreconditions.checkArgument(ownerType != null || rawTypeAsClass.getEnclosingClass() == null);
+        GreazePreconditions.checkArgument(ownerType == null || rawTypeAsClass.getEnclosingClass() != null);
       }
 
       this.ownerType = ownerType == null ? null : canonicalize(ownerType);
       this.rawType = canonicalize(rawType);
       this.typeArguments = typeArguments.clone();
       for (int t = 0; t < this.typeArguments.length; t++) {
-        checkNotNull(this.typeArguments[t]);
+        GreazePreconditions.checkNotNull(this.typeArguments[t]);
         checkNotPrimitive(this.typeArguments[t]);
         this.typeArguments[t] = canonicalize(this.typeArguments[t]);
       }
@@ -537,18 +535,18 @@ public final class $GreazeTypes {
     private final Type lowerBound;
 
     public WildcardTypeImpl(Type[] upperBounds, Type[] lowerBounds) {
-      checkArgument(lowerBounds.length <= 1);
-      checkArgument(upperBounds.length == 1);
+      GreazePreconditions.checkArgument(lowerBounds.length <= 1);
+      GreazePreconditions.checkArgument(upperBounds.length == 1);
 
       if (lowerBounds.length == 1) {
-        checkNotNull(lowerBounds[0]);
+        GreazePreconditions.checkNotNull(lowerBounds[0]);
         checkNotPrimitive(lowerBounds[0]);
-        checkArgument(upperBounds[0] == Object.class);
+        GreazePreconditions.checkArgument(upperBounds[0] == Object.class);
         this.lowerBound = canonicalize(lowerBounds[0]);
         this.upperBound = Object.class;
 
       } else {
-        checkNotNull(upperBounds[0]);
+        GreazePreconditions.checkNotNull(upperBounds[0]);
         checkNotPrimitive(upperBounds[0]);
         this.lowerBound = null;
         this.upperBound = canonicalize(upperBounds[0]);
