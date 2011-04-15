@@ -6,7 +6,7 @@
   <groupId>com.google.code.greaze</groupId>
   <artifactId>greaze-end2end</artifactId>
   <packaging>jar</packaging>
-  <version>0.5.1</version>
+  <version>0.5.2-SNAPSHOT</version>
   <name>Greaze End to End tests</name>
   <description>End to end tests for Greaze</description>
   <parent>
