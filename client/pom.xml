@@ -46,8 +46,8 @@
       <groupId>com.google.code.greaze</groupId>
       <artifactId>greaze-definition</artifactId>
       <version>0.5.2-SNAPSHOT</version>
+      <type>test-jar</type>
       <scope>test</scope>
-      <classifier>test-jar</classifier>
     </dependency>
     <dependency>
       <groupId>com.google.code.greaze</groupId>
