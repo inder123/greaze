@@ -45,7 +45,7 @@
     <dependency>
       <groupId>com.google.code.greaze</groupId>
       <artifactId>greaze-definition</artifactId>
-      <version>0.5.1</version>
+      <version>0.5.2-SNAPSHOT</version>
       <scope>compile</scope>
     </dependency>
 
