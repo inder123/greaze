@@ -38,13 +38,13 @@
     <dependency>
       <groupId>com.google.code.greaze</groupId>
       <artifactId>greaze-client</artifactId>
-      <version>0.5.1</version>
+      <version>0.5.2-SNAPSHOT</version>
       <scope>compile</scope>
     </dependency>
     <dependency>
       <groupId>com.google.code.greaze</groupId>
       <artifactId>greaze-example-definition</artifactId>
-      <version>0.5.1</version>
+      <version>0.5.2-SNAPSHOT</version>
       <scope>compile</scope>
     </dependency>
 
