@@ -6,7 +6,7 @@
   <groupId>com.google.code.greaze</groupId>
   <artifactId>greaze-server</artifactId>
   <packaging>jar</packaging>
-  <version>0.6-SNAPSHOT</version>
+  <version>0.5</version>
   <name>Greaze REST and Web service server-side framework</name>
   <description>A server-side framework for JSON based REST and Web services</description>
   <parent>
