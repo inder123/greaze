@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project name="BuildDependencies" basedir="." default="copydependencies">
+  <property file="build.properties"/>
+  <target name="copydependencies">
+    <copy todir="war/WEB-INF/classes" overwrite="true">
+      <fileset dir="../definition/target/classes">
+        <include name="com/**" />
+      </fileset>
+      <fileset dir="../../definition/target/classes">
+        <include name="com/**" />
+      </fileset>
+      <fileset dir="../../server/target/classes">
+        <include name="com/**" />
+      </fileset>
+    </copy>
+  </target>
+</project>
