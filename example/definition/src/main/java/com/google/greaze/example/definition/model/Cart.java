@@ -29,12 +29,6 @@ public class Cart extends RestResourceImpl<Cart> {
   private final String buyerName;
   private final String creditCard;
 
-  // For Gson
-  @SuppressWarnings("unused")
-  private Cart() {
-    this(null, null, null);
-  }
-
   public Cart(List<LineItem> lineItems, String buyerName, String creditCard) {
     this.lineItems = lineItems;
     this.buyerName = buyerName;

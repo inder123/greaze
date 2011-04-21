@@ -26,12 +26,6 @@ public class LineItem {
   private final long priceInMicros;
   private final String currencyCode;
 
-  // For Gson
-  @SuppressWarnings("unused")
-  private LineItem() {
-    this(null, 0, 0, null);
-  }
-
   public LineItem(String name, int quantity, long priceInMicros,
                   String currencyCode) {
     this.name = name;
