@@ -53,44 +53,44 @@
     <dependency>
       <groupId>com.google.code.greaze</groupId>
       <artifactId>greaze-definition</artifactId>
-      <version>0.5.1</version>
+      <version>0.5.2-SNAPSHOT</version>
       <scope>compile</scope>
     </dependency>
     <dependency>
       <groupId>com.google.code.greaze</groupId>
       <artifactId>greaze-definition</artifactId>
-      <version>0.5.1</version>
+      <version>0.5.2-SNAPSHOT</version>
+      <scope>compile</scope>
       <type>test-jar</type>
-      <classifier>test-jar</classifier>
+      <classifier>tests</classifier>
+    </dependency>
+    <dependency>
+      <groupId>com.google.code.greaze</groupId>
+      <artifactId>greaze-client</artifactId>
+      <version>0.5.2-SNAPSHOT</version>
       <scope>compile</scope>
     </dependency>
     <dependency>
       <groupId>com.google.code.greaze</groupId>
       <artifactId>greaze-client</artifactId>
-      <version>0.5.1</version>
+      <version>0.5.2-SNAPSHOT</version>
       <scope>compile</scope>
+      <type>test-jar</type>
+      <classifier>tests</classifier>
     </dependency>
     <dependency>
       <groupId>com.google.code.greaze</groupId>
-      <artifactId>greaze-client</artifactId>
-      <version>0.5.1</version>
-      <type>test-jar</type>
-      <classifier>test-jar</classifier>
+      <artifactId>greaze-server</artifactId>
+      <version>0.5.2-SNAPSHOT</version>
       <scope>compile</scope>
     </dependency>
     <dependency>
       <groupId>com.google.code.greaze</groupId>
       <artifactId>greaze-server</artifactId>
-      <version>0.5.1</version>
+      <version>0.5.2-SNAPSHOT</version>
       <scope>compile</scope>
-    </dependency>
-    <dependency>
-      <groupId>com.google.code.greaze</groupId>
-      <artifactId>greaze-server</artifactId>
-      <version>0.5.1</version>
       <type>test-jar</type>
-      <classifier>test-jar</classifier>
-      <scope>compile</scope>
+      <classifier>tests</classifier>
     </dependency>
 
     <!-- Guice: Dependency injection -->
@@ -165,6 +165,7 @@
             <id>attach-sources</id>
             <goals>
               <goal>jar</goal>
+              <goal>test-jar</goal>
             </goals>
           </execution>
         </executions>
