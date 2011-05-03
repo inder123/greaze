@@ -23,4 +23,21 @@ public final class GreazeStrings {
   private GreazeStrings() {
     // Not instantiable
   }
+
+  /**
+   * Returns the index of the first character in the specified string that matches any of the
+   * specified characters.
+   */
+  public static int indexOf(String str, char... chars) {
+    char[] strchars =  str.toCharArray();
+    for (int i = 0; i < strchars.length; ++i) {
+      char c = strchars[i];
+      for (char target : chars) {
+        if (target == c) {
+          return i;
+        }
+      }
+    }
+    return -1;
+  }
 }
