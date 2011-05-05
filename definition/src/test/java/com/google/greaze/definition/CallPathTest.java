@@ -17,9 +17,6 @@ package com.google.greaze.definition;
 
 import junit.framework.TestCase;
 
-import com.google.greaze.definition.CallPath;
-import com.google.greaze.definition.rest.ResourceId;
-
 /**
  * Unit test for {@link CallPath}
  *
@@ -28,56 +25,58 @@ import com.google.greaze.definition.rest.ResourceId;
 public class CallPathTest extends TestCase {
 
   public void testVersionIsSkipped() {
-    CallPath path = new CallPath("/1.0/rest/service1");
+    CallPathParser parser = new CallPathParser("/", true, "/rest/service1");
+    CallPath path = parser.parse("/1.0/rest/service1");
     assertEquals("/rest/service1", path.get());
     assertEquals(1D, path.getVersion());
-    assertEquals(ResourceId.INVALID_ID, path.getResourceId());
+    assertEquals(null, path.getResourceId());
   }
 
   public void testVersionNotPresent() {
-    CallPath path = new CallPath("/rest/service1");
-    assertEquals("/rest/service1", path.get());
+    CallPathParser parser = new CallPathParser("/rest", false, "/service1");
+    CallPath path = parser.parse("/rest/service1");
+    assertEquals("/service1", path.get());
     assertEquals(CallPath.IGNORE_VERSION, path.getVersion());
-    assertEquals(ResourceId.INVALID_ID, path.getResourceId());
+    assertEquals(null, path.getResourceId());
   }
   
   public void testResourceIdPresent() {
-    CallPath path = new CallPath("/rest/service/3");
-    assertEquals("/rest/service", path.get());
-    assertEquals(3L, path.getResourceId());
+    CallPathParser parser = new CallPathParser("/rest", false, "/service");
+    CallPath path = parser.parse("/rest/service/3");
+    assertEquals("/service", path.get());
+    assertEquals("3", path.getResourceId());
   }
 
   public void testResourceIdWithEndSlashPresent() {
-    CallPath path = new CallPath("/rest/service/3/");
-    assertEquals("/rest/service", path.get());
-    assertEquals(3L, path.getResourceId());
+    CallPathParser parser = new CallPathParser("/rest", false, "/service");
+    CallPath path = parser.parse("/rest/service/3/");
+    assertEquals("/service", path.get());
+    assertEquals("3", path.getResourceId());
   }
 
   public void testVersionAndResourceIdPresent() {
-    CallPath path = new CallPath("/3.1/rest/service53/323222");
+    CallPathParser parser = new CallPathParser("/rest", true, "/service53");
+    CallPath path = parser.parse("/rest/3.1/service53/323222");
     assertEquals(3.1D, path.getVersion());
-    assertEquals("/rest/service53", path.get());
-    assertEquals(323222L, path.getResourceId());
+    assertEquals("/service53", path.get());
+    assertEquals("323222", path.getResourceId());
   }
 
   public void testNullPath() {
-    CallPath path = new CallPath(null);
-    assertEquals(CallPath.IGNORE_VERSION, path.getVersion());
-    assertEquals(ResourceId.INVALID_ID, path.getResourceId());
-    assertNull(path.get());
+    CallPathParser parser = new CallPathParser("/rest", true, "/service");
+    CallPath path = parser.parse(null);
+    assertEquals(CallPath.NULL_PATH, path);
   }
 
   public void testEmptyPath() {
-    CallPath path = new CallPath("");
-    assertEquals(CallPath.IGNORE_VERSION, path.getVersion());
-    assertEquals(ResourceId.INVALID_ID, path.getResourceId());
-    assertEquals("", path.get());
+    CallPathParser parser = new CallPathParser("/rest", true, "/service");
+    CallPath path = parser.parse("");
+    assertEquals(CallPath.NULL_PATH, path);
   }
 
   public void testWhiteSpacePath() {
-    CallPath path = new CallPath("\r\n");
-    assertEquals(CallPath.IGNORE_VERSION, path.getVersion());
-    assertEquals(ResourceId.INVALID_ID, path.getResourceId());
-    assertEquals("\r\n", path.get());
+    CallPathParser parser = new CallPathParser("/rest", true, "/service");
+    CallPath path = parser.parse("\r\n");
+    assertEquals(CallPath.NULL_PATH, path);
   }
 }

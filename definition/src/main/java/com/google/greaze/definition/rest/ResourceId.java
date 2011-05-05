@@ -21,7 +21,5 @@ package com.google.greaze.definition.rest;
  * @author Inderjeet Singh
  */
 public interface ResourceId {
-  public static final long INVALID_ID = -1L;
-
-  public long getValue();
+  public String getValue();
 }

@@ -15,7 +15,12 @@
  */
 package com.google.greaze.end2end.query;
 
+import java.util.List;
+
+import junit.framework.TestCase;
+
 import com.google.greaze.definition.CallPath;
+import com.google.greaze.definition.CallPathParser;
 import com.google.greaze.definition.rest.Id;
 import com.google.greaze.end2end.definition.Employee;
 import com.google.greaze.end2end.definition.QueryEmployeeByName;
@@ -26,10 +31,6 @@ import com.google.greaze.rest.server.Repository;
 import com.google.greaze.rest.server.RepositoryInMemory;
 import com.google.gson.GsonBuilder;
 
-import junit.framework.TestCase;
-
-import java.util.List;
-
 /**
  * Functional tests for passing resource query parameters
  *
@@ -37,7 +38,7 @@ import java.util.List;
  */
 public class QueryParamsTest extends TestCase {
 
-  private static final CallPath QUERY_PATH = new CallPath("/rest/query");
+  private static final CallPath QUERY_PATH = new CallPathParser("/rest", false, "/query").parse("/rest/query");
   private ResourceQueryClient<Employee, QueryEmployeeByName> queryClient;
   private Repository<Employee> employees;
 
@@ -48,8 +49,9 @@ public class QueryParamsTest extends TestCase {
       .registerTypeAdapter(Id.class, new Id.GsonTypeAdapter());
     this.employees = new RepositoryInMemory<Employee>(Employee.class);
     QueryHandlerEmployeeByName query = new QueryHandlerEmployeeByName(employees);
+    CallPathParser QUERY_PATH_PARSER = new CallPathParser(null, false, "/query");
     ResourceQueryClientFake<Employee, QueryEmployeeByName> stub =
-      new ResourceQueryClientFake<Employee, QueryEmployeeByName>(query, gsonBuilder, "/rest");
+      new ResourceQueryClientFake<Employee, QueryEmployeeByName>(query, gsonBuilder, QUERY_PATH_PARSER);
     this.queryClient = new ResourceQueryClient<Employee, QueryEmployeeByName>(
         stub, QUERY_PATH, QueryEmployeeByName.class, gsonBuilder, Employee.class);
   }

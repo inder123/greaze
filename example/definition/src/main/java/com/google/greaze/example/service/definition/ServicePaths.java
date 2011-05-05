@@ -16,6 +16,7 @@
 package com.google.greaze.example.service.definition;
 
 import com.google.greaze.definition.CallPath;
+import com.google.greaze.definition.CallPathParser;
 
 /**
  * An enum describing all paths for this service
@@ -24,13 +25,13 @@ import com.google.greaze.definition.CallPath;
  */
 public enum ServicePaths {
   NULL_REQUEST(null),
-  CART("/rest/cart"),
-  ORDER("/rest/order");
+  CART(new CallPathParser("/rest", false, "/cart").parse("/rest/cart")),
+  ORDER(new CallPathParser("/rest", false, "/order").parse("/rest/order"));
   
   private final CallPath path;
 
-  private ServicePaths(String pathInfo) {
-    this.path = new CallPath(pathInfo);
+  private ServicePaths(CallPath callPath) {
+    this.path = callPath;
   }
 
   public CallPath getCallPath() {

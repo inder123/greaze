@@ -34,7 +34,7 @@ public class ResourceIdFactory<I extends ResourceId> {
   }
 
   @SuppressWarnings("unchecked")
-  public I createId(long value) {
+  public I createId(String value) {
     if (classOfI.isAssignableFrom(Id.class)) {
       return (I)Id.get(value, typeOfId);
     } 

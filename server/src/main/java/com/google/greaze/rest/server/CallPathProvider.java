@@ -18,6 +18,7 @@ package com.google.greaze.rest.server;
 import javax.servlet.http.HttpServletRequest;
 
 import com.google.greaze.definition.CallPath;
+import com.google.greaze.definition.CallPathParser;
 import com.google.inject.Inject;
 import com.google.inject.Provider;
 
@@ -30,12 +31,12 @@ public final class CallPathProvider implements Provider<CallPath> {
   private final CallPath callPath;
 
   @Inject 
-  public CallPathProvider(HttpServletRequest request) {
-    this(request.getPathInfo());
+  public CallPathProvider(HttpServletRequest request, CallPathParser pathParser) {
+    this(request.getPathInfo(), pathParser);
   }
   
-  public CallPathProvider(String pathInfo) {
-    this.callPath = new CallPath(pathInfo);
+  public CallPathProvider(String pathInfo, CallPathParser pathParser) {
+    this.callPath = pathParser.parse(pathInfo);
   }
 
   @Override

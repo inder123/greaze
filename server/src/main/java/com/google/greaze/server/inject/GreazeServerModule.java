@@ -18,6 +18,7 @@ package com.google.greaze.server.inject;
 import javax.servlet.http.HttpServletRequest;
 
 import com.google.greaze.definition.CallPath;
+import com.google.greaze.definition.CallPathParser;
 import com.google.greaze.definition.rest.Id;
 import com.google.greaze.definition.rest.ResourceIdFactory;
 import com.google.greaze.definition.rest.RestCallSpec;
@@ -50,10 +51,10 @@ public class GreazeServerModule extends ServletModule {
 
   @RequestScoped
   @Provides
-  public CallPath getCallPath(HttpServletRequest request) {
+  public CallPath getCallPath(HttpServletRequest request, CallPathParser pathParser) {
     String servletPath = request.getServletPath();
     int index = pathToServlet.length();
-    return new CallPath(servletPath.substring(index));
+    return pathParser.parse(servletPath.substring(index));
   }
 
   @RequestScoped

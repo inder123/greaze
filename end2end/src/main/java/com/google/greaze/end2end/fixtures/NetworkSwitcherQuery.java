@@ -15,7 +15,12 @@
  */
 package com.google.greaze.end2end.fixtures;
 
+import java.io.OutputStream;
+
+import javax.servlet.http.HttpServletRequest;
+
 import com.google.greaze.definition.CallPath;
+import com.google.greaze.definition.CallPathParser;
 import com.google.greaze.definition.fixtures.NetworkSwitcherPiped;
 import com.google.greaze.definition.rest.RestResource;
 import com.google.greaze.definition.rest.query.ResourceQuery;
@@ -26,10 +31,6 @@ import com.google.greaze.server.fixtures.HttpServletRequestFake;
 import com.google.greaze.server.fixtures.HttpServletResponseFake;
 import com.google.greaze.server.inject.GreazeServerModule;
 import com.google.gson.GsonBuilder;
-
-import java.io.OutputStream;
-
-import javax.servlet.http.HttpServletRequest;
 
 /**
  * Connects a RequestReceiver to HttpURLConnection
@@ -43,9 +44,12 @@ public class NetworkSwitcherQuery<R extends RestResource<R>, Q extends ResourceQ
   private final ResourceQuery<R, Q> query;
   private final GreazeServerModule gsm;
   private ResourceQueryDispatcher dispatcher;
+  private final CallPathParser callPathParser;
 
-  public NetworkSwitcherQuery(ResourceQuery<R, Q> query, GsonBuilder gsonBuilder) {
+  public NetworkSwitcherQuery(ResourceQuery<R, Q> query, GsonBuilder gsonBuilder,
+      CallPathParser callPathParser) {
     this.gsm = new GreazeServerModule(SERVLET_BASE_PATH);
+    this.callPathParser = callPathParser;
     this.query = query;
     this.dispatcher = new ResourceQueryDispatcher(gsonBuilder);
   }
@@ -54,7 +58,7 @@ public class NetworkSwitcherQuery<R extends RestResource<R>, Q extends ResourceQ
   @Override
   protected void switchNetwork(HttpURLConnectionFake conn) {
     HttpServletRequest req = buildRequest(conn);
-    CallPath callPath = gsm.getCallPath(req);
+    CallPath callPath = gsm.getCallPath(req, callPathParser);
     String queryName = RequestType.getQueryName(req.getParameterMap());
     OutputStream reverseForOutput = conn.getReverseForOutput();
     HttpServletResponseFake res = new HttpServletResponseFake(reverseForOutput);
