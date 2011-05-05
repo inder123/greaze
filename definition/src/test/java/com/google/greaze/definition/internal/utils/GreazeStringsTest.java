@@ -25,9 +25,9 @@ import junit.framework.TestCase;
 public class GreazeStringsTest extends TestCase {
 
   public void testIndexOf() {
-    assertEquals(0, GreazeStrings.indexOf("fooBar", 'f', 'b'));
-    assertEquals(3, GreazeStrings.indexOf("fooBar", 'F', 'B'));
-    assertEquals(-1, GreazeStrings.indexOf("fooBar", 'F', 'b'));
-    assertEquals(1, GreazeStrings.indexOf("fooBar", 'o', 'o', 'B'));
+    assertEquals(0, GreazeStrings.indexOf(0, "fooBar", 'f', 'b'));
+    assertEquals(3, GreazeStrings.indexOf(0, "fooBar", 'F', 'B'));
+    assertEquals(-1, GreazeStrings.indexOf(0, "fooBar", 'F', 'b'));
+    assertEquals(1, GreazeStrings.indexOf(0, "fooBar", 'o', 'o', 'B'));
   }
 }

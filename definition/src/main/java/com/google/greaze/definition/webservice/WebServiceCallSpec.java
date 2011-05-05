@@ -15,18 +15,19 @@
  */
 package com.google.greaze.definition.webservice;
 
+import java.lang.reflect.Type;
+import java.util.Arrays;
+import java.util.LinkedHashSet;
+import java.util.Set;
+
 import com.google.greaze.definition.CallPath;
+import com.google.greaze.definition.CallPathParser;
 import com.google.greaze.definition.HeaderMapSpec;
 import com.google.greaze.definition.HttpMethod;
 import com.google.greaze.definition.TypedKey;
 import com.google.greaze.definition.UntypedKey;
 import com.google.greaze.definition.UrlParamsSpec;
 import com.google.greaze.definition.internal.utils.GreazePreconditions;
-
-import java.lang.reflect.Type;
-import java.util.Arrays;
-import java.util.LinkedHashSet;
-import java.util.Set;
 
 /**
  * Specification for a Json web service call. The call includes the relative path where the call 
@@ -36,7 +37,7 @@ import java.util.Set;
  */
 public class WebServiceCallSpec {
   
-  public static final WebServiceCallSpec NULL_SPEC = new Builder(new CallPath("")).build();
+  public static final WebServiceCallSpec NULL_SPEC = new Builder(CallPath.NULL_PATH).build();
   
   public static class Builder {
 	private final CallPath callPath;

@@ -44,10 +44,10 @@ public class QueryHandlerOrdersByItemName
 
   @Override
   public List<Order> query(QueryOrdersByItemName query) {
-    long repoSize = orders.getNextId().getValue();
+    long repoSize = Long.parseLong(orders.getNextId().getValue());
     List<Order> results = Lists.newArrayList();
     for (int i = 0; i < repoSize; ++i) {
-      Id<Order> orderId = Id.get(i, Order.class);
+      Id<Order> orderId = Id.get(String.valueOf(i), Order.class);
       Order order = orders.get(orderId);
       if (order == null) {
         continue;

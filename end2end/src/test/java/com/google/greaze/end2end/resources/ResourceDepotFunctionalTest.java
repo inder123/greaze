@@ -16,7 +16,10 @@
 package com.google.greaze.end2end.resources;
 
 
+import junit.framework.TestCase;
+
 import com.google.greaze.definition.CallPath;
+import com.google.greaze.definition.CallPathParser;
 import com.google.greaze.definition.rest.Id;
 import com.google.greaze.end2end.definition.Employee;
 import com.google.greaze.end2end.fixtures.RestClientStubFake;
@@ -28,8 +31,6 @@ import com.google.greaze.rest.server.RestResponseBuilder;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 
-import junit.framework.TestCase;
-
 /**
  * Functional tests for passing resource query parameters
  *
@@ -37,7 +38,8 @@ import junit.framework.TestCase;
  */
 public class ResourceDepotFunctionalTest extends TestCase {
 
-  private static final CallPath RESOURCE_PATH = new CallPath("/rest/employee");
+  private static final CallPath RESOURCE_PATH =
+    new CallPathParser("/rest", false, "/employee").parse("/rest/employee");
   private ResourceDepotClient<Employee> client;
   private Repository<Employee> employees;
 
@@ -49,12 +51,13 @@ public class ResourceDepotFunctionalTest extends TestCase {
       .create();
     this.employees = new RepositoryInMemory<Employee>(Employee.class);
     RestResponseBuilder<Employee> responseBuilder = new RestResponseBuilder<Employee>(employees);
-    RestClientStub stub = new RestClientStubFake<Employee>(responseBuilder, Employee.class, gson);
+    RestClientStub stub = new RestClientStubFake<Employee>(responseBuilder, Employee.class, gson,
+        new CallPathParser(null, false, "/employee"));
     this.client = new ResourceDepotClient<Employee>(stub, RESOURCE_PATH, Employee.class, gson);
   }
 
   public void testGet() throws Exception {
-    Id<Employee> id = Id.get(1L, Employee.class);
+    Id<Employee> id = Id.get("1", Employee.class);
     employees.put(new Employee(id, "bob"));
     Employee e = client.get(id);
     assertEquals("bob", e.getName());
