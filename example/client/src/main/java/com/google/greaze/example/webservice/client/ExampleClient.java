@@ -38,7 +38,7 @@ public class ExampleClient {
 
   private final WebServiceClient wsClient;
   public ExampleClient() {
-    ServerConfig serverConfig = new ServerConfig("http://localhost");
+    ServerConfig serverConfig = new ServerConfig(SampleJsonService.SERVER_BASE_URL);
 	wsClient = new WebServiceClient(serverConfig, Level.INFO); 
   }
 
@@ -64,6 +64,7 @@ public class ExampleClient {
     lineItems.add(new LineItem("item1", 2, 1000000L, "USD"));
 	Cart cart = new Cart(lineItems, "first last", "4111-1111-1111-1111");
 	String authToken = "authToken";
-	client.placeOrder(cart, authToken );
+	Order order = client.placeOrder(cart, authToken );
+	System.out.print(order);
   }
 }
