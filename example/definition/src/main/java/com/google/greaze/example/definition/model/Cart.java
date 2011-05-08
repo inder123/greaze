@@ -51,4 +51,10 @@ public class Cart extends RestResourceImpl<Cart> {
   public String getCreditCard() {
     return creditCard;
   }
+
+  @Override
+  public String toString() {
+    return String.format("{buyerName: %s, creditCard: %s, lineItems:[%s]}",
+        buyerName, creditCard, lineItems);
+  }
 }
