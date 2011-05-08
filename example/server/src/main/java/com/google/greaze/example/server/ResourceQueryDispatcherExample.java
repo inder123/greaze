@@ -17,9 +17,13 @@ package com.google.greaze.example.server;
 
 import com.google.common.collect.ImmutableMap;
 import com.google.greaze.definition.CallPath;
+import com.google.greaze.definition.rest.Id;
+import com.google.greaze.definition.rest.MetaData;
+import com.google.greaze.definition.rest.MetaDataBase;
 import com.google.greaze.definition.rest.query.ResourceQuery;
 import com.google.greaze.example.definition.model.Order;
 import com.google.greaze.example.query.definition.Queries;
+import com.google.greaze.example.service.definition.SampleJsonService;
 import com.google.greaze.rest.server.Repository;
 import com.google.greaze.server.dispatcher.ResourceQueryDispatcher;
 import com.google.gson.GsonBuilder;
@@ -36,11 +40,18 @@ public class ResourceQueryDispatcherExample extends ResourceQueryDispatcher {
 
   @Inject
   public ResourceQueryDispatcherExample(Repository<Order> orders) {
-    super(new GsonBuilder());
+    super(getGsonBuilder());
     queryHandlers = ImmutableMap.<Queries, ResourceQuery<?, ?>>builder()
       .put(Queries.FIND_ORDERS_BY_ITEM_NAME, new QueryHandlerOrdersByItemName(orders))
       .build();
 
+  }
+
+  private static GsonBuilder getGsonBuilder() {
+    return new GsonBuilder()
+      .setVersion(SampleJsonService.CURRENT_VERSION)
+      .registerTypeAdapter(Id.class, new Id.GsonTypeAdapter())
+      .registerTypeAdapter(MetaData.class, new MetaDataBase.GsonTypeAdapter());
   }
 
   @Override
