@@ -35,14 +35,6 @@
   </issueManagement>
 
   <dependencies>
-    <!-- Google collections -->
-    <dependency>
-      <groupId>com.google.guava</groupId>
-      <artifactId>guava</artifactId>
-      <version>r08</version>
-      <scope>compile</scope>
-    </dependency>
-
     <dependency>
       <groupId>com.google.code.greaze</groupId>
       <artifactId>greaze-definition</artifactId>
@@ -84,14 +76,6 @@
       <scope>compile</scope>
       <type>test-jar</type>
       <classifier>tests</classifier>
-    </dependency>
-
-    <!-- Guice: Dependency injection -->
-    <dependency>
-      <groupId>com.google.inject</groupId>
-      <artifactId>guice</artifactId>
-      <version>2.0</version>
-      <scope>compile</scope>
     </dependency>
 
     <!-- Servlet & Jsp -->
