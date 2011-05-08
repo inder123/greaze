@@ -15,6 +15,10 @@
  */
 package com.google.greaze.example.webservice.client;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.logging.Level;
+
 import com.google.greaze.definition.HeaderMap;
 import com.google.greaze.definition.HttpMethod;
 import com.google.greaze.definition.UrlParams;
@@ -29,10 +33,8 @@ import com.google.greaze.example.service.definition.SampleJsonService;
 import com.google.greaze.example.webservice.definition.TypedKeys;
 import com.google.greaze.webservice.client.ServerConfig;
 import com.google.greaze.webservice.client.WebServiceClient;
-
-import java.util.ArrayList;
-import java.util.List;
-import java.util.logging.Level;
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 
 public class ExampleClient {
 
@@ -44,6 +46,8 @@ public class ExampleClient {
 
   public Order placeOrder(Cart cart, String authToken) {
     WebServiceCallSpec spec = SampleJsonService.PLACE_ORDER;
+    Gson gson = spec.addTypeAdapters(new GsonBuilder()).create();
+    
 	HeaderMap requestHeaders = new HeaderMap.Builder(spec.getRequestSpec().getHeadersSpec())
 	    .put(TypedKeys.Request.AUTH_TOKEN, authToken)
 	    .build();
@@ -54,7 +58,7 @@ public class ExampleClient {
 	    .build();
 	WebServiceRequest request = new WebServiceRequest(
 	    HttpMethod.POST, requestHeaders, urlParams, requestBody);
-	WebServiceResponse response = wsClient.getResponse(spec, request);
+	WebServiceResponse response = wsClient.getResponse(spec, request, gson);
 	return response.getBody().get(TypedKeys.ResponseBody.ORDER);
   }
 
