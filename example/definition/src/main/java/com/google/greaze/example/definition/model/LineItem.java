@@ -54,4 +54,10 @@ public class LineItem {
   public String getCurrencyCode() {
     return currencyCode;
   }
+
+  @Override
+  public String toString() {
+    return String.format("{name: %s, quantity: %s, priceInMicros: %d, currencyCode: %s}",
+        name, quantity, priceInMicros, currencyCode);
+  }
 }

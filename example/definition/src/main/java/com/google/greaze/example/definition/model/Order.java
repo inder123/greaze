@@ -43,4 +43,9 @@ public class Order extends RestResourceImpl<Order> {
   public String getOrderNumber() {
     return orderNumber;
   }
+
+  @Override
+  public String toString() {
+    return String.format("{orderNumber: %s, postedCart: %s}", orderNumber, postedCart);
+  }
 }
