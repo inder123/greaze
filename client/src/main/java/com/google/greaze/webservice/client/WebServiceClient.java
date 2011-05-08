@@ -65,16 +65,6 @@ public class WebServiceClient {
     }
   }
 
-  public WebServiceResponse getResponse(WebServiceCallSpec callSpec, WebServiceRequest request) {
-    Gson gson = new GsonBuilder()
-        .registerTypeAdapter(RequestBody.class,
-            new RequestBody.GsonTypeAdapter(callSpec.getRequestSpec().getBodySpec()))
-        .registerTypeAdapter(ResponseBody.class,
-            new ResponseBody.GsonTypeAdapter(callSpec.getResponseSpec().getBodySpec()))
-        .create();
-    return getResponse(callSpec, request, gson);
-  }
-
   public WebServiceResponse getResponse(
       WebServiceCallSpec callSpec, WebServiceRequest request, Gson gson) {
     HttpURLConnection conn = null;
