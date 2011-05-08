@@ -26,6 +26,11 @@ public class Order extends RestResourceImpl<Order> {
   public final Cart postedCart;
   public final String orderNumber;
 
+  // TODO(inder): remove these when Gson's UnsafeAllocator is made to work on App Engine
+  private Order() {
+    this(null, null);
+  }
+
   public Order(Cart postedCart, String orderNumber) {
     this.postedCart = postedCart;
     this.orderNumber = orderNumber;

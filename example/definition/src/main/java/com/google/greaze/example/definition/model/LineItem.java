@@ -26,6 +26,11 @@ public class LineItem {
   private final long priceInMicros;
   private final String currencyCode;
 
+  // TODO(inder): remove these when Gson's UnsafeAllocator is made to work on App Engine
+  private LineItem() {
+    this(null, 0, 0, null); 
+  }
+
   public LineItem(String name, int quantity, long priceInMicros,
                   String currencyCode) {
     this.name = name;
