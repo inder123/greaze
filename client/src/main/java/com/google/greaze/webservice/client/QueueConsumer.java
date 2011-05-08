@@ -20,6 +20,7 @@ import java.util.concurrent.BlockingQueue;
 import com.google.greaze.definition.WebServiceSystemException;
 import com.google.greaze.definition.webservice.WebServiceCall;
 import com.google.greaze.definition.webservice.WebServiceResponse;
+import com.google.gson.Gson;
 
 /**
  * A consumer that executes in its own thread consuming queue entries and invoking web-service calls
@@ -29,11 +30,13 @@ import com.google.greaze.definition.webservice.WebServiceResponse;
 final class QueueConsumer implements Runnable {
 
   private final BlockingQueue<QueueEntry> queue;
-  private WebServiceClient client;
+  private final WebServiceClient client;
+  private final Gson gson;
 
-  QueueConsumer(BlockingQueue<QueueEntry> queue, WebServiceClient client) {
+  QueueConsumer(BlockingQueue<QueueEntry> queue, WebServiceClient client, Gson gson) {
     this.queue = queue;
     this.client = client;
+    this.gson = gson;
   }
 
   @Override
@@ -49,7 +52,7 @@ final class QueueConsumer implements Runnable {
 
   private void consume(QueueEntry entry) {
     try {
-      WebServiceResponse response = client.getResponse(entry.callSpec, entry.request);
+      WebServiceResponse response = client.getResponse(entry.callSpec, entry.request, gson);
       WebServiceCall call = new WebServiceCall(entry.callSpec, entry.request, response);
       entry.responseCallback.handleResponse(call);
     } catch (WebServiceSystemException e) {
