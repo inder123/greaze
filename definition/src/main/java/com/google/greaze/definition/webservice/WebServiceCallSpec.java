@@ -28,6 +28,7 @@ import com.google.greaze.definition.TypedKey;
 import com.google.greaze.definition.UntypedKey;
 import com.google.greaze.definition.UrlParamsSpec;
 import com.google.greaze.definition.internal.utils.GreazePreconditions;
+import com.google.gson.GsonBuilder;
 
 /**
  * Specification for a Json web service call. The call includes the relative path where the call 
@@ -188,6 +189,14 @@ public class WebServiceCallSpec {
   
   public double getVersion() {
     return version;
+  }
+
+  public GsonBuilder addTypeAdapters(GsonBuilder gsonBuilder) {
+    return gsonBuilder
+      .registerTypeAdapter(RequestBody.class,
+          new RequestBody.GsonTypeAdapter(requestSpec.getBodySpec()))
+      .registerTypeAdapter(ResponseBody.class,
+          new ResponseBody.GsonTypeAdapter(responseSpec.getBodySpec()));
   }
 
   @Override
