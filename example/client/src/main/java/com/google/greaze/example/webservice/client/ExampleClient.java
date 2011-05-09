@@ -15,6 +15,10 @@
  */
 package com.google.greaze.example.webservice.client;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.logging.Level;
+
 import com.google.greaze.definition.HeaderMap;
 import com.google.greaze.definition.HttpMethod;
 import com.google.greaze.definition.UrlParams;
@@ -29,21 +33,21 @@ import com.google.greaze.example.service.definition.SampleJsonService;
 import com.google.greaze.example.webservice.definition.TypedKeys;
 import com.google.greaze.webservice.client.ServerConfig;
 import com.google.greaze.webservice.client.WebServiceClient;
-
-import java.util.ArrayList;
-import java.util.List;
-import java.util.logging.Level;
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 
 public class ExampleClient {
 
   private final WebServiceClient wsClient;
   public ExampleClient() {
-    ServerConfig serverConfig = new ServerConfig("http://localhost");
+    ServerConfig serverConfig = new ServerConfig(SampleJsonService.SERVER_BASE_URL);
 	wsClient = new WebServiceClient(serverConfig, Level.INFO); 
   }
 
   public Order placeOrder(Cart cart, String authToken) {
     WebServiceCallSpec spec = SampleJsonService.PLACE_ORDER;
+    Gson gson = spec.addTypeAdapters(new GsonBuilder()).create();
+    
 	HeaderMap requestHeaders = new HeaderMap.Builder(spec.getRequestSpec().getHeadersSpec())
 	    .put(TypedKeys.Request.AUTH_TOKEN, authToken)
 	    .build();
@@ -54,7 +58,7 @@ public class ExampleClient {
 	    .build();
 	WebServiceRequest request = new WebServiceRequest(
 	    HttpMethod.POST, requestHeaders, urlParams, requestBody);
-	WebServiceResponse response = wsClient.getResponse(spec, request);
+	WebServiceResponse response = wsClient.getResponse(spec, request, gson);
 	return response.getBody().get(TypedKeys.ResponseBody.ORDER);
   }
 
@@ -64,6 +68,7 @@ public class ExampleClient {
     lineItems.add(new LineItem("item1", 2, 1000000L, "USD"));
 	Cart cart = new Cart(lineItems, "first last", "4111-1111-1111-1111");
 	String authToken = "authToken";
-	client.placeOrder(cart, authToken );
+	Order order = client.placeOrder(cart, authToken );
+	System.out.print(order);
   }
 }

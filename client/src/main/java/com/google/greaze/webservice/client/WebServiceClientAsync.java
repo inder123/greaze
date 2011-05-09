@@ -22,6 +22,7 @@ import java.util.logging.Level;
 import com.google.greaze.definition.WebServiceSystemException;
 import com.google.greaze.definition.webservice.WebServiceCallSpec;
 import com.google.greaze.definition.webservice.WebServiceRequest;
+import com.google.gson.Gson;
 
 /**
  * A client for invoking a JSON-based Web-service in an asynchronous manner. The call is queued,
@@ -36,17 +37,18 @@ public class WebServiceClientAsync {
   private final boolean threadPerTask;
   private final TaskExecutor executor;
 
-  public WebServiceClientAsync(ServerConfig serverConfig) {
-    this(serverConfig, null);
-  }
-  public WebServiceClientAsync(ServerConfig serverConfig, Level logLevel) {
-    this(new WebServiceClient(serverConfig, logLevel));
+  public WebServiceClientAsync(ServerConfig serverConfig, Gson gson) {
+    this(serverConfig, gson, null);
   }
 
-  public WebServiceClientAsync(WebServiceClient client) {
+  public WebServiceClientAsync(ServerConfig serverConfig, Gson gson, Level logLevel) {
+    this(new WebServiceClient(serverConfig, logLevel), gson);
+  }
+
+  public WebServiceClientAsync(WebServiceClient client, Gson gson) {
     queue = new LinkedBlockingQueue<QueueEntry>();
     this.threadPerTask = true;
-    QueueConsumer consumer = new QueueConsumer(queue, client);
+    QueueConsumer consumer = new QueueConsumer(queue, client, gson);
     executor = getExecutor();
     executor.execute(consumer);
   }

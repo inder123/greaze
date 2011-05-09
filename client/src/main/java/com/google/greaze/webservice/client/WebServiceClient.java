@@ -17,6 +17,7 @@ package com.google.greaze.webservice.client;
 
 import com.google.greaze.client.internal.utils.UrlParamStringBuilder;
 import com.google.greaze.definition.WebServiceSystemException;
+import com.google.greaze.definition.webservice.RequestBody;
 import com.google.greaze.definition.webservice.ResponseBody;
 import com.google.greaze.definition.webservice.WebServiceCallSpec;
 import com.google.greaze.definition.webservice.WebServiceRequest;
@@ -62,14 +63,6 @@ public class WebServiceClient {
     } catch (MalformedURLException e) {
       throw new RuntimeException(e);
     }
-  }
-
-  public WebServiceResponse getResponse(WebServiceCallSpec callSpec, WebServiceRequest request) {
-    Gson gson = new GsonBuilder()
-        .registerTypeAdapter(ResponseBody.class,
-            new ResponseBody.GsonTypeAdapter(callSpec.getResponseSpec().getBodySpec()))
-        .create();
-    return getResponse(callSpec, request, gson);
   }
 
   public WebServiceResponse getResponse(

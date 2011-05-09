@@ -29,6 +29,11 @@ public class Cart extends RestResourceImpl<Cart> {
   private final String buyerName;
   private final String creditCard;
 
+  // TODO(inder): remove these when Gson's UnsafeAllocator is made to work on App Engine
+  private Cart() {
+    this(null, null, null);
+  }
+
   public Cart(List<LineItem> lineItems, String buyerName, String creditCard) {
     this.lineItems = lineItems;
     this.buyerName = buyerName;
@@ -45,5 +50,11 @@ public class Cart extends RestResourceImpl<Cart> {
 
   public String getCreditCard() {
     return creditCard;
+  }
+
+  @Override
+  public String toString() {
+    return String.format("{buyerName: %s, creditCard: %s, lineItems:[%s]}",
+        buyerName, creditCard, lineItems);
   }
 }
