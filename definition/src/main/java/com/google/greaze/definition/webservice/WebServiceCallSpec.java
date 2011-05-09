@@ -21,7 +21,6 @@ import java.util.LinkedHashSet;
 import java.util.Set;
 
 import com.google.greaze.definition.CallPath;
-import com.google.greaze.definition.CallPathParser;
 import com.google.greaze.definition.HeaderMapSpec;
 import com.google.greaze.definition.HttpMethod;
 import com.google.greaze.definition.TypedKey;
