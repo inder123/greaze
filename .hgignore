@@ -4,3 +4,9 @@ target
 .classpath
 .settings
 eclipse-ws
+classes
+appengine-*.jar
+datanucleus-*.jar
+geronimo-*.jar
+jsr107cache-*.jar
+
