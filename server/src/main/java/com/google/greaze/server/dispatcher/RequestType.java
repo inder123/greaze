@@ -40,7 +40,7 @@ public enum RequestType {
    */
   public static RequestType getRequestType(CallPath callPath,
       String queryName, String resourcePrefix) {
-    String path = callPath.getServicePath();
+    String path = callPath.getBasePath();
     if (!path.startsWith(resourcePrefix)) {
       return WEBSERVICE;
     }

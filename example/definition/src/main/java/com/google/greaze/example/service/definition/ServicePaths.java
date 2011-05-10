@@ -50,17 +50,4 @@ public enum ServicePaths {
     }
     return Collections.unmodifiableCollection(servicePaths);
   }
-
-  public static CallPath getCallPath(CallPath invokedPath) {
-    for (ServicePaths path : values()) {
-      CallPath callPath = path.path;
-      String callPathInfo = callPath.getServicePath();
-      // A rest path can end with a resource-id too.
-      // For example, /rest/cart/1234 should match with /rest/cart
-      if (callPathInfo != null && invokedPath.matches(callPath)) {
-        return callPath;
-      }
-    }
-    return null;
-  }
 }

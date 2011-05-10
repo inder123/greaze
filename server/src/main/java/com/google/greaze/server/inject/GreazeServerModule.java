@@ -22,7 +22,6 @@ import javax.servlet.http.HttpServletRequest;
 import com.google.common.base.Preconditions;
 import com.google.common.base.Strings;
 import com.google.greaze.definition.CallPath;
-import com.google.greaze.definition.CallPathParser;
 import com.google.greaze.definition.rest.Id;
 import com.google.greaze.definition.rest.ResourceIdFactory;
 import com.google.greaze.definition.rest.RestCallSpec;
@@ -81,14 +80,12 @@ public class GreazeServerModule extends ServletModule {
   @Provides
   public CallPath getCallPath(HttpServletRequest request) {
     String servletPath = request.getServletPath();
-    int index = pathToServlet.length() + resourcePrefix.length();
+    int index = pathToServlet.length();
     String incomingPath = servletPath.substring(index);
     for (CallPath servicePath : servicePaths) {
-      String pathToService = servicePath.getServicePath();
-      if (incomingPath.startsWith(pathToService)) {
-        // Build path with incomingPath and servicePath combo
-        CallPathParser pathParser = new CallPathParser(null, servicePath.hasVersion(), pathToService);
-        return pathParser.parse(incomingPath);
+      CallPath incomingCallPath = servicePath.toParser().parse(incomingPath);
+      if (incomingCallPath.matches(servicePath)) {
+        return servicePath.toParser().parse(incomingPath);
       }
     }
     return null;

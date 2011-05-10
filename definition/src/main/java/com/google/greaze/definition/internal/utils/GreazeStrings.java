@@ -40,4 +40,20 @@ public final class GreazeStrings {
     }
     return -1;
   }
+
+  public static boolean equals(String str1, String str2) {
+    // str1 == str2 takes care of the case when both are null.
+    // After the first check, only one of them could be null which would
+    // mean that the strings are unequal.
+    return str1 == str2 ||
+      (str1 != null && str2 != null && str1.equals(str2));  
+  }
+
+  public static boolean firstStartsWithSecond(String first, String second) {
+    // first == second takes care of the case when both are null.
+    // After the first check, only one of them could be null which would
+    // mean that the strings are unequal.
+    return first == second ||
+      (first != null && second != null && first.startsWith(second));  
+  }
 }
