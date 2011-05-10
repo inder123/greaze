@@ -19,7 +19,7 @@ import java.lang.reflect.Type;
 import java.net.HttpURLConnection;
 import java.net.URL;
 
-import com.google.greaze.definition.CallPathParser;
+import com.google.greaze.definition.CallPath;
 import com.google.greaze.definition.fixtures.NetworkSwitcher;
 import com.google.greaze.definition.rest.RestResource;
 import com.google.greaze.rest.client.RestClientStub;
@@ -36,10 +36,10 @@ public class RestClientStubFake<R extends RestResource<R>> extends RestClientStu
 
   private final NetworkSwitcher networkSwitcher;
   public RestClientStubFake(RestResponseBuilder<R> responseBuilder, Type resourceType, Gson gson,
-      CallPathParser callPathParser) {
+      CallPath resourcePath) {
     super(new ServerConfig("http://localhost/fake"));
     networkSwitcher =
-      new NetworkSwitcherResource<R>(responseBuilder, resourceType, gson, callPathParser);
+      new NetworkSwitcherResource<R>(responseBuilder, resourceType, gson, resourcePath);
   }
 
   @Override

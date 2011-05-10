@@ -49,9 +49,8 @@ public class QueryParamsTest extends TestCase {
       .registerTypeAdapter(Id.class, new Id.GsonTypeAdapter());
     this.employees = new RepositoryInMemory<Employee>(Employee.class);
     QueryHandlerEmployeeByName query = new QueryHandlerEmployeeByName(employees);
-    CallPathParser queryPathParser = new CallPathParser(null, false, "/query");
     ResourceQueryClientFake<Employee, QueryEmployeeByName> stub =
-      new ResourceQueryClientFake<Employee, QueryEmployeeByName>(query, gsonBuilder, queryPathParser);
+      new ResourceQueryClientFake<Employee, QueryEmployeeByName>(query, gsonBuilder, QUERY_PATH);
     this.queryClient = new ResourceQueryClient<Employee, QueryEmployeeByName>(
         stub, QUERY_PATH, QueryEmployeeByName.class, gsonBuilder, Employee.class);
   }
