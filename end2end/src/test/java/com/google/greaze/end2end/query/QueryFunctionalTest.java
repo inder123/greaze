@@ -36,32 +36,44 @@ import com.google.gson.GsonBuilder;
  *
  * @author Inderjeet Singh
  */
-public class QueryParamsTest extends TestCase {
+public class QueryFunctionalTest extends TestCase {
 
-  private static final CallPath QUERY_PATH =
-    new CallPathParser("/rest", false, "/employee").parse("/rest/employee");
-  private ResourceQueryClient<Employee, QueryEmployeeByName> queryClient;
+  private GsonBuilder gsonBuilder;
   private Repository<Employee> employees;
 
   @Override
   protected void setUp() throws Exception {
     super.setUp();
-    GsonBuilder gsonBuilder = new GsonBuilder()
+    this.gsonBuilder = new GsonBuilder()
       .registerTypeAdapter(Id.class, new Id.GsonTypeAdapter());
     this.employees = new RepositoryInMemory<Employee>(Employee.class);
-    QueryHandlerEmployeeByName query = new QueryHandlerEmployeeByName(employees);
-    ResourceQueryClientFake<Employee, QueryEmployeeByName> stub =
-      new ResourceQueryClientFake<Employee, QueryEmployeeByName>(query, gsonBuilder, QUERY_PATH);
-    this.queryClient = new ResourceQueryClient<Employee, QueryEmployeeByName>(
-        stub, QUERY_PATH, QueryEmployeeByName.class, gsonBuilder, Employee.class);
   }
 
-  public void testParamsRoundTrip() throws Exception {
+  public void testParamsRoundTripWithoutVersion() throws Exception {
+    CallPath queryPath =
+      new CallPathParser("/rest", false, "/employee").parse("/rest/employee");
+    doParamsRoundTrip(queryPath);
+  }
+
+  public void testParamsRoundTripWithVersion() throws Exception {
+    CallPath queryPath =
+      new CallPathParser("/rest", true, "/employee").parse("/rest/1.2/employee");
+    doParamsRoundTrip(queryPath);
+  }
+
+  private void doParamsRoundTrip(CallPath queryPath) {
+    QueryHandlerEmployeeByName query = new QueryHandlerEmployeeByName(employees);
+    ResourceQueryClientFake<Employee, QueryEmployeeByName> stub =
+      new ResourceQueryClientFake<Employee, QueryEmployeeByName>(query, gsonBuilder, queryPath);
+    ResourceQueryClient<Employee, QueryEmployeeByName> queryClient =
+      new ResourceQueryClient<Employee, QueryEmployeeByName>(
+        stub, queryPath, QueryEmployeeByName.class, gsonBuilder, Employee.class);
+
     employees.put(new Employee(null, "foo"));
     employees.put(new Employee(null, "foo"));
     employees.put(new Employee(null, "bar"));
-    QueryEmployeeByName query = new QueryEmployeeByName("foo");
-    List<Employee> results = queryClient.query(query);
+    QueryEmployeeByName queryByName = new QueryEmployeeByName("foo");
+    List<Employee> results = queryClient.query(queryByName);
     assertEquals(2, results.size());
     for (Employee employee : results) {
       assertEquals("foo", employee.getName());
