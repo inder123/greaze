@@ -56,7 +56,7 @@ public class RestClientStub extends WebServiceClient {
     if (version != -1D) {
       url.append('/').append(version);
     }
-    url.append(callSpec.getPath().get());
+    url.append(callSpec.getPath().getServicePath());
     if (id != null && id.getValue() != null) {
       url.append('/').append(id.getValue());
     }

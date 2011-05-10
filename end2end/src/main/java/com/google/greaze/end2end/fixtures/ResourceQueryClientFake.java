@@ -38,7 +38,7 @@ public class ResourceQueryClientFake<R extends RestResource<R>, Q extends Resour
   private final NetworkSwitcher networkSwitcher;
   public ResourceQueryClientFake(ResourceQuery<R, Q> responseBuilder, GsonBuilder gsonBuilder,
       CallPath queryPath) {
-    super(new ServerConfig("http://localhost"));
+    super(new ServerConfig("http://localhost/fake"));
     networkSwitcher = new NetworkSwitcherQuery<R, Q>(responseBuilder, gsonBuilder, queryPath);
   }
 

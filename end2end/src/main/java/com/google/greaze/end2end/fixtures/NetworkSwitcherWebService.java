@@ -33,6 +33,6 @@ public class NetworkSwitcherWebService extends NetworkSwitcherPiped {
 
   public NetworkSwitcherWebService(Gson gson, CallPath callPath) {
     this.gson = gson;
-    this.gsm = new GreazeServerModule("/fake", ImmutableList.of(callPath), "");
+    this.gsm = new GreazeServerModule("/fake", ImmutableList.of(callPath), callPath.getBasePath());
   }
 }

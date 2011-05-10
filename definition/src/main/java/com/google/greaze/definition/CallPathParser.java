@@ -59,7 +59,7 @@ public final class CallPathParser {
       callPath = callPath.substring(serviceName.length());
     }
     String resourceId = extraceResourceId(callPath);
-    return new CallPath(version, serviceName, resourceId);
+    return new CallPath(basePath, version, serviceName, resourceId);
   }
 
   private String extraceResourceId(String path) {

@@ -53,7 +53,8 @@ public final class RestCallSpecMap {
     if (callPath.getResourceId() != null) {
       // Rest call spec is the same for all resources of the same type irrespective of the id.
       // Since we are looking up in a Map, revise the callPath to ignore the id.
-      callPath = new CallPath(callPath.getVersion(), callPath.get(), null);
+      callPath = new CallPath(callPath.getBasePath(), callPath.getVersion(),
+          callPath.getServicePath(), null);
     }
     return resources.get(callPath);
   }

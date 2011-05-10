@@ -38,7 +38,8 @@ import com.google.gson.GsonBuilder;
  */
 public class QueryParamsTest extends TestCase {
 
-  private static final CallPath QUERY_PATH = new CallPathParser("/rest", false, "/query").parse("/rest/query");
+  private static final CallPath QUERY_PATH =
+    new CallPathParser("/rest", false, "/query").parse("/rest/query");
   private ResourceQueryClient<Employee, QueryEmployeeByName> queryClient;
   private Repository<Employee> employees;
 
