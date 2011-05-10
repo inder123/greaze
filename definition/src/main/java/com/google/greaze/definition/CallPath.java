@@ -72,14 +72,49 @@ public final class CallPath {
     return resourceId;
   }
 
-  @Override
-  public int hashCode() {
-    return servicePath.hashCode();
+  public String getFullPath() {
+    StringBuilder sb = new StringBuilder();
+    if (basePath != null) {
+      sb.append(basePath);
+    }
+    if (hasVersion()) {
+      sb.append('/').append(String.valueOf(version));
+    }
+    if (servicePath != null) {
+      sb.append(servicePath);
+    }
+    if (resourceId != null) {
+      sb.append('/').append(resourceId);
+    }
+    return sb.toString();
   }
 
-  public boolean matches(CallPath callPath) {
-    return GreazeStrings.equals(basePath, callPath.getBasePath()) &&
-      GreazeStrings.firstStartsWithSecond(servicePath, callPath.getServicePath());
+  /**
+   * Returns the path without the service or the resource id
+   * @return
+   */
+  public String getPathPrefix() {
+    StringBuilder sb = new StringBuilder();
+    if (basePath != null) {
+      sb.append(basePath);
+    }
+    if (hasVersion()) {
+      sb.append('/').append(String.valueOf(version));
+    }
+    return sb.toString();
+  }
+
+  @Override
+  public int hashCode() {
+    int hash = basePath == null ? 0 : basePath.hashCode();
+    hash += servicePath == null ? 0 : 3*basePath.hashCode(); 
+    return hash;
+  }
+
+  public boolean matches(CallPath other) {
+    return version == other.version
+      && GreazeStrings.equals(basePath, other.basePath)
+      && GreazeStrings.firstStartsWithSecond(servicePath, other.servicePath);
   }
 
   public CallPathParser toParser() {
@@ -97,12 +132,9 @@ public final class CallPath {
     CallPath other = (CallPath)obj;
     return getClass() == obj.getClass()
       && version == other.version
-      && resourceId == other.resourceId
-      && equal(servicePath, other.servicePath);
-  }
-
-  private static boolean equal(String s1, String s2) {
-    return s1 == s2 || (s1 != null && s2 != null && s1.equals(s2));
+      && GreazeStrings.equals(basePath, other.basePath)
+      && GreazeStrings.equals(servicePath, other.servicePath)
+      && GreazeStrings.equals(resourceId, other.resourceId);
   }
 
   @Override
