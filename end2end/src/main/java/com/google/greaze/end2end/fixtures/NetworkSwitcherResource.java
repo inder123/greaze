@@ -15,6 +15,13 @@
  */
 package com.google.greaze.end2end.fixtures;
 
+import java.io.OutputStream;
+import java.lang.reflect.Type;
+import java.util.Collection;
+
+import javax.servlet.http.HttpServletRequest;
+
+import com.google.common.collect.ImmutableList;
 import com.google.greaze.definition.CallPath;
 import com.google.greaze.definition.rest.Id;
 import com.google.greaze.definition.rest.ResourceIdFactory;
@@ -30,11 +37,6 @@ import com.google.greaze.server.fixtures.HttpServletRequestFake;
 import com.google.greaze.server.fixtures.HttpServletResponseFake;
 import com.google.gson.Gson;
 
-import java.io.OutputStream;
-import java.lang.reflect.Type;
-
-import javax.servlet.http.HttpServletRequest;
-
 /**
  * Connects a RequestReceiver to HttpURLConnection
  * 
@@ -44,20 +46,23 @@ public class NetworkSwitcherResource<R extends RestResource<R>> extends NetworkS
 
   private final RestResponseBuilder<R> responseBuilder;
   private final Type resourceType;
-  public NetworkSwitcherResource(RestResponseBuilder<R> responseBuilder, Type resourceType, Gson gson) {
+  private final Collection<CallPath> servicePaths;
+  public NetworkSwitcherResource(RestResponseBuilder<R> responseBuilder, Type resourceType,
+      Gson gson, CallPath resourceCallPath) {
     super(gson);
     this.responseBuilder = responseBuilder;
     this.resourceType = resourceType;
+    this.servicePaths = ImmutableList.of(resourceCallPath);
   }
 
-  @SuppressWarnings({"unchecked", "rawtypes"})
+  @SuppressWarnings("unchecked")
   @Override
   protected void switchNetwork(HttpURLConnectionFake conn) {
     HttpServletRequest req = new HttpServletRequestFake()
       .setRequestMethod(conn.getRequestMethod())
       .setServletPath(conn.getURL().getPath())
       .setInputStream(conn.getForwardForInput());
-    CallPath callPath = gsm.getCallPath(req);
+    CallPath callPath = gsm.getCallPath(req, servicePaths);
     RestCallSpec spec = ResourceDepotBaseClient.generateRestCallSpec(callPath, resourceType);
     ResourceIdFactory<Id<?>> idFactory = gsm.getIDFactory(spec);
     RestRequestBase<Id<R>, R> request = gsm.getRestRequest(gson, spec, callPath, req, idFactory);

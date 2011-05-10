@@ -15,6 +15,8 @@
  */
 package com.google.greaze.server.inject;
 
+import java.util.Collection;
+
 import javax.servlet.http.HttpServletRequest;
 
 import com.google.greaze.definition.CallPath;
@@ -27,6 +29,7 @@ import com.google.greaze.rest.server.RestRequestBaseReceiver;
 import com.google.greaze.server.GreazeDispatcherServlet;
 import com.google.gson.Gson;
 import com.google.inject.Provides;
+import com.google.inject.name.Named;
 import com.google.inject.servlet.RequestScoped;
 import com.google.inject.servlet.ServletModule;
 
@@ -50,10 +53,20 @@ public class GreazeServerModule extends ServletModule {
 
   @RequestScoped
   @Provides
-  public CallPath getCallPath(HttpServletRequest request) {
+  public CallPath getCallPath(HttpServletRequest request,
+      @Named("servicePaths") Collection<CallPath> servicePaths) {
     String servletPath = request.getServletPath();
     int index = pathToServlet.length();
-    return new CallPath(servletPath.substring(index));
+    String incomingPath = servletPath.substring(index);
+    for (CallPath servicePath : servicePaths) {
+      String pathToService = servicePath.get();
+      if (incomingPath.startsWith(pathToService)) {
+        // Build path with incomingPath and servicePath combo
+        String resourceId = incomingPath.substring(pathToService.length());
+        return new CallPath(servicePath.getVersion(), servicePath.get(), resourceId);
+      }
+    }
+    return null;
   }
 
   @RequestScoped
@@ -70,7 +83,7 @@ public class GreazeServerModule extends ServletModule {
   }
 
   @RequestScoped
-  @SuppressWarnings({"rawtypes", "unchecked"})
+  @SuppressWarnings("unchecked")
   @Provides
   public RestRequestBase getRestRequest(Gson gson, RestCallSpec callSpec, CallPath callPath,
       HttpServletRequest request, ResourceIdFactory<Id<?>> idFactory) {

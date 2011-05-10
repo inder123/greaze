@@ -20,6 +20,7 @@ import com.google.caliper.Runner;
 import com.google.caliper.SimpleBenchmark;
 import com.google.common.base.Preconditions;
 import com.google.greaze.definition.CallPath;
+import com.google.greaze.definition.CallPathParser;
 import com.google.greaze.definition.rest.Id;
 import com.google.greaze.end2end.definition.Employee;
 import com.google.greaze.end2end.fixtures.RestClientStubFake;
@@ -38,7 +39,8 @@ import com.google.gson.GsonBuilder;
  */
 public class End2EndBenchmark extends SimpleBenchmark {
 
-  private static final CallPath RESOURCE_PATH = new CallPath("/rest/employee");
+  private static final CallPath RESOURCE_PATH =
+    new CallPathParser("/rest", false, "/employee").parse("/rest/employee");
   private ResourceDepotClient<Employee> client;
   private Repository<Employee> employees;
 
@@ -54,13 +56,14 @@ public class End2EndBenchmark extends SimpleBenchmark {
       .create();
     this.employees = new RepositoryInMemory<Employee>(Employee.class);
     RestResponseBuilder<Employee> responseBuilder = new RestResponseBuilder<Employee>(employees);
-    RestClientStub stub = new RestClientStubFake<Employee>(responseBuilder, Employee.class, gson);
+    RestClientStub stub =
+      new RestClientStubFake<Employee>(responseBuilder, Employee.class, gson, RESOURCE_PATH);
     this.client = new ResourceDepotClient<Employee>(stub, RESOURCE_PATH, Employee.class, gson);
   }
 
   public void timeGet(int reps) throws Exception {
     for (int i=0; i<reps; ++i) {
-      Id<Employee> id = Id.get(1L, Employee.class);
+      Id<Employee> id = Id.get(String.valueOf(i), Employee.class);
       employees.put(new Employee(id, "bob"));
       Employee e = client.get(id);
       Preconditions.checkArgument("bob".equals(e.getName()));

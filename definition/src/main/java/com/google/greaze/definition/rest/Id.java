@@ -18,7 +18,9 @@ package com.google.greaze.definition.rest;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 import java.lang.reflect.WildcardType;
+import java.util.regex.Pattern;
 
+import com.google.greaze.definition.internal.utils.GreazePreconditions;
 import com.google.gson.JsonDeserializationContext;
 import com.google.gson.JsonDeserializer;
 import com.google.gson.JsonElement;
@@ -35,29 +37,35 @@ import com.google.gson.JsonSerializer;
  * @param <R> type variable for the rest resource
  */
 public final class Id<R> implements ResourceId {
-  private final long value;
+
+  private static Pattern ID_PATTERN = Pattern.compile("[a-zA-Z0-9_\\.\\-]+"); 
+
+  private final String value;
   private final Type typeOfId;
 
-  private Id(long value, Type typeOfId) {
+  private Id(String value, Type typeOfId) {
+    // Assert that Id does not have any of the banned characters
+    GreazePreconditions.checkNotNull(typeOfId);
+    GreazePreconditions.checkArgument(Id.isValidValue(value));
     this.value = value;
     this.typeOfId = typeOfId;
   }
 
   @Override
-  public long getValue() {
+  public String getValue() {
     return value;
   }
 
   public static <T> Id<T> getNullValue(Class<T> idClass) {
-    return Id.get(INVALID_ID, idClass);
+    return Id.get(null, idClass);
   }
 
   public static <T> Id<T> getNullValue(Type idType) {
-    return Id.get(INVALID_ID, idType);
+    return Id.get(null, idType);
   }
 
-  public static long getValue(Id<?> id) {
-    return id == null ? INVALID_ID : id.getValue();
+  public static String getValue(Id<?> id) {
+    return id == null ? null : id.getValue();
   }
 
   public String getValueAsString() {
@@ -70,11 +78,15 @@ public final class Id<R> implements ResourceId {
 
   @Override
   public int hashCode() {
-    return (int) value;
+    return value.hashCode();
+  }
+
+  private static boolean isValidValue(String value) {
+    return value == null || ID_PATTERN.matcher(value).matches();
   }
 
   public static boolean isValid(Id<?> id) {
-    return id != null && id.value != INVALID_ID;
+    return id != null && id.value != null;
   }
 
   /**
@@ -104,8 +116,7 @@ public final class Id<R> implements ResourceId {
     if (typeOfId == null) {
       if (other.typeOfId != null) return false;
     } else if (!equivalentTypes(typeOfId, other.typeOfId)) return false;
-    if (value != other.value) return false;
-    return true;
+    return value.equals(other.value);
   }
 
   /**
@@ -141,7 +152,7 @@ public final class Id<R> implements ResourceId {
     return true;
   }
 
-  public static <RS> Id<RS> get(long value, Type typeOfId) {
+  public static <RS> Id<RS> get(String value, Type typeOfId) {
     return new Id<RS>(value, typeOfId);
   }
 
@@ -204,7 +215,7 @@ public final class Id<R> implements ResourceId {
       // Since Id takes only one TypeVariable, the actual type corresponding to the first
       // TypeVariable is the Type we are looking for
       Type typeOfId = parameterizedType.getActualTypeArguments()[0];
-      return Id.get(json.getAsLong(), typeOfId);
+      return Id.get(json.getAsString(), typeOfId);
     }
   }
 }

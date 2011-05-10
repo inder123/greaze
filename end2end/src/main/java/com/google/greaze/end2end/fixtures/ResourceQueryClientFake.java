@@ -15,6 +15,10 @@
  */
 package com.google.greaze.end2end.fixtures;
 
+import java.net.HttpURLConnection;
+import java.net.URL;
+
+import com.google.greaze.definition.CallPath;
 import com.google.greaze.definition.fixtures.NetworkSwitcher;
 import com.google.greaze.definition.rest.RestResource;
 import com.google.greaze.definition.rest.query.ResourceQuery;
@@ -22,9 +26,6 @@ import com.google.greaze.definition.rest.query.ResourceQueryParams;
 import com.google.greaze.webservice.client.ServerConfig;
 import com.google.greaze.webservice.client.WebServiceClient;
 import com.google.gson.GsonBuilder;
-
-import java.net.HttpURLConnection;
-import java.net.URL;
 
 /**
  * A test fixture for {@link WebServiceClient}
@@ -36,9 +37,9 @@ public class ResourceQueryClientFake<R extends RestResource<R>, Q extends Resour
 
   private final NetworkSwitcher networkSwitcher;
   public ResourceQueryClientFake(ResourceQuery<R, Q> responseBuilder, GsonBuilder gsonBuilder,
-      String restPrefix) {
+      CallPath queryPath) {
     super(new ServerConfig("http://localhost"));
-    networkSwitcher = new NetworkSwitcherQuery<R, Q>(responseBuilder, gsonBuilder);
+    networkSwitcher = new NetworkSwitcherQuery<R, Q>(responseBuilder, gsonBuilder, queryPath);
   }
 
   @Override

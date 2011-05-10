@@ -18,6 +18,7 @@ package com.google.greaze.rest.client;
 import junit.framework.TestCase;
 
 import com.google.greaze.definition.CallPath;
+import com.google.greaze.definition.CallPathParser;
 import com.google.greaze.definition.rest.RestResourceImpl;
 import com.google.greaze.rest.client.fixtures.RestClientStubClientSideFake;
 import com.google.gson.Gson;
@@ -49,7 +50,8 @@ public class ResourceDepotClientTest extends TestCase {
   }
 
   private static class MyResource extends RestResourceImpl<MyResource> {
-    public static final CallPath CALL_PATH = new CallPath("/rest/myresource");
+    public static final CallPath CALL_PATH =
+      new CallPathParser("/rest", false, "/myresource").parse("/rest/myresource");
 
     int value;
 

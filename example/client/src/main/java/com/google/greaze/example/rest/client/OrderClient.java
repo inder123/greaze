@@ -77,14 +77,16 @@ public class OrderClient {
   public static void main(String[] args) {
     OrderClient client = new OrderClient();
     List<LineItem> lineItems = new ArrayList<LineItem>();
-    String itemName = "item1";
+    String itemName = "cheese";
     lineItems.add(new LineItem(itemName, 2, 1000000L, "USD"));
-    Cart cart = new Cart(lineItems, "first last", "4111-1111-1111-1111");
+    Cart cart = new Cart(lineItems, "Hungry Bird", "4111-1111-1111-1111");
     cart = client.createCart(cart);
     Order order = client.placeOrder(cart);
   
-    System.out.println("Placed order: " + order);
+    Gson gson = new Gson();
+    System.out.println("Placed order: " + gson.toJson(order));
     List<Order> queriedOrders = client.query(itemName);
-    System.out.println("Queried orders by item name ( " + itemName + "): " + queriedOrders);
+    System.out.printf("Queried orders by item name (%s): %s\n",
+        itemName, gson.toJson(queriedOrders));
   }
 }

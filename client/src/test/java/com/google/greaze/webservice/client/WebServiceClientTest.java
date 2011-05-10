@@ -15,7 +15,12 @@
  */
 package com.google.greaze.webservice.client;
 
+import java.net.URL;
+
+import junit.framework.TestCase;
+
 import com.google.greaze.definition.CallPath;
+import com.google.greaze.definition.CallPathParser;
 import com.google.greaze.definition.HeaderMap;
 import com.google.greaze.definition.HeaderMapSpec;
 import com.google.greaze.definition.HttpMethod;
@@ -26,10 +31,6 @@ import com.google.greaze.definition.webservice.RequestBodySpec;
 import com.google.greaze.definition.webservice.WebServiceCallSpec;
 import com.google.greaze.definition.webservice.WebServiceRequest;
 import com.google.gson.Gson;
-
-import junit.framework.TestCase;
-
-import java.net.URL;
 
 /**
  * Unit tests for {@link WebServiceClient}
@@ -53,7 +54,7 @@ public class WebServiceClientTest extends TestCase {
     ServerConfig serverConfig = new ServerConfig(SERVER_URL);
     this.client = new WebServiceClient(serverConfig);
 
-    CallPath callPath = new CallPath(CALL_PATH);
+    CallPath callPath = new CallPathParser(null, false, "/resource").parse(CALL_PATH);
     callSpec = new WebServiceCallSpec.Builder(callPath).build();
     HeaderMapSpec headerSpec = new HeaderMapSpec.Builder().build();
     requestHeaders = new HeaderMap.Builder(headerSpec).build();

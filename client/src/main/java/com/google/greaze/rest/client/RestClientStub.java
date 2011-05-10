@@ -57,7 +57,7 @@ public class RestClientStub extends WebServiceClient {
       url.append('/').append(version);
     }
     url.append(callSpec.getPath().get());
-    if (id != null && id.getValue() != ResourceId.INVALID_ID) {
+    if (id != null && id.getValue() != null) {
       url.append('/').append(id.getValue());
     }
     try {

@@ -57,7 +57,7 @@ public class UrlParamStringBuilderTest extends TestCase {
   public void testObjectUrlParam() {
     HeaderMapSpec spec = new HeaderMapSpec.Builder().put("foo", MyParams.class).build();
     HeaderMap urlParameters = new HeaderMap.Builder(spec)
-      .put("foo", new MyParams(10, "bar bar")).build();
+      .put("foo", new MyParams("10", "bar bar")).build();
     String url = upBuilder.add(urlParameters).build();
     assertEquals("?id=10&name=bar+bar", url);
   }
@@ -69,7 +69,7 @@ public class UrlParamStringBuilderTest extends TestCase {
       .build();
     HeaderMap urlParameters = new HeaderMap.Builder(spec)
       .put("queryName", "my param query")
-      .put("otherParams", new MyParams(12, "a_is;/"))
+      .put("otherParams", new MyParams("12", "a_is;/"))
       .build();
     String url = upBuilder.add(urlParameters).build();
     assertTrue(url.contains("queryName=my+param+query"));
@@ -86,7 +86,7 @@ public class UrlParamStringBuilderTest extends TestCase {
   private static class MyParams {
     final Id<MyParams> id;
     final String name;
-    MyParams(long idValue, String name) {
+    MyParams(String idValue, String name) {
       this.id = Id.get(idValue, MyParams.class);
       this.name = name;
     }

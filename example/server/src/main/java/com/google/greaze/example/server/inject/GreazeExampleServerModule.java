@@ -24,16 +24,19 @@ import com.google.greaze.definition.webservice.WebServiceCallSpec;
 import com.google.greaze.example.definition.model.Cart;
 import com.google.greaze.example.definition.model.Order;
 import com.google.greaze.example.server.ResourceQueryDispatcherExample;
+import com.google.greaze.example.server.WebServiceDispatcherExample;
 import com.google.greaze.example.service.definition.SampleJsonService;
 import com.google.greaze.rest.server.Repository;
 import com.google.greaze.rest.server.RepositoryInMemory;
 import com.google.greaze.rest.server.ResponseBuilderMap;
 import com.google.greaze.rest.server.RestResponseBaseBuilder;
 import com.google.greaze.rest.server.RestResponseBuilder;
+import com.google.greaze.server.WebServiceDispatcher;
 import com.google.greaze.server.dispatcher.ResourceQueryDispatcher;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.inject.AbstractModule;
+import com.google.inject.Injector;
 import com.google.inject.Provides;
 import com.google.inject.Singleton;
 import com.google.inject.name.Names;
@@ -107,6 +110,12 @@ public class GreazeExampleServerModule extends AbstractModule {
   @Provides
   public Gson getGson(GsonBuilder gsonBuilder) {
     return gsonBuilder.create();
+  }
+
+  @Singleton
+  @Provides
+  public WebServiceDispatcher getWebServiceDispatcher(Injector injector) {
+    return new WebServiceDispatcherExample(injector);
   }
 
   @RequestScoped

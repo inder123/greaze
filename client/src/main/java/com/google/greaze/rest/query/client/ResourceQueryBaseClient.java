@@ -69,12 +69,7 @@ public class ResourceQueryBaseClient<
       Type queryType, GsonBuilder gsonBuilder, Type resourceType) {
     this.stub = stub;
     this.callSpec = callSpec;
-    this.gson = gsonBuilder
-      .registerTypeAdapter(RequestBody.class,
-          new RequestBody.GsonTypeAdapter(callSpec.getRequestSpec().getBodySpec()))
-      .registerTypeAdapter(ResponseBody.class,
-          new ResponseBody.GsonTypeAdapter(callSpec.getResponseSpec().getBodySpec()))
-      .create();
+    this.gson = callSpec.addTypeAdapters(gsonBuilder).create();
     this.queryType = queryType;
     this.resourceType = resourceType;
   }
