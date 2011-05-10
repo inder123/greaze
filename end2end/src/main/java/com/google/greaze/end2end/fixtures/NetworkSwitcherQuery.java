@@ -16,7 +16,6 @@
 package com.google.greaze.end2end.fixtures;
 
 import java.io.OutputStream;
-import java.util.Collection;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -45,12 +44,10 @@ public class NetworkSwitcherQuery<R extends RestResource<R>, Q extends ResourceQ
   private final ResourceQuery<R, Q> query;
   private final GreazeServerModule gsm;
   private ResourceQueryDispatcher dispatcher;
-  private final Collection<CallPath> servicePaths;
 
   public NetworkSwitcherQuery(ResourceQuery<R, Q> query, GsonBuilder gsonBuilder,
       CallPath queryCallPath) {
-    this.gsm = new GreazeServerModule(SERVLET_BASE_PATH);
-    this.servicePaths = ImmutableList.of(queryCallPath);
+    this.gsm = new GreazeServerModule(SERVLET_BASE_PATH, ImmutableList.of(queryCallPath), "");
     this.query = query;
     this.dispatcher = new ResourceQueryDispatcher(gsonBuilder);
   }
@@ -59,7 +56,7 @@ public class NetworkSwitcherQuery<R extends RestResource<R>, Q extends ResourceQ
   @Override
   protected void switchNetwork(HttpURLConnectionFake conn) {
     HttpServletRequest req = buildRequest(conn);
-    CallPath callPath = gsm.getCallPath(req, servicePaths);
+    CallPath callPath = gsm.getCallPath(req);
     String queryName = RequestType.getQueryName(req.getParameterMap());
     OutputStream reverseForOutput = conn.getReverseForOutput();
     HttpServletResponseFake res = new HttpServletResponseFake(reverseForOutput);

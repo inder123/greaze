@@ -17,11 +17,9 @@ package com.google.greaze.end2end.fixtures;
 
 import java.io.OutputStream;
 import java.lang.reflect.Type;
-import java.util.Collection;
 
 import javax.servlet.http.HttpServletRequest;
 
-import com.google.common.collect.ImmutableList;
 import com.google.greaze.definition.CallPath;
 import com.google.greaze.definition.rest.Id;
 import com.google.greaze.definition.rest.ResourceIdFactory;
@@ -46,13 +44,11 @@ public class NetworkSwitcherResource<R extends RestResource<R>> extends NetworkS
 
   private final RestResponseBuilder<R> responseBuilder;
   private final Type resourceType;
-  private final Collection<CallPath> servicePaths;
   public NetworkSwitcherResource(RestResponseBuilder<R> responseBuilder, Type resourceType,
       Gson gson, CallPath resourceCallPath) {
-    super(gson);
+    super(gson, resourceCallPath);
     this.responseBuilder = responseBuilder;
     this.resourceType = resourceType;
-    this.servicePaths = ImmutableList.of(resourceCallPath);
   }
 
   @SuppressWarnings("unchecked")
@@ -62,7 +58,7 @@ public class NetworkSwitcherResource<R extends RestResource<R>> extends NetworkS
       .setRequestMethod(conn.getRequestMethod())
       .setServletPath(conn.getURL().getPath())
       .setInputStream(conn.getForwardForInput());
-    CallPath callPath = gsm.getCallPath(req, servicePaths);
+    CallPath callPath = gsm.getCallPath(req);
     RestCallSpec spec = ResourceDepotBaseClient.generateRestCallSpec(callPath, resourceType);
     ResourceIdFactory<Id<?>> idFactory = gsm.getIDFactory(spec);
     RestRequestBase<Id<R>, R> request = gsm.getRestRequest(gson, spec, callPath, req, idFactory);

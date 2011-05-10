@@ -36,6 +36,11 @@ public class SampleJsonService {
    * is deployed to a local App engine instance. 
    */
   public static final String SERVER_BASE_URL = "http://localhost:8888/greazeexampleservice";
+  
+  /**
+   * This value should match with the prefix used in {@link ServicePaths}
+   */
+  public static final String RESOURCE_PREFIX = "/rest";
 
   public static final double CURRENT_VERSION = 1.0;
 

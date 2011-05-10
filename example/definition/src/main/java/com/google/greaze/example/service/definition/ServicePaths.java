@@ -15,6 +15,10 @@
  */
 package com.google.greaze.example.service.definition;
 
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
+
 import com.google.greaze.definition.CallPath;
 import com.google.greaze.definition.CallPathParser;
 
@@ -24,18 +28,27 @@ import com.google.greaze.definition.CallPathParser;
  * @author Inderjeet Singh
  */
 public enum ServicePaths {
-  NULL_REQUEST(null),
-  CART(new CallPathParser("/rest", false, "/cart").parse("/rest/cart")),
-  ORDER(new CallPathParser("/rest", false, "/order").parse("/rest/order"));
+  CART("/cart"),
+  ORDER("/order");
   
   private final CallPath path;
 
-  private ServicePaths(CallPath callPath) {
-    this.path = callPath;
+  private ServicePaths(String callPath) {
+    CallPathParser callPathParser =
+      new CallPathParser(SampleJsonService.RESOURCE_PREFIX, false, callPath);
+    this.path = callPathParser.parse(SampleJsonService.RESOURCE_PREFIX + callPath);
   }
 
   public CallPath getCallPath() {
     return path;
+  }
+
+  public static Collection<CallPath> allServicePaths() {
+    Collection<CallPath> servicePaths = new ArrayList<CallPath>();
+    for (ServicePaths service : ServicePaths.values()) {
+      servicePaths.add(service.getCallPath());
+    }
+    return Collections.unmodifiableCollection(servicePaths);
   }
 
   public static CallPath getCallPath(CallPath invokedPath) {
