@@ -50,9 +50,9 @@ public class GreazeServerModule extends ServletModule {
   /**
    * @param pathToServlet The path to the servlet. For example, /myshop for /myshop/resources/order
    * @param servicePaths a list of paths corresponding to the supported services. For example,
-   *   /resource/order for /myshop/resource/order
+   *   order callPath for /myshop/resource/1.0/order
    * @param resourcePrefix The resource prefix after the pathToServlet. For example, /resource for
-   *   /myshop/resource/order
+   *   /myshop/resource/1.0/order
    */
   public GreazeServerModule(String pathToServlet,
       Collection<CallPath> servicePaths, String resourcePrefix) {
