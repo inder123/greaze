@@ -16,6 +16,9 @@
   </parent>
   <properties>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+    <greaze-definition.build.directory>target</greaze-definition.build.directory>
+    <greaze-server.build.directory>target</greaze-server.build.directory>
+    <greaze-example-definition.build.directory>target</greaze-example-definition.build.directory>
   </properties>
   <licenses>
     <license>
@@ -278,13 +281,13 @@
             <configuration>
               <target>
                 <copy todir="war/WEB-INF/classes" overwrite="true">
-                  <fileset dir="${basedir}/../definition/target/classes">
+                  <fileset dir="${basedir}/../definition/${greaze-example-definition.build.directory}/classes">
                     <include name="com/**" />
                   </fileset>
-                  <fileset dir="${basedir}/../../definition/target/classes">
+                  <fileset dir="${basedir}/../../definition/${greaze-definition.build.directory}/classes">
                     <include name="com/**" />
                   </fileset>
-                  <fileset dir="${basedir}/../../server/target/classes">
+                  <fileset dir="${basedir}/../../server/${greaze-server.build.directory}/classes">
                     <include name="com/**" />
                   </fileset>
                 </copy>
