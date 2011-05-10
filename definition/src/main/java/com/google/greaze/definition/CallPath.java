@@ -15,6 +15,8 @@
  */
 package com.google.greaze.definition;
 
+import com.google.greaze.definition.internal.utils.GreazeStrings;
+
 /**
  * Encapsulation of a Web service path that is sent by the client.
  * 
@@ -76,7 +78,12 @@ public final class CallPath {
   }
 
   public boolean matches(CallPath callPath) {
-    return servicePath.startsWith(callPath.getServicePath());
+    return GreazeStrings.equals(basePath, callPath.getBasePath()) &&
+      GreazeStrings.firstStartsWithSecond(servicePath, callPath.getServicePath());
+  }
+
+  public CallPathParser toParser() {
+    return new CallPathParser(basePath, hasVersion(), servicePath);
   }
 
   @Override

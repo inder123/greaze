@@ -34,13 +34,16 @@ public final class CallPathParser {
     this.serviceName = serviceName;
   }
 
+  /**
+   * Parses the incoming path. Returns CallPath.NULL_PATH if the parsing fails.
+   */
   public CallPath parse(String callPath) {
     if (GreazeStrings.isEmpty(callPath)) {
       return CallPath.NULL_PATH;
     }
     if (!GreazeStrings.isEmpty(basePath)) {
       if (!callPath.startsWith(basePath)) {
-        throw new RuntimeException(String.format("Missing basePath: %s in %s", basePath, callPath));
+        return CallPath.NULL_PATH;
       }
       callPath = callPath.substring(basePath.length());
     }
@@ -53,8 +56,7 @@ public final class CallPathParser {
     }
     if (!GreazeStrings.isEmpty(serviceName)) {
       if (!callPath.startsWith(serviceName)) {
-        throw new RuntimeException(
-            String.format("Missing serviceName: %s in %s", serviceName, callPath));
+        return CallPath.NULL_PATH;
       }
       callPath = callPath.substring(serviceName.length());
     }
