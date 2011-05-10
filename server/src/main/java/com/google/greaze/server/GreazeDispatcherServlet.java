@@ -36,12 +36,12 @@ import com.google.inject.name.Named;
 @SuppressWarnings("serial")
 public class GreazeDispatcherServlet extends HttpServlet {
   private final Injector injector;
-  private final String restPrefix;
+  private final String resourcePrefix;
 
   @Inject
-  public GreazeDispatcherServlet(Injector injector, @Named("rest-prefix") String restPrefix) {
+  public GreazeDispatcherServlet(Injector injector, @Named("resource-prefix") String resourcePrefix) {
     this.injector = injector;
-    this.restPrefix = restPrefix;
+    this.resourcePrefix = resourcePrefix;
   }
 
   @SuppressWarnings("unchecked")
@@ -49,7 +49,7 @@ public class GreazeDispatcherServlet extends HttpServlet {
   public void service(HttpServletRequest req, HttpServletResponse res) {
     CallPath callPath = injector.getInstance(CallPath.class);
     String queryName = RequestType.getQueryName(req.getParameterMap());
-    RequestType requestType = RequestType.getRequestType(callPath, queryName, restPrefix);
+    RequestType requestType = RequestType.getRequestType(callPath, queryName, resourcePrefix);
     switch (requestType) {
       case RESOURCE_ACCESS:
         injector.getInstance(ResourceDepotDispatcher.class).service(res);

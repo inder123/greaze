@@ -19,6 +19,8 @@ import java.util.Collection;
 
 import javax.servlet.http.HttpServletRequest;
 
+import com.google.common.base.Preconditions;
+import com.google.common.base.Strings;
 import com.google.greaze.definition.CallPath;
 import com.google.greaze.definition.CallPathParser;
 import com.google.greaze.definition.rest.Id;
@@ -30,6 +32,7 @@ import com.google.greaze.rest.server.RestRequestBaseReceiver;
 import com.google.greaze.server.GreazeDispatcherServlet;
 import com.google.gson.Gson;
 import com.google.inject.Provides;
+import com.google.inject.Singleton;
 import com.google.inject.name.Named;
 import com.google.inject.servlet.RequestScoped;
 import com.google.inject.servlet.ServletModule;
@@ -42,9 +45,24 @@ import com.google.inject.servlet.ServletModule;
 public class GreazeServerModule extends ServletModule {
 
   private final String pathToServlet;
+  private final Collection<CallPath> servicePaths;
+  private final String resourcePrefix;
 
-  public GreazeServerModule(String pathToServlet) {
+  /**
+   * @param pathToServlet The path to the servlet. For example, /myshop for /myshop/resources/order
+   * @param servicePaths a list of paths corresponding to the supported services. For example,
+   *   /resource/order for /myshop/resource/order
+   * @param resourcePrefix The resource prefix after the pathToServlet. For example, /resource for
+   *   /myshop/resource/order
+   */
+  public GreazeServerModule(String pathToServlet,
+      Collection<CallPath> servicePaths, String resourcePrefix) {
+    Preconditions.checkArgument(!Strings.isNullOrEmpty(pathToServlet));
+    Preconditions.checkArgument(!Strings.isNullOrEmpty(resourcePrefix));
+    Preconditions.checkArgument(servicePaths != null && !servicePaths.isEmpty());
     this.pathToServlet = pathToServlet;
+    this.servicePaths = servicePaths;
+    this.resourcePrefix = resourcePrefix;
   }
 
   @Override
@@ -52,12 +70,18 @@ public class GreazeServerModule extends ServletModule {
     serve(pathToServlet + "/*").with(GreazeDispatcherServlet.class);
   }
 
+  @Named("resource-prefix")
+  @Provides
+  @Singleton
+  public String getResourcePrefix() {
+    return resourcePrefix;
+  }
+
   @RequestScoped
   @Provides
-  public CallPath getCallPath(HttpServletRequest request,
-      @Named("servicePaths") Collection<CallPath> servicePaths) {
+  public CallPath getCallPath(HttpServletRequest request) {
     String servletPath = request.getServletPath();
-    int index = pathToServlet.length();
+    int index = pathToServlet.length() + resourcePrefix.length();
     String incomingPath = servletPath.substring(index);
     for (CallPath servicePath : servicePaths) {
       String pathToService = servicePath.get();

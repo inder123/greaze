@@ -15,6 +15,8 @@
  */
 package com.google.greaze.end2end.fixtures;
 
+import com.google.common.collect.ImmutableList;
+import com.google.greaze.definition.CallPath;
 import com.google.greaze.definition.fixtures.NetworkSwitcherPiped;
 import com.google.greaze.server.inject.GreazeServerModule;
 import com.google.gson.Gson;
@@ -29,8 +31,8 @@ public class NetworkSwitcherWebService extends NetworkSwitcherPiped {
   protected final GreazeServerModule gsm;
   protected final Gson gson;
 
-  public NetworkSwitcherWebService(Gson gson) {
+  public NetworkSwitcherWebService(Gson gson, CallPath callPath) {
     this.gson = gson;
-    this.gsm = new GreazeServerModule("/fake");
+    this.gsm = new GreazeServerModule("/fake", ImmutableList.of(callPath), "");
   }
 }

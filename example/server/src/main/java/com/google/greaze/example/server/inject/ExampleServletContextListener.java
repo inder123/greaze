@@ -15,6 +15,8 @@
  */
 package com.google.greaze.example.server.inject;
 
+import com.google.greaze.example.service.definition.SampleJsonService;
+import com.google.greaze.example.service.definition.ServicePaths;
 import com.google.greaze.server.inject.GreazeServerModule;
 import com.google.inject.Guice;
 import com.google.inject.Injector;
@@ -32,6 +34,7 @@ public class ExampleServletContextListener extends GuiceServletContextListener {
   protected Injector getInjector() {
     return Guice.createInjector(
         new GreazeExampleServerModule(),
-        new GreazeServerModule("/greazeexampleservice"));
+        new GreazeServerModule("/greazeexampleservice", ServicePaths.allServicePaths(),
+            SampleJsonService.RESOURCE_PREFIX));
   }
 }
