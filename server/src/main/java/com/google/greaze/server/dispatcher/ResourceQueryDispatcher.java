@@ -51,7 +51,7 @@ public class ResourceQueryDispatcher {
     this.gsonBuilder = gsonBuilder;
   }
 
-  @SuppressWarnings({"rawtypes", "unchecked"})
+  @SuppressWarnings("unchecked")
   public void service(HttpServletRequest req, HttpServletResponse res,
       String queryName, CallPath callPath, ResourceQueryBase resourceQuery) {
     Preconditions.checkNotNull(resourceQuery);
