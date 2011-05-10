@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2008 Google Inc.
+ * Copyright (C) 2011 Google Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,26 +13,21 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.google.greaze.webservice.client;
+package com.google.greaze.definition.internal.utils;
+
+import junit.framework.TestCase;
 
 /**
- * Configuration needed to access a Gson web service.
- * 
- * @author inder
+ * Unit tests for {@link GreazeStrings}
+ *
+ * @author Inderjeet Singh
  */
-public class ServerConfig {
-  private final String serviceBaseUrl;
+public class GreazeStringsTest extends TestCase {
 
-  public ServerConfig(String serviceBaseUrl) {
-    this.serviceBaseUrl = serviceBaseUrl;
-  }
-
-  public String getServiceBaseUrl() {
-    return serviceBaseUrl;
-  }
-  
-  @Override
-  public String toString() {
-    return serviceBaseUrl;
+  public void testIndexOf() {
+    assertEquals(0, GreazeStrings.indexOf(0, "fooBar", 'f', 'b'));
+    assertEquals(3, GreazeStrings.indexOf(0, "fooBar", 'F', 'B'));
+    assertEquals(-1, GreazeStrings.indexOf(0, "fooBar", 'F', 'b'));
+    assertEquals(1, GreazeStrings.indexOf(0, "fooBar", 'o', 'o', 'B'));
   }
 }

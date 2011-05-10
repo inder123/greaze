@@ -15,9 +15,6 @@
  */
 package com.google.greaze.definition;
 
-import com.google.greaze.definition.internal.utils.GreazePair;
-import com.google.greaze.definition.rest.ResourceId;
-
 /**
  * Encapsulation of a Web service path that is sent by the client.
  * 
@@ -27,73 +24,16 @@ public final class CallPath {
 
   /** Visible for testing only */
   static final double IGNORE_VERSION = -1D;
+  public static final CallPath NULL_PATH = new CallPath(IGNORE_VERSION, null, null);
+
   private final String path;
   private final double version;
-  private final long resourceId;
+  private final String resourceId;
 
-  public CallPath(String path) {
-    if (path == null || path.trim().equals("")) {
-      this.path = path;
-      version = IGNORE_VERSION;
-      resourceId = ResourceId.INVALID_ID;
-    } else {
-      GreazePair<Double, String> path2 = extractVersion(path);
-      this.version = path2.first;
-      GreazePair<Long, String> path3 = extractId(path2.second);
-      this.resourceId = path3.first;
-      this.path = path3.second;
-    }
-  }
-
-  public CallPath(double version, String pathWithoutVersionAndResourceId, long resourceId) {
+  public CallPath(double version, String pathWithoutVersionAndResourceId, String resourceId) {
     this.version = version;
     this.path = pathWithoutVersionAndResourceId;
     this.resourceId = resourceId;
-  }
-
-  /**
-   * Returns path after consuming version number from the begining
-   */
-  private static GreazePair<Double, String> extractVersion(String path) {
-    String versionStr = null;
-    int index2;
-    int index1 = path.indexOf('/');
-    if (index1 == -1) {
-      index2 = -1;
-    } else {
-      index2 = index1 + path.substring(index1+1).indexOf('/');
-      if (index2 != -1) {
-        versionStr = path.substring(index1+1, index2+1);
-      }
-    }
-    double extractedVersion = -1.0D;
-    String revisedPath = path;
-    if (versionStr != null) {
-      try {
-        // Skip over the version number from the URL
-        extractedVersion = Double.parseDouble(versionStr);
-        revisedPath = path.substring(index2+1);
-      } catch (NumberFormatException e) {
-        // Assume that version number wasn't specified
-      }
-    }
-    return GreazePair.create(extractedVersion, revisedPath);
-  }
-
-  private static GreazePair<Long, String> extractId(String path) {
-    GreazePair<Long, String> originalPath = GreazePair.create(ResourceId.INVALID_ID, path);
-    int end = path.endsWith("/") ? path.length() - 1 : path.length();
-    int begin = path.substring(0, end-1).lastIndexOf('/') + 1;
-    if (begin < 0 || end < 0 || begin >= end) {
-      return originalPath;
-    }
-    try {
-      String id = path.substring(begin, end);
-      String pathWithoutId = path.substring(0, begin-1);
-      return GreazePair.create(Long.parseLong(id), pathWithoutId);
-    } catch (NumberFormatException e) {
-      return originalPath;
-    }
   }
 
   public String get() {
@@ -104,7 +44,7 @@ public final class CallPath {
     return version;
   }
 
-  public long getResourceId() {
+  public String getResourceId() {
     return resourceId;
   }
 

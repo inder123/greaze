@@ -15,7 +15,7 @@
  */
 package com.google.greaze.example.service.definition;
 
-import com.google.greaze.definition.CallPath;
+import com.google.greaze.definition.CallPathParser;
 import com.google.greaze.definition.HttpMethod;
 import com.google.greaze.definition.rest.RestCallSpec;
 import com.google.greaze.definition.rest.RestCallSpecMap;
@@ -40,7 +40,7 @@ public class SampleJsonService {
   public static final double CURRENT_VERSION = 1.0;
 
   public static final WebServiceCallSpec PLACE_ORDER = new WebServiceCallSpec.Builder(
-    new CallPath("/placeOrder"))
+    new CallPathParser("", false, "/placeOrder").parse("/placeOrder"))
       .setMapBody()
       .setVersion(CURRENT_VERSION)
       .supportsHttpMethod(HttpMethod.POST)

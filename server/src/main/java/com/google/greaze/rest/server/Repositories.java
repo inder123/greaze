@@ -22,26 +22,26 @@ import com.google.greaze.definition.rest.HasId;
 import com.google.greaze.definition.rest.Id;
 
 /**
- * Helper methods on {@link Repository} classes
+ * A class with utility methods related to {@link Repository}
  *
  * @author Inderjeet Singh
  */
 public final class Repositories {
 
   /**
-   * loads the resources corresponding to the specified ids
+   * Loads the resources corresponding to the specified ids from the specified repository.
    *
-   * @param <R> The type of resource
-   * @param ids the ids for which resources need to be loaded
-   * @param repo the repository from where to load resources
-   * @return an ordered list of resources corresponding to the ids. If a resource is not found
-   *   for an id, null is placed in the list.
+   * @param <R> the type of {@link Repository}
+   * @param ids A list of ids for the resource
+   * @param repo A repository for the resources
+   * @return A list of resources corresponding to the specified ids. The resources are
+   *   returned in the order of the ids. If an id doesn't have a corresponding resource,
+   *   null is returned instead. 
    */
   public static <R extends HasId<Id<R>>> List<R> load(List<Id<R>> ids, Repository<R> repo) {
     List<R> resources = Lists.newArrayList();
-    for (Id<R> id : ids) {
-      R player = repo.get(id);
-      resources.add(player);
+    for (Id<R> resourceId : ids) {
+      resources.add(repo.get(resourceId));
     }
     return resources;
   }

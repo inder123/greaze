@@ -38,10 +38,10 @@ public class RepositoryInMemoryBase<I extends ResourceId, R extends RestResource
 
   /**
    * @param rawClassOfI class for the Id type. For example, ValueBasedId.class
-   * @param classOfResource class of the resource. For example, Order.class
+   * @param typeOfResource class of the resource. For example, Order.class
    */
-  public RepositoryInMemoryBase(Class<? super I> rawClassOfI, Type classOfResource) {
-    this.resources = IdMapBase.create(rawClassOfI, classOfResource);
+  public RepositoryInMemoryBase(Class<? super I> rawClassOfI, Type typeOfResource) {
+    this.resources = IdMapBase.create(rawClassOfI, typeOfResource);
     this.metaDataMap = new MetaDataMapBase<I, R>();
   }
 

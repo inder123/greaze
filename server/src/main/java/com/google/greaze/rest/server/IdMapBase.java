@@ -69,7 +69,7 @@ public class IdMapBase<I extends ResourceId, T extends HasId<I>> {
   }
 
   public synchronized I getNextId() {
-    long id = nextAvailableId++;
+    String id = String.valueOf(nextAvailableId++);
     return idFactory.createId(id);
   }
 
@@ -77,7 +77,8 @@ public class IdMapBase<I extends ResourceId, T extends HasId<I>> {
     return map.size();
   }
 
-  public static <II extends ResourceId, S extends HasId<II>> IdMapBase<II, S> create(Class<? super II> classOfII, Type typeOfId) {
+  public static <II extends ResourceId, S extends HasId<II>> IdMapBase<II, S> create(
+      Class<? super II> classOfII, Type typeOfId) {
     return new IdMapBase<II, S>(classOfII, typeOfId);
   }
 }

@@ -43,13 +43,6 @@
       <scope>compile</scope>
     </dependency>
 
-    <!--  Gson: Java to Json conversion -->
-    <dependency>
-      <groupId>com.google.code.gson</groupId>
-      <artifactId>gson</artifactId>
-      <version>1.7.1</version>
-      <scope>compile</scope>
-    </dependency>
     <dependency>
       <groupId>com.google.code.greaze</groupId>
       <artifactId>greaze-definition</artifactId>

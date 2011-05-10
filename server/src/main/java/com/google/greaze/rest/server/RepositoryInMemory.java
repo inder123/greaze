@@ -31,9 +31,9 @@ public class RepositoryInMemory<R extends RestResource<R>> extends RepositoryInM
     implements Repository<R> {
 
   /**
-   * @param classOfResource class of the resource. For example, Order.class
+   * @param typeOfResource class of the resource. For example, Order.class
    */
-  public RepositoryInMemory(Type classOfResource) {
-    super(Id.class, classOfResource);
+  public RepositoryInMemory(Type typeOfResource) {
+    super(Id.class, typeOfResource);
   }
 }
