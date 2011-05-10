@@ -84,7 +84,7 @@ public class GreazeServerModule extends ServletModule {
     int index = pathToServlet.length() + resourcePrefix.length();
     String incomingPath = servletPath.substring(index);
     for (CallPath servicePath : servicePaths) {
-      String pathToService = servicePath.get();
+      String pathToService = servicePath.getServicePath();
       if (incomingPath.startsWith(pathToService)) {
         // Build path with incomingPath and servicePath combo
         CallPathParser pathParser = new CallPathParser(null, servicePath.hasVersion(), pathToService);

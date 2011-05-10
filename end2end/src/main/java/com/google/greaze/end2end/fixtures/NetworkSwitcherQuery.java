@@ -47,7 +47,8 @@ public class NetworkSwitcherQuery<R extends RestResource<R>, Q extends ResourceQ
 
   public NetworkSwitcherQuery(ResourceQuery<R, Q> query, GsonBuilder gsonBuilder,
       CallPath queryCallPath) {
-    this.gsm = new GreazeServerModule(SERVLET_BASE_PATH, ImmutableList.of(queryCallPath), "");
+    this.gsm = new GreazeServerModule(
+        SERVLET_BASE_PATH, ImmutableList.of(queryCallPath), queryCallPath.getBasePath());
     this.query = query;
     this.dispatcher = new ResourceQueryDispatcher(gsonBuilder);
   }

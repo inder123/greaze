@@ -51,7 +51,7 @@ public class WebServiceClient {
   
   /** Visible for testing only */
   URL getWebServiceUrl(WebServiceCallSpec callSpec, WebServiceRequest request, Gson gson) {
-    String baseUrl = new String(config.getServiceBaseUrl() + callSpec.getPath().get());
+    String baseUrl = new String(config.getServiceBaseUrl() + callSpec.getPath().getServicePath());
     try {
       String urlParamString = new UrlParamStringBuilder(gson)
         .add(request.getUrlParameters())

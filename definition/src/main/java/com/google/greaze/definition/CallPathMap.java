@@ -68,7 +68,7 @@ public final class CallPathMap<T> {
         sb.append(",");
       }
       CallPath path = entry.getKey();
-      sb.append(path.get()).append(":");
+      sb.append(path.getServicePath()).append(":");
       sb.append(entry.getValue().toString());
     }
     sb.append("}");

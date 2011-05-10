@@ -24,20 +24,38 @@ public final class CallPath {
 
   /** Visible for testing only */
   static final double IGNORE_VERSION = -1D;
-  public static final CallPath NULL_PATH = new CallPath(IGNORE_VERSION, null, null);
+  public static final CallPath NULL_PATH = new CallPath(null, IGNORE_VERSION, null, null);
 
-  private final String path;
+  private final String basePath;
   private final double version;
+  private final String servicePath;
   private final String resourceId;
 
-  public CallPath(double version, String pathWithoutVersionAndResourceId, String resourceId) {
+  /**
+   * For /resource/1.0/order/123, basePath is /resource, version is 1.0, servicePath is /order
+   * and resourceId is &quot;123&quot;
+   * @param basePath the starting prefix in the path.
+   *   For example, for /resource/1.0/order/123, basePath is /resource
+   * @param version the embedded version number in the call path.
+   *   For example, for /resource/1.0/order/123, version is 1.0
+   * @param servicePath The path to service without base path, version and resource id.
+   *   For example, for /resource/1.0/order/123, servicePath is /order
+   * @param resourceId the resource id, if present.
+   *   For example, for /resource/1.0/order/123, resourceId is &quot;123&quot;
+   */
+  public CallPath(String basePath, double version, String servicePath, String resourceId) {
+    this.basePath = basePath;
     this.version = version;
-    this.path = pathWithoutVersionAndResourceId;
+    this.servicePath = servicePath;
     this.resourceId = resourceId;
   }
 
-  public String get() {
-    return path;
+  public String getBasePath() {
+    return basePath;
+  }
+
+  public String getServicePath() {
+    return servicePath;
   }
 
   public boolean hasVersion() {
@@ -54,11 +72,11 @@ public final class CallPath {
 
   @Override
   public int hashCode() {
-    return path.hashCode();
+    return servicePath.hashCode();
   }
 
   public boolean matches(CallPath callPath) {
-    return path.startsWith(callPath.get());
+    return servicePath.startsWith(callPath.getServicePath());
   }
 
   @Override
@@ -73,7 +91,7 @@ public final class CallPath {
     return getClass() == obj.getClass()
       && version == other.version
       && resourceId == other.resourceId
-      && equal(path, other.path);
+      && equal(servicePath, other.servicePath);
   }
 
   private static boolean equal(String s1, String s2) {
@@ -82,6 +100,7 @@ public final class CallPath {
 
   @Override
   public String toString() {
-    return String.format("path:%s, version:%2.f, resourceId: %d", path, version, resourceId);
+    return String.format("basePath: %s, version:%2.f, servicePath:%s, resourceId: %d",
+        basePath, version, servicePath, resourceId);
   }
 }
