@@ -44,20 +44,20 @@ public class OrderClient {
   private final ResourceDepotClient<Order> orderRestClient;
   private final ResourceQueryClient<Order, QueryOrdersByItemName> queryClient;
   public OrderClient() {
-    ServerConfig serverConfig = new ServerConfig(SampleJsonService.SERVER_BASE_URL);
+    ServerConfig serverConfig = new ExampleServerConfig();
     GsonBuilder gsonBuilder = new GsonBuilder()
       .setVersion(SampleJsonService.CURRENT_VERSION)
       .registerTypeAdapter(Id.class, new Id.GsonTypeAdapter())
       .registerTypeAdapter(MetaData.class, new MetaDataBase.GsonTypeAdapter());
 
     Gson gson = gsonBuilder.create();
+    RestClientStub restClientStub = new RestClientStub(serverConfig);
     cartRestClient = new ResourceDepotClient<Cart>(
-        new RestClientStub(serverConfig), ServicePaths.CART.getCallPath(), Cart.class, gson);
+        restClientStub, ServicePaths.CART.getCallPath(), Cart.class, gson);
     orderRestClient = new ResourceDepotClient<Order>(
-        new RestClientStub(serverConfig), ServicePaths.ORDER.getCallPath(), Order.class, gson);
-    ServerConfig wsServerConfig = new ServerConfig(SampleJsonService.SERVER_BASE_URL);
+        restClientStub, ServicePaths.ORDER.getCallPath(), Order.class, gson);
     queryClient = new ResourceQueryClient<Order, QueryOrdersByItemName>(
-        new WebServiceClient(wsServerConfig), ServicePaths.ORDER.getCallPath(),
+        new WebServiceClient(serverConfig), ServicePaths.ORDER.getCallPath(),
         QueryOrdersByItemName.class, gsonBuilder, Order.class); 
   }
 

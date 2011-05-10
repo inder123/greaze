@@ -30,12 +30,6 @@ import com.google.greaze.example.webservice.definition.TypedKeys;
  * @author inder
  */
 public class SampleJsonService {
-
-  /**
-   * Server where the JSON service is deployed. localhost:8888 is the address when the service
-   * is deployed to a local App engine instance. 
-   */
-  public static final String SERVER_BASE_URL = "http://localhost:8888/greazeexampleservice";
   
   /**
    * This value should match with the prefix used in {@link ServicePaths}

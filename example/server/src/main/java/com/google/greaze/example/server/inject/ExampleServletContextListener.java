@@ -15,6 +15,10 @@
  */
 package com.google.greaze.example.server.inject;
 
+import java.util.Collection;
+
+import com.google.common.collect.Lists;
+import com.google.greaze.definition.CallPath;
 import com.google.greaze.example.service.definition.SampleJsonService;
 import com.google.greaze.example.service.definition.ServicePaths;
 import com.google.greaze.server.inject.GreazeServerModule;
@@ -28,13 +32,16 @@ import com.google.inject.servlet.GuiceServletContextListener;
  *
  * @author Inderjeet Singh
  */
-public class ExampleServletContextListener extends GuiceServletContextListener {
+public final class ExampleServletContextListener extends GuiceServletContextListener {
 
   @Override
   protected Injector getInjector() {
+    Collection<CallPath> allServicePaths = Lists.newArrayList();
+    allServicePaths.addAll(ServicePaths.allServicePaths());
+    allServicePaths.add(SampleJsonService.PLACE_ORDER.getPath());
     return Guice.createInjector(
         new GreazeExampleServerModule(),
-        new GreazeServerModule("/greazeexampleservice", ServicePaths.allServicePaths(),
+        new GreazeServerModule("/greazeexampleservice", allServicePaths,
             SampleJsonService.RESOURCE_PREFIX));
   }
 }

@@ -38,9 +38,15 @@ import com.google.gson.GsonBuilder;
 
 public class ExampleClient {
 
+  /**
+   * Server where the JSON service is deployed. localhost:8888 is the address when the service
+   * is deployed to a local App engine instance. 
+   */
+  private static final String SERVER_BASE_URL = "http://localhost:8888/greazeexampleservice";
+
   private final WebServiceClient wsClient;
   public ExampleClient() {
-    ServerConfig serverConfig = new ServerConfig(SampleJsonService.SERVER_BASE_URL);
+    ServerConfig serverConfig = new ServerConfig(SERVER_BASE_URL);
 	wsClient = new WebServiceClient(serverConfig, Level.INFO); 
   }
 
