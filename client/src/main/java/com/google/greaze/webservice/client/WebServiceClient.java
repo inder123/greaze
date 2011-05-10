@@ -15,22 +15,19 @@
  */
 package com.google.greaze.webservice.client;
 
-import com.google.greaze.client.internal.utils.UrlParamStringBuilder;
-import com.google.greaze.definition.WebServiceSystemException;
-import com.google.greaze.definition.webservice.RequestBody;
-import com.google.greaze.definition.webservice.ResponseBody;
-import com.google.greaze.definition.webservice.WebServiceCallSpec;
-import com.google.greaze.definition.webservice.WebServiceRequest;
-import com.google.greaze.definition.webservice.WebServiceResponse;
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
-
 import java.io.IOException;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+
+import com.google.greaze.client.internal.utils.UrlParamStringBuilder;
+import com.google.greaze.definition.WebServiceSystemException;
+import com.google.greaze.definition.webservice.WebServiceCallSpec;
+import com.google.greaze.definition.webservice.WebServiceRequest;
+import com.google.greaze.definition.webservice.WebServiceResponse;
+import com.google.gson.Gson;
 
 /**
  * Main class used by clients to access a Gson Web service.
