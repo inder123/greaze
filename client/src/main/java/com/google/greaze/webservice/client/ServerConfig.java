@@ -20,7 +20,7 @@ package com.google.greaze.webservice.client;
  * 
  * @author inder
  */
-public final class ServerConfig {
+public class ServerConfig {
   private final String serviceBaseUrl;
 
   public ServerConfig(String serviceBaseUrl) {
