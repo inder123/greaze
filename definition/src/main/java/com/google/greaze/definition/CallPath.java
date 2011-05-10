@@ -40,6 +40,10 @@ public final class CallPath {
     return path;
   }
 
+  public boolean hasVersion() {
+    return version != IGNORE_VERSION;
+  }
+
   public double getVersion() {
     return version;
   }
