@@ -42,6 +42,7 @@ public class NetworkSwitcherQuery<R extends RestResource<R>, Q extends ResourceQ
 
   private static final String SERVLET_BASE_PATH = "/fake";
   private final ResourceQuery<R, Q> query;
+  private final CallPath queryCallPath;
   private final GreazeServerModule gsm;
   private ResourceQueryDispatcher dispatcher;
 
@@ -50,6 +51,7 @@ public class NetworkSwitcherQuery<R extends RestResource<R>, Q extends ResourceQ
     this.gsm = new GreazeServerModule(
         SERVLET_BASE_PATH, ImmutableList.of(queryCallPath), queryCallPath.getBasePath());
     this.query = query;
+    this.queryCallPath = queryCallPath;
     this.dispatcher = new ResourceQueryDispatcher(gsonBuilder);
   }
 
@@ -68,7 +70,7 @@ public class NetworkSwitcherQuery<R extends RestResource<R>, Q extends ResourceQ
   protected HttpServletRequest buildRequest(HttpURLConnectionFake conn) {
     HttpServletRequest req = new HttpServletRequestFake()
       .setRequestMethod(conn.getRequestMethod())
-      .setServletPath(SERVLET_BASE_PATH + gsm.getResourcePrefix() + conn.getURL().getPath())
+      .setServletPath(SERVLET_BASE_PATH + queryCallPath.getPathPrefix() + conn.getURL().getPath())
       .setUrlParams(conn.getURL().getQuery())
       .setInputStream(conn.getForwardForInput());
     return req;
