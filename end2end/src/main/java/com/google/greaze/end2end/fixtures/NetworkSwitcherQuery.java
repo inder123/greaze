@@ -68,7 +68,7 @@ public class NetworkSwitcherQuery<R extends RestResource<R>, Q extends ResourceQ
   protected HttpServletRequest buildRequest(HttpURLConnectionFake conn) {
     HttpServletRequest req = new HttpServletRequestFake()
       .setRequestMethod(conn.getRequestMethod())
-      .setServletPath(SERVLET_BASE_PATH + conn.getURL().getPath())
+      .setServletPath(SERVLET_BASE_PATH + gsm.getResourcePrefix() + conn.getURL().getPath())
       .setUrlParams(conn.getURL().getQuery())
       .setInputStream(conn.getForwardForInput());
     return req;
