@@ -20,6 +20,7 @@ import java.util.Collection;
 import javax.servlet.http.HttpServletRequest;
 
 import com.google.greaze.definition.CallPath;
+import com.google.greaze.definition.CallPathParser;
 import com.google.greaze.definition.rest.Id;
 import com.google.greaze.definition.rest.ResourceIdFactory;
 import com.google.greaze.definition.rest.RestCallSpec;
@@ -62,8 +63,8 @@ public class GreazeServerModule extends ServletModule {
       String pathToService = servicePath.get();
       if (incomingPath.startsWith(pathToService)) {
         // Build path with incomingPath and servicePath combo
-        String resourceId = incomingPath.substring(pathToService.length());
-        return new CallPath(servicePath.getVersion(), servicePath.get(), resourceId);
+        CallPathParser pathParser = new CallPathParser(null, servicePath.hasVersion(), pathToService);
+        return pathParser.parse(incomingPath);
       }
     }
     return null;
