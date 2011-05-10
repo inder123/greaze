@@ -56,8 +56,8 @@ public class End2EndBenchmark extends SimpleBenchmark {
       .create();
     this.employees = new RepositoryInMemory<Employee>(Employee.class);
     RestResponseBuilder<Employee> responseBuilder = new RestResponseBuilder<Employee>(employees);
-    RestClientStub stub = new RestClientStubFake<Employee>(responseBuilder, Employee.class, gson,
-        new CallPathParser(null, false, "/employee"));
+    RestClientStub stub =
+      new RestClientStubFake<Employee>(responseBuilder, Employee.class, gson, RESOURCE_PATH);
     this.client = new ResourceDepotClient<Employee>(stub, RESOURCE_PATH, Employee.class, gson);
   }
 

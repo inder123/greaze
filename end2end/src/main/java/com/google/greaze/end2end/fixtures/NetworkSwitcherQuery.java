@@ -16,11 +16,12 @@
 package com.google.greaze.end2end.fixtures;
 
 import java.io.OutputStream;
+import java.util.Collection;
 
 import javax.servlet.http.HttpServletRequest;
 
+import com.google.common.collect.ImmutableList;
 import com.google.greaze.definition.CallPath;
-import com.google.greaze.definition.CallPathParser;
 import com.google.greaze.definition.fixtures.NetworkSwitcherPiped;
 import com.google.greaze.definition.rest.RestResource;
 import com.google.greaze.definition.rest.query.ResourceQuery;
@@ -44,12 +45,12 @@ public class NetworkSwitcherQuery<R extends RestResource<R>, Q extends ResourceQ
   private final ResourceQuery<R, Q> query;
   private final GreazeServerModule gsm;
   private ResourceQueryDispatcher dispatcher;
-  private final CallPathParser callPathParser;
+  private final Collection<CallPath> servicePaths;
 
   public NetworkSwitcherQuery(ResourceQuery<R, Q> query, GsonBuilder gsonBuilder,
-      CallPathParser callPathParser) {
+      CallPath queryCallPath) {
     this.gsm = new GreazeServerModule(SERVLET_BASE_PATH);
-    this.callPathParser = callPathParser;
+    this.servicePaths = ImmutableList.of(queryCallPath);
     this.query = query;
     this.dispatcher = new ResourceQueryDispatcher(gsonBuilder);
   }
@@ -58,7 +59,7 @@ public class NetworkSwitcherQuery<R extends RestResource<R>, Q extends ResourceQ
   @Override
   protected void switchNetwork(HttpURLConnectionFake conn) {
     HttpServletRequest req = buildRequest(conn);
-    CallPath callPath = gsm.getCallPath(req, callPathParser);
+    CallPath callPath = gsm.getCallPath(req, servicePaths);
     String queryName = RequestType.getQueryName(req.getParameterMap());
     OutputStream reverseForOutput = conn.getReverseForOutput();
     HttpServletResponseFake res = new HttpServletResponseFake(reverseForOutput);
