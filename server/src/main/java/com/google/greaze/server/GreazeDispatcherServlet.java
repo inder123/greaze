@@ -20,6 +20,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import com.google.greaze.definition.CallPath;
+import com.google.greaze.definition.InvalidRequestException;
 import com.google.greaze.server.dispatcher.RequestType;
 import com.google.greaze.server.dispatcher.ResourceQueryDispatcher;
 import com.google.inject.Inject;
@@ -48,6 +49,10 @@ public class GreazeDispatcherServlet extends HttpServlet {
   @Override
   public void service(HttpServletRequest req, HttpServletResponse res) {
     CallPath callPath = injector.getInstance(CallPath.class);
+    if (callPath.equals(CallPath.NULL_PATH)) {
+      throw new InvalidRequestException(
+          InvalidRequestException.Reason.INVALID_CALLPATH, req.getServletPath());
+    }
     String queryName = RequestType.getQueryName(req.getParameterMap());
     RequestType requestType = RequestType.getRequestType(callPath, queryName, resourcePrefix);
     switch (requestType) {
