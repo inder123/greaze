@@ -18,6 +18,23 @@ package com.google.greaze.definition;
 import com.google.greaze.definition.internal.utils.GreazeStrings;
 
 public final class CallPathParser {
+  public enum ParseFailureType {
+    INVALID_PATH,
+    INVALID_BASE_PATH,
+    INVALID_VERSION,
+    INVALID_SERVICE_NAME
+  }
+
+  @SuppressWarnings("serial")
+  public static final class ParseException extends RuntimeException {
+    private final ParseFailureType failureType;
+    public ParseException(ParseFailureType failureType) {
+      this.failureType = failureType;
+    }
+    public ParseFailureType getFailureType() {
+      return failureType;
+    }
+  }
   private final String basePath;
   private final boolean hasVersion;
   private final String serviceName;
@@ -39,24 +56,28 @@ public final class CallPathParser {
    */
   public CallPath parse(String callPath) {
     if (GreazeStrings.isEmpty(callPath)) {
-      return CallPath.NULL_PATH;
+      throw new ParseException(ParseFailureType.INVALID_PATH);
     }
     if (!GreazeStrings.isEmpty(basePath)) {
       if (!callPath.startsWith(basePath)) {
-        return CallPath.NULL_PATH;
+        throw new ParseException(ParseFailureType.INVALID_BASE_PATH);
       }
       callPath = callPath.substring(basePath.length());
     }
     double version = CallPath.IGNORE_VERSION;
     if (hasVersion) {
-      int beginIndex = callPath.charAt(0) == '/' ? 1 : 0;
-      int endIndex = GreazeStrings.indexOf(beginIndex, callPath, '/');
-      version = Double.parseDouble(callPath.substring(beginIndex, endIndex));
-      callPath = callPath.substring(endIndex);
+      try {
+        int beginIndex = callPath.charAt(0) == '/' ? 1 : 0;
+        int endIndex = GreazeStrings.indexOf(beginIndex, callPath, '/');
+        version = Double.parseDouble(callPath.substring(beginIndex, endIndex));
+        callPath = callPath.substring(endIndex);
+      } catch (NumberFormatException nfe) {
+        throw new ParseException(ParseFailureType.INVALID_VERSION);
+      }
     }
     if (!GreazeStrings.isEmpty(serviceName)) {
       if (!callPath.startsWith(serviceName)) {
-        return CallPath.NULL_PATH;
+        throw new ParseException(ParseFailureType.INVALID_SERVICE_NAME);
       }
       callPath = callPath.substring(serviceName.length());
     }
