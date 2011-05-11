@@ -71,6 +71,8 @@ public final class CallPathParser {
         int endIndex = GreazeStrings.indexOf(beginIndex, callPath, '/');
         version = Double.parseDouble(callPath.substring(beginIndex, endIndex));
         callPath = callPath.substring(endIndex);
+      } catch (StringIndexOutOfBoundsException e) {
+        throw new ParseException(ParseFailureType.INVALID_VERSION);
       } catch (NumberFormatException nfe) {
         throw new ParseException(ParseFailureType.INVALID_VERSION);
       }
