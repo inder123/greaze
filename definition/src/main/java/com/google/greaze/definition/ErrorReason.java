@@ -15,19 +15,20 @@
  */
 package com.google.greaze.definition;
 
+import java.net.HttpURLConnection;
+
 /**
  * A collection of reasons for failure of a Web service request
  *
  * @author Inderjeet Singh
  */
 public enum ErrorReason {
-  BAD_REQUEST(HttpResponseCodes.BAD_REQUEST),
-  VERSION_MISMATCH(HttpResponseCodes.BAD_REQUEST),
-  INVALID_CALLPATH(HttpResponseCodes.BAD_REQUEST),
-  UNEXPECTED_RETRYABLE_ERROR(HttpResponseCodes.SERVICE_UNAVAILABLE),
-  UNEXPECTED_PERMANENT_ERROR(HttpResponseCodes.INTERNAL_SERVER_ERROR),
-  SERVER_UNAVAILABLE(HttpResponseCodes.SERVICE_UNAVAILABLE),
-  PRECONDITION_FAILED(HttpResponseCodes.SERVICE_UNAVAILABLE);
+  BAD_REQUEST(HttpURLConnection.HTTP_BAD_REQUEST),
+  INVALID_CALLPATH(HttpURLConnection.HTTP_NOT_IMPLEMENTED),
+  UNEXPECTED_RETRYABLE_ERROR(HttpURLConnection.HTTP_UNAVAILABLE),
+  UNEXPECTED_PERMANENT_ERROR(HttpURLConnection.HTTP_INTERNAL_ERROR),
+  SERVER_UNAVAILABLE(HttpURLConnection.HTTP_UNAVAILABLE),
+  PRECONDITION_FAILED(HttpURLConnection.HTTP_UNAVAILABLE);
   
   private final int responseCode;
 
