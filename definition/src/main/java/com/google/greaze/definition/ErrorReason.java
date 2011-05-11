@@ -15,6 +15,7 @@
  */
 package com.google.greaze.definition;
 
+import java.io.IOException;
 import java.net.HttpURLConnection;
 
 /**
@@ -31,12 +32,36 @@ public enum ErrorReason {
   PRECONDITION_FAILED(HttpURLConnection.HTTP_UNAVAILABLE);
   
   private final int responseCode;
-
+  /**
+   * The name of the HTTP response header that carries the error reason enum value
+   */
+  public static final String HTTP_RESPONSE_HEADER_NAME = "ErrorReason";
   private ErrorReason(int responseCode) {
     this.responseCode = responseCode;
   }
 
   public int getResponseCode() {
     return responseCode;
+  }
+
+  private static ErrorReason getProbableCause(int responseCode, IOException e) {
+    switch (responseCode) {
+      case HttpURLConnection.HTTP_UNAVAILABLE:
+        return UNEXPECTED_RETRYABLE_ERROR;
+      default:
+        return UNEXPECTED_PERMANENT_ERROR;
+    }
+  }
+
+  public static ErrorReason fromValue(HttpURLConnection conn, IOException e) {
+    String errorReason = conn.getHeaderField(ErrorReason.HTTP_RESPONSE_HEADER_NAME);
+    ErrorReason reason = valueOf(errorReason);
+    if (reason == null) {
+      try {
+        reason = getProbableCause(conn.getResponseCode(), e);
+      } catch (IOException e2) {
+      }
+    }
+    return reason;
   }
 }

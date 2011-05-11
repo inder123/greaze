@@ -73,6 +73,7 @@ public class GreazeDispatcherServlet extends HttpServlet {
         throw new UnsupportedOperationException();
       }
     } catch (WebServiceSystemException e) {
+      res.setHeader(ErrorReason.HTTP_RESPONSE_HEADER_NAME, e.getReason().toString());
       res.sendError(e.getReason().getResponseCode(), e.getLocalizedMessage());
     }
   }
