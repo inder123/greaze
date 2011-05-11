@@ -15,24 +15,53 @@
  */
 package com.google.greaze.definition;
 
+import java.io.IOException;
+
+import com.google.gson.JsonParseException;
+
 /**
  * Base class for all exceptions thrown by the Web service to indicate a system error condition. 
  * This should never be thrown to indicate bad user input.
  *
- * @author inder
+ * @author Inderjeet Singh
  */
 @SuppressWarnings("serial")
 public class WebServiceSystemException extends RuntimeException {
 
-  public WebServiceSystemException(String msg) {
-    super(msg);
+  protected final ErrorReason reason;
+
+  public WebServiceSystemException(IOException e) {
+    super(e);
+    //TODO(inder): Look deeper into the IOException and figure out the correct reason
+    this.reason = ErrorReason.UNEXPECTED_RETRYABLE_ERROR;
   }
 
-  public WebServiceSystemException(Exception cause) {
+  public WebServiceSystemException(IllegalArgumentException e) {
+    super(e);
+    this.reason = ErrorReason.PRECONDITION_FAILED;
+  }
+
+  public WebServiceSystemException(JsonParseException e) {
+    super(e);
+    this.reason = ErrorReason.BAD_REQUEST;
+  }
+
+  public WebServiceSystemException(ErrorReason reason, String msg) {
+    super(msg);
+    this.reason = reason;
+  }
+
+  public WebServiceSystemException(ErrorReason reason, Exception cause) {
     super(cause);
+    this.reason = reason;
   }
   
-  public WebServiceSystemException(String msg, Exception cause) {
+  public WebServiceSystemException(ErrorReason reason, String msg, Exception cause) {
     super(msg, cause);
+    this.reason = reason;
+  }
+
+  public ErrorReason getReason() {
+    return reason;
   }
 }

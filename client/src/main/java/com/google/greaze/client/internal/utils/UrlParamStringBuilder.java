@@ -15,6 +15,12 @@
  */
 package com.google.greaze.client.internal.utils;
 
+import java.io.UnsupportedEncodingException;
+import java.lang.reflect.Type;
+import java.net.URLEncoder;
+import java.util.Map;
+
+import com.google.greaze.definition.ErrorReason;
 import com.google.greaze.definition.HeaderMap;
 import com.google.greaze.definition.HeaderMapSpec;
 import com.google.greaze.definition.UrlParams;
@@ -23,11 +29,6 @@ import com.google.greaze.definition.WebServiceSystemException;
 import com.google.gson.Gson;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
-
-import java.io.UnsupportedEncodingException;
-import java.lang.reflect.Type;
-import java.net.URLEncoder;
-import java.util.Map;
 
 /**
  * URL parameters for an HTTP request. This class is made public only for testing.
@@ -98,7 +99,7 @@ public final class UrlParamStringBuilder {
     try {
       queryParamStr.append(paramName).append('=').append(URLEncoder.encode(paramValue, "UTF-8"));
     } catch (UnsupportedEncodingException e) {
-      throw new WebServiceSystemException(e);
+      throw new WebServiceSystemException(ErrorReason.UNEXPECTED_PERMANENT_ERROR, e);
     }
   }
 
