@@ -21,15 +21,18 @@ package com.google.greaze.definition;
  *
  * @author inder
  */
+@SuppressWarnings("serial")
 public class WebServiceSystemException extends RuntimeException {
 
-  private static final long serialVersionUID = 1L;
+  public WebServiceSystemException(String msg) {
+    super(msg);
+  }
 
   public WebServiceSystemException(Exception cause) {
     super(cause);
   }
   
   public WebServiceSystemException(String msg, Exception cause) {
-	  super(msg, cause);
+    super(msg, cause);
   }
 }
