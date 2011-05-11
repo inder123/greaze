@@ -64,19 +64,31 @@ public class CallPathTest extends TestCase {
 
   public void testNullPath() {
     CallPathParser parser = new CallPathParser("/rest", true, "/service");
-    CallPath path = parser.parse(null);
-    assertEquals(CallPath.NULL_PATH, path);
+    try {
+      parser.parse(null);
+      fail();
+    } catch (CallPathParser.ParseException expected) {
+      assertEquals(CallPathParser.ParseFailureType.INVALID_PATH, expected.getFailureType());
+    }
   }
 
   public void testEmptyPath() {
     CallPathParser parser = new CallPathParser("/rest", true, "/service");
-    CallPath path = parser.parse("");
-    assertEquals(CallPath.NULL_PATH, path);
+    try {
+      parser.parse("");
+      fail();
+    } catch (CallPathParser.ParseException expected) {
+      assertEquals(CallPathParser.ParseFailureType.INVALID_PATH, expected.getFailureType());
+    }
   }
 
   public void testWhiteSpacePath() {
     CallPathParser parser = new CallPathParser("/rest", true, "/service");
-    CallPath path = parser.parse("\r\n");
-    assertEquals(CallPath.NULL_PATH, path);
+    try {
+      parser.parse("\r\n");
+      fail();
+    } catch (CallPathParser.ParseException expected) {
+      assertEquals(CallPathParser.ParseFailureType.INVALID_PATH, expected.getFailureType());
+    }
   }
 }
