@@ -25,6 +25,7 @@ import java.util.logging.Level;
 
 import com.google.greaze.client.internal.utils.ConnectionPreconditions;
 import com.google.greaze.definition.ContentBodySpec;
+import com.google.greaze.definition.ErrorReason;
 import com.google.greaze.definition.HeaderMap;
 import com.google.greaze.definition.HeaderMapSpec;
 import com.google.greaze.definition.WebServiceSystemException;
@@ -64,7 +65,8 @@ public class RestResponseBaseReceiver<I extends ResourceId, R extends RestResour
       R responseBody = readResponseBody(conn, bodyType);
       return new RestResponseBase<I, R>(getSpec(), responseParams, responseBody);
     } catch (IOException e) {
-      throw new WebServiceSystemException(e);
+      ErrorReason reason = ErrorReason.fromValue(conn, e);
+      throw new WebServiceSystemException(reason, e);
     }
   }
 
