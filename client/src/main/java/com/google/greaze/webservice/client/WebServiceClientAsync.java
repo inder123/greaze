@@ -19,6 +19,7 @@ import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.logging.Level;
 
+import com.google.greaze.definition.ErrorReason;
 import com.google.greaze.definition.WebServiceSystemException;
 import com.google.greaze.definition.webservice.WebServiceCallSpec;
 import com.google.greaze.definition.webservice.WebServiceRequest;
@@ -62,7 +63,7 @@ public class WebServiceClientAsync {
     try {
       queue.put(new QueueEntry(callSpec, request, responseCallback));
     } catch (InterruptedException e) {
-      throw new WebServiceSystemException(e);
+      throw new WebServiceSystemException(ErrorReason.UNEXPECTED_RETRYABLE_ERROR, e);
     }
   }
   

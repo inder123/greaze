@@ -15,12 +15,15 @@
  */
 package com.google.greaze.server;
 
+import java.io.IOException;
+
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import com.google.greaze.definition.CallPath;
-import com.google.greaze.definition.InvalidRequestException;
+import com.google.greaze.definition.ErrorReason;
+import com.google.greaze.definition.WebServiceSystemException;
 import com.google.greaze.server.dispatcher.RequestType;
 import com.google.greaze.server.dispatcher.ResourceQueryDispatcher;
 import com.google.inject.Inject;
@@ -47,15 +50,16 @@ public class GreazeDispatcherServlet extends HttpServlet {
 
   @SuppressWarnings("unchecked")
   @Override
-  public void service(HttpServletRequest req, HttpServletResponse res) {
-    CallPath callPath = injector.getInstance(CallPath.class);
-    if (callPath.equals(CallPath.NULL_PATH)) {
-      throw new InvalidRequestException(
-          InvalidRequestException.Reason.INVALID_CALLPATH, req.getServletPath());
-    }
-    String queryName = RequestType.getQueryName(req.getParameterMap());
-    RequestType requestType = RequestType.getRequestType(callPath, queryName, resourcePrefix);
-    switch (requestType) {
+  public void service(HttpServletRequest req, HttpServletResponse res) throws IOException {
+    try {
+      CallPath callPath = injector.getInstance(CallPath.class);
+      if (callPath.equals(CallPath.NULL_PATH)) {
+        throw new WebServiceSystemException(
+            ErrorReason.INVALID_CALLPATH, req.getServletPath());
+      }
+      String queryName = RequestType.getQueryName(req.getParameterMap());
+      RequestType requestType = RequestType.getRequestType(callPath, queryName, resourcePrefix);
+      switch (requestType) {
       case RESOURCE_ACCESS:
         injector.getInstance(ResourceDepotDispatcher.class).service(res);
         break;
@@ -67,6 +71,9 @@ public class GreazeDispatcherServlet extends HttpServlet {
         break;
       default:
         throw new UnsupportedOperationException();
+      }
+    } catch (WebServiceSystemException e) {
+      res.sendError(e.getReason().getResponseCode(), e.getLocalizedMessage());
     }
   }
 }
