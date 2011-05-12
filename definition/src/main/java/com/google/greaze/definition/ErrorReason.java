@@ -64,4 +64,8 @@ public enum ErrorReason {
     }
     return reason;
   }
+
+  public boolean isRetryableError() {
+    return this == UNEXPECTED_RETRYABLE_ERROR || this == SERVER_UNAVAILABLE; 
+  }
 }
