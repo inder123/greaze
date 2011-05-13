@@ -89,20 +89,16 @@ public final class UrlParamsExtractor {
         Type paramType = spec.getType();
         FieldNavigator navigator = new FieldNavigator(paramType);
         StringWriter json = new StringWriter();
-        JsonWriter jsonWriter = new JsonWriter(json);
+        final JsonWriter jsonWriter = new JsonWriter(json);
         jsonWriter.beginObject();
-        for (Field f : navigator.getFields()) {
-          String name = f.getName();
-          Type type = f.getGenericType();
-          String urlParamValue = requestParams.getParameterValue(name); 
-          if (urlParamValue != null) {
-            urlParamValue = decodeUrlParam(urlParamValue);
+        ValueReceiver receiver = new ValueReceiver() {
+          @Override
+          public void put(String name, Type type, Object value) throws IOException {
             jsonWriter.name(name);
             if (type instanceof TypeVariable || type == Object.class) {
               // We can not use Gson to extract the value, so just use the specified value.
-              jsonWriter.value(urlParamValue);
+              jsonWriter.value((String)value);
             } else {
-              Object value = parseUrlParamValue(urlParamValue, type, gson);
               String valueAsString = gson.toJson(value, type);
               if (GreazePrimitives.isPrimitive(type)) {
                 if (GreazePrimitives.isFloatingPointType(type)) {
@@ -117,6 +113,9 @@ public final class UrlParamsExtractor {
               }
             }
           }
+        };
+        for (Field f : navigator.getFields()) {
+          extractUrlParam(f.getName(), f.getGenericType(), requestParams, receiver);
         }
         jsonWriter.endObject();
         jsonWriter.close();
@@ -125,16 +124,16 @@ public final class UrlParamsExtractor {
       } else {
         paramsBuilder = new UrlParams.Builder(spec);
       }
+      final UrlParams.Builder builder = paramsBuilder;
       if (spec.hasParamsMap()) {
-        for (Map.Entry<String, Type> param : spec.getMapSpec().entrySet()) {
-          String name = param.getKey();
-          Type type = param.getValue();
-          String urlParamValue = requestParams.getParameterValue(name);
-          if (!GreazeStrings.isEmpty(urlParamValue)) {
-            urlParamValue = decodeUrlParam(urlParamValue);
-            Object value = parseUrlParamValue(urlParamValue, type, gson);
-            paramsBuilder.put(name, value);
+        ValueReceiver receiver = new ValueReceiver() {
+          @Override
+          public void put(String name, Type type, Object value) {
+            builder.put(name, value);
           }
+        };
+        for (Map.Entry<String, Type> param : spec.getMapSpec().entrySet()) {
+          extractUrlParam(param.getKey(), param.getValue(), requestParams, receiver);
         }
       }
       return paramsBuilder.build();
@@ -143,6 +142,26 @@ public final class UrlParamsExtractor {
     } catch (IOException e) {
       throw new JsonIOException(e);
     }
+  }
+
+  @SuppressWarnings("unchecked")
+  private void extractUrlParam(String name, Type type, NameValueMap requestParams,
+      ValueReceiver receiver) throws IOException {
+    String urlParamValue = requestParams.getParameterValue(name);
+    if (!GreazeStrings.isEmpty(urlParamValue)) {
+      urlParamValue = decodeUrlParam(urlParamValue);
+      if (type instanceof TypeVariable || type == Object.class) {
+        // We can not use Gson to extract the value, so just use the specified value.
+        receiver.put(name, type, urlParamValue);
+      } else {
+        Object value = parseUrlParamValue(urlParamValue, type, gson);
+        receiver.put(name, type, value);
+      }
+    }
+  }
+  
+  private interface ValueReceiver {
+    void put(String name, Type type, Object value) throws IOException;
   }
 
   /** Visible for testing only */

@@ -15,6 +15,8 @@
  */
 package com.google.greaze.server.internal.utils;
 
+import java.lang.reflect.ParameterizedType;
+import java.lang.reflect.TypeVariable;
 import java.util.Map;
 
 import junit.framework.TestCase;
@@ -25,6 +27,7 @@ import com.google.greaze.definition.HeaderMap;
 import com.google.greaze.definition.UrlParams;
 import com.google.greaze.definition.UrlParamsSpec;
 import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
 
 /**
  * Unit tests for {@link UrlParamsExtractor}
@@ -63,6 +66,22 @@ public class UrlParamsExtractorTest extends TestCase {
     assertNull(map.get("key3"));
   }
 
+  @SuppressWarnings("unchecked")
+  public void testUrlParamsUntypedValue() {
+    TypeVariable typeVariableType = GenericType.getTypeVariableType();
+    UrlParamsSpec spec = new UrlParamsSpec.Builder()
+      .put("key1", String.class)
+      .put("key2", Object.class)
+      .put("key3", typeVariableType)
+      .build();
+    UrlParamsExtractor extractor = new UrlParamsExtractor(spec, gson);
+    UrlParams urlParams = extractor.extractUrlParams(new Params("key1=foo&key2=2&key3=bar"));
+    HeaderMap map = urlParams.getParamsMap();
+    assertEquals("foo", map.get("key1"));
+    assertEquals("2", map.get("key2"));
+    assertEquals("bar", map.get("key3"));
+  }
+
   public void testUrlParamsWithParamsObject() {
     UrlParamsSpec spec = new UrlParamsSpec.Builder()
       .put("key1", String.class)
@@ -97,5 +116,14 @@ public class UrlParamsExtractorTest extends TestCase {
   private static class MySelectionFields {
     int value;
     String name;
+  }
+
+  private static class GenericType<T> {
+
+    @SuppressWarnings("unchecked")
+    public static <R> TypeVariable getTypeVariableType() {
+      ParameterizedType type = (ParameterizedType) new TypeToken<GenericType<R>>(){}.getType();
+      return (TypeVariable) type.getActualTypeArguments()[0];
+    }
   }
 }
