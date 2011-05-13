@@ -21,8 +21,8 @@ import java.util.List;
 import java.util.Map;
 
 import com.google.greaze.definition.TypedKey;
-import com.google.greaze.definition.rest.ResourceId;
 import com.google.greaze.definition.rest.MetaDataBase;
+import com.google.greaze.definition.rest.ResourceId;
 import com.google.greaze.definition.rest.RestResourceBase;
 
 /**
@@ -55,12 +55,26 @@ public class MetaDataMapBase<I extends ResourceId, R extends RestResourceBase<I,
     return String.format("%s", map);
   }
 
-  public <T> List<I> findByTypedKey(TypedKey<T> key, T value, int maxCount) {
+  /**
+   * Returns a list of Ids that match the specified value excluding idToSkip
+   *
+   * @param <T> Type of the specified key
+   * @param key The key used to retrieve value from transient store
+   * @param value Only those ids are returned that have value same as this one
+   * @param maxCount The maximum number of values to return.
+   * @param idToSkip The returned list should not contain the specified id.
+   * @return a list of Ids that match the specified value excluding idToSkip 
+   */
+  public <T> List<I> findByTypedKey(TypedKey<T> key, T value, int maxCount, I idToSkip) {
     List<I> result = new ArrayList<I>();
     for (Map.Entry<I, MetaDataBase<I, R>> entry : map.entrySet()) {
+      I id = entry.getKey();
+      if (id.equalsByValue(idToSkip)) {
+        continue;
+      }
       T retrieved = entry.getValue().getFromTransient(key);
       if (isEqual(value, retrieved)) {
-        result.add(entry.getKey());
+        result.add(id);
         if (--maxCount == 0) {
           break;
         }
