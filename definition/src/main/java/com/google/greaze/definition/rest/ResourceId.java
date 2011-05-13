@@ -22,4 +22,6 @@ package com.google.greaze.definition.rest;
  */
 public interface ResourceId {
   public String getValue();
+
+  boolean equalsByValue(ResourceId other);
 }
