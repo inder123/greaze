@@ -57,13 +57,15 @@ public class UrlParamsExtractorTest extends TestCase {
     UrlParamsSpec spec = new UrlParamsSpec.Builder()
       .put("key1", String.class)
       .put("key2", Integer.class)
+      .put("key3", Integer.class)
       .build();
     UrlParamsExtractor extractor = new UrlParamsExtractor(spec, gson);
-    UrlParams urlParams = extractor.extractUrlParams(new Params("key1=foo%2c+bar%2f&key2=23&key3=1"));
+    UrlParams urlParams = extractor.extractUrlParams(new Params("key1=foo%2c+bar%2f&key2=23&key4=1"));
     HeaderMap map = urlParams.getParamsMap();
     assertEquals("foo, bar/", map.get("key1"));
     assertEquals(23, map.get("key2"));
     assertNull(map.get("key3"));
+    assertNull(map.get("key4"));
   }
 
   @SuppressWarnings("unchecked")
@@ -94,6 +96,7 @@ public class UrlParamsExtractorTest extends TestCase {
     MySelectionFields actual = (MySelectionFields) urlParams.getParamsObject();
     assertEquals(3, actual.value);
     assertEquals("bob", actual.name);
+    assertNull(actual.occupation);
   }
 
   private static class Params implements UrlParamsExtractor.NameValueMap {
@@ -116,6 +119,7 @@ public class UrlParamsExtractorTest extends TestCase {
   private static class MySelectionFields {
     int value;
     String name;
+    String occupation;
   }
 
   private static class GenericType<T> {
