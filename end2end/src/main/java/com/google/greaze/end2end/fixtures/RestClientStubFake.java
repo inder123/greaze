@@ -35,11 +35,19 @@ import com.google.gson.Gson;
 public class RestClientStubFake<R extends RestResource<R>> extends RestClientStub {
 
   private final NetworkSwitcher networkSwitcher;
-  public RestClientStubFake(RestResponseBuilder<R> responseBuilder, Type resourceType, Gson gson,
-      CallPath resourcePath) {
+
+  /**
+   * @param responseBuilder Rest response builder for the resource
+   * @param resourceType The Java type for the resource
+   * @param serverGson Gson instance used for server-side JSON serialization/deserialization
+   * @param resourcePath The path where the resource is made available.
+   *   For example, /resource/order
+   */
+  public RestClientStubFake(RestResponseBuilder<R> responseBuilder, Type resourceType,
+      Gson serverGson, CallPath resourcePath) {
     super(new ServerConfig("http://localhost/fake" + resourcePath.getPathPrefix()));
     this.networkSwitcher =
-      new NetworkSwitcherResource<R>(responseBuilder, resourceType, gson, resourcePath);
+      new NetworkSwitcherResource<R>(responseBuilder, resourceType, serverGson, resourcePath);
   }
 
   @Override

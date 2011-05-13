@@ -44,9 +44,17 @@ public class NetworkSwitcherResource<R extends RestResource<R>> extends NetworkS
 
   private final RestResponseBuilder<R> responseBuilder;
   private final Type resourceType;
+
+  /**
+   * @param responseBuilder Rest response builder for the resource
+   * @param resourceType The Java type for the resource
+   * @param serverGson Gson instance used for server-side JSON serialization/deserialization
+   * @param resourceCallPath The path where the resource is made available.
+   *   For example, /resource/order
+   */
   public NetworkSwitcherResource(RestResponseBuilder<R> responseBuilder, Type resourceType,
-      Gson gson, CallPath resourceCallPath) {
-    super(gson, resourceCallPath);
+      Gson serverGson, CallPath resourceCallPath) {
+    super(serverGson, resourceCallPath);
     this.responseBuilder = responseBuilder;
     this.resourceType = resourceType;
   }
@@ -61,11 +69,11 @@ public class NetworkSwitcherResource<R extends RestResource<R>> extends NetworkS
     CallPath callPath = gsm.getCallPath(req);
     RestCallSpec spec = ResourceDepotBaseClient.generateRestCallSpec(callPath, resourceType);
     ResourceIdFactory<Id<?>> idFactory = gsm.getIDFactory(spec);
-    RestRequestBase<Id<R>, R> request = gsm.getRestRequest(gson, spec, callPath, req, idFactory);
+    RestRequestBase<Id<R>, R> request = gsm.getRestRequest(serverGson, spec, callPath, req, idFactory);
     RestResponse.Builder<R> response = new RestResponse.Builder<R>(spec.getResponseSpec());
     responseBuilder.buildResponse(request, response);
     RestResponseBase webServiceResponse = response.build();
-    RestResponseSender responseSender = new RestResponseSender(gson);
+    RestResponseSender responseSender = new RestResponseSender(serverGson);
     OutputStream reverseForOutput = conn.getReverseForOutput();
     HttpServletResponseFake res = new HttpServletResponseFake(reverseForOutput);
     responseSender.send(res, webServiceResponse);
