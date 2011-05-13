@@ -15,28 +15,30 @@
  */
 package com.google.greaze.server.internal.utils;
 
+import java.io.IOException;
+import java.io.StringWriter;
+import java.io.UnsupportedEncodingException;
+import java.lang.reflect.Field;
+import java.lang.reflect.Type;
+import java.lang.reflect.TypeVariable;
+import java.net.URLDecoder;
+import java.util.Map;
+
+import javax.servlet.http.HttpServletRequest;
+
 import com.google.greaze.definition.HeaderMap;
 import com.google.greaze.definition.UrlParams;
 import com.google.greaze.definition.UrlParamsSpec;
 import com.google.greaze.definition.WebServiceSystemException;
 import com.google.greaze.definition.internal.utils.FieldNavigator;
 import com.google.greaze.definition.internal.utils.GreazePreconditions;
+import com.google.greaze.definition.internal.utils.GreazePrimitives;
 import com.google.greaze.definition.internal.utils.GreazeStrings;
 import com.google.gson.Gson;
 import com.google.gson.JsonIOException;
 import com.google.gson.JsonSyntaxException;
 import com.google.gson.stream.JsonWriter;
 import com.google.gson.stream.MalformedJsonException;
-
-import java.io.IOException;
-import java.io.StringWriter;
-import java.io.UnsupportedEncodingException;
-import java.lang.reflect.Field;
-import java.lang.reflect.Type;
-import java.net.URLDecoder;
-import java.util.Map;
-
-import javax.servlet.http.HttpServletRequest;
 
 /**
  * An analog of UrlParamStringBuilder that converts URL parameters into a {@link HeaderMap}
@@ -53,7 +55,34 @@ public final class UrlParamsExtractor {
     this.gson = gson;
   }
 
-  public UrlParams extractUrlParams(HttpServletRequest request) {
+  interface NameValueMap {
+    public String getParameterValue(String name);
+  }
+
+  public UrlParams extractUrlParams(final HttpServletRequest request) {
+    NameValueMap requestParams = new NameValueMap() {
+      @Override
+      public String getParameterValue(String name) {
+        String[] urlParamValues = request.getParameterValues(name);
+        if (urlParamValues != null) {
+          GreazePreconditions.checkArgument(urlParamValues.length <= 1,
+            "Greaze supports only one URL parameter value per name. For %s, found: %s",
+            name, urlParamValues);
+          if (urlParamValues.length == 1) {
+            return urlParamValues[0];
+          }
+        }
+        return null;
+      }
+    };
+    return extractUrlParams(requestParams);
+  }
+
+  /**
+   * Visible for testing only
+   */
+  @SuppressWarnings("unchecked")
+  UrlParams extractUrlParams(NameValueMap requestParams) {
     try {
       UrlParams.Builder paramsBuilder = new UrlParams.Builder(spec);
       if (spec.hasParamsObject()) {
@@ -65,15 +94,27 @@ public final class UrlParamsExtractor {
         for (Field f : navigator.getFields()) {
           String name = f.getName();
           Type type = f.getGenericType();
-          String[] urlParamValues = request.getParameterValues(name);
-          if (urlParamValues != null) {
-            GreazePreconditions.checkArgument(urlParamValues.length <= 1,
-              "Greaze supports only one URL parameter value per name. For %s, found: %s",
-              name, urlParamValues);
-            if (urlParamValues.length == 1) {
-              Object value = parseUrlParamValue(urlParamValues[0], type, gson);
-              jsonWriter.name(name);
-              jsonWriter.value(value.toString());
+          String urlParamValue = requestParams.getParameterValue(name); 
+          if (urlParamValue != null) {
+            urlParamValue = decodeUrlParam(urlParamValue);
+            jsonWriter.name(name);
+            if (type instanceof TypeVariable || type == Object.class) {
+              // We can not use Gson to extract the value, so just use the specified value.
+              jsonWriter.value(urlParamValue);
+            } else {
+              Object value = parseUrlParamValue(urlParamValue, type, gson);
+              String valueAsString = gson.toJson(value, type);
+              if (GreazePrimitives.isPrimitive(type)) {
+                if (GreazePrimitives.isFloatingPointType(type)) {
+                  jsonWriter.value(Double.parseDouble(valueAsString));
+                } else { // Must be a integral number type
+                  jsonWriter.value(Long.parseLong(valueAsString));
+                }
+              } else {
+                // Strip extra quotes from the end
+                valueAsString = valueAsString.substring(1, valueAsString.length()-1);
+                jsonWriter.value(valueAsString);
+              }
             }
           }
         }
@@ -88,15 +129,11 @@ public final class UrlParamsExtractor {
         for (Map.Entry<String, Type> param : spec.getMapSpec().entrySet()) {
           String name = param.getKey();
           Type type = param.getValue();
-          String[] urlParamValues = request.getParameterValues(name);
-          if (urlParamValues != null) {
-            GreazePreconditions.checkArgument(urlParamValues.length <= 1,
-              "Greaze supports only one URL parameter value per name. For %s, found: %s",
-              name, urlParamValues);
-            if (urlParamValues.length == 1 && !GreazeStrings.isEmpty(urlParamValues[0])) {
-              Object value = parseUrlParamValue(urlParamValues[0], type, gson);
-              paramsBuilder.put(name, value);
-            }
+          String urlParamValue = requestParams.getParameterValue(name);
+          if (!GreazeStrings.isEmpty(urlParamValue)) {
+            urlParamValue = decodeUrlParam(urlParamValue);
+            Object value = parseUrlParamValue(urlParamValue, type, gson);
+            paramsBuilder.put(name, value);
           }
         }
       }
@@ -110,20 +147,23 @@ public final class UrlParamsExtractor {
 
   /** Visible for testing only */
   @SuppressWarnings("unchecked")
-  static <T> T parseUrlParamValue(String urlParamValue, Type type, Gson gson) {
+  static <T> T parseUrlParamValue(String json, Type type, Gson gson) {
     Object value;
     try {
-      String json = URLDecoder.decode(urlParamValue, "UTF-8");
-      try {
-        value = gson.fromJson(json, type);
-      } catch (JsonSyntaxException e) {
-        // Probably an unquoted string, so try that 
-        json = '"' + json + '"';
-        value = gson.fromJson(json, type);
-      }
+      value = gson.fromJson(json, type);
+    } catch (JsonSyntaxException e) {
+      // Probably an unquoted string, so try that 
+      json = '"' + json + '"';
+      value = gson.fromJson(json, type);
+    }
+    return (T) value;
+  }
+
+   static String decodeUrlParam(String urlParamValue) {
+    try {
+      return URLDecoder.decode(urlParamValue, "UTF-8");
     } catch (UnsupportedEncodingException e) {
       throw new WebServiceSystemException(e);
     }
-    return (T) value;
   }
 }

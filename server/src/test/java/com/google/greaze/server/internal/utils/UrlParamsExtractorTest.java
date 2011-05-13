@@ -15,9 +15,16 @@
  */
 package com.google.greaze.server.internal.utils;
 
-import com.google.gson.Gson;
+import java.util.Map;
 
 import junit.framework.TestCase;
+
+import com.google.common.base.Preconditions;
+import com.google.common.collect.Maps;
+import com.google.greaze.definition.HeaderMap;
+import com.google.greaze.definition.UrlParams;
+import com.google.greaze.definition.UrlParamsSpec;
+import com.google.gson.Gson;
 
 /**
  * Unit tests for {@link UrlParamsExtractor}
@@ -33,11 +40,6 @@ public class UrlParamsExtractorTest extends TestCase {
     this.gson = new Gson();
   }
   
-  public void testParseUrlParamString() {
-    String str = UrlParamsExtractor.parseUrlParamValue("foo+bar", String.class, gson);
-    assertEquals("foo bar", str);
-  }
-
   public void testParseUrlParamStringWithOneWord() {
     String str = UrlParamsExtractor.parseUrlParamValue("foo", String.class, gson);
     assertEquals("foo", str);
@@ -48,8 +50,52 @@ public class UrlParamsExtractorTest extends TestCase {
     assertEquals(1, value);
   }
 
-  public void testParseUrlParamEncodedString() {
-    String value = UrlParamsExtractor.parseUrlParamValue("foo%2c+bar%2f", String.class, gson);
-    assertEquals("foo, bar/", value);
+  public void testUrlParams() {
+    UrlParamsSpec spec = new UrlParamsSpec.Builder()
+      .put("key1", String.class)
+      .put("key2", Integer.class)
+      .build();
+    UrlParamsExtractor extractor = new UrlParamsExtractor(spec, gson);
+    UrlParams urlParams = extractor.extractUrlParams(new Params("key1=foo%2c+bar%2f&key2=23&key3=1"));
+    HeaderMap map = urlParams.getParamsMap();
+    assertEquals("foo, bar/", map.get("key1"));
+    assertEquals(23, map.get("key2"));
+    assertNull(map.get("key3"));
+  }
+
+  public void testUrlParamsWithParamsObject() {
+    UrlParamsSpec spec = new UrlParamsSpec.Builder()
+      .put("key1", String.class)
+      .setType(MySelectionFields.class)
+      .put("key2", Integer.class)
+      .build();
+    UrlParamsExtractor extractor = new UrlParamsExtractor(spec, gson);
+    UrlParams urlParams = extractor.extractUrlParams(new Params("key1=foo+bar&value=3&name=bob"));
+    assertEquals("foo bar", urlParams.getParamsMap().get("key1"));
+    MySelectionFields actual = (MySelectionFields) urlParams.getParamsObject();
+    assertEquals(3, actual.value);
+    assertEquals("bob", actual.name);
+  }
+
+  private static class Params implements UrlParamsExtractor.NameValueMap {
+    private final Map<String, String> params = Maps.newHashMap();
+
+    Params(String src) {
+      for (String pair : src.split("&")) {
+        String[] parts = pair.split("=");
+        Preconditions.checkArgument(parts.length == 2);
+        params.put(parts[0], parts[1]);
+      }
+    }
+
+    @Override
+    public String getParameterValue(String name) {
+      return params.get(name);
+    }
+  }
+
+  private static class MySelectionFields {
+    int value;
+    String name;
   }
 }
