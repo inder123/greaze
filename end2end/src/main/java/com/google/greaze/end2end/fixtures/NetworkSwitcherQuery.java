@@ -46,13 +46,13 @@ public class NetworkSwitcherQuery<R extends RestResource<R>, Q extends ResourceQ
   private final GreazeServerModule gsm;
   private ResourceQueryDispatcher dispatcher;
 
-  public NetworkSwitcherQuery(ResourceQuery<R, Q> query, GsonBuilder gsonBuilder,
+  public NetworkSwitcherQuery(ResourceQuery<R, Q> query, GsonBuilder serverGsonBuilder,
       CallPath queryCallPath) {
     this.gsm = new GreazeServerModule(
         SERVLET_BASE_PATH, ImmutableList.of(queryCallPath), queryCallPath.getBasePath());
     this.query = query;
     this.queryCallPath = queryCallPath;
-    this.dispatcher = new ResourceQueryDispatcher(gsonBuilder);
+    this.dispatcher = new ResourceQueryDispatcher(serverGsonBuilder);
   }
 
   @SuppressWarnings("unchecked")

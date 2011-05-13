@@ -29,10 +29,14 @@ import com.google.gson.Gson;
 public class NetworkSwitcherWebService extends NetworkSwitcherPiped {
 
   protected final GreazeServerModule gsm;
-  protected final Gson gson;
+  protected final Gson serverGson;
 
-  public NetworkSwitcherWebService(Gson gson, CallPath callPath) {
-    this.gson = gson;
+  /**
+   * @param serverGson Gson instance used for server-side JSON serialization/deserialization
+   * @param callPath The path where the web-service is made available
+   */
+  public NetworkSwitcherWebService(Gson serverGson, CallPath callPath) {
+    this.serverGson = serverGson;
     this.gsm = new GreazeServerModule("/fake", ImmutableList.of(callPath), callPath.getBasePath());
   }
 }
