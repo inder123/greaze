@@ -16,6 +16,7 @@
 package com.google.greaze.definition;
 
 import java.io.IOException;
+import java.net.ConnectException;
 
 import com.google.gson.JsonParseException;
 
@@ -32,8 +33,7 @@ public class WebServiceSystemException extends RuntimeException {
 
   public WebServiceSystemException(IOException e) {
     super(e);
-    //TODO(inder): Look deeper into the IOException and figure out the correct reason
-    this.reason = ErrorReason.UNEXPECTED_RETRYABLE_ERROR;
+    this.reason = getReasonForException(e);
   }
 
   public WebServiceSystemException(IllegalArgumentException e) {
@@ -63,5 +63,13 @@ public class WebServiceSystemException extends RuntimeException {
 
   public ErrorReason getReason() {
     return reason;
+  }
+
+  private ErrorReason getReasonForException(IOException e) {
+    // Look deeper into the IOException and figure out the correct reason
+    if (e instanceof ConnectException) {
+      return ErrorReason.LOCAL_NETWORK_FAILURE;
+    }
+    return ErrorReason.UNEXPECTED_RETRYABLE_ERROR;
   }
 }
