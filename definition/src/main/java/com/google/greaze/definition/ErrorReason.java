@@ -29,7 +29,12 @@ public enum ErrorReason {
   UNEXPECTED_RETRYABLE_ERROR(HttpURLConnection.HTTP_UNAVAILABLE),
   UNEXPECTED_PERMANENT_ERROR(HttpURLConnection.HTTP_INTERNAL_ERROR),
   SERVER_UNAVAILABLE(HttpURLConnection.HTTP_UNAVAILABLE),
-  PRECONDITION_FAILED(HttpURLConnection.HTTP_UNAVAILABLE);
+  PRECONDITION_FAILED(HttpURLConnection.HTTP_UNAVAILABLE),
+  /**
+   * This error reason indicates that the local connection on the client side is
+   * not working correctly. For example, a mobile phone client has lost all data connections.
+   */
+  LOCAL_NETWORK_FAILURE(HttpURLConnection.HTTP_BAD_GATEWAY);
   
   private final int responseCode;
   /**
@@ -66,6 +71,7 @@ public enum ErrorReason {
   }
 
   public boolean isRetryableError() {
-    return this == UNEXPECTED_RETRYABLE_ERROR || this == SERVER_UNAVAILABLE; 
+    return this == UNEXPECTED_RETRYABLE_ERROR || this == SERVER_UNAVAILABLE
+      || this == LOCAL_NETWORK_FAILURE; 
   }
 }
