@@ -15,6 +15,8 @@
  */
 package com.google.greaze.definition.rest;
 
+import com.google.greaze.definition.internal.utils.GreazePreconditions;
+
 /**
  * A base class to implement a REST resource that implements common id related methods.
  *
@@ -22,7 +24,7 @@ package com.google.greaze.definition.rest;
  *
  * @param <R> The intended resource
  */
-public class RestResourceImpl<R> implements RestResource<R> {
+public class RestResourceImpl<R extends HasId<Id<R>>> implements RestResource<R>, Comparable<R> {
 
   protected Id<R> id;
 
@@ -45,5 +47,14 @@ public class RestResourceImpl<R> implements RestResource<R> {
   @Override
   public boolean hasId() {
     return Id.isValid(id);
+  }
+
+  @Override
+  public int compareTo(R other) {
+    GreazePreconditions.checkNotNull(other);
+    GreazePreconditions.checkArgument(Id.isValid(id));
+    Id<R> otherId = other.getId();
+    GreazePreconditions.checkArgument(Id.isValid(otherId));
+    return id.getValue().compareTo(otherId.getValue());
   }
 }
