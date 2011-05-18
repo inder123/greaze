@@ -68,10 +68,6 @@ public final class Id<R> implements ResourceId {
     return id == null ? null : id.getValue();
   }
 
-  public String getValueAsString() {
-    return String.valueOf(value);
-  }
-
   public Type getTypeOfId() {
     return typeOfId;
   }

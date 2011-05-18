@@ -66,7 +66,7 @@ public class OrderClient {
   }
 
   public Order placeOrder(Cart cart) {
-    Order order = new Order(cart, cart.getId().getValueAsString());
+    Order order = new Order(cart, cart.getId().getValue());
     return orderRestClient.post(order);
   }
 
