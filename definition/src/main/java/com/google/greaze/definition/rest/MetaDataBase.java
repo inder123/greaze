@@ -81,6 +81,10 @@ public class MetaDataBase<I extends ResourceId, R extends RestResourceBase<I, R>
     map.remove(key);
   }
 
+  public <T> void remove(TypedKey<T> key) {
+    map.remove(key.getName());
+  }
+
   public Object getFromTransient(Object key) {
     return mapTransient.get(key);
   }
@@ -129,7 +133,7 @@ public class MetaDataBase<I extends ResourceId, R extends RestResourceBase<I, R>
       return context.serialize(src.map, MAP_TYPE);
     }
 
-    @SuppressWarnings({"unchecked", "rawtypes"})
+    @SuppressWarnings("unchecked")
     private static MetaDataBase<?, ?> createInstance(Type typeOfT, Map<String, String> map) {
       Class<?> metaDataClass;
       if (typeOfT instanceof Class) {

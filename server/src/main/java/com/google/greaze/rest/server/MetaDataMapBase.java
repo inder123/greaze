@@ -50,6 +50,10 @@ public class MetaDataMapBase<I extends ResourceId, R extends RestResourceBase<I,
     return metaData;
   }
 
+  public void remove(I resourceId) {
+    map.remove(resourceId);
+  }
+
   @Override
   public String toString() {
     return String.format("%s", map);
