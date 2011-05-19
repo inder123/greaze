@@ -20,6 +20,7 @@ import java.lang.reflect.Type;
 import com.google.greaze.definition.rest.MetaDataBase;
 import com.google.greaze.definition.rest.ResourceId;
 import com.google.greaze.definition.rest.RestResourceBase;
+import com.google.greaze.rest.server.collections.IdMapBase;
 
 /**
  * An in-memory map of rest resources
