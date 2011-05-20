@@ -16,6 +16,8 @@
 package com.google.greaze.server;
 
 import java.io.IOException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
@@ -39,6 +41,7 @@ import com.google.inject.name.Named;
 @Singleton
 @SuppressWarnings("serial")
 public class GreazeDispatcherServlet extends HttpServlet {
+  private static final Logger log = Logger.getLogger(GreazeDispatcherServlet.class.getSimpleName());
   private final Injector injector;
   private final String resourcePrefix;
 
@@ -73,8 +76,11 @@ public class GreazeDispatcherServlet extends HttpServlet {
         throw new UnsupportedOperationException();
       }
     } catch (WebServiceSystemException e) {
-      res.setHeader(ErrorReason.HTTP_RESPONSE_HEADER_NAME, e.getReason().toString());
-      res.sendError(e.getReason().getResponseCode(), e.getLocalizedMessage());
+      ErrorReason reason = e.getReason();
+      String reasonStr = reason.toString();
+      log.log(Level.WARNING, reasonStr, e);
+      res.setHeader(ErrorReason.HTTP_RESPONSE_HEADER_NAME, reasonStr);
+      res.sendError(reason.getResponseCode(), e.getLocalizedMessage());
     }
   }
 }
