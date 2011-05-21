@@ -36,7 +36,7 @@ import com.google.gson.JsonSerializer;
  *
  * @param <R> type variable for the rest resource
  */
-public final class Id<R> implements ResourceId {
+public final class Id<R> implements ResourceId, Comparable<Id<R>> {
 
   private static Pattern ID_PATTERN = Pattern.compile("[a-zA-Z0-9_\\.\\-]+"); 
 
@@ -221,5 +221,13 @@ public final class Id<R> implements ResourceId {
       Type typeOfId = parameterizedType.getActualTypeArguments()[0];
       return Id.get(json.getAsString(), typeOfId);
     }
+  }
+
+  @Override
+  public int compareTo(Id<R> o) {
+    GreazePreconditions.checkNotNull(o);
+    GreazePreconditions.checkArgument(isValid(this));
+    GreazePreconditions.checkArgument(isValid(o));
+    return value.compareTo(o.value);
   }
 }
