@@ -35,7 +35,7 @@ import com.google.greaze.definition.rest.ResourceIdFactory;
 public class IdMapBase<I extends ResourceId, T extends HasId<I>> {
   public static final Logger LOG = Logger.getLogger(IdMapBase.class.getName());
   public static final long ID_START_VALUE = 1L;
-  protected final Map<I, T> map;
+  protected final Map<String, T> map;
   private volatile long nextAvailableId;
   private final ResourceIdFactory<I> idFactory;
 
@@ -43,29 +43,29 @@ public class IdMapBase<I extends ResourceId, T extends HasId<I>> {
    * Use create(Type) instead of constructor
    */
   protected IdMapBase(Class<? super I> classOfI, Type typeOfId) {
-    map = new ConcurrentHashMap<I, T>();
+    map = new ConcurrentHashMap<String, T>();
     nextAvailableId = ID_START_VALUE;
     this.idFactory = new ResourceIdFactory<I>(classOfI, typeOfId);
   }
 
   public T get(I id) {
-    return map.get(id);
+    return map.get(id.getValue());
   }
 
   public T put(T obj) {
-    map.put(obj.getId(), obj);
+    map.put(obj.getId().getValue(), obj);
     return obj;
   }
 
   public void delete(I id) {
-    T removed = map.remove(id);
+    T removed = map.remove(id.getValue());
     if (removed == null) {
       LOG.log(Level.WARNING, "Attempted to delete non-existent id: {0}", id);
     }
   }
 
   public boolean exists(I id) {
-    return map.containsKey(id);
+    return map.containsKey(id.getValue());
   }
 
   public synchronized I getNextId() {
