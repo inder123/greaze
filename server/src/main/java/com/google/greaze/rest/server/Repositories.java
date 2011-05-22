@@ -15,6 +15,7 @@
  */
 package com.google.greaze.rest.server;
 
+import java.util.Collection;
 import java.util.List;
 
 import com.google.common.collect.Lists;
@@ -38,7 +39,7 @@ public final class Repositories {
    *   returned in the order of the ids. If an id doesn't have a corresponding resource,
    *   null is returned instead. 
    */
-  public static <R extends HasId<Id<R>>> List<R> load(List<Id<R>> ids, Repository<R> repo) {
+  public static <R extends HasId<Id<R>>> List<R> load(Collection<Id<R>> ids, Repository<R> repo) {
     List<R> resources = Lists.newArrayList();
     for (Id<R> resourceId : ids) {
       resources.add(repo.get(resourceId));
