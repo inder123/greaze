@@ -17,6 +17,8 @@ package com.google.greaze.definition.rest.util;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
+import java.util.TreeSet;
 
 import com.google.greaze.definition.rest.HasId;
 import com.google.greaze.definition.rest.Id;
@@ -26,7 +28,7 @@ import com.google.greaze.definition.rest.Id;
  *
  * @author Inderjeet Singh
  */
-public class IdUtil {
+public final class IdUtil {
   public static <R extends HasId<Id<R>>> List<Id<R>> toIdList(List<R> resources) {
     List<Id<R>> idList = new ArrayList<Id<R>>();
     for (R resource : resources) {
@@ -34,4 +36,14 @@ public class IdUtil {
     }
     return idList;
   }
+
+  public static <R extends HasId<Id<R>>> Set<Id<R>> toIdSet(Set<R> resources) {
+    Set<Id<R>> idList = new TreeSet<Id<R>>();
+    for (R resource : resources) {
+      idList.add(resource.getId());
+    }
+    return idList;
+  }
+
+  private IdUtil() {}
 }
