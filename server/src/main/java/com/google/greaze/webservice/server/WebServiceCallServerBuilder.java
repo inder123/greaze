@@ -22,8 +22,6 @@ import com.google.greaze.definition.webservice.WebServiceResponse.Builder;
 public class WebServiceCallServerBuilder {
 
   public WebServiceCallServerBuilder(
-      @SuppressWarnings("unused") WebServiceCallSpec callSpec,
-      @SuppressWarnings("unused") WebServiceRequest wsRequest,
-      @SuppressWarnings("unused") Builder responseBuilder) {
+      WebServiceCallSpec callSpec, WebServiceRequest wsRequest, Builder responseBuilder) {
   }
 }
