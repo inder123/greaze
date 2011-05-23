@@ -68,6 +68,11 @@ public class MetaDataBase<I extends ResourceId, R extends RestResourceBase<I, R>
     map.put(key, value);
   }
 
+  public void clear() {
+    map.clear();
+    mapTransient.clear();
+  }
+
   public boolean getBoolean(String key) {
     String value = map.get(key);
     return value == null ? false : Boolean.parseBoolean(value);
