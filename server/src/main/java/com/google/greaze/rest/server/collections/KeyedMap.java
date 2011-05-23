@@ -26,16 +26,21 @@ import com.google.greaze.definition.rest.Id;
  * @author Inderjeet Singh
  */
 public class KeyedMap<R, V> {
-  protected final Map<Id<R>, V> map = new HashMap<Id<R>, V>();
+  protected final Map<String, V> map = new HashMap<String, V>();
   public V get(Id<R> key) {
-    return map.get(key);
+    return map.get(key.getValue());
   }
 
   public synchronized void put(Id<R> key, V value) {
-    map.put(key, value);
+    map.put(key.getValue(), value);
   }
 
   public synchronized void remove(Id<R> key) {
-    map.remove(key);
+    map.remove(key.getValue());
+  }
+
+  @Override
+  public String toString() {
+    return map.toString();
   }
 }
