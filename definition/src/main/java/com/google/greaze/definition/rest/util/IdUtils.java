@@ -29,7 +29,7 @@ import com.google.greaze.definition.rest.Id;
  *
  * @author Inderjeet Singh
  */
-public final class IdUtil {
+public final class IdUtils {
   public static <R extends HasId<Id<R>>> List<Id<R>> toIdList(Collection<R> resources) {
     List<Id<R>> idList = new ArrayList<Id<R>>();
     for (R resource : resources) {
@@ -46,5 +46,5 @@ public final class IdUtil {
     return idList;
   }
 
-  private IdUtil() {}
+  private IdUtils() {}
 }
