@@ -17,6 +17,7 @@ package com.google.greaze.definition;
 
 import java.io.IOException;
 import java.net.ConnectException;
+import java.util.concurrent.ExecutionException;
 
 import com.google.gson.JsonParseException;
 
@@ -37,13 +38,19 @@ public class WebServiceSystemException extends RuntimeException {
   }
 
   public WebServiceSystemException(IllegalArgumentException e) {
-    super(e);
-    this.reason = ErrorReason.PRECONDITION_FAILED;
+    this(ErrorReason.PRECONDITION_FAILED, e);
   }
 
   public WebServiceSystemException(JsonParseException e) {
-    super(e);
-    this.reason = ErrorReason.BAD_REQUEST;
+    this(ErrorReason.BAD_REQUEST, e);
+  }
+
+  public WebServiceSystemException(InterruptedException e) {
+    this(ErrorReason.UNEXPECTED_RETRYABLE_ERROR, e);
+  }
+
+  public WebServiceSystemException(ExecutionException e) {
+    this(ErrorReason.UNEXPECTED_RETRYABLE_ERROR, e);
   }
 
   public WebServiceSystemException(ErrorReason reason, String msg) {
