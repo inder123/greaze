@@ -62,7 +62,6 @@ public final class RequestBodySpec extends ContentBodySpec {
     }    
   }
 
-
   /**
    * @param contentBodyType the type of content expected in the body
    * @param paramsSpec pass null if ContentBodyType is {@link ContentBodyType#SIMPLE}

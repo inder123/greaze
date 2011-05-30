@@ -19,8 +19,11 @@ package com.google.greaze.definition;
 import java.lang.reflect.Type;
 import java.util.Collections;
 import java.util.LinkedHashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
+
+import com.google.greaze.definition.internal.utils.$GreazeTypes;
 
 /**
  * Base class for the specification of a {@link ContentBody}.
@@ -35,6 +38,7 @@ public class ContentBodySpec implements ParamMapSpec {
   private final Map<String, Type> paramsSpec;
   private final ContentBodyType contentBodyType;
   private final Type simpleBodyType;
+  private final Type bodyJavaType;
 
   protected ContentBodySpec(ContentBodyType contentBodyType, Map<String, Type> paramsSpec,
                             Type simpleBodyType) {
@@ -44,6 +48,25 @@ public class ContentBodySpec implements ParamMapSpec {
     this.paramsSpec = Collections.unmodifiableMap(paramsSpec);
     this.contentBodyType = contentBodyType;
     this.simpleBodyType = simpleBodyType;
+    if (contentBodyType == null) {
+      this.bodyJavaType = simpleBodyType;
+    } else {
+      switch (contentBodyType) {
+        case SIMPLE:
+          this.bodyJavaType = simpleBodyType; 
+          break;
+        case LIST:
+          this.bodyJavaType = $GreazeTypes.newParameterizedTypeWithOwner(
+              null, List.class, simpleBodyType);
+          break;
+        case MAP:
+          this.bodyJavaType = $GreazeTypes.newParameterizedTypeWithOwner(
+              null, Map.class, String.class, simpleBodyType);
+          break;
+        default:
+          throw new UnsupportedOperationException();
+      }
+    }
   }
   
   @Override
@@ -77,6 +100,17 @@ public class ContentBodySpec implements ParamMapSpec {
   
   public String getContentType() {
     return JSON_CONTENT_TYPE;
+  }
+
+  /**
+   * Returns the Java type corresponding to the body. For example, If contentBodyType is
+   * {@link ContentBodyType#SIMPLE}, it returns {@link #getSimpleBodyType()}. If contentBodyType
+   * is {@link ContentBodyType#LIST}, it returns parameterized type for List of SimpleBodyType.
+   * if contentBodyType is {@link ContentBodyType#MAP}, it returns parameterized type for a Map
+   * of String keys with SimpleBodyType values.
+   */
+  public Type getBodyJavaType() {
+    return bodyJavaType;
   }
 
   public Type getSimpleBodyType() {

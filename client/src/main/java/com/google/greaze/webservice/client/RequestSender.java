@@ -28,6 +28,7 @@ import com.google.greaze.definition.HttpMethod;
 import com.google.greaze.definition.WebServiceSystemException;
 import com.google.greaze.definition.internal.utils.Streams;
 import com.google.greaze.definition.webservice.RequestBody;
+import com.google.greaze.definition.webservice.RequestBodySpec;
 import com.google.greaze.definition.webservice.WebServiceRequest;
 import com.google.gson.Gson;
 
@@ -80,13 +81,14 @@ public class RequestSender {
   }
 
   private String bodyToJson(RequestBody requestBody) {
-    switch (requestBody.getSpec().getContentBodyType()) {
+    RequestBodySpec spec = requestBody.getSpec();
+    switch (spec.getContentBodyType()) {
       case SIMPLE:
-        return gson.toJson(requestBody.getSimpleBody());
+        return gson.toJson(requestBody.getSimpleBody(), spec.getBodyJavaType());
       case LIST:
-        return gson.toJson(requestBody.getListBody());
+        return gson.toJson(requestBody.getListBody(), spec.getBodyJavaType());
       case MAP:
-        return gson.toJson(requestBody);
+        return gson.toJson(requestBody, spec.getBodyJavaType());
       default:
         throw new UnsupportedOperationException();
     }
