@@ -38,8 +38,8 @@ import com.google.greaze.definition.internal.utils.GreazeStrings;
  *
  * @author Inderjeet Singh
  */
-@SuppressWarnings({"rawtypes", "unchecked", "deprecation"})
-public class HttpServletRequestFake implements HttpServletRequest {
+@SuppressWarnings("unchecked")
+public final class HttpServletRequestFake implements HttpServletRequest {
   private String method;
   private Map<String, String[]> urlParams = new HashMap<String, String[]>();
   private String servletPath;
