@@ -16,6 +16,7 @@
 package com.google.greaze.rest.server;
 
 import java.io.IOException;
+import java.lang.reflect.Type;
 import java.util.logging.Logger;
 
 import javax.servlet.http.HttpServletResponse;
@@ -54,7 +55,7 @@ public class RestResponseSender<I extends ResourceId, R extends RestResourceBase
   public void send(HttpServletResponse res, RestResponseBase<I, R> response) {
     try {
       sendHeaders(res, response.getHeaders());
-      sendBody(res, response.getResource());
+      sendBody(res, response.getResource(), response.getBody().getSpec().getBodyJavaType());
     } catch (IOException e) {
       throw new RuntimeException(e);
     }
@@ -63,10 +64,11 @@ public class RestResponseSender<I extends ResourceId, R extends RestResourceBase
   // We could reuse the base classes method, sendBody. However, that requires that
   // a ResponseBody.GsonTypeAdapter is registered. We avoid that registration for REST resources
   // with this implementation
-  private void sendBody(HttpServletResponse res, R responseBody) throws IOException {
+  private void sendBody(HttpServletResponse res, R responseBody, Type responseBodyType)
+      throws IOException {
     res.setContentType(ContentBodySpec.JSON_CONTENT_TYPE);
     res.setCharacterEncoding(ContentBodySpec.JSON_CHARACTER_ENCODING);
-    String json = gson.toJson(responseBody);
+    String json = gson.toJson(responseBody, responseBodyType);
     logger.fine("RESPONSE BODY:" + json);
     res.getWriter().append(json);
   }
