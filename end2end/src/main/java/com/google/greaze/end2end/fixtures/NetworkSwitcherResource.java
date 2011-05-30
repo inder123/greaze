@@ -43,20 +43,20 @@ import com.google.gson.Gson;
 public class NetworkSwitcherResource<R extends RestResource<R>> extends NetworkSwitcherWebService {
 
   private final RestResponseBuilder<R> responseBuilder;
-  private final Type resourceType;
+  private final Type serverResourceType;
 
   /**
    * @param responseBuilder Rest response builder for the resource
-   * @param resourceType The Java type for the resource
+   * @param serverResourceType The Java type for the resource as seen by the server
    * @param serverGson Gson instance used for server-side JSON serialization/deserialization
    * @param resourceCallPath The path where the resource is made available.
    *   For example, /resource/order
    */
-  public NetworkSwitcherResource(RestResponseBuilder<R> responseBuilder, Type resourceType,
+  public NetworkSwitcherResource(RestResponseBuilder<R> responseBuilder, Type serverResourceType,
       Gson serverGson, CallPath resourceCallPath) {
     super(serverGson, resourceCallPath);
     this.responseBuilder = responseBuilder;
-    this.resourceType = resourceType;
+    this.serverResourceType = serverResourceType;
   }
 
   @SuppressWarnings("unchecked")
@@ -67,7 +67,7 @@ public class NetworkSwitcherResource<R extends RestResource<R>> extends NetworkS
       .setServletPath(conn.getURL().getPath())
       .setInputStream(conn.getForwardForInput());
     CallPath callPath = gsm.getCallPath(req);
-    RestCallSpec spec = ResourceDepotBaseClient.generateRestCallSpec(callPath, resourceType);
+    RestCallSpec spec = ResourceDepotBaseClient.generateRestCallSpec(callPath, serverResourceType);
     ResourceIdFactory<Id<?>> idFactory = gsm.getIDFactory(spec);
     RestRequestBase<Id<R>, R> request = gsm.getRestRequest(serverGson, spec, callPath, req, idFactory);
     RestResponse.Builder<R> response = new RestResponse.Builder<R>(spec.getResponseSpec());

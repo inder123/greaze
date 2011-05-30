@@ -38,16 +38,16 @@ public class RestClientStubFake<R extends RestResource<R>> extends RestClientStu
 
   /**
    * @param responseBuilder Rest response builder for the resource
-   * @param resourceType The Java type for the resource
+   * @param serverResourceType The Java type for the resource as seen by the server
    * @param serverGson Gson instance used for server-side JSON serialization/deserialization
    * @param resourcePath The path where the resource is made available.
    *   For example, /resource/order
    */
-  public RestClientStubFake(RestResponseBuilder<R> responseBuilder, Type resourceType,
+  public RestClientStubFake(RestResponseBuilder<R> responseBuilder, Type serverResourceType,
       Gson serverGson, CallPath resourcePath) {
     super(new ServerConfig("http://localhost/fake" + resourcePath.getPathPrefix()));
     this.networkSwitcher =
-      new NetworkSwitcherResource<R>(responseBuilder, resourceType, serverGson, resourcePath);
+      new NetworkSwitcherResource<R>(responseBuilder, serverResourceType, serverGson, resourcePath);
   }
 
   @Override
