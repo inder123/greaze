@@ -15,12 +15,12 @@
  */
 package com.google.greaze.definition;
 
-import com.google.greaze.definition.internal.utils.$GreazeTypes;
-
 import java.lang.reflect.Type;
-import java.util.LinkedHashMap;
+import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
+
+import com.google.greaze.definition.internal.utils.$GreazeTypes;
 
 /**
  * Specification of a header map for {@link HeaderMap}. 
@@ -30,8 +30,13 @@ import java.util.Set;
 public final class HeaderMapSpec implements ParamMapSpec {
   
   public static class Builder {
-    private final Map<String, Type> map = new LinkedHashMap<String, Type>();
+    private final Map<String, Type> map = new HashMap<String, Type>();
   
+    public <T> Builder put(TypedKey<T> header, Type headerType) {
+      map.put(header.getName(), headerType);
+      return this;
+    }
+
     public Builder put(String headerName, Type headerType) {
       map.put(headerName, headerType);
       return this;

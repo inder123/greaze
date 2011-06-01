@@ -25,6 +25,10 @@ import com.google.greaze.definition.HeaderMapSpec;
 public final class WebContextSpec {
   private final HeaderMapSpec requestHeaderSpec;
 
+  public WebContextSpec() {
+    this(new HeaderMapSpec.Builder().build());
+  }
+
   public WebContextSpec(HeaderMapSpec requestHeaderSpec) {
     this.requestHeaderSpec = requestHeaderSpec;
   }

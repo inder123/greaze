@@ -20,6 +20,7 @@ import java.util.List;
 import com.google.greaze.definition.rest.Id;
 import com.google.greaze.definition.rest.MetaData;
 import com.google.greaze.definition.rest.MetaDataBase;
+import com.google.greaze.definition.rest.WebContext;
 import com.google.greaze.example.definition.model.Cart;
 import com.google.greaze.example.definition.model.LineItem;
 import com.google.greaze.example.definition.model.Order;
@@ -62,16 +63,16 @@ public class OrderClient {
   }
 
   private Cart createCart(Cart cart) {
-    return cartRestClient.post(cart);
+    return cartRestClient.post(cart, new WebContext());
   }
 
   public Order placeOrder(Cart cart) {
     Order order = new Order(cart, cart.getId().getValue());
-    return orderRestClient.post(order);
+    return orderRestClient.post(order, new WebContext());
   }
 
   private List<Order> query(String itemName) {
-    return queryClient.query(new QueryOrdersByItemName(itemName));
+    return queryClient.query(new QueryOrdersByItemName(itemName), new WebContext());
   }
 
   public static void main(String[] args) {

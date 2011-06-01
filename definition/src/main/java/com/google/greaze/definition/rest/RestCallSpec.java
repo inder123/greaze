@@ -59,12 +59,12 @@ public final class RestCallSpec extends WebServiceCallSpec {
     }
 
     public <T> Builder addRequestParam(TypedKey<T> param) {
-      reqParamsSpecBuilder.put(param.getName(), param.getClassOfT());
+      reqParamsSpecBuilder.put(param.getName(), param.getTypeOfT());
       return this;
     }
 
     public <T> Builder addResponseParam(TypedKey<T> param) {
-      resParamsSpecBuilder.put(param.getName(), param.getClassOfT());
+      resParamsSpecBuilder.put(param.getName(), param.getTypeOfT());
       return this;
     }
 

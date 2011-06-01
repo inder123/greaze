@@ -22,6 +22,7 @@ import junit.framework.TestCase;
 import com.google.greaze.definition.CallPath;
 import com.google.greaze.definition.CallPathParser;
 import com.google.greaze.definition.rest.Id;
+import com.google.greaze.definition.rest.WebContext;
 import com.google.greaze.end2end.definition.Employee;
 import com.google.greaze.end2end.definition.QueryEmployeeByName;
 import com.google.greaze.end2end.fixtures.ResourceQueryClientFake;
@@ -73,7 +74,7 @@ public class QueryFunctionalTest extends TestCase {
     employees.put(new Employee(null, "foo"));
     employees.put(new Employee(null, "bar"));
     QueryEmployeeByName queryByName = new QueryEmployeeByName("foo");
-    List<Employee> results = queryClient.query(queryByName);
+    List<Employee> results = queryClient.query(queryByName, new WebContext());
     assertEquals(2, results.size());
     for (Employee employee : results) {
       assertEquals("foo", employee.getName());
