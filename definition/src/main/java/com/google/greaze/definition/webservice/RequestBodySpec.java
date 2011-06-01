@@ -53,7 +53,7 @@ public final class RequestBodySpec extends ContentBodySpec {
     }
 
     public <T> Builder put(TypedKey<T> param) {
-      paramsSpec.put(param.getName(), param.getClassOfT());
+      paramsSpec.put(param.getName(), param.getTypeOfT());
       return this;
     }
     

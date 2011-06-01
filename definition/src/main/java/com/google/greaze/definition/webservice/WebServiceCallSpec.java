@@ -19,6 +19,7 @@ import java.lang.reflect.Type;
 import java.util.Arrays;
 import java.util.LinkedHashSet;
 import java.util.Set;
+import java.util.Map.Entry;
 
 import com.google.greaze.definition.CallPath;
 import com.google.greaze.definition.HeaderMapSpec;
@@ -96,7 +97,7 @@ public class WebServiceCallSpec {
     }
     
     public <T> Builder addRequestParam(TypedKey<T> param) {
-      reqParamsSpecBuilder.put(param.getName(), param.getClassOfT());
+      reqParamsSpecBuilder.put(param.getName(), param.getTypeOfT());
       return this;
     }
 
@@ -109,7 +110,7 @@ public class WebServiceCallSpec {
     }
 
     public Builder addUrlParam(TypedKey<String> param) {
-      urlParamsSpecBuilder.put(param.getName(), param.getClassOfT());
+      urlParamsSpecBuilder.put(param.getName(), param.getTypeOfT());
       return this;
     }
 
@@ -123,8 +124,15 @@ public class WebServiceCallSpec {
       return this;
     }
 
+    public Builder addAllRequestParams(HeaderMapSpec requestHeaderSpec) {
+      for (Entry<String,Type> entry : requestHeaderSpec.entrySet()) {
+        reqParamsSpecBuilder.put(entry.getKey(), entry.getValue());
+      }
+      return this;
+    }
+
     public <T> Builder addResponseParam(TypedKey<T> param) {
-      resParamsSpecBuilder.put(param.getName(), param.getClassOfT());
+      resParamsSpecBuilder.put(param.getName(), param.getTypeOfT());
       return this;
     }
 

@@ -20,6 +20,8 @@ import java.util.List;
 
 import com.google.greaze.definition.rest.ResourceId;
 import com.google.greaze.definition.rest.RestResourceBase;
+import com.google.greaze.definition.rest.WebContext;
+import com.google.greaze.definition.rest.WebContextSpec;
 
 /**
  * A query for a list of rest resources.
@@ -31,9 +33,11 @@ public interface ResourceQueryBase<
   /**
    * Returns a list of resources matching the query
    */
-  public List<R> query(Q query);
+  public List<R> query(Q query, WebContext context);
 
   public Type getResourceType();
 
   public Type getQueryType();
+
+  public WebContextSpec getWebContextSpec();
 }

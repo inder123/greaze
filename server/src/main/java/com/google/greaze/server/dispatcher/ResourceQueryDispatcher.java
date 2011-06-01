@@ -15,10 +15,17 @@
  */
 package com.google.greaze.server.dispatcher;
 
+import java.util.List;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
 import com.google.common.base.Preconditions;
 import com.google.greaze.definition.CallPath;
 import com.google.greaze.definition.HeaderMap;
 import com.google.greaze.definition.HeaderMapSpec;
+import com.google.greaze.definition.rest.WebContext;
+import com.google.greaze.definition.rest.WebContextSpec;
 import com.google.greaze.definition.rest.query.ResourceQueryBase;
 import com.google.greaze.definition.rest.query.ResourceQueryParams;
 import com.google.greaze.definition.webservice.RequestBody;
@@ -29,15 +36,11 @@ import com.google.greaze.definition.webservice.ResponseSpec;
 import com.google.greaze.definition.webservice.WebServiceCallSpec;
 import com.google.greaze.definition.webservice.WebServiceRequest;
 import com.google.greaze.definition.webservice.WebServiceResponse;
+import com.google.greaze.server.internal.utils.WebContextExtractor;
 import com.google.greaze.webservice.server.RequestReceiver;
 import com.google.greaze.webservice.server.ResponseSender;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
-
-import java.util.List;
-
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 
 /**
  * A class to service incoming resource query requests using corresponding query handlers.
@@ -55,8 +58,10 @@ public class ResourceQueryDispatcher {
   public void service(HttpServletRequest req, HttpServletResponse res,
       String queryName, CallPath callPath, ResourceQueryBase resourceQuery) {
     Preconditions.checkNotNull(resourceQuery);
+    WebContextSpec webContextSpec = resourceQuery.getWebContextSpec();
     WebServiceCallSpec spec = ResourceQueryParams.generateCallSpec(callPath,
-        resourceQuery.getResourceType(), resourceQuery.getQueryType());
+        resourceQuery.getResourceType(), resourceQuery.getQueryType(),
+        webContextSpec);
     RequestSpec requestSpec = spec.getRequestSpec();
     ResponseSpec responseSpec = spec.getResponseSpec();
     Gson gson = gsonBuilder
@@ -70,7 +75,8 @@ public class ResourceQueryDispatcher {
 
     ResourceQueryParams queryParams =
       (ResourceQueryParams) webServiceRequest.getUrlParameters().getParamsObject();
-    List results = resourceQuery.query(queryParams);
+    WebContext context = new WebContextExtractor(webContextSpec, gson).extract(req);
+    List results = resourceQuery.query(queryParams, context);
     HeaderMapSpec headerSpec = new HeaderMapSpec.Builder().build();
     HeaderMap responseHeaders = new HeaderMap.Builder(headerSpec).build();
     ResponseBodySpec bodySpec = new ResponseBodySpec.Builder()

@@ -15,12 +15,17 @@
  */
 package com.google.greaze.rest.query.client;
 
+import java.lang.reflect.Type;
+import java.util.List;
+
 import com.google.greaze.definition.CallPath;
 import com.google.greaze.definition.HeaderMap;
 import com.google.greaze.definition.HttpMethod;
 import com.google.greaze.definition.UrlParams;
 import com.google.greaze.definition.rest.ResourceId;
 import com.google.greaze.definition.rest.RestResourceBase;
+import com.google.greaze.definition.rest.WebContext;
+import com.google.greaze.definition.rest.WebContextSpec;
 import com.google.greaze.definition.rest.query.ResourceQueryBase;
 import com.google.greaze.definition.rest.query.ResourceQueryParams;
 import com.google.greaze.definition.webservice.RequestBody;
@@ -32,9 +37,6 @@ import com.google.greaze.definition.webservice.WebServiceResponse;
 import com.google.greaze.webservice.client.WebServiceClient;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
-
-import java.lang.reflect.Type;
-import java.util.List;
 
 /**
  * A client to invoke {@link ResourceQueryBase}s associated with a REST resource
@@ -54,36 +56,41 @@ public class ResourceQueryBaseClient<
   private final Gson gson;
   private final Type resourceType;
   private final Type queryType;
+  private final WebContextSpec webContextSpec;
 
   /**
    * @param stub stub containing server info to access the rest client
    * @param callPath relative path to the resource
    */
   public ResourceQueryBaseClient(WebServiceClient stub, CallPath callPath,
-      Type queryType, GsonBuilder gsonBuilder, Type resourceType) {
-    this(stub, ResourceQueryParams.generateCallSpec(callPath, resourceType, queryType),
-      queryType, gsonBuilder, resourceType);
+      Type queryType, GsonBuilder gsonBuilder, Type resourceType, WebContextSpec webContextSpec) {
+    this(stub, ResourceQueryParams.generateCallSpec(callPath, resourceType, queryType, webContextSpec),
+      queryType, gsonBuilder, resourceType, webContextSpec);
   }
 
   protected ResourceQueryBaseClient(WebServiceClient stub, WebServiceCallSpec callSpec,
-      Type queryType, GsonBuilder gsonBuilder, Type resourceType) {
+      Type queryType, GsonBuilder gsonBuilder, Type resourceType, WebContextSpec webContextSpec) {
     this.stub = stub;
     this.callSpec = callSpec;
     this.gson = callSpec.addTypeAdapters(gsonBuilder).create();
     this.queryType = queryType;
     this.resourceType = resourceType;
+    this.webContextSpec = webContextSpec;
   }
 
   @SuppressWarnings({"unchecked"})
   @Override
-  public List<R> query(Q query) {
+  public List<R> query(Q query, WebContext context) {
     RequestSpec requestSpec = callSpec.getRequestSpec();
-    HeaderMap requestHeaders = new HeaderMap.Builder(requestSpec.getHeadersSpec()).build();
+    HeaderMap.Builder requestHeadersBuilder = new HeaderMap.Builder(requestSpec.getHeadersSpec());
+    if (context != null) {
+      context.populate(requestHeadersBuilder);
+    }
     RequestBody requestBody = new RequestBody.Builder(requestSpec.getBodySpec())
       .build();
     UrlParams urlParams = new UrlParams.Builder(requestSpec.getUrlParamsSpec(), query).build();
     WebServiceRequest request =
-      new WebServiceRequest(HttpMethod.GET, requestHeaders, urlParams, requestBody);
+      new WebServiceRequest(HttpMethod.GET, requestHeadersBuilder.build(), urlParams, requestBody);
     WebServiceResponse response = stub.getResponse(callSpec, request, gson);
     ResponseBody body = response.getBody();
     // Using a local variable for listBody otherwise Maven freaks out while compiling 
@@ -99,5 +106,10 @@ public class ResourceQueryBaseClient<
   @Override
   public Type getQueryType() {
     return queryType;
+  }
+
+  @Override
+  public WebContextSpec getWebContextSpec() {
+    return webContextSpec;
   }
 }

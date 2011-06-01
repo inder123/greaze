@@ -15,6 +15,8 @@
  */
 package com.google.greaze.definition;
 
+import java.lang.reflect.Type;
+
 import com.google.greaze.definition.internal.utils.GreazePreconditions;
 
 /**
@@ -26,28 +28,32 @@ import com.google.greaze.definition.internal.utils.GreazePreconditions;
  */
 public class TypedKey<T> {
   private final String name;
-  private final Class<T> classOfT;
+  private final Type typeOfT;
 
   public TypedKey(String name, Class<T> classOfT) {
+    this(name, (Type) classOfT);
+  }
+
+  public TypedKey(String name, Type classOfT) {
     GreazePreconditions.checkNotNull(name);
     GreazePreconditions.checkNotNull(classOfT);
 
     this.name = name;
-    this.classOfT = classOfT;
+    this.typeOfT = classOfT;
   }
 
   public String getName() {
     return name;
   }
 
-  public Class<T> getClassOfT() {
-    return classOfT;
+  public Type getTypeOfT() {
+    return typeOfT;
   }
 
   
   @Override
   public int hashCode() {
-    return name.hashCode() + classOfT.getCanonicalName().hashCode() >> 1;
+    return name.hashCode() + typeOfT.hashCode() >> 1;
   }
 
   @Override
@@ -62,11 +68,11 @@ public class TypedKey<T> {
       return false;
     }
     TypedKey<?> other = (TypedKey<?>) obj;
-    return name.equals(other.name) && classOfT.equals(other.classOfT);
+    return name.equals(other.name) && typeOfT.equals(other.typeOfT);
   }
 
   @Override
   public String toString() {
-    return String.format("{name:%s, classOfT:%s}", name, classOfT);
+    return String.format("{name:%s, typeOfT:%s}", name, typeOfT);
   }
 }

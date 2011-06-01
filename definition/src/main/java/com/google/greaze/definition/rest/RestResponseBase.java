@@ -44,7 +44,7 @@ public class RestResponseBase<I extends ResourceId, R extends RestResourceBase<I
     }
     
     public <T> Builder<II, RS> putHeader(TypedKey<T> paramName, T content) {
-      headers.put(paramName.getName(), content, paramName.getClassOfT());
+      headers.put(paramName.getName(), content, paramName.getTypeOfT());
       return this;
     }
     

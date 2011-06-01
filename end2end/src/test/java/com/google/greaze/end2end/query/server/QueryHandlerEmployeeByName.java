@@ -15,16 +15,18 @@
  */
 package com.google.greaze.end2end.query.server;
 
+import java.lang.reflect.Type;
+import java.util.List;
+
 import com.google.common.collect.Lists;
 import com.google.greaze.definition.rest.Id;
+import com.google.greaze.definition.rest.WebContext;
+import com.google.greaze.definition.rest.WebContextSpec;
 import com.google.greaze.definition.rest.query.ResourceQuery;
 import com.google.greaze.end2end.definition.Employee;
 import com.google.greaze.end2end.definition.QueryEmployeeByName;
 import com.google.greaze.rest.server.Repository;
 import com.google.inject.Inject;
-
-import java.lang.reflect.Type;
-import java.util.List;
 
 /**
  * Server-side query handler for {@link QueryEmployeeByName}
@@ -41,7 +43,7 @@ public class QueryHandlerEmployeeByName implements ResourceQuery<Employee, Query
   }
 
   @Override
-  public List<Employee> query(QueryEmployeeByName query) {
+  public List<Employee> query(QueryEmployeeByName query, WebContext context) {
     List<Employee> results = Lists.newArrayList();
     for (int i = 0; i < employees.size(); ++i) {
       Id<Employee> id = Id.get(String.valueOf(i), Employee.class);
@@ -61,5 +63,10 @@ public class QueryHandlerEmployeeByName implements ResourceQuery<Employee, Query
   @Override
   public Type getQueryType() {
     return QueryEmployeeByName.class;
+  }
+
+  @Override
+  public WebContextSpec getWebContextSpec() {
+    return new WebContextSpec();
   }
 }

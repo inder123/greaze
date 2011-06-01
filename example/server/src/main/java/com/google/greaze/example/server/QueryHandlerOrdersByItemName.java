@@ -15,8 +15,13 @@
  */
 package com.google.greaze.example.server;
 
+import java.lang.reflect.Type;
+import java.util.List;
+
 import com.google.common.collect.Lists;
 import com.google.greaze.definition.rest.Id;
+import com.google.greaze.definition.rest.WebContext;
+import com.google.greaze.definition.rest.WebContextSpec;
 import com.google.greaze.definition.rest.query.ResourceQuery;
 import com.google.greaze.example.definition.model.LineItem;
 import com.google.greaze.example.definition.model.Order;
@@ -24,15 +29,12 @@ import com.google.greaze.example.query.definition.QueryOrdersByItemName;
 import com.google.greaze.rest.server.Repository;
 import com.google.inject.Inject;
 
-import java.lang.reflect.Type;
-import java.util.List;
-
 /**
  * sample implementation of a query handler for {@link QueryOrdersByItemName} query
  *
  * @author Inderjeet Singh
  */
-public class QueryHandlerOrdersByItemName
+public final class QueryHandlerOrdersByItemName
     implements ResourceQuery<Order, QueryOrdersByItemName> {
 
   private final Repository<Order> orders;
@@ -43,7 +45,7 @@ public class QueryHandlerOrdersByItemName
   }
 
   @Override
-  public List<Order> query(QueryOrdersByItemName query) {
+  public List<Order> query(QueryOrdersByItemName query, WebContext context) {
     long repoSize = Long.parseLong(orders.getNextId().getValue());
     List<Order> results = Lists.newArrayList();
     for (int i = 0; i < repoSize; ++i) {
@@ -69,5 +71,10 @@ public class QueryHandlerOrdersByItemName
   @Override
   public Type getQueryType() {
     return QueryOrdersByItemName.class;
+  }
+
+  @Override
+  public WebContextSpec getWebContextSpec() {
+    return new WebContextSpec();
   }
 }
