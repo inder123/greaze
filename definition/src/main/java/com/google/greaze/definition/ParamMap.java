@@ -16,7 +16,7 @@
 package com.google.greaze.definition;
 
 import java.lang.reflect.Type;
-import java.util.LinkedHashMap;
+import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
 
@@ -25,7 +25,7 @@ import com.google.greaze.definition.internal.utils.GreazePreconditions;
 public class ParamMap {
 
   public static class Builder<T extends ParamMapSpec> {    
-    protected final Map<String, Object> contents = new LinkedHashMap<String, Object>();
+    protected final Map<String, Object> contents = new HashMap<String, Object>();
     protected final T spec;
 
     public Builder(T spec) {

@@ -20,6 +20,7 @@ import junit.framework.TestCase;
 import com.google.greaze.definition.CallPath;
 import com.google.greaze.definition.CallPathParser;
 import com.google.greaze.definition.rest.RestResourceImpl;
+import com.google.greaze.definition.rest.WebContext;
 import com.google.greaze.rest.client.fixtures.RestClientStubClientSideFake;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
@@ -45,7 +46,7 @@ public class ResourceDepotClientTest extends TestCase {
 
   public void testPost() throws Exception {
     MyResource sent = new MyResource(10);
-    MyResource received = client.post(sent);
+    MyResource received = client.post(sent, new WebContext());
     assertEquals(sent.value, received.value);
   }
 

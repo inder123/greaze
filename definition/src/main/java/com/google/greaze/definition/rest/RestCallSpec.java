@@ -25,6 +25,7 @@ import java.lang.reflect.Type;
 import java.util.Arrays;
 import java.util.LinkedHashSet;
 import java.util.Set;
+import java.util.Map.Entry;
 
 /**
  * Specification for a REST service
@@ -64,6 +65,15 @@ public final class RestCallSpec extends WebServiceCallSpec {
 
     public <T> Builder addResponseParam(TypedKey<T> param) {
       resParamsSpecBuilder.put(param.getName(), param.getClassOfT());
+      return this;
+    }
+
+    public Builder addAll(WebContextSpec webContextSpec) {
+      if (webContextSpec != null) {
+        for (Entry<String,Type> entry : webContextSpec.getRequestHeaderSpec().entrySet()) {
+          reqParamsSpecBuilder.put(entry.getKey(), entry.getValue());
+        }
+      }
       return this;
     }
 

@@ -28,6 +28,7 @@ import com.google.greaze.definition.rest.RestRequestBase;
 import com.google.greaze.definition.rest.RestResource;
 import com.google.greaze.definition.rest.RestResponse;
 import com.google.greaze.definition.rest.RestResponseBase;
+import com.google.greaze.definition.rest.WebContextSpec;
 import com.google.greaze.rest.client.ResourceDepotBaseClient;
 import com.google.greaze.rest.server.RestResponseBuilder;
 import com.google.greaze.rest.server.RestResponseSender;
@@ -44,19 +45,22 @@ public class NetworkSwitcherResource<R extends RestResource<R>> extends NetworkS
 
   private final RestResponseBuilder<R> responseBuilder;
   private final Type serverResourceType;
+  private WebContextSpec clientWebContextSpec;
 
   /**
    * @param responseBuilder Rest response builder for the resource
    * @param serverResourceType The Java type for the resource as seen by the server
+   * @param clientWebContextSpec The {@link WebContextSpec} for the client-side
    * @param serverGson Gson instance used for server-side JSON serialization/deserialization
    * @param resourceCallPath The path where the resource is made available.
    *   For example, /resource/order
    */
   public NetworkSwitcherResource(RestResponseBuilder<R> responseBuilder, Type serverResourceType,
-      Gson serverGson, CallPath resourceCallPath) {
+      WebContextSpec clientWebContextSpec, Gson serverGson, CallPath resourceCallPath) {
     super(serverGson, resourceCallPath);
     this.responseBuilder = responseBuilder;
     this.serverResourceType = serverResourceType;
+    this.clientWebContextSpec = clientWebContextSpec;
   }
 
   @SuppressWarnings("unchecked")
@@ -67,7 +71,8 @@ public class NetworkSwitcherResource<R extends RestResource<R>> extends NetworkS
       .setServletPath(conn.getURL().getPath())
       .setInputStream(conn.getForwardForInput());
     CallPath callPath = gsm.getCallPath(req);
-    RestCallSpec spec = ResourceDepotBaseClient.generateRestCallSpec(callPath, serverResourceType);
+    RestCallSpec spec = ResourceDepotBaseClient.generateRestCallSpec(
+        callPath, serverResourceType, clientWebContextSpec);
     ResourceIdFactory<Id<?>> idFactory = gsm.getIDFactory(spec);
     RestRequestBase<Id<R>, R> request = gsm.getRestRequest(serverGson, spec, callPath, req, idFactory);
     RestResponse.Builder<R> response = new RestResponse.Builder<R>(spec.getResponseSpec());

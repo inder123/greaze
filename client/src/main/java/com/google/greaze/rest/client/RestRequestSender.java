@@ -25,11 +25,11 @@ import java.net.HttpURLConnection;
 import java.util.logging.Level;
 
 /**
- * Class to send Web service requests on a {@link HttpURLConnection}.
+ * Class to send a REST requests on a {@link HttpURLConnection}.
  * 
  * @author inder
  */
-public class RestRequestSender extends RequestSender {
+public final class RestRequestSender extends RequestSender {
 
   public RestRequestSender(Gson gson) {
     this(gson, null);

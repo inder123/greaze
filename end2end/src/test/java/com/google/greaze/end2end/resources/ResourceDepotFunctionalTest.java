@@ -21,6 +21,7 @@ import junit.framework.TestCase;
 import com.google.greaze.definition.CallPath;
 import com.google.greaze.definition.CallPathParser;
 import com.google.greaze.definition.rest.Id;
+import com.google.greaze.definition.rest.WebContext;
 import com.google.greaze.end2end.definition.Employee;
 import com.google.greaze.end2end.fixtures.RestClientStubFake;
 import com.google.greaze.rest.client.ResourceDepotClient;
@@ -52,35 +53,35 @@ public class ResourceDepotFunctionalTest extends TestCase {
     this.employees = new RepositoryInMemory<Employee>(Employee.class);
     RestResponseBuilder<Employee> responseBuilder = new RestResponseBuilder<Employee>(employees);
     RestClientStub stub =
-      new RestClientStubFake<Employee>(responseBuilder, Employee.class, gson, RESOURCE_PATH);
+      new RestClientStubFake<Employee>(responseBuilder, Employee.class, null, gson, RESOURCE_PATH);
     this.client = new ResourceDepotClient<Employee>(stub, RESOURCE_PATH, Employee.class, gson);
   }
 
   public void testGet() throws Exception {
     Id<Employee> id = Id.get("1", Employee.class);
     employees.put(new Employee(id, "bob"));
-    Employee e = client.get(id);
+    Employee e = client.get(id, new WebContext());
     assertEquals("bob", e.getName());
   }
 
   public void testPost() throws Exception {
-    Employee e = client.post(new Employee("bob"));
+    Employee e = client.post(new Employee("bob"), new WebContext());
     assertEquals("bob", e.getName());
     assertTrue(Id.isValid(e.getId()));
   }
 
   public void testPut() throws Exception {
-    Employee bob = client.post(new Employee("bob"));
+    Employee bob = client.post(new Employee("bob"), new WebContext());
     assertEquals("bob", bob.getName());
-    Employee sam = client.put(new Employee(bob.getId(), "sam"));
+    Employee sam = client.put(new Employee(bob.getId(), "sam"), new WebContext());
     assertEquals("sam", sam.getName());
     assertEquals(bob.getId(), sam.getId());
   }
 
   public void testDelete() throws Exception {
-    Employee bob = client.post(new Employee("bob"));
+    Employee bob = client.post(new Employee("bob"), new WebContext());
     assertEquals("bob", bob.getName());
-    client.delete(bob.getId());
-    assertNull(client.get(bob.getId()));
+    client.delete(bob.getId(), new WebContext());
+    assertNull(client.get(bob.getId(), new WebContext()));
   }
 }

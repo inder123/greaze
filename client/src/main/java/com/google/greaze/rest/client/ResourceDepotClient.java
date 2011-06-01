@@ -22,6 +22,7 @@ import com.google.greaze.definition.rest.Id;
 import com.google.greaze.definition.rest.ResourceDepot;
 import com.google.greaze.definition.rest.RestCallSpec;
 import com.google.greaze.definition.rest.RestResource;
+import com.google.greaze.definition.rest.WebContextSpec;
 import com.google.gson.Gson;
 
 /**
@@ -40,7 +41,12 @@ public class ResourceDepotClient<R extends RestResource<R>>
    */
   public ResourceDepotClient(RestClientStub stub, CallPath callPath,
       Type resourceType, Gson gson) {
-    super(stub, callPath, resourceType, gson);
+    super(stub, callPath, resourceType, null, gson);
+  }
+
+  public ResourceDepotClient(RestClientStub stub, CallPath callPath,
+      Type resourceType, WebContextSpec webContextSpec, Gson gson) {
+    super(stub, callPath, resourceType, webContextSpec, gson);
   }
 
   protected ResourceDepotClient(RestClientStub stub, Type resourceType,
