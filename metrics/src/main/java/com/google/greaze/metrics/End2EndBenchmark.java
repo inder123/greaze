@@ -22,6 +22,7 @@ import com.google.common.base.Preconditions;
 import com.google.greaze.definition.CallPath;
 import com.google.greaze.definition.CallPathParser;
 import com.google.greaze.definition.rest.Id;
+import com.google.greaze.definition.rest.WebContext;
 import com.google.greaze.end2end.definition.Employee;
 import com.google.greaze.end2end.fixtures.RestClientStubFake;
 import com.google.greaze.rest.client.ResourceDepotClient;
@@ -43,6 +44,7 @@ public class End2EndBenchmark extends SimpleBenchmark {
     new CallPathParser("/rest", false, "/employee").parse("/rest/employee");
   private ResourceDepotClient<Employee> client;
   private Repository<Employee> employees;
+  private WebContext context;
 
   public static void main(String[] args) {
     Runner.main(End2EndBenchmark.class, args);
@@ -57,22 +59,23 @@ public class End2EndBenchmark extends SimpleBenchmark {
     this.employees = new RepositoryInMemory<Employee>(Employee.class);
     RestResponseBuilder<Employee> responseBuilder = new RestResponseBuilder<Employee>(employees);
     RestClientStub stub =
-      new RestClientStubFake<Employee>(responseBuilder, Employee.class, gson, RESOURCE_PATH);
+      new RestClientStubFake<Employee>(responseBuilder, Employee.class, null, gson, RESOURCE_PATH);
     this.client = new ResourceDepotClient<Employee>(stub, RESOURCE_PATH, Employee.class, gson);
+    this.context = new WebContext();
   }
 
   public void timeGet(int reps) throws Exception {
     for (int i=0; i<reps; ++i) {
       Id<Employee> id = Id.get(String.valueOf(i), Employee.class);
       employees.put(new Employee(id, "bob"));
-      Employee e = client.get(id);
+      Employee e = client.get(id, context);
       Preconditions.checkArgument("bob".equals(e.getName()));
     }
   }
 
   public void timePost(int reps) throws Exception {
     for (int i=0; i<reps; ++i) {
-      Employee e = client.post(new Employee("bob"));
+      Employee e = client.post(new Employee("bob"), context);
       Preconditions.checkArgument("bob".equals(e.getName()));
       Preconditions.checkArgument(Id.isValid(e.getId()));
     }
@@ -80,9 +83,9 @@ public class End2EndBenchmark extends SimpleBenchmark {
 
   public void timePut(int reps) throws Exception {
     for (int i=0; i<reps; ++i) {
-      Employee bob = client.post(new Employee("bob"));
+      Employee bob = client.post(new Employee("bob"), context);
       Preconditions.checkArgument("bob".equals(bob.getName()));
-      Employee sam = client.put(new Employee(bob.getId(), "sam"));
+      Employee sam = client.put(new Employee(bob.getId(), "sam"), context);
       Preconditions.checkArgument("sam".equals(sam.getName()));
       Preconditions.checkArgument(bob.getId().equals(sam.getId()));
     }
@@ -90,10 +93,10 @@ public class End2EndBenchmark extends SimpleBenchmark {
 
   public void timeDelete(int reps) throws Exception {
     for (int i=0; i<reps; ++i) {
-      Employee bob = client.post(new Employee("bob"));
+      Employee bob = client.post(new Employee("bob"), context);
       Preconditions.checkArgument("bob".equals(bob.getName()));
-      client.delete(bob.getId());
-      Preconditions.checkArgument(client.get(bob.getId()) == null);
+      client.delete(bob.getId(), context);
+      Preconditions.checkArgument(client.get(bob.getId(), context) == null);
     }
   }
 }
