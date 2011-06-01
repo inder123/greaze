@@ -15,6 +15,8 @@
  */
 package com.google.greaze.rest.client;
 
+import java.lang.reflect.Type;
+
 import com.google.greaze.definition.CallPath;
 import com.google.greaze.definition.HeaderMap;
 import com.google.greaze.definition.HttpMethod;
@@ -27,9 +29,9 @@ import com.google.greaze.definition.rest.RestRequestBase;
 import com.google.greaze.definition.rest.RestRequestSpec;
 import com.google.greaze.definition.rest.RestResourceBase;
 import com.google.greaze.definition.rest.RestResponseBase;
+import com.google.greaze.definition.rest.WebContext;
+import com.google.greaze.definition.rest.WebContextSpec;
 import com.google.gson.Gson;
-
-import java.lang.reflect.Type;
 
 /**
  * A client class to access a rest resource
@@ -49,8 +51,8 @@ public class ResourceDepotBaseClient<I extends ResourceId, R extends RestResourc
    * @param resourceType Class for the resource. Such as Cart.class
    */
   public ResourceDepotBaseClient(RestClientStub stub, CallPath callPath,
-      Type resourceType, Gson gson) {
-    this(stub, resourceType, generateRestCallSpec(callPath, resourceType), gson);
+      Type resourceType, WebContextSpec webContextSpec, Gson gson) {
+    this(stub, resourceType, generateRestCallSpec(callPath, resourceType, webContextSpec), gson);
   }
 
   protected ResourceDepotBaseClient(RestClientStub stub, Type resourceType,
@@ -61,14 +63,21 @@ public class ResourceDepotBaseClient<I extends ResourceId, R extends RestResourc
     this.gson = gson;
   }
 
-  public static <T> RestCallSpec generateRestCallSpec(CallPath callPath, Type resourceType) {
-    return new RestCallSpec.Builder(callPath, resourceType).build();
+  public static RestCallSpec generateRestCallSpec(
+      CallPath callPath, Type resourceType, WebContextSpec webContextSpec) {
+    return new RestCallSpec.Builder(callPath, resourceType)
+      .addAll(webContextSpec)
+      .build();
   }
 
   @Override
-  public R get(I resourceId) {
+  public R get(I resourceId, WebContext context) {
     RestRequestSpec requestSpec = callSpec.getRequestSpec();
-    HeaderMap requestHeaders = new HeaderMap.Builder(requestSpec.getHeadersSpec()).build();
+    HeaderMap.Builder requestHeadersBuilder = new HeaderMap.Builder(requestSpec.getHeadersSpec());
+    if (context != null) {
+      context.populate(requestHeadersBuilder);
+    }
+    HeaderMap requestHeaders = requestHeadersBuilder.build();
     UrlParamsSpec urlParamsSpec = new UrlParamsSpec.Builder().build();
     UrlParams urlParams = new UrlParams.Builder(urlParamsSpec).build();
     RestRequestBase<I, R> request = new RestRequestBase<I, R>(
@@ -78,9 +87,13 @@ public class ResourceDepotBaseClient<I extends ResourceId, R extends RestResourc
   }
 
   @Override
-  public R post(R resource) {
+  public R post(R resource, WebContext context) {
     RestRequestSpec requestSpec = callSpec.getRequestSpec();
-    HeaderMap requestHeaders = new HeaderMap.Builder(requestSpec.getHeadersSpec()).build();
+    HeaderMap.Builder requestHeadersBuilder = new HeaderMap.Builder(requestSpec.getHeadersSpec());
+    if (context != null) {
+      context.populate(requestHeadersBuilder);
+    }
+    HeaderMap requestHeaders = requestHeadersBuilder.build();
     UrlParamsSpec urlParamsSpec = new UrlParamsSpec.Builder().build();
     UrlParams urlParams = new UrlParams.Builder(urlParamsSpec).build();
     RestRequestBase<I, R> request = new RestRequestBase<I, R>(
@@ -90,9 +103,13 @@ public class ResourceDepotBaseClient<I extends ResourceId, R extends RestResourc
   }
 
   @Override
-  public R put(R resource) {
+  public R put(R resource, WebContext context) {
     RestRequestSpec requestSpec = callSpec.getRequestSpec();
-    HeaderMap requestHeaders = new HeaderMap.Builder(requestSpec.getHeadersSpec()).build();
+    HeaderMap.Builder requestHeadersBuilder = new HeaderMap.Builder(requestSpec.getHeadersSpec());
+    if (context != null) {
+      context.populate(requestHeadersBuilder);
+    }
+    HeaderMap requestHeaders = requestHeadersBuilder.build();
     UrlParamsSpec urlParamsSpec = new UrlParamsSpec.Builder().build();
     UrlParams urlParams = new UrlParams.Builder(urlParamsSpec).build();
     RestRequestBase<I, R> request = new RestRequestBase<I, R>(
@@ -102,9 +119,13 @@ public class ResourceDepotBaseClient<I extends ResourceId, R extends RestResourc
   }
 
   @Override
-  public void delete(I resourceId) {
+  public void delete(I resourceId, WebContext context) {
     RestRequestSpec requestSpec = callSpec.getRequestSpec();
-    HeaderMap requestHeaders = new HeaderMap.Builder(requestSpec.getHeadersSpec()).build();
+    HeaderMap.Builder requestHeadersBuilder = new HeaderMap.Builder(requestSpec.getHeadersSpec());
+    if (context != null) {
+      context.populate(requestHeadersBuilder);
+    }
+    HeaderMap requestHeaders = requestHeadersBuilder.build();
     UrlParamsSpec urlParamsSpec = new UrlParamsSpec.Builder().build();
     UrlParams urlParams = new UrlParams.Builder(urlParamsSpec).build();
     RestRequestBase<I, R> request = new RestRequestBase<I, R>(

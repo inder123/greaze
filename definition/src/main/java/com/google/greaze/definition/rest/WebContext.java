@@ -15,8 +15,12 @@
  */
 package com.google.greaze.definition.rest;
 
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Map.Entry;
+
+import com.google.greaze.definition.HeaderMap;
 import com.google.greaze.definition.TypedKey;
-import com.google.greaze.definition.TypedKeyMap;
 
 /**
  * The context consist of certain headers pulled out for convenience.
@@ -26,17 +30,43 @@ import com.google.greaze.definition.TypedKeyMap;
  * @author Inderjeet Singh
  */
 public class WebContext {
-  private final TypedKeyMap map;
+  public static final class Builder {
+    private final Map<String, Object> map = new HashMap<String, Object>();
+    public <T> Builder put(TypedKey<T> key, T value) {
+      map.put(key.getName(), value);
+      return this;
+    }
+    public WebContext build() {
+      return new WebContext(map);
+    }
+  }
+  private final Map<String, Object> map;
 
   public WebContext() {
-    this(new TypedKeyMap());
+    this(new HashMap<String, Object>());
   }
 
-  public WebContext(TypedKeyMap map) {
+  private WebContext(Map<String, Object> map) {
     this.map = map;
   }
 
+  @SuppressWarnings("unchecked")
   public <T> T get(TypedKey<T> key) {
-    return map.get(key);
+    return (T) map.get(key.getName());
   }
+
+  /**
+   * Populates the specified builder with all the entries present in this context
+   */
+  public void populate(HeaderMap.Builder builder) {
+    for (Entry<String, Object> entry : map.entrySet()) {
+      builder.put(entry.getKey(), entry.getValue());
+    }
+  }
+
+  @Override
+  public String toString() {
+    return map.toString();
+  }
+
 }

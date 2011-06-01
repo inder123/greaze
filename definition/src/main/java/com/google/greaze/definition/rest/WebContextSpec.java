@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2010 Google Inc.
+ * Copyright (C) 2011 Google Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,21 +15,21 @@
  */
 package com.google.greaze.definition.rest;
 
+import com.google.greaze.definition.HeaderMapSpec;
+
 /**
- * A place to access a REST resource for GET, PUT, POST, DELETE
+ * Specification for a {@link WebContext}
  *
  * @author Inderjeet Singh
- *
- * @param <I> Id type of the resource
- * @param <R> The resource
  */
-public interface ResourceDepotBase<I extends ResourceId, R extends RestResourceBase<I, R>> {
+public final class WebContextSpec {
+  private final HeaderMapSpec requestHeaderSpec;
 
-  public R get(I resourceId, WebContext context);
+  public WebContextSpec(HeaderMapSpec requestHeaderSpec) {
+    this.requestHeaderSpec = requestHeaderSpec;
+  }
 
-  public R post(R resource, WebContext context);
-
-  public R put(R resource, WebContext context);
-
-  public void delete(I resourceId, WebContext context);
+  public HeaderMapSpec getRequestHeaderSpec() {
+    return requestHeaderSpec;
+  }
 }
