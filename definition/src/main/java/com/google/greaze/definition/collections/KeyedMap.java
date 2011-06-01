@@ -18,8 +18,6 @@ package com.google.greaze.definition.collections;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Set;
-import java.util.Map.Entry;
 
 import com.google.greaze.definition.rest.Id;
 
@@ -66,10 +64,6 @@ public class KeyedMap<R, V> {
 
   public boolean containsValue(V value) {
     return map.containsValue(value);
-  }
-
-  public Set<Entry<String, V>> entrySet() {
-    return map.entrySet();
   }
 
   public boolean isEmpty() {
