@@ -16,8 +16,8 @@
 package com.google.greaze.definition.collections;
 
 import java.util.Collection;
-import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
 import com.google.greaze.definition.rest.Id;
 
@@ -27,29 +27,29 @@ import com.google.greaze.definition.rest.Id;
  * @author Inderjeet Singh
  */
 public class KeyedMap<R, V> {
-  protected final Map<String, V> map = new HashMap<String, V>();
+  protected final Map<String, V> map = new ConcurrentHashMap<String, V>();
 
-  public synchronized V get(Id<R> key) {
+  public  V get(Id<R> key) {
     return map.get(key.getValue());
   }
 
-  public synchronized V put(Id<R> key, V value) {
+  public V put(Id<R> key, V value) {
     return map.put(key.getValue(), value);
   }
 
-  public synchronized V put(String key, V value) {
+  public V put(String key, V value) {
     return map.put(key, value);
   }
 
-  public synchronized void remove(Id<R> key) {
+  public void remove(Id<R> key) {
     map.remove(key.getValue());
   }
 
-  public synchronized boolean containsKey(Id<R> key) {
+  public boolean containsKey(Id<R> key) {
     return key == null ? null : map.containsKey(key.getValue());
   }
 
-  public synchronized boolean containsKey(String key) {
+  public boolean containsKey(String key) {
     return key == null ? null : map.containsKey(key);
   }
 
