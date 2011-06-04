@@ -37,12 +37,15 @@ public final class Repositories {
    * @param repo A repository for the resources
    * @return A list of resources corresponding to the specified ids. The resources are
    *   returned in the order of the ids. If an id doesn't have a corresponding resource,
-   *   null is returned instead. 
+   *   it is skipped. 
    */
   public static <R extends HasId<Id<R>>> List<R> load(Collection<Id<R>> ids, Repository<R> repo) {
     List<R> resources = Lists.newArrayList();
     for (Id<R> resourceId : ids) {
-      resources.add(repo.get(resourceId));
+      R resource = repo.get(resourceId);
+      if (resource != null) {
+        resources.add(resource);
+      }
     }
     return resources;
   }
