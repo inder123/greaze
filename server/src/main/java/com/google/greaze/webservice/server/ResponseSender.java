@@ -24,6 +24,7 @@ import javax.servlet.http.HttpServletResponse;
 
 import com.google.greaze.definition.HeaderMap;
 import com.google.greaze.definition.HeaderMapSpec;
+import com.google.greaze.definition.WebServiceSystemException;
 import com.google.greaze.definition.webservice.ResponseBody;
 import com.google.greaze.definition.webservice.WebServiceResponse;
 import com.google.gson.Gson;
@@ -47,7 +48,7 @@ public class ResponseSender {
       sendHeaders(conn, response.getHeaders());
       sendBody(conn, response.getBody());
     } catch (IOException e) {
-      throw new RuntimeException(e);
+      throw new WebServiceSystemException(e);
     }
   }
  
