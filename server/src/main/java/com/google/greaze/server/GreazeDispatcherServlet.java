@@ -55,25 +55,31 @@ public class GreazeDispatcherServlet extends HttpServlet {
   @Override
   public void service(HttpServletRequest req, HttpServletResponse res) throws IOException {
     try {
-      CallPath callPath = injector.getInstance(CallPath.class);
-      if (callPath.equals(CallPath.NULL_PATH)) {
-        throw new WebServiceSystemException(
-            ErrorReason.INVALID_CALLPATH, req.getServletPath());
-      }
-      String queryName = RequestType.getQueryName(req.getParameterMap());
-      RequestType requestType = RequestType.getRequestType(callPath, queryName, resourcePrefix);
-      switch (requestType) {
-      case RESOURCE_ACCESS:
-        injector.getInstance(ResourceDepotDispatcher.class).service(res);
-        break;
-      case RESOURCE_QUERY:
-        injector.getInstance(ResourceQueryDispatcher.class).service(req, res, queryName, callPath);
-        break;
-      case WEBSERVICE:
-        injector.getInstance(WebServiceDispatcher.class).service(req, res);
-        break;
-      default:
-        throw new UnsupportedOperationException();
+      try {
+        CallPath callPath = injector.getInstance(CallPath.class);
+        if (callPath.equals(CallPath.NULL_PATH)) {
+          throw new WebServiceSystemException(
+              ErrorReason.INVALID_CALLPATH, req.getServletPath());
+        }
+        String queryName = RequestType.getQueryName(req.getParameterMap());
+        RequestType requestType = RequestType.getRequestType(callPath, queryName, resourcePrefix);
+        switch (requestType) {
+          case RESOURCE_ACCESS:
+            injector.getInstance(ResourceDepotDispatcher.class).service(res);
+            break;
+          case RESOURCE_QUERY:
+            injector.getInstance(ResourceQueryDispatcher.class).service(req, res, queryName, callPath);
+            break;
+          case WEBSERVICE:
+            injector.getInstance(WebServiceDispatcher.class).service(req, res);
+            break;
+          default:
+            throw new UnsupportedOperationException();
+        }
+      } catch (IllegalArgumentException e) {
+        throw new WebServiceSystemException(e);
+      } catch (NullPointerException e) {
+        throw new WebServiceSystemException(e);
       }
     } catch (WebServiceSystemException e) {
       ErrorReason reason = e.getReason();

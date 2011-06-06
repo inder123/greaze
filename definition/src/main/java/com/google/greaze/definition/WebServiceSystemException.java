@@ -38,7 +38,11 @@ public class WebServiceSystemException extends RuntimeException {
   }
 
   public WebServiceSystemException(IllegalArgumentException e) {
-    this(ErrorReason.PRECONDITION_FAILED, e);
+    this(ErrorReason.PRECONDITION_FAILED, e.getMessage(), e);
+  }
+
+  public WebServiceSystemException(NullPointerException e) {
+    this(ErrorReason.PRECONDITION_FAILED, e.getMessage(), e);
   }
 
   public WebServiceSystemException(JsonParseException e) {
