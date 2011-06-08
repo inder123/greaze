@@ -168,7 +168,6 @@ public final class $GreazeTypes {
         return false;
       }
 
-      // TODO: save a .clone() call
       ParameterizedType pa = (ParameterizedType) a;
       ParameterizedType pb = (ParameterizedType) b;
       return equal(pa.getOwnerType(), pb.getOwnerType())
