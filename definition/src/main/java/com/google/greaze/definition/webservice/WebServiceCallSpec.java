@@ -193,7 +193,11 @@ public class WebServiceCallSpec {
   public RequestSpec getRequestSpec() {
     return requestSpec;
   }
-  
+
+  public boolean hasVersion() {
+    return version != CallPath.IGNORE_VERSION;
+  }
+
   public double getVersion() {
     return version;
   }

@@ -25,7 +25,7 @@ import com.google.greaze.definition.internal.utils.GreazeStrings;
 public final class CallPath {
 
   /** Visible for testing only */
-  static final double IGNORE_VERSION = -1D;
+  public static final double IGNORE_VERSION = -1D;
   public static final CallPath NULL_PATH = new CallPath(null, IGNORE_VERSION, null, null);
 
   private final String basePath;
@@ -139,7 +139,7 @@ public final class CallPath {
 
   @Override
   public String toString() {
-    return String.format("basePath: %s, version:%2.f, servicePath:%s, resourceId: %d",
+    return String.format("basePath: %s, version:%.2f, servicePath:%s, resourceId: %d",
         basePath, version, servicePath, resourceId);
   }
 }

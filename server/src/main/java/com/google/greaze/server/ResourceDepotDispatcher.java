@@ -21,6 +21,7 @@ import com.google.common.base.Preconditions;
 import com.google.greaze.definition.rest.RestCallSpec;
 import com.google.greaze.definition.rest.RestRequestBase;
 import com.google.greaze.definition.rest.RestResponseBase;
+import com.google.greaze.definition.rest.WebContext;
 import com.google.greaze.rest.server.RestResponseBaseBuilder;
 import com.google.greaze.rest.server.RestResponseSender;
 import com.google.gson.Gson;
@@ -48,7 +49,8 @@ public final class ResourceDepotDispatcher {
     RestRequestBase<?, ?> restRequest = injector.getInstance(RestRequestBase.class);
     RestResponseBase.Builder response = new RestResponseBase.Builder(callSpec.getResponseSpec());
     RestResponseBaseBuilder responseBuilder = injector.getInstance(RestResponseBaseBuilder.class);
-    responseBuilder.buildResponse(restRequest, response);
+    WebContext context = injector.getInstance(WebContext.class);
+    responseBuilder.buildResponse(context, restRequest, response);
     RestResponseBase webServiceResponse = response.build();
     RestResponseSender responseSender = new RestResponseSender(gson);
     responseSender.send(res, webServiceResponse);

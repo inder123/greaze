@@ -28,8 +28,12 @@ import com.google.greaze.definition.rest.ResourceIdFactory;
 import com.google.greaze.definition.rest.RestCallSpec;
 import com.google.greaze.definition.rest.RestCallSpecMap;
 import com.google.greaze.definition.rest.RestRequestBase;
+import com.google.greaze.definition.rest.WebContext;
+import com.google.greaze.rest.server.ResponseBuilderMap;
 import com.google.greaze.rest.server.RestRequestBaseReceiver;
+import com.google.greaze.rest.server.RestResponseBaseBuilder;
 import com.google.greaze.server.GreazeDispatcherServlet;
+import com.google.greaze.server.internal.utils.WebContextExtractor;
 import com.google.gson.Gson;
 import com.google.inject.Provides;
 import com.google.inject.Singleton;
@@ -101,6 +105,21 @@ public class GreazeServerModule extends ServletModule {
   public RestCallSpec getRestCallSpec(RestCallSpecMap restCallSpecMap, CallPath callPath) {
     RestCallSpec restCallSpec = restCallSpecMap.get(callPath);
     return restCallSpec.createCopy(callPath);
+  }
+
+  @RequestScoped
+  @SuppressWarnings("unchecked")
+  @Provides
+  public RestResponseBaseBuilder getResponseBuilder(
+      RestCallSpec callSpec, ResponseBuilderMap responseBuilders) {
+    return responseBuilders.get(callSpec.getResourceType());
+  }
+
+  @RequestScoped
+  @Provides
+  public WebContext getWebContext(HttpServletRequest request, RestCallSpec spec, Gson gson) {
+    WebContextExtractor extractor = new WebContextExtractor(spec.getWebContextSpec(), gson);
+    return extractor.extract(request);
   }
 
   @RequestScoped

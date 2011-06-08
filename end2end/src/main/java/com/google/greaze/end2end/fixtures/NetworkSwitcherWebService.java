@@ -15,7 +15,8 @@
  */
 package com.google.greaze.end2end.fixtures;
 
-import com.google.common.collect.ImmutableList;
+import java.util.Collection;
+
 import com.google.greaze.definition.CallPath;
 import com.google.greaze.definition.fixtures.NetworkSwitcherPiped;
 import com.google.greaze.server.inject.GreazeServerModule;
@@ -33,10 +34,16 @@ public class NetworkSwitcherWebService extends NetworkSwitcherPiped {
 
   /**
    * @param serverGson Gson instance used for server-side JSON serialization/deserialization
-   * @param callPath The path where the web-service is made available
+   * @param servicePaths All the paths for the resources available on the server. Same as
+   *   servicePaths parameter for
+   *   {@link GreazeServerModule#GreazeServerModule(String, Collection, String)}
+   * @param resourcePrefix the resource prefix after the path to Servlet. For example, /resource
+   *   for /myshop/resource/1.0/order. Same as resourcePrefix parameter for
+   *   {@link GreazeServerModule#GreazeServerModule(String, Collection, String)}
    */
-  public NetworkSwitcherWebService(Gson serverGson, CallPath callPath) {
+  public NetworkSwitcherWebService(Gson serverGson, Collection<CallPath> servicePaths,
+      String resourcePrefix) {
     this.serverGson = serverGson;
-    this.gsm = new GreazeServerModule("/fake", ImmutableList.of(callPath), callPath.getBasePath());
+    this.gsm = new GreazeServerModule("/fake", servicePaths, resourcePrefix);
   }
 }

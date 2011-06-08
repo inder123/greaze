@@ -49,7 +49,7 @@ public class ResourceDepotClient<R extends RestResource<R>>
     super(stub, callPath, resourceType, webContextSpec, gson);
   }
 
-  protected ResourceDepotClient(RestClientStub stub, Type resourceType,
+  public ResourceDepotClient(RestClientStub stub, Type resourceType,
       RestCallSpec callSpec, Gson gson) {
     super(stub, resourceType, callSpec, gson);
   }
