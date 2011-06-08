@@ -15,6 +15,11 @@
  */
 package com.google.greaze.rest.client;
 
+import java.net.HttpURLConnection;
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.util.logging.Level;
+
 import com.google.greaze.definition.WebServiceSystemException;
 import com.google.greaze.definition.rest.Id;
 import com.google.greaze.definition.rest.ResourceId;
@@ -29,11 +34,6 @@ import com.google.greaze.webservice.client.ServerConfig;
 import com.google.greaze.webservice.client.WebServiceClient;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
-
-import java.net.HttpURLConnection;
-import java.net.MalformedURLException;
-import java.net.URL;
-import java.util.logging.Level;
 
 /**
  * A stub to access the rest service
@@ -51,12 +51,7 @@ public class RestClientStub extends WebServiceClient {
   }
   
   private <I extends ResourceId> URL getWebServiceUrl(RestCallSpec callSpec, ResourceId id) {
-    double version = callSpec.getVersion();
-    StringBuilder url = new StringBuilder(config.getServiceBaseUrl());
-    if (version != -1D) {
-      url.append('/').append(version);
-    }
-    url.append(callSpec.getPath().getServicePath());
+    StringBuilder url = new StringBuilder(buildBasePath(callSpec));
     if (id != null && id.getValue() != null) {
       url.append('/').append(id.getValue());
     }
@@ -66,7 +61,7 @@ public class RestClientStub extends WebServiceClient {
       throw new RuntimeException(e);
     }
   }
-  
+
   public <R extends RestResource<R>> RestResponse<R> getResponse(
       RestCallSpec callSpec, RestRequest<R> request) {
     return (RestResponse<R>) getResponse(callSpec, (RestRequestBase<Id<R>, R>)request);
