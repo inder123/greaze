@@ -51,7 +51,7 @@ public class WebServiceClient {
   
   /** Visible for testing only */
   URL getWebServiceUrl(WebServiceCallSpec callSpec, WebServiceRequest request, Gson gson) {
-    String baseUrl = new String(config.getServiceBaseUrl() + callSpec.getPath().getServicePath());
+    String baseUrl = buildBasePath(callSpec);
     try {
       String urlParamString = new UrlParamStringBuilder(gson)
         .add(request.getUrlParameters())
@@ -62,6 +62,15 @@ public class WebServiceClient {
     }
   }
 
+  protected String buildBasePath(WebServiceCallSpec callSpec) {
+    StringBuilder url = new StringBuilder(config.getServiceBaseUrl());
+    if (callSpec.hasVersion()) {
+      url.append('/').append(callSpec.getVersion());
+    }
+    url.append(callSpec.getPath().getServicePath());
+    return url.toString();
+  }
+  
   public WebServiceResponse getResponse(
       WebServiceCallSpec callSpec, WebServiceRequest request, Gson gson) {
     HttpURLConnection conn = null;
