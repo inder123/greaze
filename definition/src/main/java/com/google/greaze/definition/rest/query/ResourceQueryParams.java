@@ -19,6 +19,7 @@ import com.google.greaze.definition.CallPath;
 import com.google.greaze.definition.HttpMethod;
 import com.google.greaze.definition.rest.WebContextSpec;
 import com.google.greaze.definition.webservice.WebServiceCallSpec;
+import com.google.greaze.definition.webservice.WebServiceCallSpec.Builder;
 
 import java.lang.reflect.Type;
 
@@ -44,11 +45,15 @@ public class ResourceQueryParams {
 
   public static WebServiceCallSpec generateCallSpec(CallPath callPath, Type resourceType,
     Type resourceQueryParamsType, WebContextSpec webContextSpec) {
-    return new WebServiceCallSpec.Builder(callPath)
+    Builder builder = new WebServiceCallSpec.Builder(callPath)
       .addAllRequestParams(webContextSpec.getRequestHeaderSpec())
       .setListBody(resourceType)
       .setUrlParams(resourceQueryParamsType)
-      .supportsHttpMethod(HttpMethod.GET)
+      .supportsHttpMethod(HttpMethod.GET);
+    if (callPath.hasVersion()) {
+      builder.setVersion(callPath.getVersion());
+    }
+    return builder
       .build();
   }
 }
