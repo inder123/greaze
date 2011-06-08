@@ -18,16 +18,21 @@ package com.google.greaze.end2end.resources;
 
 import junit.framework.TestCase;
 
+import com.google.common.collect.ImmutableList;
 import com.google.greaze.definition.CallPath;
 import com.google.greaze.definition.CallPathParser;
 import com.google.greaze.definition.rest.Id;
+import com.google.greaze.definition.rest.RestCallSpec;
+import com.google.greaze.definition.rest.RestCallSpecMap;
 import com.google.greaze.definition.rest.WebContext;
 import com.google.greaze.end2end.definition.Employee;
 import com.google.greaze.end2end.fixtures.RestClientStubFake;
+import com.google.greaze.rest.client.ResourceDepotBaseClient;
 import com.google.greaze.rest.client.ResourceDepotClient;
 import com.google.greaze.rest.client.RestClientStub;
 import com.google.greaze.rest.server.Repository;
 import com.google.greaze.rest.server.RepositoryInMemory;
+import com.google.greaze.rest.server.ResponseBuilderMap;
 import com.google.greaze.rest.server.RestResponseBuilder;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
@@ -39,8 +44,9 @@ import com.google.gson.GsonBuilder;
  */
 public class ResourceDepotFunctionalTest extends TestCase {
 
+  private static final String RESOURCE_PREFIX = "/rest";
   private static final CallPath RESOURCE_PATH =
-    new CallPathParser("/rest", false, "/employee").parse("/rest/employee");
+    new CallPathParser(RESOURCE_PREFIX, false, "/employee").parse(RESOURCE_PREFIX + "/employee");
   private ResourceDepotClient<Employee> client;
   private Repository<Employee> employees;
 
@@ -52,8 +58,16 @@ public class ResourceDepotFunctionalTest extends TestCase {
       .create();
     this.employees = new RepositoryInMemory<Employee>(Employee.class);
     RestResponseBuilder<Employee> responseBuilder = new RestResponseBuilder<Employee>(employees);
-    RestClientStub stub =
-      new RestClientStubFake<Employee>(responseBuilder, Employee.class, null, gson, RESOURCE_PATH);
+    RestCallSpec employeeRestCallSpec =
+      ResourceDepotBaseClient.generateRestCallSpec(RESOURCE_PATH, Employee.class, null);
+    RestCallSpecMap restCallSpecMap = new RestCallSpecMap.Builder()
+      .set(RESOURCE_PATH, employeeRestCallSpec)
+      .build();
+    ResponseBuilderMap responseBuilders = new ResponseBuilderMap.Builder()
+      .set(Employee.class, responseBuilder)
+      .build();
+    RestClientStub stub = new RestClientStubFake(
+        responseBuilders, restCallSpecMap, gson, ImmutableList.of(RESOURCE_PATH), RESOURCE_PREFIX);
     this.client = new ResourceDepotClient<Employee>(stub, RESOURCE_PATH, Employee.class, gson);
   }
 

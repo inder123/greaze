@@ -29,6 +29,12 @@ public final class GreazePreconditions {
     }
   }
 
+  public static void checkNull(Object obj) {
+    if (obj != null) {
+      throw new IllegalArgumentException();
+    }
+  }
+
   public static void checkNotNull(Object obj) {
     if (obj == null) {
       throw new IllegalArgumentException();

@@ -19,6 +19,7 @@ import com.google.greaze.definition.CallPath;
 import com.google.greaze.definition.HeaderMapSpec;
 import com.google.greaze.definition.HttpMethod;
 import com.google.greaze.definition.TypedKey;
+import com.google.greaze.definition.internal.utils.GreazePreconditions;
 import com.google.greaze.definition.webservice.WebServiceCallSpec;
 
 import java.lang.reflect.Type;
@@ -38,6 +39,7 @@ public final class RestCallSpec extends WebServiceCallSpec {
     private final Set<HttpMethod> supportedHttpMethods = new LinkedHashSet<HttpMethod>();
     private final HeaderMapSpec.Builder reqParamsSpecBuilder = new HeaderMapSpec.Builder();
     private final HeaderMapSpec.Builder resParamsSpecBuilder = new HeaderMapSpec.Builder();
+    private WebContextSpec webContextSpec;
     private final Type resourceType;
     private double version;
     
@@ -68,7 +70,9 @@ public final class RestCallSpec extends WebServiceCallSpec {
       return this;
     }
 
-    public Builder addAll(WebContextSpec webContextSpec) {
+    public Builder setWebContextSpec(WebContextSpec webContextSpec) {
+      GreazePreconditions.checkNull(this.webContextSpec);
+      this.webContextSpec = webContextSpec;
       if (webContextSpec != null) {
         for (Entry<String,Type> entry : webContextSpec.getRequestHeaderSpec().entrySet()) {
           reqParamsSpecBuilder.put(entry.getKey(), entry.getValue());
@@ -86,16 +90,18 @@ public final class RestCallSpec extends WebServiceCallSpec {
       RestResponseSpec responseSpec =
         new RestResponseSpec(resParamsSpecBuilder.build(), resourceType);
       return new RestCallSpec(supportedHttpMethods, callPath, 
-          requestSpec, responseSpec, resourceType, version);
+          requestSpec, webContextSpec, responseSpec, resourceType, version);
     }
   }
 
   private final Type resourceType;
+  private final WebContextSpec webContextSpec;
 
   private RestCallSpec(Set<HttpMethod> supportedHttpMethods, CallPath path,
-      RestRequestSpec requestSpec, RestResponseSpec responseSpec,
+      RestRequestSpec requestSpec, WebContextSpec webContextSpec, RestResponseSpec responseSpec,
       Type resourceType, double version) {
     super(supportedHttpMethods, path, requestSpec, responseSpec, version);
+    this.webContextSpec = webContextSpec;
     this.resourceType = resourceType;
   }
 
@@ -109,6 +115,10 @@ public final class RestCallSpec extends WebServiceCallSpec {
     return (RestRequestSpec) requestSpec;
   }
 
+  public WebContextSpec getWebContextSpec() {
+    return webContextSpec;
+  }
+
   public Type getResourceType() {
     return resourceType;
   }
@@ -119,7 +129,7 @@ public final class RestCallSpec extends WebServiceCallSpec {
   }
 
   public RestCallSpec createCopy(CallPath callPath) {
-    return new RestCallSpec(supportedHttpMethods, callPath, getRequestSpec(),
+    return new RestCallSpec(supportedHttpMethods, callPath, getRequestSpec(), webContextSpec,
         getResponseSpec(), resourceType, version);
   }
 }

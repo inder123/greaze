@@ -15,16 +15,16 @@
  */
 package com.google.greaze.end2end.fixtures;
 
-import java.lang.reflect.Type;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.util.Collection;
 
 import com.google.greaze.definition.CallPath;
 import com.google.greaze.definition.fixtures.NetworkSwitcher;
-import com.google.greaze.definition.rest.RestResource;
-import com.google.greaze.definition.rest.WebContextSpec;
+import com.google.greaze.definition.rest.RestCallSpecMap;
 import com.google.greaze.rest.client.RestClientStub;
-import com.google.greaze.rest.server.RestResponseBuilder;
+import com.google.greaze.rest.server.ResponseBuilderMap;
+import com.google.greaze.server.inject.GreazeServerModule;
 import com.google.greaze.webservice.client.ServerConfig;
 import com.google.gson.Gson;
 
@@ -33,23 +33,26 @@ import com.google.gson.Gson;
  *
  * @author Inderjeet Singh
  */
-public class RestClientStubFake<R extends RestResource<R>> extends RestClientStub {
+public class RestClientStubFake extends RestClientStub {
 
   private final NetworkSwitcher networkSwitcher;
 
   /**
    * @param responseBuilder Rest response builder for the resource
-   * @param serverResourceType The Java type for the resource as seen by the server
-   * @param clientWebContextSpec The {@link WebContextSpec} for the client-side. Can be null.
+   * @param restCallSpecMap A map of call paths to RestCallSpecs
    * @param serverGson Gson instance used for server-side JSON serialization/deserialization
-   * @param resourcePath The path where the resource is made available.
-   *   For example, /resource/order
+   * @param servicePaths All the paths for the resources available on the server. Same as
+   *   servicePaths parameter for
+   *   {@link GreazeServerModule#GreazeServerModule(String, Collection, String)}
+   * @param resourcePrefix the resource prefix after the path to Servlet. For example, /resource
+   *   for /myshop/resource/1.0/order. Same as resourcePrefix parameter for
+   *   {@link GreazeServerModule#GreazeServerModule(String, Collection, String)}
    */
-  public RestClientStubFake(RestResponseBuilder<R> responseBuilder, Type serverResourceType,
-      /** @Nullable */ WebContextSpec clientWebContextSpec, Gson serverGson, CallPath resourcePath) {
-    super(new ServerConfig("http://localhost/fake" + resourcePath.getPathPrefix()));
-    this.networkSwitcher = new NetworkSwitcherResource<R>(
-        responseBuilder, serverResourceType, clientWebContextSpec, serverGson, resourcePath);
+  public RestClientStubFake(ResponseBuilderMap responseBuilders, RestCallSpecMap restCallSpecMap,
+      Gson serverGson, Collection<CallPath> servicePaths, String resourcePrefix) {
+    super(new ServerConfig("http://localhost/fake" + resourcePrefix));
+    this.networkSwitcher = new NetworkSwitcherResource(
+        responseBuilders, restCallSpecMap, serverGson, servicePaths, resourcePrefix);
   }
 
   @Override

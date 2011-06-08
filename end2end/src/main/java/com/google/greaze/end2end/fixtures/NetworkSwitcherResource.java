@@ -16,7 +16,7 @@
 package com.google.greaze.end2end.fixtures;
 
 import java.io.OutputStream;
-import java.lang.reflect.Type;
+import java.util.Collection;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -24,16 +24,17 @@ import com.google.greaze.definition.CallPath;
 import com.google.greaze.definition.rest.Id;
 import com.google.greaze.definition.rest.ResourceIdFactory;
 import com.google.greaze.definition.rest.RestCallSpec;
+import com.google.greaze.definition.rest.RestCallSpecMap;
 import com.google.greaze.definition.rest.RestRequestBase;
-import com.google.greaze.definition.rest.RestResource;
 import com.google.greaze.definition.rest.RestResponse;
 import com.google.greaze.definition.rest.RestResponseBase;
-import com.google.greaze.definition.rest.WebContextSpec;
-import com.google.greaze.rest.client.ResourceDepotBaseClient;
-import com.google.greaze.rest.server.RestResponseBuilder;
+import com.google.greaze.definition.rest.WebContext;
+import com.google.greaze.rest.server.ResponseBuilderMap;
+import com.google.greaze.rest.server.RestResponseBaseBuilder;
 import com.google.greaze.rest.server.RestResponseSender;
 import com.google.greaze.server.fixtures.HttpServletRequestFake;
 import com.google.greaze.server.fixtures.HttpServletResponseFake;
+import com.google.greaze.server.inject.GreazeServerModule;
 import com.google.gson.Gson;
 
 /**
@@ -41,26 +42,28 @@ import com.google.gson.Gson;
  * 
  * @author Inderjeet Singh
  */
-public class NetworkSwitcherResource<R extends RestResource<R>> extends NetworkSwitcherWebService {
+public class NetworkSwitcherResource extends NetworkSwitcherWebService {
 
-  private final RestResponseBuilder<R> responseBuilder;
-  private final Type serverResourceType;
-  private WebContextSpec clientWebContextSpec;
+  private final ResponseBuilderMap responseBuilders;
+  private final RestCallSpecMap restCallSpecMap;
 
   /**
    * @param responseBuilder Rest response builder for the resource
-   * @param serverResourceType The Java type for the resource as seen by the server
-   * @param clientWebContextSpec The {@link WebContextSpec} for the client-side
+   * @param restCallSpecMap A map of call paths to RestCallSpecs
    * @param serverGson Gson instance used for server-side JSON serialization/deserialization
-   * @param resourceCallPath The path where the resource is made available.
-   *   For example, /resource/order
+   * @param servicePaths All the paths for the resources available on the server. Same as
+   *   servicePaths parameter for
+   *   {@link GreazeServerModule#GreazeServerModule(String, Collection, String)}
+   * @param resourcePrefix the resource prefix after the path to Servlet. For example, /resource
+   *   for /myshop/resource/1.0/order. Same as resourcePrefix parameter for
+   *   {@link GreazeServerModule#GreazeServerModule(String, Collection, String)}
    */
-  public NetworkSwitcherResource(RestResponseBuilder<R> responseBuilder, Type serverResourceType,
-      WebContextSpec clientWebContextSpec, Gson serverGson, CallPath resourceCallPath) {
-    super(serverGson, resourceCallPath);
-    this.responseBuilder = responseBuilder;
-    this.serverResourceType = serverResourceType;
-    this.clientWebContextSpec = clientWebContextSpec;
+  public NetworkSwitcherResource(ResponseBuilderMap responseBuilders,
+      RestCallSpecMap restCallSpecMap, Gson serverGson,
+      Collection<CallPath> servicePaths, String resourcePrefix) {
+    super(serverGson, servicePaths, resourcePrefix);
+    this.responseBuilders = responseBuilders;
+    this.restCallSpecMap = restCallSpecMap;
   }
 
   @SuppressWarnings("unchecked")
@@ -71,12 +74,13 @@ public class NetworkSwitcherResource<R extends RestResource<R>> extends NetworkS
       .setServletPath(conn.getURL().getPath())
       .setInputStream(conn.getForwardForInput());
     CallPath callPath = gsm.getCallPath(req);
-    RestCallSpec spec = ResourceDepotBaseClient.generateRestCallSpec(
-        callPath, serverResourceType, clientWebContextSpec);
+    RestCallSpec spec = gsm.getRestCallSpec(restCallSpecMap, callPath);
     ResourceIdFactory<Id<?>> idFactory = gsm.getIDFactory(spec);
-    RestRequestBase<Id<R>, R> request = gsm.getRestRequest(serverGson, spec, callPath, req, idFactory);
-    RestResponse.Builder<R> response = new RestResponse.Builder<R>(spec.getResponseSpec());
-    responseBuilder.buildResponse(request, response);
+    RestRequestBase<Id<?>, ?> request = gsm.getRestRequest(serverGson, spec, callPath, req, idFactory);
+    RestResponse.Builder<?> response = new RestResponse.Builder(spec.getResponseSpec());
+    WebContext context = gsm.getWebContext(req, spec, serverGson);
+    RestResponseBaseBuilder responseBuilder = gsm.getResponseBuilder(spec, responseBuilders);
+    responseBuilder.buildResponse(context, request, response);
     RestResponseBase webServiceResponse = response.build();
     RestResponseSender responseSender = new RestResponseSender(serverGson);
     OutputStream reverseForOutput = conn.getReverseForOutput();

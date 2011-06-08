@@ -20,6 +20,7 @@ import com.google.greaze.definition.rest.ResourceId;
 import com.google.greaze.definition.rest.RestRequestBase;
 import com.google.greaze.definition.rest.RestResourceBase;
 import com.google.greaze.definition.rest.RestResponseBase;
+import com.google.greaze.definition.rest.WebContext;
 
 public class RestResponseBaseBuilder<I extends ResourceId, R extends RestResourceBase<I, R>> {
   protected final RepositoryBase<I, R> resources;
@@ -28,21 +29,22 @@ public class RestResponseBaseBuilder<I extends ResourceId, R extends RestResourc
     this.resources = resources;
   }
 
-  public void buildResponse(RestRequestBase<I, R> request, RestResponseBase.Builder<I, R> responseBuilder) {
+  public void buildResponse(WebContext context, RestRequestBase<I, R> request,
+      RestResponseBase.Builder<I, R> responseBuilder) {
     HttpMethod method = request.getMethod();
     R responseBody = null;
     switch (method) {
       case GET:
-        responseBody = get(request.getId());
+        responseBody = get(request.getId(), context);
         break;
       case POST:
-        responseBody = post(request.getResource());
+        responseBody = post(request.getResource(), context);
         break;
       case DELETE:
-        delete(request.getId());
+        delete(request.getId(), context);
         break;
       case PUT:
-        responseBody = put(request.getResource());
+        responseBody = put(request.getResource(), context);
         break;
       default:
         throw new IllegalStateException("Unexpected method: " + method);
@@ -50,19 +52,19 @@ public class RestResponseBaseBuilder<I extends ResourceId, R extends RestResourc
     responseBuilder.setBody(responseBody);
   }
 
-  public R get(I resourceId) {
+  public R get(I resourceId, WebContext context) {
     return resources.get(resourceId);
   }
 
-  public R post(R resource) {
+  public R post(R resource, WebContext context) {
     return resources.put(resource);
   }
 
-  public void delete(I resourceId) {
+  public void delete(I resourceId, WebContext context) {
     resources.delete(resourceId);
   }
 
-  public R put(R resource) {
+  public R put(R resource, WebContext context) {
     return resources.put(resource);
   }
 }
