@@ -31,6 +31,7 @@ import com.google.greaze.definition.rest.RestResourceBase;
 import com.google.greaze.definition.rest.RestResponseBase;
 import com.google.greaze.definition.rest.WebContext;
 import com.google.greaze.definition.rest.WebContextSpec;
+import com.google.greaze.definition.rest.RestCallSpec.Builder;
 import com.google.gson.Gson;
 
 /**
@@ -65,9 +66,12 @@ public class ResourceDepotBaseClient<I extends ResourceId, R extends RestResourc
 
   public static RestCallSpec generateRestCallSpec(
       CallPath callPath, Type resourceType, WebContextSpec webContextSpec) {
-    return new RestCallSpec.Builder(callPath, resourceType)
-      .addAll(webContextSpec)
-      .build();
+    Builder builder = new RestCallSpec.Builder(callPath, resourceType)
+      .setWebContextSpec(webContextSpec);
+    if (callPath.hasVersion()) {
+      builder.setVersion(callPath.getVersion());
+    }
+    return builder.build();
   }
 
   @Override
