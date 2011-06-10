@@ -16,6 +16,7 @@
 package com.google.greaze.rest.server;
 
 import java.lang.reflect.Type;
+import java.util.Map;
 
 import com.google.greaze.definition.rest.Id;
 import com.google.greaze.definition.rest.RestResource;
@@ -35,5 +36,13 @@ public class RepositoryInMemory<R extends RestResource<R>> extends RepositoryInM
    */
   public RepositoryInMemory(Type typeOfResource) {
     super(Id.class, typeOfResource);
+  }
+
+  /**
+   * @param typeOfResource class of the resource. For example, Order.class
+   * @param store the storage where the resources should be kept
+   */
+  public RepositoryInMemory(Type typeOfResource, Map<String, R> store) {
+    super(Id.class, typeOfResource, store);
   }
 }

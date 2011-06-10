@@ -48,6 +48,12 @@ public class IdMapBase<I extends ResourceId, T extends HasId<I>> {
     this.idFactory = new ResourceIdFactory<I>(classOfI, typeOfId);
   }
 
+  protected IdMapBase(Map<String, T> map, Class<? super I> classOfI, Type typeOfId) {
+    this.map = map;
+    nextAvailableId = ID_START_VALUE;
+    this.idFactory = new ResourceIdFactory<I>(classOfI, typeOfId);
+  }
+
   public T get(I id) {
     return map.get(id.getValue());
   }
@@ -80,5 +86,10 @@ public class IdMapBase<I extends ResourceId, T extends HasId<I>> {
   public static <II extends ResourceId, S extends HasId<II>> IdMapBase<II, S> create(
       Class<? super II> classOfII, Type typeOfId) {
     return new IdMapBase<II, S>(classOfII, typeOfId);
+  }
+
+  public static <II extends ResourceId, S extends HasId<II>> IdMapBase<II, S> create(
+      Class<? super II> classOfII, Type typeOfId, Map<String, S> map) {
+    return new IdMapBase<II, S>(map, classOfII, typeOfId);
   }
 }
