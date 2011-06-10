@@ -15,8 +15,8 @@
  */
 package com.google.greaze.rest.server;
 
-import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
 import com.google.greaze.definition.rest.MetaDataBase;
 import com.google.greaze.definition.rest.ResourceId;
@@ -35,7 +35,11 @@ public class MetaDataMapBase<I extends ResourceId, R extends RestResourceBase<I,
   protected final Map<String, MetaDataBase<I, R>> map;
 
   public MetaDataMapBase() {
-    this.map = new HashMap<String, MetaDataBase<I, R>>();
+    this.map = new ConcurrentHashMap<String, MetaDataBase<I, R>>();
+  }
+
+  public MetaDataMapBase(Map<String, MetaDataBase<I, R>> map) {
+    this.map = map;
   }
 
   public MetaDataBase<I, R> get(I resourceId) {

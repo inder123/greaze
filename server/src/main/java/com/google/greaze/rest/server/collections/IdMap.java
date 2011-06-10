@@ -15,10 +15,11 @@
  */
 package com.google.greaze.rest.server.collections;
 
+import java.lang.reflect.Type;
+import java.util.Map;
+
 import com.google.greaze.definition.rest.HasId;
 import com.google.greaze.definition.rest.Id;
-
-import java.lang.reflect.Type;
 
 /**
  * This class provides a type-safe map to access values associated with Ids
@@ -36,7 +37,18 @@ public class IdMap<T extends HasId<Id<T>>> extends IdMapBase<Id<T>, T> {
     super(Id.class, typeOfId);
   }
 
+  /**
+   * Use create(Type) instead of constructor
+   */
+  protected IdMap(Map<String, T> store, Type typeOfId) {
+    super(store, Id.class, typeOfId);
+  }
+
   public static <S extends HasId<Id<S>>> IdMap<S> create(Type typeOfId) {
     return new IdMap<S>(typeOfId);
+  }
+
+  public static <S extends HasId<Id<S>>> IdMap<S> create(Map<String, S> store, Type typeOfId) {
+    return new IdMap<S>(store, typeOfId);
   }
 }
