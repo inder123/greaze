@@ -27,9 +27,17 @@ import com.google.greaze.definition.rest.Id;
  * @author Inderjeet Singh
  */
 public class KeyedMap<R, V> {
-  protected final Map<String, V> map = new ConcurrentHashMap<String, V>();
+  protected final Map<String, V> map;
 
-  public  V get(Id<R> key) {
+  public KeyedMap() {
+    this(new ConcurrentHashMap<String, V>());
+  }
+
+  protected KeyedMap(Map<String, V> store) {
+    this.map = store;
+  }
+
+  public V get(Id<R> key) {
     return map.get(key.getValue());
   }
 
@@ -43,6 +51,10 @@ public class KeyedMap<R, V> {
 
   public void remove(Id<R> key) {
     map.remove(key.getValue());
+  }
+
+  public void remove(String idValue) {
+    map.remove(idValue);
   }
 
   public boolean containsKey(Id<R> key) {
