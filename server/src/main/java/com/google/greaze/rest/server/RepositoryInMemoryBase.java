@@ -18,7 +18,6 @@ package com.google.greaze.rest.server;
 import java.lang.reflect.Type;
 import java.util.Map;
 
-import com.google.greaze.definition.rest.MetaDataBase;
 import com.google.greaze.definition.rest.ResourceId;
 import com.google.greaze.definition.rest.RestResourceBase;
 import com.google.greaze.rest.server.collections.IdMapBase;
@@ -33,11 +32,7 @@ import com.google.greaze.rest.server.collections.IdMapBase;
 public class RepositoryInMemoryBase<I extends ResourceId, R extends RestResourceBase<I, R>>
     implements RepositoryBase<I, R> {
 
-  private static final String METADATA_KEY_IS_FRESHLY_ASSIGNED_ID = "isFreshlyAssignedId";
-
   private final IdMapBase<I, R> resources;
-  private final MetaDataMapBase<I, R> metaDataMap;
-
   protected final Type typeOfResource;
 
   /**
@@ -46,7 +41,7 @@ public class RepositoryInMemoryBase<I extends ResourceId, R extends RestResource
    */
   public RepositoryInMemoryBase(Class<? super I> rawClassOfI, Type typeOfResource) {
     this.resources = IdMapBase.create(rawClassOfI, typeOfResource);
-    this.metaDataMap = new MetaDataMapBase<I, R>();
+    new MetaDataMapBase<I, R>();
     this.typeOfResource = typeOfResource;
   }
 
@@ -60,20 +55,12 @@ public class RepositoryInMemoryBase<I extends ResourceId, R extends RestResource
       Class<? super I> rawClassOfI, Type typeOfResource, Map<String, R> store) {
     this.typeOfResource = typeOfResource;
     this.resources = IdMapBase.create(rawClassOfI, typeOfResource, store);
-    this.metaDataMap = new MetaDataMapBase<I, R>();
+    new MetaDataMapBase<I, R>();
   }
 
   @Override
   public R get(I resourceId) {
     return resources.get(resourceId);
-  }
-
-  public boolean isFreshlyAssignedId(I resourceId) {
-    MetaDataBase<I, R> metaData = metaDataMap.get(resourceId);
-    if (metaData == null) {
-      return false;
-    }
-    return metaData.getBoolean(METADATA_KEY_IS_FRESHLY_ASSIGNED_ID);
   }
 
   @Override
@@ -83,7 +70,6 @@ public class RepositoryInMemoryBase<I extends ResourceId, R extends RestResource
       assignId(resource);
     }
     resource = resources.put(resource);
-    metaDataMap.get(resource.getId()).remove(METADATA_KEY_IS_FRESHLY_ASSIGNED_ID);
     return resource;
   }
 
@@ -107,7 +93,6 @@ public class RepositoryInMemoryBase<I extends ResourceId, R extends RestResource
     if (!resource.hasId()) {
       I id = resources.getNextId();
       resource.setId(id);
-      metaDataMap.get(id).putBoolean(METADATA_KEY_IS_FRESHLY_ASSIGNED_ID, true);
     }
     return resource.getId();
   }
