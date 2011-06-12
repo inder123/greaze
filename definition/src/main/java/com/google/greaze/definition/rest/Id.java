@@ -15,6 +15,7 @@
  */
 package com.google.greaze.definition.rest;
 
+import java.io.Serializable;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 import java.lang.reflect.WildcardType;
@@ -36,7 +37,9 @@ import com.google.gson.JsonSerializer;
  *
  * @param <R> type variable for the rest resource
  */
-public final class Id<R> implements ResourceId, Comparable<Id<R>> {
+public final class Id<R> implements ResourceId, Comparable<Id<R>>, Serializable {
+
+  private static final long serialVersionUID = -8713010965374609900L;
 
   private static Pattern ID_PATTERN = Pattern.compile("[a-zA-Z0-9_\\.\\-]+"); 
 
