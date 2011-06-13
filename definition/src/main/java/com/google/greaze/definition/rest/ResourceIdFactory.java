@@ -17,6 +17,8 @@ package com.google.greaze.definition.rest;
 
 import java.lang.reflect.Type;
 
+import com.google.greaze.definition.internal.utils.GreazePreconditions;
+
 /**
  * A factory to create {@link Id}s
  *
@@ -25,19 +27,15 @@ import java.lang.reflect.Type;
  * @param <I>
  */
 public class ResourceIdFactory<I extends ResourceId> {
-  private final Class<? super I> classOfI;
   private final Type typeOfId;
 
   public ResourceIdFactory(Class<? super I> classOfI, Type typeOfId) {
-    this.classOfI = classOfI;
+    GreazePreconditions.checkArgument(classOfI.isAssignableFrom(Id.class));
     this.typeOfId = typeOfId;
   }
 
   @SuppressWarnings("unchecked")
   public I createId(String value) {
-    if (classOfI.isAssignableFrom(Id.class)) {
-      return (I)Id.get(value, typeOfId);
-    } 
-    throw new UnsupportedOperationException();
+    return (I)Id.get(value, typeOfId);
   }
 }
