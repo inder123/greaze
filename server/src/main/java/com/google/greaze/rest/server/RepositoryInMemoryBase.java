@@ -32,7 +32,7 @@ import com.google.greaze.rest.server.collections.IdMapBase;
 public class RepositoryInMemoryBase<I extends ResourceId, R extends RestResourceBase<I, R>>
     implements RepositoryBase<I, R> {
 
-  private final IdMapBase<I, R> resources;
+  protected final IdMapBase<I, R> resources;
   protected final Type typeOfResource;
 
   /**
@@ -65,10 +65,7 @@ public class RepositoryInMemoryBase<I extends ResourceId, R extends RestResource
 
   @Override
   public R put(R resource) {
-    if (!resource.hasId()) {
-      // insert semantics
-      assignId(resource);
-    }
+    assignIdIfNeeded(resource);
     resource = resources.put(resource);
     return resource;
   }
@@ -88,10 +85,12 @@ public class RepositoryInMemoryBase<I extends ResourceId, R extends RestResource
     return resources.getNextId();
   }
 
-  @Override
-  public I assignId(R resource) {
+  /**
+   * Ensures that the specified resource has a valid id that will be used when it is saved
+   */
+  protected I assignIdIfNeeded(R resource) {
     if (!resource.hasId()) {
-      I id = resources.getNextId();
+      I id = getNextId();
       resource.setId(id);
     }
     return resource.getId();
