@@ -40,11 +40,6 @@ public interface RepositoryBase<I extends ResourceId, R extends HasId<I>> {
   
   public boolean exists(I resourceId);
 
-  /**
-   * Ensures that the specified resource has a valid id that will be used when it is saved
-   */
-  public I assignId(R resource);
-
   public I getNextId();
 
   public long size();
