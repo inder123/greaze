@@ -58,6 +58,10 @@ public class IdMapBase<I extends ResourceId, T extends HasId<I>> {
     return map.get(id.getValue());
   }
 
+  public T getByIdValue(String idValue) {
+    return map.get(idValue);
+  }
+
   public T put(T obj) {
     map.put(obj.getId().getValue(), obj);
     return obj;
@@ -77,6 +81,10 @@ public class IdMapBase<I extends ResourceId, T extends HasId<I>> {
   public synchronized I getNextId() {
     String id = String.valueOf(nextAvailableId++);
     return idFactory.createId(id);
+  }
+
+  public I createId(String idValue) {
+    return idFactory.createId(idValue);
   }
 
   public long size() {
