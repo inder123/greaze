@@ -15,6 +15,8 @@
  */
 package com.google.greaze.definition.rest;
 
+import java.io.Serializable;
+
 import com.google.greaze.definition.internal.utils.GreazePreconditions;
 
 /**
@@ -24,7 +26,10 @@ import com.google.greaze.definition.internal.utils.GreazePreconditions;
  *
  * @param <R> The intended resource
  */
-public class RestResourceImpl<R extends HasId<Id<R>>> implements RestResource<R>, Comparable<R> {
+public class RestResourceImpl<R extends HasId<Id<R>>>
+    implements RestResource<R>, Comparable<R>, Serializable {
+
+  private static final long serialVersionUID = -939018071996151975L;
 
   protected Id<R> id;
 
