@@ -15,17 +15,23 @@
  */
 package com.google.greaze.definition.rest;
 
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
 import java.lang.reflect.ParameterizedType;
+import java.lang.reflect.Type;
 
 import junit.framework.TestCase;
 
-import com.google.greaze.definition.rest.Id;
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import com.google.gson.reflect.TypeToken;
 
 /**
  * Unit test for {@link Id}
  *
- * @author inder
+ * @author Inderjeet Singh
  */
 public class IdTest extends TestCase {
 
@@ -50,6 +56,30 @@ public class IdTest extends TestCase {
     assertFalse(Id.equals(id1, id3));
   }
 
+  public void testJsonSerializationDeserialization() {
+    Gson gson = new GsonBuilder().registerTypeAdapter(Id.class, new Id.GsonTypeAdapter()).create();
+    Type type = new TypeToken<Id<Bar<Foo>>>() {}.getType();
+    Id<Bar<Foo>> id = Id.get("abc", new TypeToken<Bar<Foo>>(){}.getType());
+    String json = gson.toJson(id);
+    Id<Bar<Foo>> deserializedId = gson.fromJson(json, type);
+    assertEquals(id, deserializedId);
+  }
+
+  public void testJavaSerializationDeserialization() throws Exception {
+    ByteArrayOutputStream out = new ByteArrayOutputStream();
+    ObjectOutputStream oos = new ObjectOutputStream(out);
+    Id<Bar<Foo>> id = Id.get("abc", new TypeToken<Bar<Foo>>(){}.getType());
+    oos.writeObject(id);
+    oos.close();
+    ByteArrayInputStream in = new ByteArrayInputStream(out.toByteArray());
+    ObjectInputStream ois = new ObjectInputStream(in);
+    Object deserializedId = ois.readObject();
+    assertEquals(id, deserializedId);
+  }
+
   private static class Foo {
+  }
+
+  private static class Bar<T> {
   }
 }

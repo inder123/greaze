@@ -15,6 +15,9 @@
  */
 package com.google.greaze.definition.rest;
 
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
 import java.io.Serializable;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
@@ -22,6 +25,8 @@ import java.lang.reflect.WildcardType;
 import java.util.regex.Pattern;
 
 import com.google.greaze.definition.internal.utils.GreazePreconditions;
+import com.google.greaze.definition.internal.utils.GreazeTypeUtils;
+import com.google.greaze.definition.internal.utils.TypeNameBiMap;
 import com.google.gson.JsonDeserializationContext;
 import com.google.gson.JsonDeserializer;
 import com.google.gson.JsonElement;
@@ -115,6 +120,8 @@ public final class Id<R> implements ResourceId, Comparable<Id<R>>, Serializable 
 
   @Override  
   public boolean equals(Object obj) {
+    // TODO: Use instanceOf for equality instead of equals (to better support JPA)
+    // TODO: get rid of equalsByValue and change the semantics for equality to be with value only.
     if (this == obj) return true;
     if (obj == null) return false;
     if (getClass() != obj.getClass()) return false;
@@ -165,43 +172,23 @@ public final class Id<R> implements ResourceId, Comparable<Id<R>>, Serializable 
 
   @Override
   public String toString() {
-    String typeAsString = getSimpleTypeName(typeOfId);
-    return String.format("{value:%s,type:%s}", value, typeAsString);
+    return String.format("%s:%s", value, GreazeTypeUtils.getSimpleTypeName(typeOfId));
   }
 
-  @SuppressWarnings("unchecked")
-  private static String getSimpleTypeName(Type type) {
-    if (type == null) {
-      return "null";
-    }
-    if (type instanceof Class) {
-      return ((Class)type).getSimpleName();
-    } else if (type instanceof ParameterizedType) {
-      ParameterizedType pType = (ParameterizedType) type;
-      StringBuilder sb = new StringBuilder(getSimpleTypeName(pType.getRawType()));
-      sb.append('<');
-      boolean first = true;
-      for (Type argumentType : pType.getActualTypeArguments()) {
-        if (first) {
-          first = false;
-        } else {
-          sb.append(',');
-        }
-        sb.append(getSimpleTypeName(argumentType));
-      }
-      sb.append('>');
-      return sb.toString();
-    } else if (type instanceof WildcardType) {
-      return "?";
-    }
-    return type.toString();
+  private void writeObject(ObjectOutputStream out) throws IOException {
+    out.writeUTF(value);
+    out.writeUTF(TypeNameBiMap.INSTANCE.getTypeName(typeOfId));
   }
 
+  private void readObject(ObjectInputStream in) throws IOException, ClassNotFoundException {
+   this.value = in.readUTF(); 
+   this.typeOfId = TypeNameBiMap.INSTANCE.getType(in.readUTF());
+  }
+  
   /**
    * Type adapter for converting an Id to its serialized form
    *
-   * @author inder
-   *
+   * @author Inderjeet Singh
    */
   public static final class GsonTypeAdapter implements JsonSerializer<Id<?>>,
       JsonDeserializer<Id<?>> {
