@@ -25,18 +25,23 @@ import java.util.Map;
  * @author Inderjeet Singh
  */
 public final class TypeNameBiMap {
-  public static final TypeNameBiMap INSTANCE = new TypeNameBiMap();
+  private static TypeNameBiMap instance;
+
+  public static synchronized TypeNameBiMap getInstance() {
+    if (instance == null) {
+      instance = new TypeNameBiMap();
+    }
+    return instance;
+  }
 
   private Map<String, Type> nameToType = new HashMap<String, Type>();
   private Map<Type, String> typeToName = new HashMap<Type, String>();
 
   private TypeNameBiMap() {}
 
-
   public synchronized Type getType(String typeName) {
     return nameToType.get(typeName);
   }
-
 
   public synchronized String getTypeName(Type typeOfId) {
     String name = typeToName.get(typeOfId);

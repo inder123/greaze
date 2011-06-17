@@ -177,12 +177,12 @@ public final class Id<R> implements ResourceId, Comparable<Id<R>>, Serializable 
 
   private void writeObject(ObjectOutputStream out) throws IOException {
     out.writeUTF(value);
-    out.writeUTF(TypeNameBiMap.INSTANCE.getTypeName(typeOfId));
+    out.writeUTF(TypeNameBiMap.getInstance().getTypeName(typeOfId));
   }
 
   private void readObject(ObjectInputStream in) throws IOException, ClassNotFoundException {
    this.value = in.readUTF(); 
-   this.typeOfId = TypeNameBiMap.INSTANCE.getType(in.readUTF());
+   this.typeOfId = TypeNameBiMap.getInstance().getType(in.readUTF());
   }
   
   /**
