@@ -48,8 +48,8 @@ public final class Id<R> implements ResourceId, Comparable<Id<R>>, Serializable 
 
   private static Pattern ID_PATTERN = Pattern.compile("[a-zA-Z0-9_\\.\\-]+"); 
 
-  private final String value;
-  private final Type typeOfId;
+  private String value;
+  private Type typeOfId;
 
   private Id(String value, Type typeOfId) {
     // Assert that Id does not have any of the banned characters
