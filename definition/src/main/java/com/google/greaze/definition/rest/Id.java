@@ -25,7 +25,6 @@ import java.lang.reflect.WildcardType;
 import java.util.regex.Pattern;
 
 import com.google.greaze.definition.internal.utils.GreazePreconditions;
-import com.google.greaze.definition.internal.utils.GreazeTypeUtils;
 import com.google.greaze.definition.internal.utils.TypeNameBiMap;
 import com.google.gson.JsonDeserializationContext;
 import com.google.gson.JsonDeserializer;
@@ -91,6 +90,12 @@ public final class Id<R> implements ResourceId, Comparable<Id<R>>, Serializable 
 
   public static boolean isValid(Id<?> id) {
     return id != null && id.value != null;
+  }
+
+  public static String getShortValue(Id<?> id) {
+    String value = isValid(id) ? id.value : "null";
+    int length = value.length();
+    return length > 4 ? value.substring(length - 4) : value;
   }
 
   /**
@@ -172,7 +177,7 @@ public final class Id<R> implements ResourceId, Comparable<Id<R>>, Serializable 
 
   @Override
   public String toString() {
-    return String.format("%s:%s", value, GreazeTypeUtils.getSimpleTypeName(typeOfId));
+    return getShortValue(this);
   }
 
   private void writeObject(ObjectOutputStream out) throws IOException {
