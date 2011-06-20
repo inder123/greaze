@@ -31,6 +31,11 @@ public enum ErrorReason {
   SERVER_UNAVAILABLE(HttpURLConnection.HTTP_UNAVAILABLE),
   PRECONDITION_FAILED(HttpURLConnection.HTTP_UNAVAILABLE),
   /**
+   * This error reason indicates that the server is communicating a specific
+   * message to be displayed to the user.
+   */
+  SERVER_MESSAGE_TO_USER(HttpURLConnection.HTTP_INTERNAL_ERROR),
+  /**
    * This error reason indicates that the local connection on the client side is
    * not working correctly. For example, a mobile phone client has lost all data connections.
    */
