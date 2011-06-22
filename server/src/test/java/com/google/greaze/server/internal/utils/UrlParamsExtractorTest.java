@@ -58,14 +58,17 @@ public class UrlParamsExtractorTest extends TestCase {
       .put("key1", String.class)
       .put("key2", Integer.class)
       .put("key3", Integer.class)
+      .put("key4", Boolean.class)
       .build();
     UrlParamsExtractor extractor = new UrlParamsExtractor(spec, gson);
-    UrlParams urlParams = extractor.extractUrlParams(new Params("key1=foo%2c+bar%2f&key2=23&key4=1"));
+    UrlParams urlParams = extractor.extractUrlParams(
+        new Params("key1=foo%2c+bar%2f&key2=23&key4=true&key5=1"));
     HeaderMap map = urlParams.getParamsMap();
     assertEquals("foo, bar/", map.get("key1"));
     assertEquals(23, map.get("key2"));
     assertNull(map.get("key3"));
-    assertNull(map.get("key4"));
+    assertTrue((Boolean)map.get("key4"));
+    assertNull(map.get("key5"));
   }
 
   @SuppressWarnings("unchecked")
