@@ -79,6 +79,13 @@ public class GreazePrimitives {
   }
 
   /**
+   * Returns true if this type is a primitive and a floating point type
+   */
+  public static boolean isBooleanType(Type type) {
+    return type == boolean.class || type == Boolean.class;
+  }
+
+  /**
    * Returns {@code true} if {@code type} is one of the nine
    * primitive-wrapper types, such as {@link Integer}.
    *

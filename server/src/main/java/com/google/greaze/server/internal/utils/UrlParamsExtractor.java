@@ -103,6 +103,8 @@ public final class UrlParamsExtractor {
               if (GreazePrimitives.isPrimitive(type)) {
                 if (GreazePrimitives.isFloatingPointType(type)) {
                   jsonWriter.value(Double.parseDouble(valueAsString));
+                } else if (GreazePrimitives.isBooleanType(type)) {
+                  jsonWriter.value(Boolean.parseBoolean(valueAsString));
                 } else { // Must be a integral number type
                   jsonWriter.value(Long.parseLong(valueAsString));
                 }
