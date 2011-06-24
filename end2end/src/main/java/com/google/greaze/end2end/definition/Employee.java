@@ -24,6 +24,7 @@ import com.google.greaze.definition.rest.RestResourceImpl;
  * @author Inderjeet Singh
  */
 public class Employee extends RestResourceImpl<Employee> {
+  private static final long serialVersionUID = 8675883750972755571L;
   private final String name;
 
   public Employee() {

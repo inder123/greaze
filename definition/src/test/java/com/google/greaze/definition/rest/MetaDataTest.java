@@ -71,6 +71,7 @@ public class MetaDataTest extends TestCase {
     assertEquals("bar bar", metaData.getString("stringValue"));
   }
 
+  @SuppressWarnings("serial")
   private static class MyResource extends RestResourceImpl<MyResource> {
   }
 }

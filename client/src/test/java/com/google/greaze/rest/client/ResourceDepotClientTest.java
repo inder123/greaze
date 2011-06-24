@@ -50,7 +50,8 @@ public class ResourceDepotClientTest extends TestCase {
     assertEquals(sent.value, received.value);
   }
 
-  private static class MyResource extends RestResourceImpl<MyResource> {
+  @SuppressWarnings("serial")
+private static class MyResource extends RestResourceImpl<MyResource> {
     public static final CallPath CALL_PATH =
       new CallPathParser("/rest", false, "/myresource").parse("/rest/myresource");
 
