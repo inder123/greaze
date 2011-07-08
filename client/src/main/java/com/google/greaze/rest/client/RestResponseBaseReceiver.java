@@ -77,7 +77,7 @@ public class RestResponseBaseReceiver<I extends ResourceId, R extends RestResour
   private R readResponseBody(
       HttpURLConnection conn, Type resourceType) throws IOException {
     String connContentType = conn.getContentType();
-    ConnectionPreconditions.checkArgument(
+    ConnectionPreconditions.checkArgument(connContentType != null && 
       connContentType.contains(ContentBodySpec.JSON_CONTENT_TYPE), conn);
     Reader reader = new BufferedReader(new InputStreamReader(conn.getInputStream()));
     R body = (R) gson.fromJson(reader, resourceType);
