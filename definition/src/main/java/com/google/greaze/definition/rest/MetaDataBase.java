@@ -21,6 +21,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import com.google.greaze.definition.TypedKey;
+import com.google.greaze.definition.internal.utils.$GreazeTypes;
 import com.google.greaze.definition.internal.utils.GreazePreconditions;
 import com.google.gson.JsonDeserializationContext;
 import com.google.gson.JsonDeserializer;
@@ -29,7 +30,6 @@ import com.google.gson.JsonParseException;
 import com.google.gson.JsonSerializationContext;
 import com.google.gson.JsonSerializer;
 import com.google.gson.JsonSyntaxException;
-import com.google.gson.reflect.TypeToken;
 
 /**
  * Metadata associated with a repository for a rest resource. Metadata is of two types: persistent
@@ -123,7 +123,8 @@ public class MetaDataBase<I extends ResourceId, R extends RestResourceBase<I, R>
   public static final class GsonTypeAdapter implements JsonSerializer<MetaDataBase<?, ?>>,
     JsonDeserializer<MetaDataBase<?, ?>>{
 
-    private static final Type MAP_TYPE = new TypeToken<Map<String, String>>(){}.getType();
+    private static final Type MAP_TYPE =
+      $GreazeTypes.newParameterizedTypeWithOwner(null, Map.class, String.class, String.class);
 
     @Override
     public MetaDataBase<?, ?> deserialize(JsonElement json, Type typeOfT,
