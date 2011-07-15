@@ -22,11 +22,13 @@ import com.google.greaze.definition.rest.RestResourceImpl;
  *
  * @author Inderjeet Singh
  */
+@SuppressWarnings("serial")
 public class Order extends RestResourceImpl<Order> {
   public final Cart postedCart;
   public final String orderNumber;
 
-  // TODO(inder): remove these when Gson's UnsafeAllocator is made to work on App Engine
+  // Needed to make it work on App Engine
+  @SuppressWarnings("unused")
   private Order() {
     this(null, null);
   }

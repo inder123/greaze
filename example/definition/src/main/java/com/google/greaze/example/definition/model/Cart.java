@@ -24,12 +24,14 @@ import com.google.greaze.definition.rest.RestResourceImpl;
  * 
  * @author inder
  */
+@SuppressWarnings("serial")
 public class Cart extends RestResourceImpl<Cart> {
   private final List<LineItem> lineItems;
   private final String buyerName;
   private final String creditCard;
 
-  // TODO(inder): remove these when Gson's UnsafeAllocator is made to work on App Engine
+  // Needed to make it work on App Engine
+  @SuppressWarnings("unused")
   private Cart() {
     this(null, null, null);
   }

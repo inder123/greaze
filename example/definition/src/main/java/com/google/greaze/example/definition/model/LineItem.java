@@ -26,7 +26,8 @@ public class LineItem {
   private final long priceInMicros;
   private final String currencyCode;
 
-  // TODO(inder): remove these when Gson's UnsafeAllocator is made to work on App Engine
+  // Needed to make it work on App Engine
+  @SuppressWarnings("unused")
   private LineItem() {
     this(null, 0, 0, null); 
   }
