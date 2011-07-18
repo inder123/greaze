@@ -44,6 +44,7 @@ import javax.servlet.http.HttpServletRequest;
  */
 public class RequestReceiver {
 
+  private static final int BUF_SIZE = 4096;
   protected final Gson gson;
   protected final RequestSpec spec;
 
@@ -89,7 +90,7 @@ public class RequestReceiver {
     if (bodySpec.size() == 0) {
       return createEmptyRequestBody(bodySpec);
     }
-    Reader reader = new BufferedReader(new InputStreamReader(request.getInputStream()));
+    Reader reader = new BufferedReader(new InputStreamReader(request.getInputStream()), BUF_SIZE);
     RequestBody requestBody = gson.fromJson(reader, RequestBody.class);
     return requestBody;
   }

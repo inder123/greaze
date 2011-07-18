@@ -42,6 +42,7 @@ import javax.servlet.http.HttpServletRequest;
  */
 public class RestRequestBaseReceiver<I extends ResourceId, R extends RestResourceBase<I, R>>
     extends RequestReceiver {
+  private static final int BUF_SIZE = 4096;
 
   public RestRequestBaseReceiver(Gson gson, RestRequestSpec spec) {
     super(gson, spec);
@@ -83,7 +84,7 @@ public class RestRequestBaseReceiver<I extends ResourceId, R extends RestResourc
   // with this implementation
   @SuppressWarnings("unchecked")
   private R buildRequestBody(HttpServletRequest request) throws IOException {
-    Reader reader = new BufferedReader(new InputStreamReader(request.getInputStream()));
+    Reader reader = new BufferedReader(new InputStreamReader(request.getInputStream()), BUF_SIZE);
     R requestBody = (R) gson.fromJson(reader, getSpec().getResourceType());
     return requestBody;
   }
