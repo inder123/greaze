@@ -42,6 +42,7 @@ import com.google.gson.Gson;
  * @author inder
  */
 public class ResponseReceiver {
+  private static final int BUF_SIZE = 4096;
   protected final Gson gson;
   protected final ResponseSpec spec;
   protected final Logger logger;
@@ -94,7 +95,7 @@ public class ResponseReceiver {
     }
     String connContentType = conn.getContentType();
     ConnectionPreconditions.checkArgument(connContentType.contains(bodySpec.getContentType()), conn);
-    Reader reader = new BufferedReader(new InputStreamReader(conn.getInputStream()));
+    Reader reader = new BufferedReader(new InputStreamReader(conn.getInputStream()), BUF_SIZE);
     ResponseBody body = gson.fromJson(reader, ResponseBody.class);
     if (body == null) {
       body = new ResponseBody.Builder(spec.getBodySpec()).build();
