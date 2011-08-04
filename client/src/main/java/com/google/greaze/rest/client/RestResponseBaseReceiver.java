@@ -43,6 +43,7 @@ import com.google.gson.Gson;
  */
 public class RestResponseBaseReceiver<I extends ResourceId, R extends RestResourceBase<I, R>>
     extends ResponseReceiver {
+  private static final int BUF_SIZE = 4096;
 
   public RestResponseBaseReceiver(Gson gson, RestResponseSpec spec) {
     this(gson, spec, null);
@@ -79,7 +80,7 @@ public class RestResponseBaseReceiver<I extends ResourceId, R extends RestResour
     String connContentType = conn.getContentType();
     ConnectionPreconditions.checkArgument(connContentType != null && 
       connContentType.contains(ContentBodySpec.JSON_CONTENT_TYPE), conn);
-    Reader reader = new BufferedReader(new InputStreamReader(conn.getInputStream()));
+    Reader reader = new BufferedReader(new InputStreamReader(conn.getInputStream()), BUF_SIZE);
     R body = (R) gson.fromJson(reader, resourceType);
     return body;
   }
