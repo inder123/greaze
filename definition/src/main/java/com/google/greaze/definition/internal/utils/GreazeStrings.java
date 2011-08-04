@@ -56,18 +56,4 @@ public final class GreazeStrings {
     return first == second ||
       (first != null && second != null && first.startsWith(second));  
   }
-
-  public static String arrayToString(String[] strs) {
-    StringBuilder sb = new StringBuilder();
-    boolean first = true;
-    for (String str : strs) {
-      if (first) {
-        first = false;
-      } else {
-        sb.append("|");
-      }
-      sb.append(str);
-    }
-    return sb.toString();
-  }
 }
