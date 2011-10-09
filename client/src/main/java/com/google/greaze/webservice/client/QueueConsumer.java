@@ -54,9 +54,13 @@ final class QueueConsumer implements Runnable {
     try {
       WebServiceResponse response = client.getResponse(entry.callSpec, entry.request, gson);
       WebServiceCall call = new WebServiceCall(entry.callSpec, entry.request, response);
-      entry.responseCallback.handleResponse(call);
+      if (entry.responseCallback != null) {
+        entry.responseCallback.handleResponse(call);
+      }
     } catch (WebServiceSystemException e) {
-      entry.responseCallback.handleError(e, entry.request, entry.callSpec);
+      if (entry.responseCallback != null) {
+        entry.responseCallback.handleError(e, entry.request, entry.callSpec);
+      }
     }
   }  
 }
