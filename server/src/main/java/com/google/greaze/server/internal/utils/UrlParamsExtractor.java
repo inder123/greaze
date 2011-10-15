@@ -81,7 +81,6 @@ public final class UrlParamsExtractor {
   /**
    * Visible for testing only
    */
-  @SuppressWarnings("unchecked")
   UrlParams extractUrlParams(NameValueMap requestParams) {
     try {
       UrlParams.Builder paramsBuilder = new UrlParams.Builder(spec);
@@ -146,7 +145,6 @@ public final class UrlParamsExtractor {
     }
   }
 
-  @SuppressWarnings("unchecked")
   private void extractUrlParam(String name, Type type, NameValueMap requestParams,
       ValueReceiver receiver) throws IOException {
     String urlParamValue = requestParams.getParameterValue(name);

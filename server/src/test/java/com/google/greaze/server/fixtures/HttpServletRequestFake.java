@@ -38,7 +38,7 @@ import com.google.greaze.definition.internal.utils.GreazeStrings;
  *
  * @author Inderjeet Singh
  */
-@SuppressWarnings("unchecked")
+@SuppressWarnings("rawtypes")
 public final class HttpServletRequestFake implements HttpServletRequest {
   private String method;
   private Map<String, String[]> urlParams = new HashMap<String, String[]>();

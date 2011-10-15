@@ -139,7 +139,7 @@ public class MetaDataBase<I extends ResourceId, R extends RestResourceBase<I, R>
       return context.serialize(src.map, MAP_TYPE);
     }
 
-    @SuppressWarnings("unchecked")
+    @SuppressWarnings({"rawtypes", "unchecked"})
     private static MetaDataBase<?, ?> createInstance(Type typeOfT, Map<String, String> map) {
       Class<?> metaDataClass;
       if (typeOfT instanceof Class) {

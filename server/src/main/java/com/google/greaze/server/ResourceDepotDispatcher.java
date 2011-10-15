@@ -41,7 +41,7 @@ public final class ResourceDepotDispatcher {
     this.injector = injector;
   }
 
-  @SuppressWarnings("unchecked")
+  @SuppressWarnings({"rawtypes", "unchecked"})
   public void service(HttpServletResponse res) {
     RestCallSpec callSpec = injector.getInstance(RestCallSpec.class);
     Preconditions.checkNotNull(callSpec);

@@ -108,7 +108,7 @@ public class GreazeServerModule extends ServletModule {
   }
 
   @RequestScoped
-  @SuppressWarnings("unchecked")
+  @SuppressWarnings("rawtypes")
   @Provides
   public RestResponseBaseBuilder getResponseBuilder(
       RestCallSpec callSpec, ResponseBuilderMap responseBuilders) {
@@ -129,7 +129,7 @@ public class GreazeServerModule extends ServletModule {
   }
 
   @RequestScoped
-  @SuppressWarnings("unchecked")
+  @SuppressWarnings({"rawtypes", "unchecked"})
   @Provides
   public RestRequestBase getRestRequest(Gson gson, RestCallSpec callSpec, CallPath callPath,
       HttpServletRequest request, ResourceIdFactory<Id<?>> idFactory) {

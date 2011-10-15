@@ -25,7 +25,7 @@ import java.lang.reflect.WildcardType;
  * @author Inderjeet Singh
  */
 public final class GreazeTypeUtils {
-  @SuppressWarnings("unchecked")
+  @SuppressWarnings("rawtypes")
   public static String getSimpleTypeName(Type type) {
     if (type == null) {
       return "null";
@@ -53,7 +53,7 @@ public final class GreazeTypeUtils {
     return type.toString();
   }
 
-  @SuppressWarnings("unchecked")
+  @SuppressWarnings("rawtypes")
   public static String getFullTypeName(Type type) {
     if (type == null) {
       return "null";
