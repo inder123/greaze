@@ -66,7 +66,7 @@ public class NetworkSwitcherResource extends NetworkSwitcherWebService {
     this.restCallSpecMap = restCallSpecMap;
   }
 
-  @SuppressWarnings("unchecked")
+  @SuppressWarnings({"rawtypes", "unchecked"})
   @Override
   protected void switchNetwork(HttpURLConnectionFake conn) {
     HttpServletRequest req = new HttpServletRequestFake()

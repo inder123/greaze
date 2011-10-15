@@ -71,7 +71,7 @@ public class UrlParamsExtractorTest extends TestCase {
     assertNull(map.get("key5"));
   }
 
-  @SuppressWarnings("unchecked")
+  @SuppressWarnings("rawtypes")
   public void testUrlParamsUntypedValue() {
     TypeVariable typeVariableType = GenericType.getTypeVariableType();
     UrlParamsSpec spec = new UrlParamsSpec.Builder()
@@ -127,7 +127,7 @@ public class UrlParamsExtractorTest extends TestCase {
 
   private static class GenericType<T> {
 
-    @SuppressWarnings("unchecked")
+    @SuppressWarnings("rawtypes")
     public static <R> TypeVariable getTypeVariableType() {
       ParameterizedType type = (ParameterizedType) new TypeToken<GenericType<R>>(){}.getType();
       return (TypeVariable) type.getActualTypeArguments()[0];

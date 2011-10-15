@@ -78,7 +78,7 @@ public class ResourceQueryBaseClient<
     this.webContextSpec = webContextSpec;
   }
 
-  @SuppressWarnings({"unchecked"})
+  @SuppressWarnings({"unchecked", "rawtypes"})
   @Override
   public List<R> query(Q query, WebContext context) {
     RequestSpec requestSpec = callSpec.getRequestSpec();

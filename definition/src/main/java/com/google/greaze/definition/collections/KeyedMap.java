@@ -95,7 +95,7 @@ public class KeyedMap<R, V> {
     return map.hashCode();
   }
 
-  @SuppressWarnings("unchecked")
+  @SuppressWarnings("rawtypes")
   @Override
   public boolean equals(Object obj) {
     if (this == obj) return true;

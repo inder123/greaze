@@ -142,7 +142,7 @@ public final class Id<R> implements ResourceId, Comparable<Id<R>>, Serializable 
    * Returns true for equivalentTypes(Class<?>, Class)
    * Visible for testing only 
    */
-  @SuppressWarnings("unchecked")
+  @SuppressWarnings("rawtypes")
   static boolean equivalentTypes(Type type1, Type type2) {
     if (type1 instanceof ParameterizedType && type2 instanceof Class) {
       return areEquivalentTypes((ParameterizedType)type1, (Class)type2);
@@ -155,7 +155,7 @@ public final class Id<R> implements ResourceId, Comparable<Id<R>>, Serializable 
   /**
    * Visible for testing only
    */
-  @SuppressWarnings("unchecked")
+  @SuppressWarnings("rawtypes")
   static boolean areEquivalentTypes(ParameterizedType type, Class clazz) {
     Class rawClass = (Class) type.getRawType();
     if (!clazz.equals(rawClass)) {
