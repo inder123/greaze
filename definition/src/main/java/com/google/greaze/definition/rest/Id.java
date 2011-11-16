@@ -132,10 +132,16 @@ public final class Id<R> implements ResourceId, Comparable<Id<R>>, Serializable 
     if (getClass() != obj.getClass()) return false;
     @SuppressWarnings("unchecked")
     Id<R> other = (Id<R>)obj;
-    if (typeOfId == null) {
-      if (other.typeOfId != null) return false;
-    } else if (!equivalentTypes(typeOfId, other.typeOfId)) return false;
-    return value.equals(other.value);
+    if (!value.equals(other.value)) {
+      return false;
+    }
+    // Shortcut, see if the raw types are the same. This is not exact match semantically, but 
+    // paramterized type matching is more pain than worth
+    return value.equals(other.value) && this.getClass().isInstance(obj);
+//    if (typeOfId == null) {
+//      if (other.typeOfId != null) return false;
+//    } else if (!equivalentTypes(typeOfId, other.typeOfId)) return false;
+//    return true;
   }
 
   /**
