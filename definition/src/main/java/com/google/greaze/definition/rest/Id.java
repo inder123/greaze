@@ -92,10 +92,13 @@ public final class Id<R> implements ResourceId, Comparable<Id<R>>, Serializable 
     return id != null && id.value != null;
   }
 
-  public static String getShortValue(Id<?> id) {
-    String value = isValid(id) ? id.value : "null";
+  public String getShortValue() {
     int length = value.length();
     return length > 4 ? value.substring(length - 4) : value;
+  }
+
+  public static String getShortValue(Id<?> id) {
+    return isValid(id) ? id.getShortValue() : "null";
   }
 
   /**
