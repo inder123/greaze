@@ -1,17 +1,10 @@
 /*
- * Copyright (C) 2008-2010 Google Inc.
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- * http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
+ * Copyright (C) 2008-2010 Google Inc. Licensed under the Apache License, Version 2.0 (the
+ * "License"); you may not use this file except in compliance with the License. You may obtain a
+ * copy of the License at http://www.apache.org/licenses/LICENSE-2.0 Unless required by applicable
+ * law or agreed to in writing, software distributed under the License is distributed on an "AS IS"
+ * BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the License
+ * for the specific language governing permissions and limitations under the License.
  */
 package com.google.greaze.server.fixtures;
 
@@ -20,10 +13,14 @@ import java.io.InputStream;
 import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
 import java.security.Principal;
+import java.util.Date;
 import java.util.Enumeration;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.Locale;
 import java.util.Map;
+import java.util.Map.Entry;
+import java.util.Vector;
 
 import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletInputStream;
@@ -35,15 +32,21 @@ import com.google.greaze.definition.internal.utils.GreazeStrings;
 
 /**
  * A test fixture for {@link HttpServletRequest}
- *
+ * 
  * @author Inderjeet Singh
  */
 @SuppressWarnings("rawtypes")
-public final class HttpServletRequestFake implements HttpServletRequest {
+public final class HttpServletRequestFake
+    implements HttpServletRequest {
   private String method;
+
   private Map<String, String[]> urlParams = new HashMap<String, String[]>();
+
   private String servletPath;
+
   private ServletInputStream inputStream;
+
+  private Map<String, String> headers;
 
   public HttpServletRequestFake setRequestMethod(String method) {
     this.method = method;
@@ -67,6 +70,11 @@ public final class HttpServletRequestFake implements HttpServletRequest {
     }
     revised[arraySize] = value;
     urlParams.put(name, revised);
+    return this;
+  }
+
+  public HttpServletRequestFake setHeaders(Map<String, String> headers) {
+    this.headers = headers;
     return this;
   }
 
@@ -249,29 +257,51 @@ public final class HttpServletRequestFake implements HttpServletRequest {
     return null;
   }
 
+  @SuppressWarnings("deprecation")
   @Override
   public long getDateHeader(String name) {
-    return 0;
+    String header = getHeader(name);
+    return header == null ? -1 : new Date(header).getTime();
   }
 
   @Override
   public String getHeader(String name) {
-    return null;
+    return headers == null ? null : headers.get(name);
   }
 
   @Override
   public Enumeration getHeaders(String name) {
-    return null;
+    if (headers == null) {
+      return null;
+    }
+    String value = headers.get(name);
+    Vector<String> list = new Vector<String>();
+    list.add(value);
+    return list.elements();
   }
 
   @Override
   public Enumeration getHeaderNames() {
-    return null;
+    if (headers == null) {
+      return null;
+    }
+    final Iterator<Entry<String, String>> iterator = headers.entrySet().iterator();
+    return new Enumeration() {
+      @Override
+      public boolean hasMoreElements() {
+        return iterator.hasNext();
+      }
+
+      @Override
+      public Object nextElement() {
+        return iterator.next().getKey();
+      }
+    };
   }
 
   @Override
   public int getIntHeader(String name) {
-    return 0;
+    return Integer.parseInt(getHeader(name));
   }
 
   @Override
