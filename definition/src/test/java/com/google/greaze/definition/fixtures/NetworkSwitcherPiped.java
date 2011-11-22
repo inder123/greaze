@@ -15,14 +15,16 @@
  */
 package com.google.greaze.definition.fixtures;
 
-import com.google.greaze.definition.ContentBodySpec;
-import com.google.greaze.definition.internal.utils.Streams;
-
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.util.HashMap;
+import java.util.Map;
+
+import com.google.greaze.definition.ContentBodySpec;
+import com.google.greaze.definition.internal.utils.Streams;
 
 /**
  * Pipes input into the output stream of HttpURLConnection
@@ -44,8 +46,14 @@ public class NetworkSwitcherPiped implements NetworkSwitcher {
     }
   }
 
+  /**
+   * Note that this HttpURLConnection only support single value headers. If you add
+   * a subsequent header, it overwrites the previous value.
+   */
   public final class HttpURLConnectionFake extends HttpURLConnection {
 
+    private final Map<String, String> headers = new HashMap<String, String>();
+    
     private final ByteArrayPipedStream forward;
     private final ByteArrayPipedStream reverse;
 
@@ -85,6 +93,20 @@ public class NetworkSwitcherPiped implements NetworkSwitcher {
     @Override
     public OutputStream getOutputStream() {
       return forward;
+    }
+
+    @Override
+    public void setRequestProperty(String key, String value) {
+      headers.put(key, value);
+    }
+    
+    @Override
+    public void addRequestProperty(String key, String value) {
+      headers.put(key, value);
+    }
+
+    public Map<String, String> getHeaders() {
+      return headers;
     }
 
     @Override

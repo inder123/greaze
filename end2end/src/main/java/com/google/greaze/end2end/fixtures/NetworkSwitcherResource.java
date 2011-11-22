@@ -72,7 +72,8 @@ public class NetworkSwitcherResource extends NetworkSwitcherWebService {
     HttpServletRequest req = new HttpServletRequestFake()
       .setRequestMethod(conn.getRequestMethod())
       .setServletPath(conn.getURL().getPath())
-      .setInputStream(conn.getForwardForInput());
+      .setInputStream(conn.getForwardForInput())
+      .setHeaders(conn.getHeaders());
     CallPath callPath = gsm.getCallPath(req);
     RestCallSpec spec = gsm.getRestCallSpec(restCallSpecMap, callPath);
     ResourceIdFactory<Id<?>> idFactory = gsm.getIDFactory(spec);
