@@ -36,7 +36,7 @@ public class UrlParamStringBuilderTest extends TestCase {
   protected void setUp() throws Exception {
     super.setUp();
     Gson gson = new GsonBuilder()
-      .registerTypeAdapter(Id.class, new Id.GsonTypeAdapter())
+      .registerTypeAdapterFactory(new Id.GsonTypeAdapterFactory())
       .create();
     this.upBuilder = new UrlParamStringBuilder(gson);
   }
