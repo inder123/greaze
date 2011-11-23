@@ -48,7 +48,7 @@ public class OrderClient {
     ServerConfig serverConfig = new ExampleServerConfig();
     GsonBuilder gsonBuilder = new GsonBuilder()
       .setVersion(SampleJsonService.CURRENT_VERSION)
-      .registerTypeAdapter(Id.class, new Id.GsonTypeAdapter())
+      .registerTypeAdapterFactory(new Id.GsonTypeAdapterFactory())
       .registerTypeAdapter(MetaData.class, new MetaDataBase.GsonTypeAdapter());
 
     Gson gson = gsonBuilder.create();

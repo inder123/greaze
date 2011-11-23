@@ -94,11 +94,11 @@ public class GreazeExampleServerModule extends AbstractModule {
   public GsonBuilder getGsonBuilder() {
     return new GsonBuilder()
       .setVersion(SampleJsonService.CURRENT_VERSION)
-      .registerTypeAdapter(Id.class, new Id.GsonTypeAdapter())
+      .registerTypeAdapterFactory(new Id.GsonTypeAdapterFactory())
       .registerTypeAdapter(MetaData.class, new MetaDataBase.GsonTypeAdapter());
   }
 
-  @SuppressWarnings({"unchecked"})
+  @SuppressWarnings("rawtypes")
   @RequestScoped
   @Provides
   public RestResponseBaseBuilder getRestResponseBaseBuilder(RestCallSpec callSpec,
