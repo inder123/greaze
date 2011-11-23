@@ -50,7 +50,7 @@ public class ResourceQueryDispatcherExample extends ResourceQueryDispatcher {
   private static GsonBuilder getGsonBuilder() {
     return new GsonBuilder()
       .setVersion(SampleJsonService.CURRENT_VERSION)
-      .registerTypeAdapter(Id.class, new Id.GsonTypeAdapter())
+      .registerTypeAdapterFactory(new Id.GsonTypeAdapterFactory())
       .registerTypeAdapter(MetaData.class, new MetaDataBase.GsonTypeAdapter());
   }
 
