@@ -27,13 +27,7 @@ import java.util.regex.Pattern;
 import com.google.greaze.definition.internal.utils.GreazePreconditions;
 import com.google.greaze.definition.internal.utils.TypeNameBiMap;
 import com.google.gson.Gson;
-import com.google.gson.JsonDeserializationContext;
-import com.google.gson.JsonDeserializer;
-import com.google.gson.JsonElement;
 import com.google.gson.JsonParseException;
-import com.google.gson.JsonPrimitive;
-import com.google.gson.JsonSerializationContext;
-import com.google.gson.JsonSerializer;
 import com.google.gson.TypeAdapter;
 import com.google.gson.reflect.TypeToken;
 import com.google.gson.stream.JsonReader;
@@ -232,34 +226,6 @@ public final class Id<R> implements ResourceId, Comparable<Id<R>>, Serializable 
           }
         }
       };
-    }
-  }
-  
-  /**
-   * Type adapter for converting an Id to its serialized form
-   *
-   * @author Inderjeet Singh
-   */
-  public static final class GsonTypeAdapter implements JsonSerializer<Id<?>>,
-      JsonDeserializer<Id<?>> {
-
-    @Override
-    public JsonElement serialize(Id<?> src, Type typeOfSrc,
-        JsonSerializationContext context) {
-      return new JsonPrimitive(src.getValue());
-    }
-
-    @Override
-    public Id<?> deserialize(JsonElement json, Type typeOfT,
-        JsonDeserializationContext context) throws JsonParseException {
-      if (!(typeOfT instanceof ParameterizedType)) {
-        throw new JsonParseException("Id of unknown type: " + typeOfT);
-      }
-      ParameterizedType parameterizedType = (ParameterizedType) typeOfT;
-      // Since Id takes only one TypeVariable, the actual type corresponding to the first
-      // TypeVariable is the Type we are looking for
-      Type typeOfId = parameterizedType.getActualTypeArguments()[0];
-      return Id.get(json.getAsString(), typeOfId);
     }
   }
 
