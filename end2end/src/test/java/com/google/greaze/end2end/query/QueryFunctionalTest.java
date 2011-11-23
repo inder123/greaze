@@ -46,7 +46,7 @@ public class QueryFunctionalTest extends TestCase {
   protected void setUp() throws Exception {
     super.setUp();
     this.gsonBuilder = new GsonBuilder()
-      .registerTypeAdapter(Id.class, new Id.GsonTypeAdapter());
+      .registerTypeAdapterFactory(new Id.GsonTypeAdapterFactory());
     this.employees = new RepositoryInMemory<Employee>(Employee.class);
   }
 

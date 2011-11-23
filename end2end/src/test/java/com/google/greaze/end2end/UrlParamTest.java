@@ -39,7 +39,7 @@ public class UrlParamTest extends TestCase {
   protected void setUp() throws Exception {
     super.setUp();
     gson = new GsonBuilder()
-      .registerTypeAdapter(Id.class, new Id.GsonTypeAdapter())
+      .registerTypeAdapterFactory(new Id.GsonTypeAdapterFactory())
       .create();
     this.urlParamBuilder = new UrlParamStringBuilder(gson);
   }

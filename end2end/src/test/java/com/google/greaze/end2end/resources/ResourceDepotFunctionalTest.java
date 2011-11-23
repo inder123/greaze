@@ -54,7 +54,7 @@ public class ResourceDepotFunctionalTest extends TestCase {
   protected void setUp() throws Exception {
     super.setUp();
     Gson gson = new GsonBuilder()
-      .registerTypeAdapter(Id.class, new Id.GsonTypeAdapter())
+      .registerTypeAdapterFactory(new Id.GsonTypeAdapterFactory())
       .create();
     this.employees = new RepositoryInMemory<Employee>(Employee.class);
     RestResponseBuilder<Employee> responseBuilder = new RestResponseBuilder<Employee>(employees);
