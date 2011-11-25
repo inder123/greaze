@@ -204,10 +204,8 @@ public class WebServiceCallSpec {
 
   public GsonBuilder addTypeAdapters(GsonBuilder gsonBuilder) {
     return gsonBuilder
-      .registerTypeAdapter(RequestBody.class,
-          new RequestBody.GsonTypeAdapter(requestSpec.getBodySpec()))
-      .registerTypeAdapter(ResponseBody.class,
-          new ResponseBody.GsonTypeAdapter(responseSpec.getBodySpec()));
+      .registerTypeAdapterFactory(new RequestBody.GsonTypeAdapterFactory(requestSpec.getBodySpec()))
+      .registerTypeAdapterFactory(new ResponseBody.GsonTypeAdapterFactory(responseSpec.getBodySpec()));
   }
 
   @Override

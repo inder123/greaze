@@ -49,10 +49,9 @@ public abstract class WebServiceDispatcher {
     RequestSpec requestSpec = spec.getRequestSpec();
     ResponseSpec responseSpec = spec.getResponseSpec();
     Gson gson = injector.getInstance(GsonBuilder.class)
-        .registerTypeAdapter(RequestBody.class,
-            new RequestBody.GsonTypeAdapter(requestSpec.getBodySpec()))
-        .registerTypeAdapter(ResponseBody.class, 
-            new ResponseBody.GsonTypeAdapter(responseSpec.getBodySpec()))
+        .deepCopy()
+        .registerTypeAdapterFactory(new RequestBody.GsonTypeAdapterFactory(requestSpec.getBodySpec()))
+        .registerTypeAdapterFactory(new ResponseBody.GsonTypeAdapterFactory(responseSpec.getBodySpec()))
         .create();
     RequestReceiver requestReceiver = new RequestReceiver(gson, requestSpec);
     WebServiceRequest webServiceRequest = requestReceiver.receive(req);
