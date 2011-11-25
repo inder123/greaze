@@ -63,12 +63,8 @@ public class ResourceQueryDispatcher {
         resourceQuery.getResourceType(), resourceQuery.getQueryType(),
         webContextSpec);
     RequestSpec requestSpec = spec.getRequestSpec();
-    ResponseSpec responseSpec = spec.getResponseSpec();
-    Gson gson = gsonBuilder
-        .registerTypeHierarchyAdapter(RequestBody.class,
-            new RequestBody.GsonTypeAdapter(requestSpec.getBodySpec()))
-        .registerTypeHierarchyAdapter(ResponseBody.class, 
-            new ResponseBody.GsonTypeAdapter(responseSpec.getBodySpec()))
+    Gson gson = gsonBuilder.deepCopy()
+        .registerTypeAdapterFactory(new RequestBody.GsonTypeAdapterFactory(requestSpec.getBodySpec()))
         .create();
     RequestReceiver requestReceiver = new RequestReceiver(gson, requestSpec);
     WebServiceRequest webServiceRequest = requestReceiver.receive(req);
@@ -86,6 +82,9 @@ public class ResourceQueryDispatcher {
       .setListBody(results)
       .build();
     WebServiceResponse response = new WebServiceResponse(responseHeaders, responseBody);
+    gson = gsonBuilder.deepCopy()
+        .registerTypeAdapterFactory(new ResponseBody.GsonTypeAdapterFactory(bodySpec))
+        .create();
     ResponseSender responseSender = new ResponseSender(gson);
     responseSender.send(res, response);
   }

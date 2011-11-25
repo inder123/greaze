@@ -22,12 +22,9 @@ import java.util.Map;
 import com.google.greaze.definition.ContentBody;
 import com.google.greaze.definition.TypedKey;
 import com.google.greaze.definition.UntypedKey;
-import com.google.gson.JsonDeserializationContext;
-import com.google.gson.JsonDeserializer;
-import com.google.gson.JsonElement;
-import com.google.gson.JsonParseException;
-import com.google.gson.JsonSerializationContext;
-import com.google.gson.JsonSerializer;
+import com.google.gson.Gson;
+import com.google.gson.TypeAdapter;
+import com.google.gson.reflect.TypeToken;
 
 /**
  * body of the response. This is written out as JSON to be sent out to the client. 
@@ -95,28 +92,23 @@ public final class ResponseBody extends ContentBody {
     return (ResponseBodySpec) spec;
   }
 
-  /**
-   * Gson type adapter for {@link ResponseBody}. 
-   */
-  public static final class GsonTypeAdapter implements JsonSerializer<ResponseBody>, 
-    JsonDeserializer<ResponseBody> {
-
+  public static final class GsonTypeAdapterFactory implements TypeAdapter.Factory {
     private final ResponseBodySpec spec;
-
-    public GsonTypeAdapter(ResponseBodySpec spec) {
+    public GsonTypeAdapterFactory(ResponseBodySpec spec) {
       this.spec = spec;
     }
-    
+    @SuppressWarnings({"unchecked", "rawtypes"})
     @Override
-    public JsonElement serialize(ResponseBody src, Type typeOfSrc, 
-        JsonSerializationContext context) {
-      return GsonHelper.serialize(src, context);
-    }
-
-    @Override
-    public ResponseBody deserialize(JsonElement json, Type typeOfT, 
-        JsonDeserializationContext context) throws JsonParseException {
-      return GsonHelper.deserialize(json, context, new ResponseBody.Builder(spec));
+    public <T> TypeAdapter<T> create(Gson gson, TypeToken<T> type) {
+      if (ResponseBody.class != type.getRawType()) {
+        return null;
+      }
+      return (TypeAdapter)new ContentBodyGsonTypeAdapter<ResponseBody>(gson, spec) {
+        @Override
+        public ContentBody.Builder createBuilder() {
+          return new Builder(spec);
+        }
+      };
     }
   }
 }
