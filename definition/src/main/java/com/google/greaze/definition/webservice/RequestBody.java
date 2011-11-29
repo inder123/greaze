@@ -22,9 +22,6 @@ import java.util.Map;
 import com.google.greaze.definition.ContentBody;
 import com.google.greaze.definition.TypedKey;
 import com.google.greaze.definition.UntypedKey;
-import com.google.gson.Gson;
-import com.google.gson.TypeAdapter;
-import com.google.gson.reflect.TypeToken;
 
 /**
  * Definition of the request body of a {@link WebServiceCall}. The request body is what is sent out
@@ -93,25 +90,17 @@ public final class RequestBody extends ContentBody {
   @Override
   public RequestBodySpec getSpec() {
     return (RequestBodySpec) spec;
-  }  
+  }
 
-  public static final class GsonTypeAdapterFactory implements TypeAdapter.Factory {
-    private final RequestBodySpec spec;
+  public static final class GsonTypeAdapterFactory extends GsonAdapterFactoryBase<RequestBodySpec> {
+
     public GsonTypeAdapterFactory(RequestBodySpec spec) {
-      this.spec = spec;
+      super(spec, RequestBody.class);
     }
-    @SuppressWarnings({"unchecked", "rawtypes"})
+
     @Override
-    public <T> TypeAdapter<T> create(Gson gson, TypeToken<T> type) {
-      if (RequestBody.class != type.getRawType()) {
-        return null;
-      }
-      return (TypeAdapter)new ContentBodyGsonTypeAdapter<RequestBody>(gson, spec) {
-        @Override
-        public ContentBody.Builder createBuilder() {
-          return new Builder(spec);
-        }
-      };
+    public ContentBody.Builder createBuilder() {
+      return new RequestBody.Builder(spec);
     }
   }
 }

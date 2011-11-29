@@ -32,7 +32,6 @@ import com.google.greaze.definition.webservice.RequestBody;
 import com.google.greaze.definition.webservice.RequestSpec;
 import com.google.greaze.definition.webservice.ResponseBody;
 import com.google.greaze.definition.webservice.ResponseBodySpec;
-import com.google.greaze.definition.webservice.ResponseSpec;
 import com.google.greaze.definition.webservice.WebServiceCallSpec;
 import com.google.greaze.definition.webservice.WebServiceRequest;
 import com.google.greaze.definition.webservice.WebServiceResponse;

@@ -31,13 +31,11 @@ import com.google.gson.stream.JsonToken;
 import com.google.gson.stream.JsonWriter;
 
 @SuppressWarnings({"rawtypes", "unchecked"})
-abstract class ContentBodyGsonTypeAdapter<CB extends ContentBody> extends TypeAdapter<CB> {
-  private final TypeAdapter simpleBodyAdapter;
+abstract class GsonAdapterMapBody<CB extends ContentBody> extends TypeAdapter<CB> {
   private final LazyAdapterMap adapters;
   private final ContentBodySpec spec;
 
-  ContentBodyGsonTypeAdapter(Gson gson, ContentBodySpec spec) {
-    this.simpleBodyAdapter = gson.getAdapter(TypeToken.get(spec.getSimpleBodyType()));
+  GsonAdapterMapBody(Gson gson, ContentBodySpec spec) {
     this.adapters = new LazyAdapterMap(gson, spec);
     this.spec = spec;
   }
@@ -49,30 +47,14 @@ abstract class ContentBodyGsonTypeAdapter<CB extends ContentBody> extends TypeAd
     ContentBody.Builder builder = createBuilder();
     ContentBodySpec spec = builder.getSpec();
     GreazePreconditions.checkArgument(this.spec.equals(spec));
-    switch(spec.getContentBodyType()) {
-      case SIMPLE:
-        builder.setSimpleBody(simpleBodyAdapter.read(reader));
-        break;
-      case LIST:
-        reader.beginArray();
-        while (reader.peek() != JsonToken.END_ARRAY) {
-          builder.addToListBody(simpleBodyAdapter.read(reader));
-        }
-        reader.endArray();
-        break;
-      case MAP:
-        reader.beginObject();
-        while (reader.peek() != JsonToken.END_OBJECT) {
-          String key = reader.nextName();
-          TypeAdapter adapter = adapters.getAdapter(key);
-          Object value = adapter.read(reader);
-          builder.put(key, value);
-        }
-        reader.endObject();
-        break;
-      default:
-        throw new UnsupportedOperationException();
+    reader.beginObject();
+    while (reader.peek() != JsonToken.END_OBJECT) {
+      String key = reader.nextName();
+      TypeAdapter adapter = adapters.getAdapter(key);
+      Object value = adapter.read(reader);
+      builder.put(key, value);
     }
+    reader.endObject();
     return (CB) builder.build();
   }
 
@@ -81,33 +63,17 @@ abstract class ContentBodyGsonTypeAdapter<CB extends ContentBody> extends TypeAd
     ContentBody src = (ContentBody) value;
     ContentBodySpec bodySpec = src.getSpec();
     GreazePreconditions.checkArgument(this.spec.equals(bodySpec));
-    switch(bodySpec.getContentBodyType()) {
-      case SIMPLE:
-        simpleBodyAdapter.write(writer, src.getSimpleBody());
-        break;
-      case LIST:
-        writer.beginArray();
-        for(Object entry : src.getListBody()) {
-          simpleBodyAdapter.write(writer, entry);
-        }
-        writer.endArray();
-        break;
-      case MAP:
-        writer.beginObject();
-        for(Map.Entry<String, Object> entry : src.entrySet()) {
-          String key = entry.getKey();
-          TypeAdapter adapter = adapters.getAdapter(key);
-          writer.name(key);
-          adapter.write(writer, entry.getValue());
-        }
-        writer.endObject();
-        break;
-      default:
-        throw new UnsupportedOperationException();
+    writer.beginObject();
+    for(Map.Entry<String, Object> entry : src.entrySet()) {
+      String key = entry.getKey();
+      TypeAdapter adapter = adapters.getAdapter(key);
+      writer.name(key);
+      adapter.write(writer, entry.getValue());
     }
+    writer.endObject();
   }
 
-  private final class LazyAdapterMap {
+  private static final class LazyAdapterMap {
     private final Gson gson;
     private final ContentBodySpec spec;
     private final Map<String, TypeAdapter> map = new HashMap<String, TypeAdapter>();
