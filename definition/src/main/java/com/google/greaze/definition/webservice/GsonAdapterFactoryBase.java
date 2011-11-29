@@ -23,39 +23,43 @@ import com.google.gson.Gson;
 import com.google.gson.TypeAdapter;
 import com.google.gson.reflect.TypeToken;
 
-abstract class GsonAdapterFactoryBase<CBS extends ContentBodySpec> implements TypeAdapter.Factory {
+abstract class GsonAdapterFactoryBase<CB extends ContentBody, CBS extends ContentBodySpec>
+    implements TypeAdapter.Factory {
   protected final CBS spec;
   protected final Type bodyClass;
-  public GsonAdapterFactoryBase(CBS spec, Type bodyClass) {
+  public GsonAdapterFactoryBase(CBS spec, TypeToken<CB> bodyClass) {
     this.spec = spec;
-    this.bodyClass = bodyClass;
+    this.bodyClass = bodyClass.getType();
   }
 
   public abstract ContentBody.Builder createBuilder();
 
-  @SuppressWarnings({"unchecked", "rawtypes"})
+  @SuppressWarnings("unchecked")
   @Override
   public <T> TypeAdapter<T> create(Gson gson, TypeToken<T> type) {
-    if (bodyClass != type.getRawType()) {
-      return null;
-    }
+    return bodyClass == type.getRawType()
+        ? (TypeAdapter<T>) create(gson) // runtime check guarantees 'T == ContentBody'
+        : null; 
+  }
+
+  private TypeAdapter<ContentBody> create(Gson gson) {
     switch(spec.getContentBodyType()) {
       case SIMPLE:
-        return (TypeAdapter)new GsonAdapterSimpleBody<RequestBody>(gson, spec) {
+        return new GsonAdapterSimpleBody<ContentBody>(gson, spec) {
           @Override
           public ContentBody.Builder createBuilder() {
             return GsonAdapterFactoryBase.this.createBuilder();
           }
         };
       case LIST:
-        return (TypeAdapter)new GsonAdapterListBody<RequestBody>(gson, spec) {
+        return new GsonAdapterListBody<ContentBody>(gson, spec) {
           @Override
           public ContentBody.Builder createBuilder() {
             return GsonAdapterFactoryBase.this.createBuilder();
           }
         };
       case MAP:
-        return (TypeAdapter)new GsonAdapterMapBody<RequestBody>(gson, spec) {
+        return new GsonAdapterMapBody<ContentBody>(gson, spec) {
           @Override
           public ContentBody.Builder createBuilder() {
             return GsonAdapterFactoryBase.this.createBuilder();

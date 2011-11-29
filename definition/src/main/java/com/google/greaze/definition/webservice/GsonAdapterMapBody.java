@@ -27,7 +27,6 @@ import com.google.gson.Gson;
 import com.google.gson.TypeAdapter;
 import com.google.gson.reflect.TypeToken;
 import com.google.gson.stream.JsonReader;
-import com.google.gson.stream.JsonToken;
 import com.google.gson.stream.JsonWriter;
 
 @SuppressWarnings({"rawtypes", "unchecked"})
@@ -48,7 +47,7 @@ abstract class GsonAdapterMapBody<CB extends ContentBody> extends TypeAdapter<CB
     ContentBodySpec spec = builder.getSpec();
     GreazePreconditions.checkArgument(this.spec.equals(spec));
     reader.beginObject();
-    while (reader.peek() != JsonToken.END_OBJECT) {
+    while (reader.hasNext()) {
       String key = reader.nextName();
       TypeAdapter adapter = adapters.getAdapter(key);
       Object value = adapter.read(reader);
