@@ -15,6 +15,13 @@
  */
 package com.google.greaze.webservice.server;
 
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.lang.reflect.Type;
+import java.util.Map;
+
+import javax.servlet.http.HttpServletRequest;
+
 import com.google.greaze.definition.HeaderMap;
 import com.google.greaze.definition.HeaderMapSpec;
 import com.google.greaze.definition.HttpMethod;
@@ -28,15 +35,6 @@ import com.google.greaze.server.internal.utils.UrlParamsExtractor;
 import com.google.gson.Gson;
 import com.google.gson.JsonParseException;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.io.Reader;
-import java.lang.reflect.Type;
-import java.util.Map;
-
-import javax.servlet.http.HttpServletRequest;
-
 /**
  * Receives and parses a request at the server side on a {@link HttpServletRequest}.  
  * 
@@ -44,7 +42,6 @@ import javax.servlet.http.HttpServletRequest;
  */
 public class RequestReceiver {
 
-  private static final int BUF_SIZE = 4096;
   protected final Gson gson;
   protected final RequestSpec spec;
 
@@ -90,9 +87,7 @@ public class RequestReceiver {
     if (bodySpec.size() == 0) {
       return createEmptyRequestBody(bodySpec);
     }
-    Reader reader = new BufferedReader(new InputStreamReader(request.getInputStream()), BUF_SIZE);
-    RequestBody requestBody = gson.fromJson(reader, RequestBody.class);
-    return requestBody;
+    return gson.fromJson(new InputStreamReader(request.getInputStream()), RequestBody.class);
   }
 
   private RequestBody createEmptyRequestBody(RequestBodySpec bodySpec) {
