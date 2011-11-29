@@ -24,7 +24,6 @@ import com.google.gson.Gson;
 import com.google.gson.TypeAdapter;
 import com.google.gson.reflect.TypeToken;
 import com.google.gson.stream.JsonReader;
-import com.google.gson.stream.JsonToken;
 import com.google.gson.stream.JsonWriter;
 
 @SuppressWarnings({"rawtypes", "unchecked"})
@@ -45,7 +44,7 @@ abstract class GsonAdapterListBody<CB extends ContentBody> extends TypeAdapter<C
     ContentBodySpec spec = builder.getSpec();
     GreazePreconditions.checkArgument(this.spec.equals(spec));
     reader.beginArray();
-    while (reader.peek() != JsonToken.END_ARRAY) {
+    while (reader.hasNext()) {
       builder.addToListBody(simpleBodyAdapter.read(reader));
     }
     reader.endArray();
