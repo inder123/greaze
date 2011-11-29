@@ -31,6 +31,7 @@ import com.google.greaze.rest.query.client.ResourceQueryClient;
 import com.google.greaze.rest.server.Repository;
 import com.google.greaze.rest.server.RepositoryInMemory;
 import com.google.gson.GsonBuilder;
+import com.google.inject.Provider;
 
 /**
  * Functional tests for passing resource query parameters
@@ -39,14 +40,18 @@ import com.google.gson.GsonBuilder;
  */
 public class QueryFunctionalTest extends TestCase {
 
-  private GsonBuilder gsonBuilder;
+  private Provider<GsonBuilder> gsonBuilder;
   private Repository<Employee> employees;
 
   @Override
   protected void setUp() throws Exception {
     super.setUp();
-    this.gsonBuilder = new GsonBuilder()
-      .registerTypeAdapterFactory(new Id.GsonTypeAdapterFactory());
+    this.gsonBuilder = new Provider<GsonBuilder>() {
+      @Override
+      public GsonBuilder get() {
+        return new GsonBuilder().registerTypeAdapterFactory(new Id.GsonTypeAdapterFactory());
+      }
+    };
     this.employees = new RepositoryInMemory<Employee>(Employee.class);
   }
 
@@ -68,7 +73,7 @@ public class QueryFunctionalTest extends TestCase {
       new ResourceQueryClientFake<Employee, QueryEmployeeByName>(query, gsonBuilder, queryPath);
     ResourceQueryClient<Employee, QueryEmployeeByName> queryClient =
       new ResourceQueryClient<Employee, QueryEmployeeByName>(
-        stub, queryPath, QueryEmployeeByName.class, gsonBuilder, Employee.class);
+        stub, queryPath, QueryEmployeeByName.class, gsonBuilder.get(), Employee.class);
 
     employees.put(new Employee(null, "foo"));
     employees.put(new Employee(null, "foo"));

@@ -26,6 +26,7 @@ import com.google.greaze.definition.rest.query.ResourceQueryParams;
 import com.google.greaze.webservice.client.ServerConfig;
 import com.google.greaze.webservice.client.WebServiceClient;
 import com.google.gson.GsonBuilder;
+import com.google.inject.Provider;
 
 /**
  * A test fixture for {@link WebServiceClient}
@@ -36,8 +37,8 @@ public class ResourceQueryClientFake<R extends RestResource<R>, Q extends Resour
     extends WebServiceClient {
 
   private final NetworkSwitcher networkSwitcher;
-  public ResourceQueryClientFake(ResourceQuery<R, Q> responseBuilder, GsonBuilder serverGsonBuilder,
-      CallPath queryPath) {
+  public ResourceQueryClientFake(ResourceQuery<R, Q> responseBuilder,
+      Provider<GsonBuilder> serverGsonBuilder, CallPath queryPath) {
     super(new ServerConfig("http://localhost"));
     networkSwitcher = new NetworkSwitcherQuery<R, Q>(responseBuilder, serverGsonBuilder, queryPath);
   }

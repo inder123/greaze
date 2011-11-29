@@ -15,6 +15,11 @@
  */
 package com.google.greaze.example.server;
 
+import java.util.Map;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
 import com.google.common.collect.ImmutableMap;
 import com.google.greaze.definition.CallPath;
 import com.google.greaze.definition.rest.Id;
@@ -28,11 +33,7 @@ import com.google.greaze.rest.server.Repository;
 import com.google.greaze.server.dispatcher.ResourceQueryDispatcher;
 import com.google.gson.GsonBuilder;
 import com.google.inject.Inject;
-
-import java.util.Map;
-
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
+import com.google.inject.Provider;
 
 public class ResourceQueryDispatcherExample extends ResourceQueryDispatcher {
 
@@ -47,11 +48,16 @@ public class ResourceQueryDispatcherExample extends ResourceQueryDispatcher {
 
   }
 
-  private static GsonBuilder getGsonBuilder() {
-    return new GsonBuilder()
-      .setVersion(SampleJsonService.CURRENT_VERSION)
-      .registerTypeAdapterFactory(new Id.GsonTypeAdapterFactory())
-      .registerTypeAdapter(MetaData.class, new MetaDataBase.GsonTypeAdapter());
+  private static Provider<GsonBuilder> getGsonBuilder() {
+    return new Provider<GsonBuilder>() {
+      @Override
+      public GsonBuilder get() {
+        return new GsonBuilder()
+          .setVersion(SampleJsonService.CURRENT_VERSION)
+          .registerTypeAdapterFactory(new Id.GsonTypeAdapterFactory())
+          .registerTypeAdapter(MetaData.class, new MetaDataBase.GsonTypeAdapter());
+      }
+    };
   }
 
   @Override
