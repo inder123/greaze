@@ -40,6 +40,7 @@ import com.google.greaze.webservice.server.RequestReceiver;
 import com.google.greaze.webservice.server.ResponseSender;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import com.google.inject.Provider;
 
 /**
  * A class to service incoming resource query requests using corresponding query handlers.
@@ -47,9 +48,9 @@ import com.google.gson.GsonBuilder;
  * @author Inderjeet Singh
  */
 public class ResourceQueryDispatcher {
-  protected final GsonBuilder gsonBuilder;
+  protected final Provider<GsonBuilder> gsonBuilder;
 
-  public ResourceQueryDispatcher(GsonBuilder gsonBuilder) {
+  public ResourceQueryDispatcher(Provider<GsonBuilder> gsonBuilder) {
     this.gsonBuilder = gsonBuilder;
   }
 
@@ -62,7 +63,7 @@ public class ResourceQueryDispatcher {
         resourceQuery.getResourceType(), resourceQuery.getQueryType(),
         webContextSpec);
     RequestSpec requestSpec = spec.getRequestSpec();
-    Gson gson = gsonBuilder.deepCopy()
+    Gson gson = gsonBuilder.get()
         .registerTypeAdapterFactory(new RequestBody.GsonTypeAdapterFactory(requestSpec.getBodySpec()))
         .create();
     RequestReceiver requestReceiver = new RequestReceiver(gson, requestSpec);
@@ -81,7 +82,7 @@ public class ResourceQueryDispatcher {
       .setListBody(results)
       .build();
     WebServiceResponse response = new WebServiceResponse(responseHeaders, responseBody);
-    gson = gsonBuilder.deepCopy()
+    gson = gsonBuilder.get()
         .registerTypeAdapterFactory(new ResponseBody.GsonTypeAdapterFactory(bodySpec))
         .create();
     ResponseSender responseSender = new ResponseSender(gson);

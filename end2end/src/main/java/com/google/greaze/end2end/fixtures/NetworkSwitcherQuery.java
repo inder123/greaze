@@ -31,6 +31,7 @@ import com.google.greaze.server.fixtures.HttpServletRequestFake;
 import com.google.greaze.server.fixtures.HttpServletResponseFake;
 import com.google.greaze.server.inject.GreazeServerModule;
 import com.google.gson.GsonBuilder;
+import com.google.inject.Provider;
 
 /**
  * Connects a RequestReceiver to HttpURLConnection
@@ -46,7 +47,7 @@ public class NetworkSwitcherQuery<R extends RestResource<R>, Q extends ResourceQ
   private final GreazeServerModule gsm;
   private ResourceQueryDispatcher dispatcher;
 
-  public NetworkSwitcherQuery(ResourceQuery<R, Q> query, GsonBuilder serverGsonBuilder,
+  public NetworkSwitcherQuery(ResourceQuery<R, Q> query, Provider<GsonBuilder> serverGsonBuilder,
       CallPath queryCallPath) {
     this.gsm = new GreazeServerModule(
         SERVLET_BASE_PATH, ImmutableList.of(queryCallPath), queryCallPath.getBasePath());
