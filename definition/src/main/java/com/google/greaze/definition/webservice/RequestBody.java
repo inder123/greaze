@@ -30,7 +30,7 @@ import com.google.gson.reflect.TypeToken;
  * {@link java.net.HttpURLConnection#getOutputStream()}) , and is read by the 
  * javax.servlet.http.HttpServletRequest#getInputStream().
  * This class omits the default constructor for use by Gson. Instead the user must use
- * {@link RequestBody.GsonTypeAdapter}
+ * {@link RequestBody.GsonTypeAdapterFactory}
  * 
  * @author Inderjeet Singh
  */

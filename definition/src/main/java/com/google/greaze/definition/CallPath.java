@@ -91,7 +91,6 @@ public final class CallPath {
 
   /**
    * Returns the path without the service or the resource id
-   * @return
    */
   public String getPathPrefix() {
     StringBuilder sb = new StringBuilder();
