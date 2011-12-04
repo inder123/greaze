@@ -48,15 +48,15 @@ public class NetworkSwitcherResource extends NetworkSwitcherWebService {
   private final RestCallSpecMap restCallSpecMap;
 
   /**
-   * @param responseBuilder Rest response builder for the resource
+   * @param responseBuilders Rest response builder for the resource
    * @param restCallSpecMap A map of call paths to RestCallSpecs
    * @param serverGson Gson instance used for server-side JSON serialization/deserialization
    * @param servicePaths All the paths for the resources available on the server. Same as
    *   servicePaths parameter for
-   *   {@link GreazeServerModule#GreazeServerModule(String, Collection, String)}
+   *   {@link GreazeServerModule#GreazeServerModule(String, Collection, String)
    * @param resourcePrefix the resource prefix after the path to Servlet. For example, /resource
    *   for /myshop/resource/1.0/order. Same as resourcePrefix parameter for
-   *   {@link GreazeServerModule#GreazeServerModule(String, Collection, String)}
+   *   {@link GreazeServerModule#GreazeServerModule(String, Collection, String)
    */
   public NetworkSwitcherResource(ResponseBuilderMap responseBuilders,
       RestCallSpecMap restCallSpecMap, Gson serverGson,
