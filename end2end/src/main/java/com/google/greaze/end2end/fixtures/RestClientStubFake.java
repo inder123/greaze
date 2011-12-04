@@ -38,7 +38,7 @@ public class RestClientStubFake extends RestClientStub {
   private final NetworkSwitcher networkSwitcher;
 
   /**
-   * @param responseBuilder Rest response builder for the resource
+   * @param responseBuilders Rest response builder for the resource
    * @param restCallSpecMap A map of call paths to RestCallSpecs
    * @param serverGson Gson instance used for server-side JSON serialization/deserialization
    * @param servicePaths All the paths for the resources available on the server. Same as
