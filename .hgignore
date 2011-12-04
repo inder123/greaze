@@ -12,3 +12,6 @@ geronimo-*.jar
 jsr107cache-*.jar
 jdo2-*.jar
 
+
+syntax: regexp
+\.jar$
