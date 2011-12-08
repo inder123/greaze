@@ -39,17 +39,10 @@ import com.google.gson.Gson;
  */
 public class RequestSender {
   private final Gson gson;
-  private final Logger logger;
-  private final Level logLevel;
+  private static final Logger logger = Logger.getLogger(RequestSender.class.getName());
 
   public RequestSender(Gson gson) {
-    this(gson, null);
-  }
-
-  public RequestSender(Gson gson, Level logLevel) {
     this.gson = gson;
-    logger = logLevel == null ? null : Logger.getLogger(RequestSender.class.getName());
-    this.logLevel = logLevel;
   }
   
   public void send(HttpURLConnection conn, WebServiceRequest request) {    
@@ -106,9 +99,7 @@ public class RequestSender {
   }
 
   private void setHeader(HttpURLConnection conn, String name, String value, boolean overwrite) {
-    if (logger != null) {
-      logger.log(logLevel, String.format("Request param: %s:%s", name, value));
-    }
+    logger.log(Level.FINE, String.format("Request param: %s:%s", name, value));
     if (overwrite) {
       conn.setRequestProperty(name, value);
     } else {

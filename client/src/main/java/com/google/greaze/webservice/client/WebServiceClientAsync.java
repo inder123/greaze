@@ -17,7 +17,6 @@ package com.google.greaze.webservice.client;
 
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingQueue;
-import java.util.logging.Level;
 
 import com.google.greaze.definition.ErrorReason;
 import com.google.greaze.definition.WebServiceSystemException;
@@ -39,11 +38,7 @@ public class WebServiceClientAsync {
   private final TaskExecutor executor;
 
   public WebServiceClientAsync(ServerConfig serverConfig, Gson gson) {
-    this(serverConfig, gson, null);
-  }
-
-  public WebServiceClientAsync(ServerConfig serverConfig, Gson gson, Level logLevel) {
-    this(new WebServiceClient(serverConfig, logLevel), gson);
+    this(new WebServiceClient(serverConfig), gson);
   }
 
   public WebServiceClientAsync(WebServiceClient client, Gson gson) {

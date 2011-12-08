@@ -36,17 +36,10 @@ import com.google.gson.Gson;
  */
 public class WebServiceClient {
   protected final ServerConfig config;
-  protected final Logger logger;
-  protected final Level logLevel;
+  protected static final Logger logger = Logger.getLogger(WebServiceClient.class.getName());
 
   public WebServiceClient(ServerConfig serverConfig) {
-    this(serverConfig, null);
-  }
-
-  public WebServiceClient(ServerConfig serverConfig, Level logLevel) {
     this.config = serverConfig;
-    this.logger = logLevel == null ? null : Logger.getLogger(WebServiceClient.class.getName());
-    this.logLevel = logLevel;
   }
   
   /** Visible for testing only */
@@ -76,14 +69,11 @@ public class WebServiceClient {
     HttpURLConnection conn = null;
     try {
       URL webServiceUrl = getWebServiceUrl(callSpec, request, gson);
-      if (logger != null) {
-        logger.log(logLevel, "Opening connection to " + webServiceUrl);
-      }
+      logger.log(Level.INFO, "Opening connection to " + webServiceUrl);
       conn = openConnection(webServiceUrl);
-      RequestSender requestSender = new RequestSender(gson, logLevel);
+      RequestSender requestSender = new RequestSender(gson);
       requestSender.send(conn, request);
-      ResponseReceiver responseReceiver =
-        new ResponseReceiver(gson, callSpec.getResponseSpec(), logLevel);
+      ResponseReceiver responseReceiver = new ResponseReceiver(gson, callSpec.getResponseSpec());
       return responseReceiver.receive(conn);
     } catch (IllegalArgumentException e) {
       throw new WebServiceSystemException(e);

@@ -17,7 +17,6 @@ package com.google.greaze.example.webservice.client;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.logging.Level;
 
 import com.google.greaze.definition.HeaderMap;
 import com.google.greaze.definition.HttpMethod;
@@ -46,8 +45,7 @@ public class ExampleClient {
 
   private final WebServiceClient wsClient;
   public ExampleClient() {
-    ServerConfig serverConfig = new ServerConfig(SERVER_BASE_URL);
-	wsClient = new WebServiceClient(serverConfig, Level.INFO); 
+    wsClient = new WebServiceClient(new ServerConfig(SERVER_BASE_URL)); 
   }
 
   public Order placeOrder(Cart cart, String authToken) {
