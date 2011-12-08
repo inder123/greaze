@@ -18,7 +18,6 @@ package com.google.greaze.rest.server.collections;
 import java.lang.reflect.Type;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
-import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import com.google.greaze.definition.rest.HasId;
@@ -68,10 +67,7 @@ public class IdMapBase<I extends ResourceId, T extends HasId<I>> {
   }
 
   public void delete(I id) {
-    T removed = map.remove(id.getValue());
-    if (removed == null) {
-      LOG.log(Level.WARNING, "Attempted to delete non-existent id: {0}", id);
-    }
+    map.remove(id.getValue());
   }
 
   public boolean exists(I id) {

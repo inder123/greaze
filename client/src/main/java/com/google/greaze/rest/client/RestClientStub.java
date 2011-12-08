@@ -43,11 +43,7 @@ import com.google.gson.GsonBuilder;
 public class RestClientStub extends WebServiceClient {
 
   public RestClientStub(ServerConfig serverConfig) {
-    this(serverConfig, null);
-  }
-
-  public RestClientStub(ServerConfig serverConfig, Level logLevel) {
-    super(serverConfig, logLevel);
+    super(serverConfig);
   }
   
   private <I extends ResourceId> URL getWebServiceUrl(RestCallSpec callSpec, ResourceId id) {
@@ -106,14 +102,12 @@ public class RestClientStub extends WebServiceClient {
   public <I extends ResourceId, R extends RestResourceBase<I, R>> RestResponseBase<I, R> getResponse(
       RestCallSpec callSpec, RestRequestBase<I, R> request, Gson gson, HttpURLConnection conn) {
     try {
-      if (logger != null) {
-        URL webServiceUrl = getWebServiceUrl(callSpec, request.getId());
-        logger.log(logLevel, "Opening connection to " + webServiceUrl);
-      }
-      RestRequestSender requestSender = new RestRequestSender(gson, logLevel);
+      URL webServiceUrl = getWebServiceUrl(callSpec, request.getId());
+      logger.log(Level.INFO, "Opening connection to " + webServiceUrl);
+      RestRequestSender requestSender = new RestRequestSender(gson);
       requestSender.send(conn, request);
       RestResponseBaseReceiver<I, R> responseReceiver =
-        new RestResponseBaseReceiver<I, R>(gson, callSpec.getResponseSpec(), logLevel);
+        new RestResponseBaseReceiver<I, R>(gson, callSpec.getResponseSpec());
       return responseReceiver.receive(conn);
     } catch (IllegalArgumentException e) {
       throw new WebServiceSystemException(e);
