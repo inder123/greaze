@@ -44,14 +44,15 @@ public class OrderClient {
   private final ResourceDepotClient<Cart> cartRestClient;
   private final ResourceDepotClient<Order> orderRestClient;
   private final ResourceQueryClient<Order, QueryOrdersByItemName> queryClient;
+  private static final GsonBuilder gsonBuilder = new GsonBuilder()
+    .setVersion(SampleJsonService.CURRENT_VERSION)
+    .registerTypeAdapterFactory(new Id.GsonTypeAdapterFactory())
+    .registerTypeAdapter(MetaData.class, new MetaDataBase.GsonTypeAdapter());
+  private static final Gson gson = gsonBuilder.create();
+
   public OrderClient() {
     ServerConfig serverConfig = new ExampleServerConfig();
-    GsonBuilder gsonBuilder = new GsonBuilder()
-      .setVersion(SampleJsonService.CURRENT_VERSION)
-      .registerTypeAdapterFactory(new Id.GsonTypeAdapterFactory())
-      .registerTypeAdapter(MetaData.class, new MetaDataBase.GsonTypeAdapter());
 
-    Gson gson = gsonBuilder.create();
     RestClientStub restClientStub = new RestClientStub(serverConfig);
     cartRestClient = new ResourceDepotClient<Cart>(
         restClientStub, ServicePaths.CART.getCallPath(), Cart.class, gson);
@@ -84,7 +85,6 @@ public class OrderClient {
     cart = client.createCart(cart);
     Order order = client.placeOrder(cart);
   
-    Gson gson = new Gson();
     System.out.println("Placed order: " + gson.toJson(order));
     List<Order> queriedOrders = client.query(itemName);
     System.out.printf("Queried orders by item name (%s): %s\n",
