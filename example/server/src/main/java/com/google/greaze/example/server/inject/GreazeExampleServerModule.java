@@ -98,14 +98,6 @@ public class GreazeExampleServerModule extends AbstractModule {
       .registerTypeAdapter(MetaData.class, new MetaDataBase.GsonTypeAdapter());
   }
 
-  @SuppressWarnings("rawtypes")
-  @RequestScoped
-  @Provides
-  public RestResponseBaseBuilder getRestResponseBaseBuilder(RestCallSpec callSpec,
-      ResponseBuilderMap responseBuilders) {
-    return responseBuilders.get(callSpec.getResourceType());
-  }
-  
   @Singleton
   @Provides
   public Gson getGson(GsonBuilder gsonBuilder) {
