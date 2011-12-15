@@ -61,7 +61,7 @@ public class ContentBodySpec implements ParamMapSpec {
           break;
         case MAP:
           this.bodyJavaType = $GreazeTypes.newParameterizedTypeWithOwner(
-              null, Map.class, String.class, simpleBodyType);
+              null, Map.class, String.class, Object.class);
           break;
         default:
           throw new UnsupportedOperationException();
