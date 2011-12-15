@@ -19,7 +19,7 @@
     <greaze-definition.build.directory>target</greaze-definition.build.directory>
     <greaze-server.build.directory>target</greaze-server.build.directory>
     <greaze-example-definition.build.directory>target</greaze-example-definition.build.directory>
-    <gae.version>1.5.5</gae.version>
+    <gae.version>1.6.1</gae.version>
     <datanucleus.version>1.1.5</datanucleus.version>
   </properties>
   <licenses>
@@ -75,6 +75,12 @@
     </dependency>
 
     <!--  App Engine dependencies -->
+    <dependency>
+      <groupId>net.sf.jsr107cache</groupId>
+      <artifactId>jsr107cache</artifactId>
+      <version>1.1</version>
+      <scope>provided</scope>
+    </dependency>
     <dependency>
       <groupId>com.google.appengine</groupId>
       <artifactId>appengine-jsr107cache</artifactId>
