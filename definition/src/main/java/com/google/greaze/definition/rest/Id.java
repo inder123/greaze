@@ -29,6 +29,7 @@ import com.google.greaze.definition.internal.utils.TypeNameBiMap;
 import com.google.gson.Gson;
 import com.google.gson.JsonParseException;
 import com.google.gson.TypeAdapter;
+import com.google.gson.TypeAdapterFactory;
 import com.google.gson.reflect.TypeToken;
 import com.google.gson.stream.JsonReader;
 import com.google.gson.stream.JsonWriter;
@@ -198,7 +199,7 @@ public final class Id<R> implements ResourceId, Comparable<Id<R>>, Serializable 
    this.typeOfId = TypeNameBiMap.getInstance().getType(in.readUTF());
   }
 
-  public static final class GsonTypeAdapterFactory implements TypeAdapter.Factory {
+  public static final class GsonTypeAdapterFactory implements TypeAdapterFactory {
     public <T> TypeAdapter<T> create(Gson context, TypeToken<T> type) {
       if (type.getRawType() != Id.class) {
         return null;
