@@ -17,6 +17,7 @@ package com.google.greaze.example.definition.model;
 
 import java.util.List;
 
+import com.google.greaze.definition.rest.Id;
 import com.google.greaze.definition.rest.RestResourceImpl;
 
 /**
@@ -37,6 +38,11 @@ public class Cart extends RestResourceImpl<Cart> {
   }
 
   public Cart(List<LineItem> lineItems, String buyerName, String creditCard) {
+    this(null, lineItems, buyerName, creditCard);
+  }
+
+  public Cart(Id<Cart> id, List<LineItem> lineItems, String buyerName, String creditCard) {
+    super(id);
     this.lineItems = lineItems;
     this.buyerName = buyerName;
     this.creditCard = creditCard;
