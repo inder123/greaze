@@ -24,6 +24,7 @@ import com.google.greaze.example.definition.model.Cart;
 import com.google.greaze.example.definition.model.Order;
 import com.google.greaze.example.server.ResourceQueryDispatcherExample;
 import com.google.greaze.example.server.WebServiceDispatcherExample;
+import com.google.greaze.example.server.cart.RepositoryServerCarts;
 import com.google.greaze.example.service.definition.SampleJsonService;
 import com.google.greaze.rest.server.Repository;
 import com.google.greaze.rest.server.RepositoryInMemory;
@@ -61,7 +62,7 @@ public class GreazeExampleServerModule extends AbstractModule {
   @Singleton
   @Provides
   public Repository<Cart> getRepositoryCarts() {
-    return new RepositoryInMemory<Cart>(Cart.class);
+    return new RepositoryServerCarts();
   }
 
   @Singleton
