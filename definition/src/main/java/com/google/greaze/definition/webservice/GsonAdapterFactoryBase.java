@@ -21,10 +21,11 @@ import com.google.greaze.definition.ContentBody;
 import com.google.greaze.definition.ContentBodySpec;
 import com.google.gson.Gson;
 import com.google.gson.TypeAdapter;
+import com.google.gson.TypeAdapterFactory;
 import com.google.gson.reflect.TypeToken;
 
 abstract class GsonAdapterFactoryBase<CB extends ContentBody, CBS extends ContentBodySpec>
-    implements TypeAdapter.Factory {
+    implements TypeAdapterFactory {
   protected final CBS spec;
   protected final Type bodyClass;
   public GsonAdapterFactoryBase(CBS spec, TypeToken<CB> bodyClass) {
