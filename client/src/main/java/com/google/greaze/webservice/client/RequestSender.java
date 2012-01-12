@@ -18,6 +18,7 @@ package com.google.greaze.webservice.client;
 import java.io.IOException;
 import java.lang.reflect.Type;
 import java.net.HttpURLConnection;
+import java.net.SocketException;
 import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -68,6 +69,8 @@ public class RequestSender {
       
       // Initiate the sending of the request.
       conn.connect();
+    } catch (SocketException e) {
+      throw new WebServiceSystemException(e);
     } catch (IOException e) {
       throw new WebServiceSystemException(e);
     }
