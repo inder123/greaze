@@ -51,7 +51,7 @@ public class WebServiceClient {
         .build();
       return new URL(baseUrl + urlParamString);
     } catch (MalformedURLException e) {
-      throw new RuntimeException(e);
+      throw new WebServiceSystemException(e);
     }
   }
 
@@ -75,6 +75,8 @@ public class WebServiceClient {
       requestSender.send(conn, request);
       ResponseReceiver responseReceiver = new ResponseReceiver(gson, callSpec.getResponseSpec());
       return responseReceiver.receive(conn);
+    } catch (NullPointerException e) {
+      throw new WebServiceSystemException(e);
     } catch (IllegalArgumentException e) {
       throw new WebServiceSystemException(e);
     } finally {
