@@ -32,11 +32,12 @@ import com.google.greaze.definition.UrlParamsSpec;
 import com.google.greaze.definition.WebServiceSystemException;
 import com.google.greaze.definition.internal.utils.FieldNavigator;
 import com.google.greaze.definition.internal.utils.GreazePreconditions;
-import com.google.greaze.definition.internal.utils.GreazePrimitives;
 import com.google.greaze.definition.internal.utils.GreazeStrings;
 import com.google.gson.Gson;
 import com.google.gson.JsonIOException;
 import com.google.gson.JsonSyntaxException;
+import com.google.gson.TypeAdapter;
+import com.google.gson.reflect.TypeToken;
 import com.google.gson.stream.JsonWriter;
 import com.google.gson.stream.MalformedJsonException;
 
@@ -91,6 +92,7 @@ public final class UrlParamsExtractor {
         final JsonWriter jsonWriter = new JsonWriter(json);
         jsonWriter.beginObject();
         ValueReceiver receiver = new ValueReceiver() {
+          @SuppressWarnings({"unchecked", "rawtypes"})
           @Override
           public void put(String name, Type type, Object value) throws IOException {
             jsonWriter.name(name);
@@ -98,20 +100,8 @@ public final class UrlParamsExtractor {
               // We can not use Gson to extract the value, so just use the specified value.
               jsonWriter.value((String)value);
             } else {
-              String valueAsString = gson.toJson(value, type);
-              if (GreazePrimitives.isPrimitive(type)) {
-                if (GreazePrimitives.isFloatingPointType(type)) {
-                  jsonWriter.value(Double.parseDouble(valueAsString));
-                } else if (GreazePrimitives.isBooleanType(type)) {
-                  jsonWriter.value(Boolean.parseBoolean(valueAsString));
-                } else { // Must be a integral number type
-                  jsonWriter.value(Long.parseLong(valueAsString));
-                }
-              } else {
-                // Strip extra quotes from the end
-                valueAsString = valueAsString.substring(1, valueAsString.length()-1);
-                jsonWriter.value(valueAsString);
-              }
+              TypeAdapter adapter = gson.getAdapter(TypeToken.get(type));
+              adapter.write(jsonWriter, value);
             }
           }
         };
