@@ -16,7 +16,6 @@
 package com.google.greaze.rest.client;
 
 import java.net.HttpURLConnection;
-import java.util.logging.Level;
 
 import com.google.greaze.definition.rest.Id;
 import com.google.greaze.definition.rest.RestResource;
@@ -33,10 +32,7 @@ public class RestResponseReceiver<R extends RestResource<R>>
     extends RestResponseBaseReceiver<Id<R>, R> {
 
   public RestResponseReceiver(Gson gson, RestResponseSpec spec) {
-    this(gson, spec, null);
-  }
-  public RestResponseReceiver(Gson gson, RestResponseSpec spec, Level logLevel) {
-    super(gson, spec, logLevel);
+    super(gson, spec);
   }
 
   @Override

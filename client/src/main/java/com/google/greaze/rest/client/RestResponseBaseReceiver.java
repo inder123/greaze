@@ -15,10 +15,9 @@
  */
 package com.google.greaze.rest.client;
 
-import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.io.Reader;
+import java.io.StringWriter;
 import java.lang.reflect.Type;
 import java.net.HttpURLConnection;
 import java.util.logging.Level;
@@ -29,6 +28,7 @@ import com.google.greaze.definition.ErrorReason;
 import com.google.greaze.definition.HeaderMap;
 import com.google.greaze.definition.HeaderMapSpec;
 import com.google.greaze.definition.WebServiceSystemException;
+import com.google.greaze.definition.internal.utils.Streams;
 import com.google.greaze.definition.rest.ResourceId;
 import com.google.greaze.definition.rest.RestResourceBase;
 import com.google.greaze.definition.rest.RestResponseBase;
@@ -43,13 +43,9 @@ import com.google.gson.Gson;
  */
 public class RestResponseBaseReceiver<I extends ResourceId, R extends RestResourceBase<I, R>>
     extends ResponseReceiver {
-  private static final int BUF_SIZE = 4096;
 
   public RestResponseBaseReceiver(Gson gson, RestResponseSpec spec) {
-    this(gson, spec, null);
-  }
-  public RestResponseBaseReceiver(Gson gson, RestResponseSpec spec, Level logLevel) {
-    super(gson, spec, logLevel);
+    super(gson, spec);
   }
 
   private RestResponseSpec getSpec() {
@@ -80,8 +76,11 @@ public class RestResponseBaseReceiver<I extends ResourceId, R extends RestResour
     String connContentType = conn.getContentType();
     ConnectionPreconditions.checkArgument(connContentType != null && 
       connContentType.contains(ContentBodySpec.JSON_CONTENT_TYPE), conn);
-    Reader reader = new BufferedReader(new InputStreamReader(conn.getInputStream()), BUF_SIZE);
-    R body = (R) gson.fromJson(reader, resourceType);
+    StringWriter writer = new StringWriter();
+    Streams.copy(new InputStreamReader(conn.getInputStream()), writer, true, true);
+    String json = writer.getBuffer().toString();
+    logger.log(Level.FINE, json);
+    R body = (R) gson.fromJson(json, resourceType);
     return body;
   }
 }
