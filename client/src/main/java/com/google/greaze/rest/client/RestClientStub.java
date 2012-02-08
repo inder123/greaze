@@ -103,7 +103,7 @@ public class RestClientStub extends WebServiceClient {
       RestCallSpec callSpec, RestRequestBase<I, R> request, Gson gson, HttpURLConnection conn) {
     try {
       URL webServiceUrl = getWebServiceUrl(callSpec, request.getId());
-      logger.log(Level.INFO, "Opening connection to " + webServiceUrl);
+      logger.log(Level.INFO, request.getMethod() + " to " + webServiceUrl);
       RestRequestSender requestSender = new RestRequestSender(gson);
       requestSender.send(conn, request);
       RestResponseBaseReceiver<I, R> responseReceiver =

@@ -15,10 +15,9 @@
  */
 package com.google.greaze.webservice.client;
 
-import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.io.Reader;
+import java.io.StringWriter;
 import java.lang.reflect.Type;
 import java.net.HttpURLConnection;
 import java.util.Map;
@@ -30,6 +29,7 @@ import com.google.greaze.definition.ContentBodyType;
 import com.google.greaze.definition.HeaderMap;
 import com.google.greaze.definition.HeaderMapSpec;
 import com.google.greaze.definition.WebServiceSystemException;
+import com.google.greaze.definition.internal.utils.Streams;
 import com.google.greaze.definition.webservice.ResponseBody;
 import com.google.greaze.definition.webservice.ResponseBodySpec;
 import com.google.greaze.definition.webservice.ResponseSpec;
@@ -42,20 +42,13 @@ import com.google.gson.Gson;
  * @author inder
  */
 public class ResponseReceiver {
-  private static final int BUF_SIZE = 4096;
   protected final Gson gson;
   protected final ResponseSpec spec;
-  protected final Logger logger;
-  protected final Level logLevel;
+  protected static final Logger logger = Logger.getLogger(ResponseReceiver.class.getName());
 
   public ResponseReceiver(Gson gson, ResponseSpec spec) {
-    this(gson, spec, null);
-  }
-  public ResponseReceiver(Gson gson, ResponseSpec spec, Level logLevel) {
     this.gson = gson;
     this.spec = spec;
-    this.logger = logLevel == null ? null : Logger.getLogger(ResponseReceiver.class.getName());
-    this.logLevel = logLevel;
   }
   
   public WebServiceResponse receive(HttpURLConnection conn) {
@@ -78,7 +71,7 @@ public class ResponseReceiver {
       String json = conn.getHeaderField(paramName);
       if (json != null) {
         if (logger != null) {
-          logger.log(logLevel, String.format("Response Header: %s:%s\n", paramName, json));
+          logger.log(Level.FINE, String.format("Response Header: %s:%s\n", paramName, json));
         }
         Type typeOfT = paramsSpec.getTypeFor(paramName);
         Object value = gson.fromJson(json, typeOfT);
@@ -95,8 +88,11 @@ public class ResponseReceiver {
     }
     String connContentType = conn.getContentType();
     ConnectionPreconditions.checkArgument(connContentType.contains(bodySpec.getContentType()), conn);
-    Reader reader = new BufferedReader(new InputStreamReader(conn.getInputStream()), BUF_SIZE);
-    ResponseBody body = gson.fromJson(reader, ResponseBody.class);
+    StringWriter writer = new StringWriter();
+    Streams.copy(new InputStreamReader(conn.getInputStream()), writer, true, true);
+    String json = writer.getBuffer().toString();
+    logger.log(Level.FINE, json);
+    ResponseBody body = gson.fromJson(json, ResponseBody.class);
     if (body == null) {
       body = new ResponseBody.Builder(spec.getBodySpec()).build();
     }

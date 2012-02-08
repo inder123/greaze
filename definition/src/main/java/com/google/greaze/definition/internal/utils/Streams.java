@@ -19,6 +19,8 @@ import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.io.Reader;
+import java.io.Writer;
 
 public final class Streams {
 
@@ -32,8 +34,27 @@ public final class Streams {
    */
   public static void copy(InputStream src, OutputStream dst, boolean closeInput,
                           boolean closeOutput) throws IOException {
+    // Another way to implement this logic would be to just call the following:
+    // copy(new InputStreamReader(src), new OutputStreamWriter(dst), closeInput, closeOutput);
     try {
-      final byte[] buf = new byte[2048];
+      byte[] buf = new byte[2048];
+      int count;
+      while ((count = src.read(buf)) != -1) {
+        dst.write(buf, 0, count);
+      }
+    } finally {
+      if (closeInput) src.close();
+      if (closeOutput) dst.close();
+    }
+  }
+
+  /**
+   * Copy contents of src to dst. Exhausts src completely, and closes both streams.
+   */
+  public static void copy(Reader src, Writer dst, boolean closeInput,
+      boolean closeOutput) throws IOException {
+    try {
+      char[] buf = new char[2048];
       int count;
       while ((count = src.read(buf)) != -1) {
         dst.write(buf, 0, count);

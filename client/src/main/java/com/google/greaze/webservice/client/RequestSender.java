@@ -59,6 +59,7 @@ public class RequestSender {
       if (method != HttpMethod.GET) {
         RequestBody requestBody = request.getBody();
         String requestBodyContents = bodyToJson(requestBody);
+        logger.log(Level.FINE, "Request Body: " + requestBodyContents);
         // Android Java VM ignore Content-Length if setDoOutput is not set
         conn.setDoOutput(true);
         String contentLength = String.valueOf(requestBodyContents.length());
