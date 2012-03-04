@@ -16,6 +16,7 @@
 package com.google.greaze.server.inject;
 
 import java.util.Collection;
+import java.util.logging.Logger;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -23,6 +24,7 @@ import com.google.common.base.Preconditions;
 import com.google.common.base.Strings;
 import com.google.greaze.definition.CallPath;
 import com.google.greaze.definition.CallPathParser;
+import com.google.greaze.definition.LogConfig;
 import com.google.greaze.definition.rest.Id;
 import com.google.greaze.definition.rest.ResourceIdFactory;
 import com.google.greaze.definition.rest.RestCallSpec;
@@ -51,6 +53,7 @@ public class GreazeServerModule extends ServletModule {
   private final String pathToServlet;
   private final Collection<CallPath> servicePaths;
   private final String resourcePrefix;
+  private final Logger log = Logger.getLogger(GreazeServerModule.class.getSimpleName());
 
   /**
    * @param pathToServlet The path to the servlet. For example, /myshop for /myshop/resources/order
@@ -85,6 +88,7 @@ public class GreazeServerModule extends ServletModule {
   @Provides
   public CallPath getCallPath(HttpServletRequest request) {
     String servletPath = request.getServletPath();
+    if (LogConfig.FINE) log.fine("Parsing servletPath : " + servletPath);
     int index = pathToServlet.length();
     String incomingPath = servletPath.substring(index);
     for (CallPath servicePath : servicePaths) {
@@ -92,6 +96,10 @@ public class GreazeServerModule extends ServletModule {
       try {
         CallPath incomingCallPath = callPathParser.parse(incomingPath);
         if (incomingCallPath.matches(servicePath)) {
+          if (LogConfig.FINE) {
+            log.fine(String.format(
+                "Matched: Incoming path: %s, servicePath: %s", incomingPath, servicePath));
+          }
           return callPathParser.parse(incomingPath);
         }
       } catch (CallPathParser.ParseException e) {

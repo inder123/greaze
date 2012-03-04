@@ -25,6 +25,7 @@ import javax.servlet.http.HttpServletResponse;
 
 import com.google.greaze.definition.CallPath;
 import com.google.greaze.definition.ErrorReason;
+import com.google.greaze.definition.LogConfig;
 import com.google.greaze.definition.WebServiceSystemException;
 import com.google.greaze.server.dispatcher.RequestType;
 import com.google.greaze.server.dispatcher.ResourceQueryDispatcher;
@@ -63,6 +64,7 @@ public class GreazeDispatcherServlet extends HttpServlet {
         }
         String queryName = RequestType.getQueryName(req.getParameterMap());
         RequestType requestType = RequestType.getRequestType(callPath, queryName, resourcePrefix);
+        if (LogConfig.INFO) log.info(String.format("%s: %s", requestType, callPath));
         switch (requestType) {
           case RESOURCE_ACCESS:
             injector.getInstance(ResourceDepotDispatcher.class).service(res);

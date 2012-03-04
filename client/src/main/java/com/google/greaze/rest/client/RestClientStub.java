@@ -18,8 +18,8 @@ package com.google.greaze.rest.client;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
-import java.util.logging.Level;
 
+import com.google.greaze.definition.LogConfig;
 import com.google.greaze.definition.WebServiceSystemException;
 import com.google.greaze.definition.rest.Id;
 import com.google.greaze.definition.rest.ResourceId;
@@ -45,7 +45,7 @@ public class RestClientStub extends WebServiceClient {
   public RestClientStub(ServerConfig serverConfig) {
     super(serverConfig);
   }
-  
+
   private <I extends ResourceId> URL getWebServiceUrl(RestCallSpec callSpec, ResourceId id) {
     StringBuilder url = new StringBuilder(buildBasePath(callSpec));
     if (id != null && id.getValue() != null) {
@@ -102,8 +102,10 @@ public class RestClientStub extends WebServiceClient {
   public <I extends ResourceId, R extends RestResourceBase<I, R>> RestResponseBase<I, R> getResponse(
       RestCallSpec callSpec, RestRequestBase<I, R> request, Gson gson, HttpURLConnection conn) {
     try {
-      URL webServiceUrl = getWebServiceUrl(callSpec, request.getId());
-      logger.log(Level.INFO, request.getMethod() + " to " + webServiceUrl);
+      if (LogConfig.INFO) {
+        URL webServiceUrl = getWebServiceUrl(callSpec, request.getId());
+        logger.info(request.getMethod() + " to " + webServiceUrl);
+      }
       RestRequestSender requestSender = new RestRequestSender(gson);
       requestSender.send(conn, request);
       RestResponseBaseReceiver<I, R> responseReceiver =

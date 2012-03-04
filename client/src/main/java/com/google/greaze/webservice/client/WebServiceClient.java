@@ -19,10 +19,10 @@ import java.io.IOException;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
-import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import com.google.greaze.client.internal.utils.UrlParamStringBuilder;
+import com.google.greaze.definition.LogConfig;
 import com.google.greaze.definition.WebServiceSystemException;
 import com.google.greaze.definition.webservice.WebServiceCallSpec;
 import com.google.greaze.definition.webservice.WebServiceRequest;
@@ -41,7 +41,7 @@ public class WebServiceClient {
   public WebServiceClient(ServerConfig serverConfig) {
     this.config = serverConfig;
   }
-  
+
   /** Visible for testing only */
   URL getWebServiceUrl(WebServiceCallSpec callSpec, WebServiceRequest request, Gson gson) {
     String baseUrl = buildBasePath(callSpec);
@@ -63,13 +63,13 @@ public class WebServiceClient {
     url.append(callSpec.getPath().getServicePath());
     return url.toString();
   }
-  
+
   public WebServiceResponse getResponse(
       WebServiceCallSpec callSpec, WebServiceRequest request, Gson gson) {
     HttpURLConnection conn = null;
     try {
       URL webServiceUrl = getWebServiceUrl(callSpec, request, gson);
-      logger.log(Level.INFO, "Opening connection to " + webServiceUrl);
+      if (LogConfig.INFO) logger.info("Opening connection to " + webServiceUrl);
       conn = openConnection(webServiceUrl);
       RequestSender requestSender = new RequestSender(gson);
       requestSender.send(conn, request);
