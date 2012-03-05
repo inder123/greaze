@@ -138,7 +138,7 @@ public final class CallPath {
 
   @Override
   public String toString() {
-    return String.format("basePath: %s, version:%.2f, servicePath:%s, resourceId: %d",
+    return String.format("basePath: %s, version:%.2f, servicePath:%s, resourceId: %s",
         basePath, version, servicePath, resourceId);
   }
 }
