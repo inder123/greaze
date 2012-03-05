@@ -26,6 +26,7 @@ import java.util.logging.Logger;
 import com.google.greaze.definition.HeaderMap;
 import com.google.greaze.definition.HeaderMapSpec;
 import com.google.greaze.definition.HttpMethod;
+import com.google.greaze.definition.LogConfig;
 import com.google.greaze.definition.WebServiceSystemException;
 import com.google.greaze.definition.internal.utils.Streams;
 import com.google.greaze.definition.webservice.RequestBody;
@@ -39,6 +40,7 @@ import com.google.gson.Gson;
  * @author inder
  */
 public class RequestSender {
+  private static final boolean SIMULATE_POST_WITH_PUT = true;
   private final Gson gson;
   private static final Logger logger = Logger.getLogger(RequestSender.class.getName());
 
@@ -49,6 +51,11 @@ public class RequestSender {
   public void send(HttpURLConnection conn, WebServiceRequest request) {    
     try {
       HttpMethod method = request.getHttpMethod();
+      if (SIMULATE_POST_WITH_PUT && method == HttpMethod.PUT) {
+        method = HttpMethod.POST;
+        setHeader(conn, HttpMethod.SIMULATED_METHOD_HEADER, HttpMethod.PUT.toString(), true);
+      }
+      if (LogConfig.INFO) logger.info(method + " to " + conn.getURL());
       conn.setRequestMethod(method.toString());
       setHeader(conn, "Content-Type", request.getContentType(), true);
       
@@ -59,7 +66,7 @@ public class RequestSender {
       if (method != HttpMethod.GET) {
         RequestBody requestBody = request.getBody();
         String requestBodyContents = bodyToJson(requestBody);
-        logger.log(Level.FINE, "Request Body: " + requestBodyContents);
+        if (LogConfig.INFO) logger.log(Level.INFO, "Request Body: " + requestBodyContents);
         // Android Java VM ignore Content-Length if setDoOutput is not set
         conn.setDoOutput(true);
         String contentLength = String.valueOf(requestBodyContents.length());
@@ -103,7 +110,7 @@ public class RequestSender {
   }
 
   private void setHeader(HttpURLConnection conn, String name, String value, boolean overwrite) {
-    logger.log(Level.FINE, String.format("Request param: %s:%s", name, value));
+    if (LogConfig.INFO) logger.log(Level.INFO, String.format("Request Header: %s:%s", name, value));
     if (overwrite) {
       conn.setRequestProperty(name, value);
     } else {

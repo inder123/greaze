@@ -20,13 +20,13 @@ import java.io.InputStreamReader;
 import java.io.StringWriter;
 import java.lang.reflect.Type;
 import java.net.HttpURLConnection;
-import java.util.logging.Level;
 
 import com.google.greaze.client.internal.utils.ConnectionPreconditions;
 import com.google.greaze.definition.ContentBodySpec;
 import com.google.greaze.definition.ErrorReason;
 import com.google.greaze.definition.HeaderMap;
 import com.google.greaze.definition.HeaderMapSpec;
+import com.google.greaze.definition.LogConfig;
 import com.google.greaze.definition.WebServiceSystemException;
 import com.google.greaze.definition.internal.utils.Streams;
 import com.google.greaze.definition.rest.ResourceId;
@@ -79,7 +79,7 @@ public class RestResponseBaseReceiver<I extends ResourceId, R extends RestResour
     StringWriter writer = new StringWriter();
     Streams.copy(new InputStreamReader(conn.getInputStream()), writer, true, true);
     String json = writer.getBuffer().toString();
-    logger.log(Level.FINE, json);
+    if (LogConfig.INFO) logger.info("Response Body: " + json);
     R body = (R) gson.fromJson(json, resourceType);
     return body;
   }

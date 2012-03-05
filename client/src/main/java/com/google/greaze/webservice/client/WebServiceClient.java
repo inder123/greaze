@@ -22,7 +22,6 @@ import java.net.URL;
 import java.util.logging.Logger;
 
 import com.google.greaze.client.internal.utils.UrlParamStringBuilder;
-import com.google.greaze.definition.LogConfig;
 import com.google.greaze.definition.WebServiceSystemException;
 import com.google.greaze.definition.webservice.WebServiceCallSpec;
 import com.google.greaze.definition.webservice.WebServiceRequest;
@@ -69,7 +68,6 @@ public class WebServiceClient {
     HttpURLConnection conn = null;
     try {
       URL webServiceUrl = getWebServiceUrl(callSpec, request, gson);
-      if (LogConfig.INFO) logger.info("Opening connection to " + webServiceUrl);
       conn = openConnection(webServiceUrl);
       RequestSender requestSender = new RequestSender(gson);
       requestSender.send(conn, request);
