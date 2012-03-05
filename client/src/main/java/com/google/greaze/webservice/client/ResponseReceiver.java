@@ -21,13 +21,13 @@ import java.io.StringWriter;
 import java.lang.reflect.Type;
 import java.net.HttpURLConnection;
 import java.util.Map;
-import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import com.google.greaze.client.internal.utils.ConnectionPreconditions;
 import com.google.greaze.definition.ContentBodyType;
 import com.google.greaze.definition.HeaderMap;
 import com.google.greaze.definition.HeaderMapSpec;
+import com.google.greaze.definition.LogConfig;
 import com.google.greaze.definition.WebServiceSystemException;
 import com.google.greaze.definition.internal.utils.Streams;
 import com.google.greaze.definition.webservice.ResponseBody;
@@ -70,9 +70,7 @@ public class ResponseReceiver {
       String paramName = entry.getKey();
       String json = conn.getHeaderField(paramName);
       if (json != null) {
-        if (logger != null) {
-          logger.log(Level.FINE, String.format("Response Header: %s:%s\n", paramName, json));
-        }
+        if (LogConfig.INFO) logger.info("Response Header: " + paramName + ":" + json);
         Type typeOfT = paramsSpec.getTypeFor(paramName);
         Object value = gson.fromJson(json, typeOfT);
         paramsBuilder.put(paramName, value, typeOfT);
@@ -91,7 +89,7 @@ public class ResponseReceiver {
     StringWriter writer = new StringWriter();
     Streams.copy(new InputStreamReader(conn.getInputStream()), writer, true, true);
     String json = writer.getBuffer().toString();
-    logger.log(Level.FINE, json);
+    if (LogConfig.INFO) logger.info("Response Body: " + json);
     ResponseBody body = gson.fromJson(json, ResponseBody.class);
     if (body == null) {
       body = new ResponseBody.Builder(spec.getBodySpec()).build();
