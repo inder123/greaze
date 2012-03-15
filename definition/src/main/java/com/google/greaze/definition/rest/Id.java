@@ -26,13 +26,6 @@ import java.util.regex.Pattern;
 
 import com.google.greaze.definition.internal.utils.GreazePreconditions;
 import com.google.greaze.definition.internal.utils.TypeNameBiMap;
-import com.google.gson.Gson;
-import com.google.gson.JsonParseException;
-import com.google.gson.TypeAdapter;
-import com.google.gson.TypeAdapterFactory;
-import com.google.gson.reflect.TypeToken;
-import com.google.gson.stream.JsonReader;
-import com.google.gson.stream.JsonWriter;
 
 /**
  * An id for a rest resource
@@ -47,7 +40,7 @@ public final class Id<R> implements ResourceId, Comparable<Id<R>>, Serializable 
 
   private static Pattern ID_PATTERN = Pattern.compile("[a-zA-Z0-9_\\.\\-]+"); 
 
-  private String value;
+  String value;
   private Type typeOfId;
 
   private Id(String value, Type typeOfId) {
@@ -197,37 +190,6 @@ public final class Id<R> implements ResourceId, Comparable<Id<R>>, Serializable 
   private void readObject(ObjectInputStream in) throws IOException, ClassNotFoundException {
    this.value = in.readUTF(); 
    this.typeOfId = TypeNameBiMap.getInstance().getType(in.readUTF());
-  }
-
-  public static final class GsonTypeAdapterFactory implements TypeAdapterFactory {
-    public <T> TypeAdapter<T> create(Gson context, TypeToken<T> type) {
-      if (type.getRawType() != Id.class) {
-        return null;
-      }
-      Type typeOfT = type.getType();
-      if (!(typeOfT instanceof ParameterizedType)) {
-        throw new JsonParseException("Id of unknown type: " + typeOfT);
-      }
-      ParameterizedType parameterizedType = (ParameterizedType) typeOfT;
-      // Since Id takes only one TypeVariable, the actual type corresponding to the first
-      // TypeVariable is the Type we are looking for
-      final Type typeOfId = parameterizedType.getActualTypeArguments()[0];
-      return new TypeAdapter<T>() {
-        @SuppressWarnings("unchecked")
-        public T read(JsonReader reader) throws IOException {
-          return (T) Id.get(reader.nextString(), typeOfId);
-        }
-        @SuppressWarnings("rawtypes")
-        @Override
-        public void write(JsonWriter writer, T value) throws IOException {
-          if (value == null) {
-            writer.nullValue();
-          } else {
-            writer.value(((Id) value).value);
-          }
-        }
-      };
-    }
   }
 
   @Override

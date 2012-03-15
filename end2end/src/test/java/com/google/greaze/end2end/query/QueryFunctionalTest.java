@@ -21,7 +21,7 @@ import junit.framework.TestCase;
 
 import com.google.greaze.definition.CallPath;
 import com.google.greaze.definition.CallPathParser;
-import com.google.greaze.definition.rest.Id;
+import com.google.greaze.definition.rest.IdGsonTypeAdapterFactory;
 import com.google.greaze.definition.rest.WebContext;
 import com.google.greaze.end2end.definition.Employee;
 import com.google.greaze.end2end.definition.QueryEmployeeByName;
@@ -49,7 +49,7 @@ public class QueryFunctionalTest extends TestCase {
     this.gsonBuilder = new Provider<GsonBuilder>() {
       @Override
       public GsonBuilder get() {
-        return new GsonBuilder().registerTypeAdapterFactory(new Id.GsonTypeAdapterFactory());
+        return new GsonBuilder().registerTypeAdapterFactory(new IdGsonTypeAdapterFactory());
       }
     };
     this.employees = new RepositoryInMemory<Employee>(Employee.class);

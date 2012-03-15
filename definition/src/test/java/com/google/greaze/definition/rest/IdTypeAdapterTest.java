@@ -47,7 +47,7 @@ public class IdTypeAdapterTest extends TestCase {
   @Override
   protected void setUp() {
     gson = new GsonBuilder()
-        .registerTypeAdapterFactory(new Id.GsonTypeAdapterFactory())
+        .registerTypeAdapterFactory(new IdGsonTypeAdapterFactory())
         .create();
     course = new Course<HistoryCourse>(COURSE_ID, 4,
         new Assignment<HistoryCourse>(null, null), createList(STUDENT1, STUDENT2));

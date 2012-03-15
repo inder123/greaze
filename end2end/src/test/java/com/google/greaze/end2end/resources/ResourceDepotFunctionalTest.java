@@ -21,6 +21,7 @@ import junit.framework.TestCase;
 import com.google.common.collect.ImmutableList;
 import com.google.greaze.definition.CallPath;
 import com.google.greaze.definition.CallPathParser;
+import com.google.greaze.definition.rest.IdGsonTypeAdapterFactory;
 import com.google.greaze.definition.rest.Id;
 import com.google.greaze.definition.rest.RestCallSpec;
 import com.google.greaze.definition.rest.RestCallSpecMap;
@@ -54,7 +55,7 @@ public class ResourceDepotFunctionalTest extends TestCase {
   protected void setUp() throws Exception {
     super.setUp();
     Gson gson = new GsonBuilder()
-      .registerTypeAdapterFactory(new Id.GsonTypeAdapterFactory())
+      .registerTypeAdapterFactory(new IdGsonTypeAdapterFactory())
       .create();
     this.employees = new RepositoryInMemory<Employee>(Employee.class);
     RestResponseBuilder<Employee> responseBuilder = new RestResponseBuilder<Employee>(employees);

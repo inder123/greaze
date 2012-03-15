@@ -18,7 +18,7 @@ package com.google.greaze.end2end;
 import com.google.greaze.client.internal.utils.UrlParamStringBuilder;
 import com.google.greaze.definition.UrlParams;
 import com.google.greaze.definition.UrlParamsSpec;
-import com.google.greaze.definition.rest.Id;
+import com.google.greaze.definition.rest.IdGsonTypeAdapterFactory;
 import com.google.greaze.server.fixtures.HttpServletRequestFake;
 import com.google.greaze.server.internal.utils.UrlParamsExtractor;
 import com.google.gson.Gson;
@@ -39,7 +39,7 @@ public class UrlParamTest extends TestCase {
   protected void setUp() throws Exception {
     super.setUp();
     gson = new GsonBuilder()
-      .registerTypeAdapterFactory(new Id.GsonTypeAdapterFactory())
+      .registerTypeAdapterFactory(new IdGsonTypeAdapterFactory())
       .create();
     this.urlParamBuilder = new UrlParamStringBuilder(gson);
   }
