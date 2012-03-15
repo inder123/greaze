@@ -57,7 +57,7 @@ public class IdTest extends TestCase {
   }
 
   public void testJsonSerializationDeserialization() {
-    Gson gson = new GsonBuilder().registerTypeAdapterFactory(new Id.GsonTypeAdapterFactory()).create();
+    Gson gson = new GsonBuilder().registerTypeAdapterFactory(new IdGsonTypeAdapterFactory()).create();
     Type type = new TypeToken<Id<Bar<Foo>>>() {}.getType();
     Id<Bar<Foo>> id = Id.get("abc", new TypeToken<Bar<Foo>>(){}.getType());
     String json = gson.toJson(id, type);

@@ -18,6 +18,7 @@ package com.google.greaze.client.internal.utils;
 import com.google.greaze.client.internal.utils.UrlParamStringBuilder;
 import com.google.greaze.definition.HeaderMap;
 import com.google.greaze.definition.HeaderMapSpec;
+import com.google.greaze.definition.rest.IdGsonTypeAdapterFactory;
 import com.google.greaze.definition.rest.Id;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
@@ -36,7 +37,7 @@ public class UrlParamStringBuilderTest extends TestCase {
   protected void setUp() throws Exception {
     super.setUp();
     Gson gson = new GsonBuilder()
-      .registerTypeAdapterFactory(new Id.GsonTypeAdapterFactory())
+      .registerTypeAdapterFactory(new IdGsonTypeAdapterFactory())
       .create();
     this.upBuilder = new UrlParamStringBuilder(gson);
   }
