@@ -56,7 +56,7 @@ public final class IdGsonTypeAdapterFactory implements TypeAdapterFactory {
         if (value == null) {
           writer.nullValue();
         } else {
-          writer.value(((Id) value).value);
+          writer.value(((Id) value).getValue());
         }
       }
     };

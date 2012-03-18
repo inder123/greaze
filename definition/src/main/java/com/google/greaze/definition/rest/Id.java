@@ -15,9 +15,6 @@
  */
 package com.google.greaze.definition.rest;
 
-import java.io.IOException;
-import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
 import java.io.Serializable;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
@@ -25,7 +22,6 @@ import java.lang.reflect.WildcardType;
 import java.util.regex.Pattern;
 
 import com.google.greaze.definition.internal.utils.GreazePreconditions;
-import com.google.greaze.definition.internal.utils.TypeNameBiMap;
 
 /**
  * An id for a rest resource
@@ -40,15 +36,12 @@ public final class Id<R> implements ResourceId, Comparable<Id<R>>, Serializable 
 
   private static Pattern ID_PATTERN = Pattern.compile("[a-zA-Z0-9_\\.\\-]+"); 
 
-  String value;
-  private Type typeOfId;
+  private String value;
 
-  private Id(String value, Type typeOfId) {
+  private Id(String value) {
     // Assert that Id does not have any of the banned characters
-    GreazePreconditions.checkNotNull(typeOfId);
     GreazePreconditions.checkArgument(Id.isValidValue(value));
     this.value = value;
-    this.typeOfId = typeOfId;
   }
 
   @Override
@@ -66,10 +59,6 @@ public final class Id<R> implements ResourceId, Comparable<Id<R>>, Serializable 
 
   public static String getValue(Id<?> id) {
     return id == null ? null : id.getValue();
-  }
-
-  public Type getTypeOfId() {
-    return typeOfId;
   }
 
   @Override
@@ -173,23 +162,17 @@ public final class Id<R> implements ResourceId, Comparable<Id<R>>, Serializable 
     return true;
   }
 
+  public static <RS> Id<RS> get(String value) {
+    return new Id<RS>(value);
+  }
+
   public static <RS> Id<RS> get(String value, Type typeOfId) {
-    return new Id<RS>(value, typeOfId);
+    return new Id<RS>(value);
   }
 
   @Override
   public String toString() {
     return getShortValue(this);
-  }
-
-  private void writeObject(ObjectOutputStream out) throws IOException {
-    out.writeUTF(value);
-    out.writeUTF(TypeNameBiMap.getInstance().getTypeName(typeOfId));
-  }
-
-  private void readObject(ObjectInputStream in) throws IOException, ClassNotFoundException {
-   this.value = in.readUTF(); 
-   this.typeOfId = TypeNameBiMap.getInstance().getType(in.readUTF());
   }
 
   @Override
