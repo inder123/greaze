@@ -108,10 +108,7 @@ public final class Id<R> implements ResourceId, Comparable<Id<R>>, Serializable 
     if (getClass() != obj.getClass()) return false;
     @SuppressWarnings("unchecked")
     Id<R> other = (Id<R>)obj;
-    if (!value.equals(other.value)) {
-      return false;
-    }
-    return value.equals(other.value) && this.getClass().isInstance(obj);
+    return value.equals(other.value);
   }
 
   public static <RS> Id<RS> get(String value) {
