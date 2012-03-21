@@ -16,9 +16,7 @@
 package com.google.greaze.definition.rest;
 
 import java.io.Serializable;
-import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
-import java.lang.reflect.WildcardType;
 
 import com.google.greaze.definition.internal.utils.GreazePreconditions;
 
@@ -44,14 +42,6 @@ public final class Id<R> implements ResourceId, Comparable<Id<R>>, Serializable 
   @Override
   public String getValue() {
     return value;
-  }
-
-  public static <T> Id<T> getNullValue(Class<T> idClass) {
-    return Id.get(null, idClass);
-  }
-
-  public static <T> Id<T> getNullValue(Type idType) {
-    return Id.get(null, idType);
   }
 
   public static String getValue(Id<?> id) {
@@ -121,46 +111,7 @@ public final class Id<R> implements ResourceId, Comparable<Id<R>>, Serializable 
     if (!value.equals(other.value)) {
       return false;
     }
-    // Shortcut, see if the raw types are the same. This is not exact match semantically, but 
-    // paramterized type matching is more pain than worth
     return value.equals(other.value) && this.getClass().isInstance(obj);
-//    if (typeOfId == null) {
-//      if (other.typeOfId != null) return false;
-//    } else if (!equivalentTypes(typeOfId, other.typeOfId)) return false;
-//    return true;
-  }
-
-  /**
-   * Returns true for equivalentTypes(Class<?>, Class)
-   * Visible for testing only 
-   */
-  @SuppressWarnings("rawtypes")
-  static boolean equivalentTypes(Type type1, Type type2) {
-    if (type1 instanceof ParameterizedType && type2 instanceof Class) {
-      return areEquivalentTypes((ParameterizedType)type1, (Class)type2);
-    } else if (type2 instanceof ParameterizedType && type1 instanceof Class) {
-      return areEquivalentTypes((ParameterizedType)type2, (Class)type1);
-    }
-    return type1.equals(type2);
-  }
-
-  /**
-   * Visible for testing only
-   */
-  @SuppressWarnings("rawtypes")
-  static boolean areEquivalentTypes(ParameterizedType type, Class clazz) {
-    Class rawClass = (Class) type.getRawType();
-    if (!clazz.equals(rawClass)) {
-      return false;
-    }
-    for (Type typeVariable : type.getActualTypeArguments()) {
-      if (typeVariable instanceof WildcardType) {
-        continue;
-      }
-      // This is a real parameterized type, not just ?
-      return false;
-    }
-    return true;
   }
 
   public static <RS> Id<RS> get(String value) {

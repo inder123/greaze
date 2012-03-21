@@ -21,6 +21,7 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
+import java.lang.reflect.WildcardType;
 
 import junit.framework.TestCase;
 
@@ -37,12 +38,12 @@ public class IdTest extends TestCase {
 
   public void testRawTypeNotEqualToParameterizedOfConcreteType() {
     ParameterizedType type = (ParameterizedType) new TypeToken<Id<Foo>>(){}.getType(); 
-    assertFalse(Id.areEquivalentTypes(type, Id.class));
+    assertFalse(areEquivalentTypes(type, Id.class));
   }
 
   public void testRawTypeEqualToParameterizedOfWildcardType() {
     ParameterizedType fooType = (ParameterizedType) new TypeToken<Id<?>>(){}.getType(); 
-    assertTrue(Id.areEquivalentTypes(fooType, Id.class));
+    assertTrue(areEquivalentTypes(fooType, Id.class));
   }
 
   public void testStaticEquals() {
@@ -81,5 +82,24 @@ public class IdTest extends TestCase {
   }
 
   private static class Bar<T> {
+  }
+
+  /**
+   * Visible for testing only
+   */
+  @SuppressWarnings("rawtypes")
+  static boolean areEquivalentTypes(ParameterizedType type, Class clazz) {
+    Class rawClass = (Class) type.getRawType();
+    if (!clazz.equals(rawClass)) {
+      return false;
+    }
+    for (Type typeVariable : type.getActualTypeArguments()) {
+      if (typeVariable instanceof WildcardType) {
+        continue;
+      }
+      // This is a real parameterized type, not just ?
+      return false;
+    }
+    return true;
   }
 }
