@@ -15,14 +15,6 @@
  */
 package com.google.greaze.definition.rest.query;
 
-import com.google.greaze.definition.CallPath;
-import com.google.greaze.definition.HttpMethod;
-import com.google.greaze.definition.rest.WebContextSpec;
-import com.google.greaze.definition.webservice.WebServiceCallSpec;
-import com.google.greaze.definition.webservice.WebServiceCallSpec.Builder;
-
-import java.lang.reflect.Type;
-
 /**
  * This interface is implemented by all the query parameter types used for a {@link ResourceQueryBase}
  * 
@@ -33,7 +25,7 @@ public class ResourceQueryParams {
   // Keep this in sync with the name of the variable queryName
   public static final String QUERY_NAME = "queryName";
 
-  private final String queryName;
+  protected final String queryName;
 
   public ResourceQueryParams(String queryName) {
     this.queryName = queryName;
@@ -41,19 +33,5 @@ public class ResourceQueryParams {
 
   public String getQueryName() {
     return queryName;
-  }
-
-  public static WebServiceCallSpec generateCallSpec(CallPath callPath, Type resourceType,
-    Type resourceQueryParamsType, WebContextSpec webContextSpec) {
-    Builder builder = new WebServiceCallSpec.Builder(callPath)
-      .addAllRequestParams(webContextSpec.getRequestHeaderSpec())
-      .setListBody(resourceType)
-      .setUrlParams(resourceQueryParamsType)
-      .supportsHttpMethod(HttpMethod.GET);
-    if (callPath.hasVersion()) {
-      builder.setVersion(callPath.getVersion());
-    }
-    return builder
-      .build();
   }
 }

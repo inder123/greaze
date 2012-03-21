@@ -28,6 +28,7 @@ import com.google.greaze.definition.rest.WebContext;
 import com.google.greaze.definition.rest.WebContextSpec;
 import com.google.greaze.definition.rest.query.ResourceQueryBase;
 import com.google.greaze.definition.rest.query.ResourceQueryParams;
+import com.google.greaze.definition.rest.query.ResourceQueryUtils;
 import com.google.greaze.definition.webservice.RequestBody;
 import com.google.greaze.definition.webservice.RequestSpec;
 import com.google.greaze.definition.webservice.ResponseBody;
@@ -64,7 +65,7 @@ public class ResourceQueryBaseClient<
    */
   public ResourceQueryBaseClient(WebServiceClient stub, CallPath callPath,
       Type queryType, GsonBuilder gsonBuilder, Type resourceType, WebContextSpec webContextSpec) {
-    this(stub, ResourceQueryParams.generateCallSpec(callPath, resourceType, queryType, webContextSpec),
+    this(stub, ResourceQueryUtils.generateCallSpec(callPath, resourceType, queryType, webContextSpec),
       queryType, gsonBuilder, resourceType, webContextSpec);
   }
 

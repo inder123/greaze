@@ -28,6 +28,7 @@ import com.google.greaze.definition.rest.WebContext;
 import com.google.greaze.definition.rest.WebContextSpec;
 import com.google.greaze.definition.rest.query.ResourceQueryBase;
 import com.google.greaze.definition.rest.query.ResourceQueryParams;
+import com.google.greaze.definition.rest.query.ResourceQueryUtils;
 import com.google.greaze.definition.webservice.RequestBody;
 import com.google.greaze.definition.webservice.RequestSpec;
 import com.google.greaze.definition.webservice.ResponseBody;
@@ -59,7 +60,7 @@ public class ResourceQueryDispatcher {
       String queryName, CallPath callPath, ResourceQueryBase resourceQuery) {
     Preconditions.checkNotNull(resourceQuery);
     WebContextSpec webContextSpec = resourceQuery.getWebContextSpec();
-    WebServiceCallSpec spec = ResourceQueryParams.generateCallSpec(callPath,
+    WebServiceCallSpec spec = ResourceQueryUtils.generateCallSpec(callPath,
         resourceQuery.getResourceType(), resourceQuery.getQueryType(),
         webContextSpec);
     RequestSpec requestSpec = spec.getRequestSpec();
