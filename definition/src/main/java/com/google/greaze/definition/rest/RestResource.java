@@ -21,4 +21,7 @@ package com.google.greaze.definition.rest;
  * @author Inderjeet Singh
  */
 public interface RestResource<R> extends RestResourceBase<Id<R>, R>{
+
+  /** JSON name of the {@link #id} field */
+  public static final String ID = "id";
 }
