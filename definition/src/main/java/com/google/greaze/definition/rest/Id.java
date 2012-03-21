@@ -19,7 +19,6 @@ import java.io.Serializable;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 import java.lang.reflect.WildcardType;
-import java.util.regex.Pattern;
 
 import com.google.greaze.definition.internal.utils.GreazePreconditions;
 
@@ -33,8 +32,6 @@ import com.google.greaze.definition.internal.utils.GreazePreconditions;
 public final class Id<R> implements ResourceId, Comparable<Id<R>>, Serializable {
 
   private static final long serialVersionUID = -8713010965374609900L;
-
-  private static Pattern ID_PATTERN = Pattern.compile("[a-zA-Z0-9_\\.\\-]+"); 
 
   private String value;
 
@@ -67,7 +64,11 @@ public final class Id<R> implements ResourceId, Comparable<Id<R>>, Serializable 
   }
 
   private static boolean isValidValue(String value) {
-    return value == null || ID_PATTERN.matcher(value).matches();
+    return value == null || value.matches("[a-zA-Z0-9_\\.\\-]+");
+    // We could have used regex Pattern class for higher efficiency. However, that class is
+    // not GWT compatible.
+    //  private static Pattern ID_PATTERN = Pattern.compile("[a-zA-Z0-9_\\.\\-]+"); 
+    //    return value == null || ID_PATTERN.matcher(value).matches();
   }
 
   public static boolean isValid(Id<?> id) {
