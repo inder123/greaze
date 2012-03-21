@@ -17,7 +17,7 @@
 import java.util.ArrayList;
 import java.util.List;
 
-import com.google.greaze.definition.rest.Id;
+import com.google.greaze.definition.rest.IdGsonTypeAdapterFactory;
 import com.google.greaze.definition.rest.MetaData;
 import com.google.greaze.definition.rest.MetaDataBase;
 import com.google.greaze.definition.rest.WebContext;
@@ -46,7 +46,7 @@ public class OrderClient {
   private final ResourceQueryClient<Order, QueryOrdersByItemName> queryClient;
   private static final GsonBuilder gsonBuilder = new GsonBuilder()
     .setVersion(SampleJsonService.CURRENT_VERSION)
-    .registerTypeAdapterFactory(new Id.GsonTypeAdapterFactory())
+    .registerTypeAdapterFactory(new IdGsonTypeAdapterFactory())
     .registerTypeAdapter(MetaData.class, new MetaDataBase.GsonTypeAdapter());
   private static final Gson gson = gsonBuilder.create();
 
