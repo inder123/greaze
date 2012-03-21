@@ -41,7 +41,7 @@ public class ParamMap {
 
     public Builder<T> put(String paramName, Object content, Type typeOfContent) {
       GreazePreconditions.checkArgument(spec.checkIfCompatible(paramName, typeOfContent),
-          "Incompatible type: %s with spec: %s", typeOfContent, spec);
+          "Incompatible type: " + typeOfContent + " with spec: " + spec);
       contents.put(paramName, content);
       return this;
     }
@@ -86,7 +86,7 @@ public class ParamMap {
   @SuppressWarnings("unchecked")
   public <T> T get(String key, Type typeOfValue) {
     GreazePreconditions.checkArgument(spec.checkIfCompatible(key, typeOfValue),
-        "Incompatible key %s for type %s", key, typeOfValue);
+        "Incompatible key " + key + " for type " + typeOfValue);
     return (T) contents.get(key);
   }
   

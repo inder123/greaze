@@ -67,8 +67,7 @@ public final class UrlParamsExtractor {
         String[] urlParamValues = request.getParameterValues(name);
         if (urlParamValues != null) {
           GreazePreconditions.checkArgument(urlParamValues.length <= 1,
-            "Greaze supports only one URL parameter value per name. For %s, found: %s",
-            name, urlParamValues);
+            "Greaze supports only one URL parameter value per name.");
           if (urlParamValues.length == 1) {
             return urlParamValues[0];
           }

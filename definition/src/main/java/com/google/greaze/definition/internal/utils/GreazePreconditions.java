@@ -23,9 +23,9 @@ public final class GreazePreconditions {
     }
   }
 
-  public static void checkArgument(boolean condition, String msg, Object... msgArgs) {
+  public static void checkArgument(boolean condition, String msg) {
     if (!condition) {
-      throw new IllegalArgumentException(String.format(msg, msgArgs));
+      throw new IllegalArgumentException(msg);
     }
   }
 
@@ -41,9 +41,9 @@ public final class GreazePreconditions {
     }
   }
 
-  public static void checkNotNull(Object obj, String msg, Object... msgArgs) {
+  public static void checkNotNull(Object obj, String msg) {
     if (obj == null) {
-      throw new IllegalArgumentException(String.format(msg, msgArgs));
+      throw new IllegalArgumentException(msg);
     }
   }
 }
