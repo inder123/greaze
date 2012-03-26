@@ -15,7 +15,6 @@
  */
 package com.google.greaze.rest.server.collections;
 
-import java.lang.reflect.Type;
 import java.util.Map;
 
 import com.google.greaze.definition.rest.HasId;
@@ -33,22 +32,22 @@ public class IdMap<T extends HasId<Id<T>>> extends IdMapBase<Id<T>, T> {
   /**
    * Use create(Type) instead of constructor
    */
-  protected IdMap(Type typeOfId) {
-    super(Id.class, typeOfId);
+  protected IdMap() {
+    super(Id.class);
   }
 
   /**
    * Use create(Type) instead of constructor
    */
-  protected IdMap(Map<String, T> store, Type typeOfId) {
-    super(store, Id.class, typeOfId);
+  protected IdMap(Map<String, T> store) {
+    super(store, Id.class);
   }
 
-  public static <S extends HasId<Id<S>>> IdMap<S> create(Type typeOfId) {
-    return new IdMap<S>(typeOfId);
+  public static <S extends HasId<Id<S>>> IdMap<S> create() {
+    return new IdMap<S>();
   }
 
-  public static <S extends HasId<Id<S>>> IdMap<S> create(Map<String, S> store, Type typeOfId) {
-    return new IdMap<S>(store, typeOfId);
+  public static <S extends HasId<Id<S>>> IdMap<S> create(Map<String, S> store) {
+    return new IdMap<S>(store);
   }
 }
