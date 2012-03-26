@@ -47,9 +47,9 @@ public class IdTest extends TestCase {
   }
 
   public void testStaticEquals() {
-    Id<Foo> id1 = Id.get("3", Foo.class);
-    Id<Foo> id2 = Id.get("3", Foo.class);
-    Id<Foo> id3 = Id.get("4", Foo.class);
+    Id<Foo> id1 = Id.get("3");
+    Id<Foo> id2 = Id.get("3");
+    Id<Foo> id3 = Id.get("4");
     assertTrue(Id.equals(id1, id2));
     assertFalse(Id.equals(null, id2));
     assertFalse(Id.equals(id1, null));
@@ -60,7 +60,7 @@ public class IdTest extends TestCase {
   public void testJsonSerializationDeserialization() {
     Gson gson = new GsonBuilder().registerTypeAdapterFactory(new IdGsonTypeAdapterFactory()).create();
     Type type = new TypeToken<Id<Bar<Foo>>>() {}.getType();
-    Id<Bar<Foo>> id = Id.get("abc", new TypeToken<Bar<Foo>>(){}.getType());
+    Id<Bar<Foo>> id = Id.get("abc");
     String json = gson.toJson(id, type);
     Id<Bar<Foo>> deserializedId = gson.fromJson(json, type);
     assertEquals(id, deserializedId);
@@ -69,7 +69,7 @@ public class IdTest extends TestCase {
   public void testJavaSerializationDeserialization() throws Exception {
     ByteArrayOutputStream out = new ByteArrayOutputStream();
     ObjectOutputStream oos = new ObjectOutputStream(out);
-    Id<Bar<Foo>> id = Id.get("abc", new TypeToken<Bar<Foo>>(){}.getType());
+    Id<Bar<Foo>> id = Id.get("abc");
     oos.writeObject(id);
     oos.close();
     ByteArrayInputStream in = new ByteArrayInputStream(out.toByteArray());

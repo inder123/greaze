@@ -19,7 +19,7 @@
     <greaze-definition.build.directory>target</greaze-definition.build.directory>
     <greaze-server.build.directory>target</greaze-server.build.directory>
     <greaze-example-definition.build.directory>target</greaze-example-definition.build.directory>
-    <gae.version>1.6.1</gae.version>
+    <gae.version>1.6.3</gae.version>
     <datanucleus.version>1.1.5</datanucleus.version>
   </properties>
   <licenses>

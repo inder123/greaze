@@ -16,11 +16,8 @@
 package com.google.greaze.definition.rest;
 
 import java.io.IOException;
-import java.lang.reflect.ParameterizedType;
-import java.lang.reflect.Type;
 
 import com.google.gson.Gson;
-import com.google.gson.JsonParseException;
 import com.google.gson.TypeAdapter;
 import com.google.gson.TypeAdapterFactory;
 import com.google.gson.reflect.TypeToken;
@@ -37,18 +34,10 @@ public final class IdGsonTypeAdapterFactory implements TypeAdapterFactory {
     if (type.getRawType() != Id.class) {
       return null;
     }
-    Type typeOfT = type.getType();
-    if (!(typeOfT instanceof ParameterizedType)) {
-      throw new JsonParseException("Id of unknown type: " + typeOfT);
-    }
-    ParameterizedType parameterizedType = (ParameterizedType) typeOfT;
-    // Since Id takes only one TypeVariable, the actual type corresponding to the first
-    // TypeVariable is the Type we are looking for
-    final Type typeOfId = parameterizedType.getActualTypeArguments()[0];
     return new TypeAdapter<T>() {
       @SuppressWarnings("unchecked")
       public T read(JsonReader reader) throws IOException {
-        return (T) Id.get(reader.nextString(), typeOfId);
+        return (T) Id.get(reader.nextString());
       }
       @SuppressWarnings("rawtypes")
       @Override

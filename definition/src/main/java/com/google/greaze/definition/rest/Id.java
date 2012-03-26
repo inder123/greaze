@@ -16,7 +16,6 @@
 package com.google.greaze.definition.rest;
 
 import java.io.Serializable;
-import java.lang.reflect.Type;
 
 import com.google.greaze.definition.internal.utils.GreazePreconditions;
 
@@ -57,7 +56,7 @@ public final class Id<R> implements ResourceId, Comparable<Id<R>>, Serializable 
     return value == null || value.matches("[a-zA-Z0-9_\\.\\-]+");
     // We could have used regex Pattern class for higher efficiency. However, that class is
     // not GWT compatible.
-    //  private static Pattern ID_PATTERN = Pattern.compile("[a-zA-Z0-9_\\.\\-]+"); 
+    //  private static Pattern ID_PATTERN = Pattern.compile("[a-zA-Z0-9_\\.\\-]+");
     //    return value == null || ID_PATTERN.matcher(value).matches();
   }
 
@@ -112,10 +111,6 @@ public final class Id<R> implements ResourceId, Comparable<Id<R>>, Serializable 
   }
 
   public static <RS> Id<RS> get(String value) {
-    return new Id<RS>(value);
-  }
-
-  public static <RS> Id<RS> get(String value, Type typeOfId) {
     return new Id<RS>(value);
   }
 

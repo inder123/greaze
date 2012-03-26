@@ -15,8 +15,6 @@
  */
 package com.google.greaze.definition.rest;
 
-import java.lang.reflect.Type;
-
 import com.google.greaze.definition.internal.utils.GreazePreconditions;
 
 /**
@@ -27,15 +25,13 @@ import com.google.greaze.definition.internal.utils.GreazePreconditions;
  * @param <I>
  */
 public class ResourceIdFactory<I extends ResourceId> {
-  private final Type typeOfId;
 
-  public ResourceIdFactory(Class<? super I> classOfI, Type typeOfId) {
+  public ResourceIdFactory(Class<? super I> classOfI) {
     GreazePreconditions.checkArgument(classOfI.isAssignableFrom(Id.class));
-    this.typeOfId = typeOfId;
   }
 
   @SuppressWarnings("unchecked")
   public I createId(String value) {
-    return (I)Id.get(value, typeOfId);
+    return (I)Id.get(value);
   }
 }

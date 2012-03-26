@@ -33,13 +33,13 @@ import com.google.gson.reflect.TypeToken;
  * @author inder
  */
 public class IdTypeAdapterTest extends TestCase {
-  private static final Id<Student> STUDENT1_ID = Id.get("5", Student.class);
-  private static final Id<Student> STUDENT2_ID = Id.get("6", Student.class);
+  private static final Id<Student> STUDENT1_ID = Id.get("5");
+  private static final Id<Student> STUDENT2_ID = Id.get("6");
   private static final Student STUDENT1 = new Student(STUDENT1_ID, "first");
   private static final Student STUDENT2 = new Student(STUDENT2_ID, "second");
   private static final Type TYPE_COURSE_HISTORY =
     new TypeToken<Course<HistoryCourse>>(){}.getType(); 
-  private static final Id<Course<HistoryCourse>> COURSE_ID = Id.get("10", TYPE_COURSE_HISTORY);
+  private static final Id<Course<HistoryCourse>> COURSE_ID = Id.get("10");
 
   private Gson gson;
   private Course<HistoryCourse> course;
