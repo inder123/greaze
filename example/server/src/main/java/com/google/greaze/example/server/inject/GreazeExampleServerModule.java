@@ -15,7 +15,7 @@
  */
 package com.google.greaze.example.server.inject;
 
-import com.google.greaze.definition.rest.Id;
+import com.google.greaze.definition.rest.IdGsonTypeAdapterFactory;
 import com.google.greaze.definition.rest.MetaData;
 import com.google.greaze.definition.rest.MetaDataBase;
 import com.google.greaze.definition.rest.RestCallSpecMap;
@@ -56,7 +56,7 @@ public class GreazeExampleServerModule extends AbstractModule {
   @Singleton
   @Provides
   public Repository<Order> getRepositoryOrders() {
-    return new RepositoryInMemory<Order>(Order.class);
+    return new RepositoryInMemory<Order>();
   }
 
   @Singleton
@@ -93,7 +93,7 @@ public class GreazeExampleServerModule extends AbstractModule {
   public GsonBuilder getGsonBuilder() {
     return new GsonBuilder()
       .setVersion(SampleJsonService.CURRENT_VERSION)
-      .registerTypeAdapterFactory(new Id.GsonTypeAdapterFactory())
+      .registerTypeAdapterFactory(new IdGsonTypeAdapterFactory())
       .registerTypeAdapter(MetaData.class, new MetaDataBase.GsonTypeAdapter());
   }
 

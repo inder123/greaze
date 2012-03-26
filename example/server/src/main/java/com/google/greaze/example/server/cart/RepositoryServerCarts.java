@@ -31,7 +31,6 @@ import com.google.greaze.rest.server.RepositoryInMemory;
 public final class RepositoryServerCarts extends RepositoryInMemory<Cart> {
 
   public RepositoryServerCarts() {
-    super(Cart.class);
     // Add some canned data for testing the service
     put(createCart("1", "candy", 1));
     put(createCart("2", "balloon", 2));
@@ -41,6 +40,6 @@ public final class RepositoryServerCarts extends RepositoryInMemory<Cart> {
   private static Cart createCart(String cartId, String itemName, int priceInUsd) {
     List<LineItem> lineItems =
         Lists.newArrayList(new LineItem(itemName, 1, priceInUsd*1000000, "USD"));
-    return new Cart(Id.<Cart>get(cartId, Cart.class), lineItems, "inder", "4111-1111-1111-1111");
+    return new Cart(Id.<Cart>get(cartId), lineItems, "inder", "4111-1111-1111-1111");
   }
 }

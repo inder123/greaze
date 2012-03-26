@@ -22,7 +22,7 @@ import javax.servlet.http.HttpServletResponse;
 
 import com.google.common.collect.ImmutableMap;
 import com.google.greaze.definition.CallPath;
-import com.google.greaze.definition.rest.Id;
+import com.google.greaze.definition.rest.IdGsonTypeAdapterFactory;
 import com.google.greaze.definition.rest.MetaData;
 import com.google.greaze.definition.rest.MetaDataBase;
 import com.google.greaze.definition.rest.query.ResourceQuery;
@@ -54,7 +54,7 @@ public class ResourceQueryDispatcherExample extends ResourceQueryDispatcher {
       public GsonBuilder get() {
         return new GsonBuilder()
           .setVersion(SampleJsonService.CURRENT_VERSION)
-          .registerTypeAdapterFactory(new Id.GsonTypeAdapterFactory())
+          .registerTypeAdapterFactory(new IdGsonTypeAdapterFactory())
           .registerTypeAdapter(MetaData.class, new MetaDataBase.GsonTypeAdapter());
       }
     };
