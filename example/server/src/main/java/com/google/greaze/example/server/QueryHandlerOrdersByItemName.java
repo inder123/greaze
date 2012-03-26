@@ -49,7 +49,7 @@ public final class QueryHandlerOrdersByItemName
     long repoSize = Long.parseLong(orders.getNextId().getValue());
     List<Order> results = Lists.newArrayList();
     for (int i = 0; i < repoSize; ++i) {
-      Id<Order> orderId = Id.get(String.valueOf(i), Order.class);
+      Id<Order> orderId = Id.get(String.valueOf(i));
       Order order = orders.get(orderId);
       if (order == null) {
         continue;
