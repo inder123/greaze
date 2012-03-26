@@ -41,16 +41,16 @@ public class IdMapBase<I extends ResourceId, T extends HasId<I>> {
   /**
    * Use create(Type) instead of constructor
    */
-  protected IdMapBase(Class<? super I> classOfI, Type typeOfId) {
+  protected IdMapBase(Class<? super I> classOfI) {
     map = new ConcurrentHashMap<String, T>();
     nextAvailableId = ID_START_VALUE;
-    this.idFactory = new ResourceIdFactory<I>(classOfI, typeOfId);
+    this.idFactory = new ResourceIdFactory<I>(classOfI);
   }
 
-  protected IdMapBase(Map<String, T> map, Class<? super I> classOfI, Type typeOfId) {
+  protected IdMapBase(Map<String, T> map, Class<? super I> classOfI) {
     this.map = map;
     nextAvailableId = ID_START_VALUE;
-    this.idFactory = new ResourceIdFactory<I>(classOfI, typeOfId);
+    this.idFactory = new ResourceIdFactory<I>(classOfI);
   }
 
   public T get(I id) {
@@ -88,12 +88,12 @@ public class IdMapBase<I extends ResourceId, T extends HasId<I>> {
   }
 
   public static <II extends ResourceId, S extends HasId<II>> IdMapBase<II, S> create(
-      Class<? super II> classOfII, Type typeOfId) {
-    return new IdMapBase<II, S>(classOfII, typeOfId);
+      Class<? super II> classOfII) {
+    return new IdMapBase<II, S>(classOfII);
   }
 
   public static <II extends ResourceId, S extends HasId<II>> IdMapBase<II, S> create(
-      Class<? super II> classOfII, Type typeOfId, Map<String, S> map) {
-    return new IdMapBase<II, S>(map, classOfII, typeOfId);
+      Class<? super II> classOfII, Map<String, S> map) {
+    return new IdMapBase<II, S>(map, classOfII);
   }
 }

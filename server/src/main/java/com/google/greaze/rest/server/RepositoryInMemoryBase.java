@@ -15,7 +15,6 @@
  */
 package com.google.greaze.rest.server;
 
-import java.lang.reflect.Type;
 import java.util.Map;
 
 import com.google.greaze.definition.rest.ResourceId;
@@ -33,28 +32,23 @@ public class RepositoryInMemoryBase<I extends ResourceId, R extends RestResource
     implements RepositoryBase<I, R> {
 
   protected final IdMapBase<I, R> resources;
-  protected final Type typeOfResource;
 
   /**
    * @param rawClassOfI class for the Id type. For example, ValueBasedId.class
    * @param typeOfResource class of the resource. For example, Order.class
    */
-  public RepositoryInMemoryBase(Class<? super I> rawClassOfI, Type typeOfResource) {
-    this.resources = IdMapBase.create(rawClassOfI, typeOfResource);
+  public RepositoryInMemoryBase(Class<? super I> rawClassOfI) {
+    this.resources = IdMapBase.create(rawClassOfI);
     new MetaDataMapBase<I, R>();
-    this.typeOfResource = typeOfResource;
   }
 
   /**
    * @param rawClassOfI class for the Id type. For example, ValueBasedId.class
-   * @param typeOfResource class of the resource. For example, Order.class
    * @param store for the storage of resources. Note that the metadata is NOT stored in the storage
    *   but in the local memory.
    */
-  public RepositoryInMemoryBase(
-      Class<? super I> rawClassOfI, Type typeOfResource, Map<String, R> store) {
-    this.typeOfResource = typeOfResource;
-    this.resources = IdMapBase.create(rawClassOfI, typeOfResource, store);
+  public RepositoryInMemoryBase(Class<? super I> rawClassOfI, Map<String, R> store) {
+    this.resources = IdMapBase.create(rawClassOfI, store);
     new MetaDataMapBase<I, R>();
   }
 

@@ -130,10 +130,10 @@ public class GreazeServerModule extends ServletModule {
     return extractor.extract(request);
   }
 
-  @RequestScoped
+  @Singleton
   @Provides
-  public ResourceIdFactory<Id<?>> getIDFactory(RestCallSpec callSpec) {
-    return new ResourceIdFactory<Id<?>>(Id.class, callSpec.getResourceType());
+  public ResourceIdFactory<Id<?>> getIDFactory() {
+    return new ResourceIdFactory<Id<?>>(Id.class);
   }
 
   @RequestScoped
