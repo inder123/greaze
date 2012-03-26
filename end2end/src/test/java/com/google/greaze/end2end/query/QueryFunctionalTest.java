@@ -52,7 +52,7 @@ public class QueryFunctionalTest extends TestCase {
         return new GsonBuilder().registerTypeAdapterFactory(new IdGsonTypeAdapterFactory());
       }
     };
-    this.employees = new RepositoryInMemory<Employee>(Employee.class);
+    this.employees = new RepositoryInMemory<Employee>();
   }
 
   public void testParamsRoundTripWithoutVersion() throws Exception {

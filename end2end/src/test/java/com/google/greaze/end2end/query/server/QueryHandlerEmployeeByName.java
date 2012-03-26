@@ -46,7 +46,7 @@ public class QueryHandlerEmployeeByName implements ResourceQuery<Employee, Query
   public List<Employee> query(QueryEmployeeByName query, WebContext context) {
     List<Employee> results = Lists.newArrayList();
     for (int i = 0; i < employees.size(); ++i) {
-      Id<Employee> id = Id.get(String.valueOf(i), Employee.class);
+      Id<Employee> id = Id.get(String.valueOf(i));
       Employee employee = employees.get(id);
       if (employee != null && employee.getName().equals(query.getName())) {
         results.add(employee);

@@ -21,8 +21,8 @@ import junit.framework.TestCase;
 import com.google.common.collect.ImmutableList;
 import com.google.greaze.definition.CallPath;
 import com.google.greaze.definition.CallPathParser;
-import com.google.greaze.definition.rest.IdGsonTypeAdapterFactory;
 import com.google.greaze.definition.rest.Id;
+import com.google.greaze.definition.rest.IdGsonTypeAdapterFactory;
 import com.google.greaze.definition.rest.RestCallSpec;
 import com.google.greaze.definition.rest.RestCallSpecMap;
 import com.google.greaze.definition.rest.WebContext;
@@ -57,7 +57,7 @@ public class ResourceDepotFunctionalTest extends TestCase {
     Gson gson = new GsonBuilder()
       .registerTypeAdapterFactory(new IdGsonTypeAdapterFactory())
       .create();
-    this.employees = new RepositoryInMemory<Employee>(Employee.class);
+    this.employees = new RepositoryInMemory<Employee>();
     RestResponseBuilder<Employee> responseBuilder = new RestResponseBuilder<Employee>(employees);
     RestCallSpec employeeRestCallSpec =
       ResourceDepotBaseClient.generateRestCallSpec(RESOURCE_PATH, Employee.class, null);
@@ -73,7 +73,7 @@ public class ResourceDepotFunctionalTest extends TestCase {
   }
 
   public void testGet() throws Exception {
-    Id<Employee> id = Id.get("1", Employee.class);
+    Id<Employee> id = Id.get("1");
     employees.put(new Employee(id, "bob"));
     Employee e = client.get(id, new WebContext());
     assertEquals("bob", e.getName());

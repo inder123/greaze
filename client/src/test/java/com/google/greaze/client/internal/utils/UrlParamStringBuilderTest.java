@@ -88,7 +88,7 @@ public class UrlParamStringBuilderTest extends TestCase {
     final Id<MyParams> id;
     final String name;
     MyParams(String idValue, String name) {
-      this.id = Id.get(idValue, MyParams.class);
+      this.id = Id.get(idValue);
       this.name = name;
     }
   }

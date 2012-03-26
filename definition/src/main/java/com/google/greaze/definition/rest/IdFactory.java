@@ -15,7 +15,6 @@
  */
 package com.google.greaze.definition.rest;
 
-import java.lang.reflect.Type;
 
 /**
  * A factory to create {@link Id}s
@@ -25,7 +24,7 @@ import java.lang.reflect.Type;
  * @param <T>
  */
 public class IdFactory<T> extends ResourceIdFactory<Id<T>> {
-  public IdFactory(Type typeOfId) {
-    super(Id.class, typeOfId);
+  public IdFactory() {
+    super(Id.class);
   }
 }
