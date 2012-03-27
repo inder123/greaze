@@ -15,7 +15,6 @@
  */
 package com.google.greaze.rest.server.collections;
 
-import java.lang.reflect.Type;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.logging.Logger;
