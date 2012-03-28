@@ -24,6 +24,7 @@ import javax.servlet.http.HttpServletResponse;
 
 import com.google.greaze.definition.HeaderMap;
 import com.google.greaze.definition.HeaderMapSpec;
+import com.google.greaze.definition.LogConfig;
 import com.google.greaze.definition.WebServiceSystemException;
 import com.google.greaze.definition.webservice.ResponseBody;
 import com.google.greaze.definition.webservice.WebServiceResponse;
@@ -59,7 +60,7 @@ public class ResponseSender {
       Object paramValue = param.getValue();
       Type paramType = spec.getTypeFor(paramName);
       String json = gson.toJson(paramValue, paramType);
-      logger.fine("RESPONSE HEADER:{" + paramName + ", " + json + "}");
+      if (LogConfig.INFO) logger.info("Response Header:" + paramName + ": " + json);
       conn.addHeader(paramName, json);
     }
   }
@@ -68,7 +69,7 @@ public class ResponseSender {
     conn.setContentType(responseBody.getContentType());
     conn.setCharacterEncoding(responseBody.getCharacterEncoding());
     String json = gson.toJson(responseBody);
-    logger.fine("RESPONSE BODY:" + json);
+    if (LogConfig.INFO) logger.info("Response Body:" + json);
     conn.getWriter().append(json);
   }
 }
