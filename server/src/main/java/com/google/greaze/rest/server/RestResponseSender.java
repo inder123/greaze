@@ -22,6 +22,7 @@ import java.util.logging.Logger;
 import javax.servlet.http.HttpServletResponse;
 
 import com.google.greaze.definition.ContentBodySpec;
+import com.google.greaze.definition.LogConfig;
 import com.google.greaze.definition.rest.ResourceId;
 import com.google.greaze.definition.rest.RestResourceBase;
 import com.google.greaze.definition.rest.RestResponseBase;
@@ -69,7 +70,7 @@ public class RestResponseSender<I extends ResourceId, R extends RestResourceBase
     res.setContentType(ContentBodySpec.JSON_CONTENT_TYPE);
     res.setCharacterEncoding(ContentBodySpec.JSON_CHARACTER_ENCODING);
     String json = gson.toJson(responseBody, responseBodyType);
-    logger.fine("RESPONSE BODY:" + json);
+    if (LogConfig.INFO) logger.info("Response Body:" + json);
     res.getWriter().append(json);
   }
 }
