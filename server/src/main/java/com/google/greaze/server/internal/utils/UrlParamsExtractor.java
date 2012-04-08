@@ -156,6 +156,9 @@ public final class UrlParamsExtractor {
   /** Visible for testing only */
   @SuppressWarnings("unchecked")
   static <T> T parseUrlParamValue(String json, Type type, Gson gson) {
+    if (type == String.class) {
+      return (T) json;
+    }
     Object value;
     try {
       value = gson.fromJson(json, type);
