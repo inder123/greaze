@@ -79,8 +79,7 @@ public final class Id<R> implements ResourceId, Comparable<Id<R>>, Serializable 
    * only id values, not their types. Note that this shortcut doesn't work if you pass raw ids
    * to this method
    */
-  public static <T> boolean equals(/* @Nullable */ Id<T> id1,
-      /* @Nullable */ Id<T> id2) {
+  public static boolean equals(/* @Nullable */ Id<?> id1, /* @Nullable */ Id<?> id2) {
     if ((id1 == null && id2 != null) || (id1 != null && id2 == null)) {
       return false;
     }
