@@ -48,7 +48,7 @@ public class RequestSender {
     this.gson = gson;
   }
   
-  public void send(HttpURLConnection conn, WebServiceRequest request) {    
+  public void send(HttpURLConnection conn, WebServiceRequest request) {
     try {
       HttpMethod method = request.getHttpMethod();
       if (SIMULATE_POST_WITH_PUT && method == HttpMethod.PUT) {
@@ -58,7 +58,7 @@ public class RequestSender {
       if (LogConfig.INFO) logger.info(method + " to " + conn.getURL());
       conn.setRequestMethod(method.toString());
       setHeader(conn, "Content-Type", request.getContentType(), true);
-      
+      addRequestParams(conn, request.getHeaders());
       // Assume conservatively that the response will need to be read.
       // This is done here instead of in the response receiver because this property must be set
       // before sending any data on the connection.
@@ -71,10 +71,8 @@ public class RequestSender {
         conn.setDoOutput(true);
         String contentLength = String.valueOf(requestBodyContents.length());
         setHeader(conn, "Content-Length", contentLength, true);
-        addRequestParams(conn, request.getHeaders());
         Streams.copy(requestBodyContents, conn.getOutputStream(), false);
       }
-      
       // Initiate the sending of the request.
       conn.connect();
     } catch (SocketException e) {
