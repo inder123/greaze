@@ -25,15 +25,15 @@ import java.util.List;
  * @author inder
  */
 public enum HttpMethod { 
-  GET, 
-  POST, 
-  PUT, 
+  GET,
+  POST,
+  PUT,
   DELETE;
-  
+
   public static HttpMethod getMethod(String method) {
     return valueOf(method.trim().toUpperCase());
   }
-  
+
   public static final List<HttpMethod> ALL_METHODS =
     Collections.unmodifiableList(Arrays.asList(values()));
 
@@ -44,5 +44,5 @@ public enum HttpMethod {
    * {@code conn.setRequestProperty(HttpMethod.SIMULATED_METHOD_HEADER, HttpMethod.PUT.toString());}
    * You should then send the request method to POST: {@code conn.setRequestMethod("POST");}
    */
-  public static final String SIMULATED_METHOD_HEADER = "SimulatedMethod";
+  public static final String SIMULATED_METHOD_HEADER = "X-HTTP-Method-Override";
 }
