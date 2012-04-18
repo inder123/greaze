@@ -73,6 +73,6 @@ public class TypedKey<T> {
 
   @Override
   public String toString() {
-    return String.format("{name:%s, typeOfT:%s}", name, typeOfT);
+    return name;
   }
 }
