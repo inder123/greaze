@@ -103,6 +103,10 @@ public class RequestSender {
       Type type = spec.getTypeFor(paramName);
       Object value = entry.getValue();
       String json = gson.toJson(value, type);
+      // remove extra quotes
+      if (json.startsWith("\"")) {
+        json = json.substring(1, json.length()-1);
+      }
       setHeader(conn, paramName, json, false);
     }
   }
