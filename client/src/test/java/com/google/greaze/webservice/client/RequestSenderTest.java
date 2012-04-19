@@ -17,11 +17,13 @@ package com.google.greaze.webservice.client;
 
 import junit.framework.TestCase;
 
+import com.google.greaze.definition.ContentBodySpec;
 import com.google.greaze.definition.HeaderMap;
 import com.google.greaze.definition.HeaderMapSpec;
 import com.google.greaze.definition.HttpMethod;
 import com.google.greaze.definition.UrlParams;
 import com.google.greaze.definition.webservice.RequestBody;
+import com.google.greaze.definition.webservice.RequestBodySpec;
 import com.google.greaze.definition.webservice.RequestSpec;
 import com.google.greaze.definition.webservice.WebServiceRequest;
 import com.google.greaze.rest.client.fixtures.HttpUrlConnectionMock;
@@ -35,12 +37,41 @@ import com.google.gson.Gson;
 public class RequestSenderTest extends TestCase {
 
   private RequestSender sender;
-  private HttpUrlConnectionMock conn;
 
   protected void setUp() throws Exception {
     super.setUp();
     sender = new RequestSender(new Gson());
-    this.conn = new HttpUrlConnectionMock();
+  }
+
+  public void testContentTypeHeaderSkippedForGetAndDelete() {
+    HeaderMapSpec requestHeaderSpec = new HeaderMapSpec.Builder().build();
+    HeaderMap requestHeaders = new HeaderMap.Builder(requestHeaderSpec).build();
+    RequestBodySpec requestBodySpec = new RequestBodySpec.Builder()
+      .setSimpleBody(String.class)
+      .build();
+    RequestBody requestBody = new RequestBody.Builder(requestBodySpec).build();
+    for (HttpMethod method : new HttpMethod[]{HttpMethod.GET, HttpMethod.DELETE}) {
+      HttpUrlConnectionMock conn = new HttpUrlConnectionMock();
+      sender.send(conn, new WebServiceRequest(method, requestHeaders, null, requestBody, null));
+      assertNull(conn.getHeaders().get("Content-Type"));
+    }
+  }
+
+  public void testBodyAndContentTypeHeaderForPostAndPut() {
+    HeaderMapSpec requestHeaderSpec = new HeaderMapSpec.Builder().build();
+    HeaderMap requestHeaders = new HeaderMap.Builder(requestHeaderSpec).build();
+    RequestBodySpec requestBodySpec = new RequestBodySpec.Builder()
+      .setSimpleBody(String.class)
+      .build();
+    RequestBody requestBody = new RequestBody.Builder(requestBodySpec)
+      .setSimpleBody("hello world")
+      .build();
+    for (HttpMethod method : new HttpMethod[]{HttpMethod.POST, HttpMethod.PUT}) {
+      HttpUrlConnectionMock conn = new HttpUrlConnectionMock();
+      sender.send(conn, new WebServiceRequest(method, requestHeaders, null, requestBody, null));
+      assertEquals(ContentBodySpec.JSON_CONTENT_TYPE, conn.getHeaders().get("Content-Type"));
+      assertEquals("hello world", conn.getBodyAsString());
+    }
   }
 
   public void testStringAndPrimitiveValueHeader() {
@@ -57,6 +88,7 @@ public class RequestSenderTest extends TestCase {
     RequestSpec requestSpec = null;
     WebServiceRequest request =
         new WebServiceRequest(HttpMethod.GET, requestHeaders, urlParams, requestBody, requestSpec);
+    HttpUrlConnectionMock conn = new HttpUrlConnectionMock();
     sender.send(conn, request);
     assertEquals("bob", conn.getHeaders().get("X-Name"));
     assertEquals("10000", conn.getHeaders().get("X-Salary"));
@@ -74,6 +106,7 @@ public class RequestSenderTest extends TestCase {
     RequestSpec requestSpec = null;
     WebServiceRequest request =
         new WebServiceRequest(HttpMethod.GET, requestHeaders, urlParams, requestBody, requestSpec);
+    HttpUrlConnectionMock conn = new HttpUrlConnectionMock();
     sender.send(conn, request);
     assertEquals("{\"real\":10,\"imaginary\":3}", conn.getHeaders().get("X-Number"));
   }

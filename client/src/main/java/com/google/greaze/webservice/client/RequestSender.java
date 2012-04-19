@@ -57,15 +57,15 @@ public class RequestSender {
       }
       if (LogConfig.INFO) logger.info(method + " to " + conn.getURL());
       conn.setRequestMethod(method.toString());
-      setHeader(conn, "Content-Type", request.getContentType(), true);
       addRequestParams(conn, request.getHeaders());
       // Assume conservatively that the response will need to be read.
       // This is done here instead of in the response receiver because this property must be set
       // before sending any data on the connection.
       conn.setDoInput(true);
-      if (method != HttpMethod.GET) {
+      if (method != HttpMethod.GET && method != HttpMethod.DELETE) {
+        setHeader(conn, "Content-Type", request.getContentType(), true);
         RequestBody requestBody = request.getBody();
-        String requestBodyContents = bodyToJson(requestBody);
+        String requestBodyContents = stripEnclosingQuotes(bodyToJson(requestBody));
         if (LogConfig.INFO) logger.log(Level.INFO, "Request Body: " + requestBodyContents);
         // Android Java VM ignore Content-Length if setDoOutput is not set
         conn.setDoOutput(true);
@@ -102,13 +102,16 @@ public class RequestSender {
       String paramName = entry.getKey();
       Type type = spec.getTypeFor(paramName);
       Object value = entry.getValue();
-      String json = gson.toJson(value, type);
-      // remove extra quotes
-      if (json.startsWith("\"")) {
-        json = json.substring(1, json.length()-1);
-      }
+      String json = stripEnclosingQuotes(gson.toJson(value, type));
       setHeader(conn, paramName, json, false);
     }
+  }
+
+  private String stripEnclosingQuotes(String str) {
+    if (str.startsWith("\"")) {
+      str = str.substring(1, str.length()-1);
+    }
+    return str;
   }
 
   private void setHeader(HttpURLConnection conn, String name, String value, boolean overwrite) {

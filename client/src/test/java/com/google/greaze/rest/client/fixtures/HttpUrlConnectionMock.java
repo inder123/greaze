@@ -53,6 +53,10 @@ public class HttpUrlConnectionMock extends HttpURLConnection {
     }
   }
 
+  public String getBodyAsString() {
+    return new String(forward.toByteArray());
+  }
+
   @Override
   public void disconnect() {
   }
