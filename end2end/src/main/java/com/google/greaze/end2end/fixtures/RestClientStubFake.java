@@ -55,8 +55,12 @@ public class RestClientStubFake extends RestClientStub {
         responseBuilders, restCallSpecMap, serverGson, servicePaths, resourcePrefix);
   }
 
+  public String getServiceBaseUrl() {
+    return "http://localhost/fake";
+  }
+
   @Override
-  protected HttpURLConnection openConnection(URL url) {
+  public HttpURLConnection openConnection(URL url) {
     return networkSwitcher.get(url);
   }
 }
