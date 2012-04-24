@@ -15,27 +15,26 @@
  */
 package com.google.greaze.end2end.fixtures;
 
+import java.io.IOException;
 import java.io.OutputStream;
 import java.util.Collection;
 
 import javax.servlet.http.HttpServletRequest;
 
 import com.google.greaze.definition.CallPath;
-import com.google.greaze.definition.rest.Id;
-import com.google.greaze.definition.rest.ResourceIdFactory;
-import com.google.greaze.definition.rest.RestCallSpec;
 import com.google.greaze.definition.rest.RestCallSpecMap;
-import com.google.greaze.definition.rest.RestRequestBase;
-import com.google.greaze.definition.rest.RestResponse;
-import com.google.greaze.definition.rest.RestResponseBase;
-import com.google.greaze.definition.rest.WebContext;
 import com.google.greaze.rest.server.ResponseBuilderMap;
-import com.google.greaze.rest.server.RestResponseBaseBuilder;
-import com.google.greaze.rest.server.RestResponseSender;
+import com.google.greaze.server.GreazeDispatcherServlet;
 import com.google.greaze.server.fixtures.HttpServletRequestFake;
 import com.google.greaze.server.fixtures.HttpServletResponseFake;
-import com.google.greaze.server.inject.GreazeServerModule;
 import com.google.gson.Gson;
+import com.google.inject.AbstractModule;
+import com.google.inject.Guice;
+import com.google.inject.Injector;
+import com.google.inject.Module;
+import com.google.inject.Provides;
+import com.google.inject.Singleton;
+import com.google.inject.servlet.InstallableGuiceContext;
 
 /**
  * Connects a RequestReceiver to HttpURLConnection
@@ -44,8 +43,7 @@ import com.google.gson.Gson;
  */
 public class NetworkSwitcherResource extends NetworkSwitcherWebService {
 
-  private final ResponseBuilderMap responseBuilders;
-  private final RestCallSpecMap restCallSpecMap;
+  private final GreazeDispatcherServlet dispatcher;
 
   /**
    * @param responseBuilders Rest response builder for the resource
@@ -58,35 +56,47 @@ public class NetworkSwitcherResource extends NetworkSwitcherWebService {
    *   for /myshop/resource/1.0/order. Same as resourcePrefix parameter for
    *   {@link GreazeServerModule#GreazeServerModule(String, Collection, String)
    */
-  public NetworkSwitcherResource(ResponseBuilderMap responseBuilders,
-      RestCallSpecMap restCallSpecMap, Gson serverGson,
+  public NetworkSwitcherResource(final ResponseBuilderMap responseBuilders,
+      final RestCallSpecMap restCallSpecMap, final Gson serverGson,
       Collection<CallPath> servicePaths, String resourcePrefix) {
     super(serverGson, servicePaths, resourcePrefix);
-    this.responseBuilders = responseBuilders;
-    this.restCallSpecMap = restCallSpecMap;
+
+    @SuppressWarnings("unused")
+    Module module = new AbstractModule() {
+      @Override
+      protected void configure() {
+      }
+      @Singleton
+      @Provides
+      public ResponseBuilderMap getResponseBuilderMap() {
+        return responseBuilders;
+      }
+      @Singleton
+      @Provides
+      public RestCallSpecMap getRestCallSpecMap() {
+        return restCallSpecMap;
+      }
+      @Singleton
+      @Provides
+      public Gson getGson() {
+        return serverGson;
+      }
+    };
+    Injector injector = Guice.createInjector(gsm, module);
+    this.dispatcher = new GreazeDispatcherServlet(injector, resourcePrefix);
   }
 
-  @SuppressWarnings({"rawtypes", "unchecked"})
   @Override
-  protected void switchNetwork(HttpURLConnectionFake conn) {
-    HttpServletRequest req = new HttpServletRequestFake()
+  protected void switchNetwork(HttpURLConnectionFake conn) throws IOException {
+    final HttpServletRequest req = new HttpServletRequestFake()
       .setRequestMethod(conn.getRequestMethod())
       .setServletPath(conn.getURL().getPath())
       .setInputStream(conn.getForwardForInput())
       .setHeaders(conn.getHeaders());
-    CallPath callPath = gsm.getCallPath(req);
-    RestCallSpec spec = gsm.getRestCallSpec(restCallSpecMap, callPath);
-    ResourceIdFactory<Id<?>> idFactory = gsm.getIDFactory();
-    RestRequestBase<Id<?>, ?> request = gsm.getRestRequest(serverGson, spec, callPath, req, idFactory);
-    RestResponse.Builder<?> response = new RestResponse.Builder(spec.getResponseSpec());
-    WebContext context = gsm.getWebContext(req, spec, serverGson);
-    RestResponseBaseBuilder responseBuilder = gsm.getResponseBuilder(spec, responseBuilders);
-    responseBuilder.buildResponse(context, request, response);
-    RestResponseBase webServiceResponse = response.build();
-    RestResponseSender responseSender = new RestResponseSender(serverGson);
     OutputStream reverseForOutput = conn.getReverseForOutput();
     HttpServletResponseFake res = new HttpServletResponseFake(reverseForOutput);
-    responseSender.send(res, webServiceResponse);
+    InstallableGuiceContext.install(req, res);
+    dispatcher.service(req, res);
     res.flushBuffer();
   }
 }
