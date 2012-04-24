@@ -31,6 +31,7 @@ public class NetworkSwitcherWebService extends NetworkSwitcherPiped {
 
   protected final GreazeServerModule gsm;
   protected final Gson serverGson;
+  protected final String resourcePrefix;
 
   /**
    * @param serverGson Gson instance used for server-side JSON serialization/deserialization
@@ -44,6 +45,8 @@ public class NetworkSwitcherWebService extends NetworkSwitcherPiped {
   public NetworkSwitcherWebService(Gson serverGson, Collection<CallPath> servicePaths,
       String resourcePrefix) {
     this.serverGson = serverGson;
-    this.gsm = new GreazeServerModule("/fake", servicePaths, resourcePrefix);
-  }
+    this.resourcePrefix = resourcePrefix;
+    this.gsm = new GreazeServerModule("/fake", servicePaths, resourcePrefix) {
+    };
+ }
 }

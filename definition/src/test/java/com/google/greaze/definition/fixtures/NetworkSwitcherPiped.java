@@ -38,12 +38,8 @@ public class NetworkSwitcherPiped implements NetworkSwitcher {
     return new HttpURLConnectionFake(url);
   }
 
-  protected void switchNetwork(HttpURLConnectionFake conn) {
-    try {
-      Streams.copy(conn.getForwardForInput(), conn.getReverseForOutput(), true, true);
-    } catch (IOException e) {
-      throw new RuntimeException(e);
-    }
+  protected void switchNetwork(HttpURLConnectionFake conn) throws IOException {
+    Streams.copy(conn.getForwardForInput(), conn.getReverseForOutput(), true, true);
   }
 
   /**
@@ -110,7 +106,7 @@ public class NetworkSwitcherPiped implements NetworkSwitcher {
     }
 
     @Override
-    public void connect() {
+    public void connect() throws IOException {
       switchNetwork(this);
     }
   }
