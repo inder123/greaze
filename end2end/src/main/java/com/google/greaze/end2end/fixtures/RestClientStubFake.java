@@ -24,6 +24,7 @@ import com.google.greaze.definition.fixtures.NetworkSwitcher;
 import com.google.greaze.definition.rest.RestCallSpecMap;
 import com.google.greaze.rest.client.RestClientStub;
 import com.google.greaze.rest.server.ResponseBuilderMap;
+import com.google.greaze.server.filters.GreazeFilterChain;
 import com.google.greaze.server.inject.GreazeServerModule;
 import com.google.greaze.webservice.client.ServerConfig;
 import com.google.gson.Gson;
@@ -47,12 +48,14 @@ public class RestClientStubFake extends RestClientStub {
    * @param resourcePrefix the resource prefix after the path to Servlet. For example, /resource
    *   for /myshop/resource/1.0/order. Same as resourcePrefix parameter for
    *   {@link GreazeServerModule#GreazeServerModule(String, Collection, String)}
+   * @param filters the filter chain to be optionall installed. It is ok to pass null.
    */
   public RestClientStubFake(ResponseBuilderMap responseBuilders, RestCallSpecMap restCallSpecMap,
-      Gson serverGson, Collection<CallPath> servicePaths, String resourcePrefix) {
+      Gson serverGson, Collection<CallPath> servicePaths, String resourcePrefix,
+      GreazeFilterChain filters) {
     super(new ServerConfig("http://localhost/fake" + resourcePrefix));
     this.networkSwitcher = new NetworkSwitcherResource(
-        responseBuilders, restCallSpecMap, serverGson, servicePaths, resourcePrefix);
+        responseBuilders, restCallSpecMap, serverGson, servicePaths, resourcePrefix, filters);
   }
 
   public String getServiceBaseUrl() {

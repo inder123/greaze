@@ -15,7 +15,6 @@
  */
 package com.google.greaze.end2end.resources;
 
-
 import junit.framework.TestCase;
 
 import com.google.common.collect.ImmutableList;
@@ -67,8 +66,8 @@ public class ResourceDepotFunctionalTest extends TestCase {
     ResponseBuilderMap responseBuilders = new ResponseBuilderMap.Builder()
       .set(Employee.class, responseBuilder)
       .build();
-    RestClientStub stub = new RestClientStubFake(
-        responseBuilders, restCallSpecMap, gson, ImmutableList.of(RESOURCE_PATH), RESOURCE_PREFIX);
+    RestClientStub stub = new RestClientStubFake(responseBuilders,
+        restCallSpecMap, gson, ImmutableList.of(RESOURCE_PATH), RESOURCE_PREFIX, null);
     this.client = new ResourceDepotClient<Employee>(stub, RESOURCE_PATH, Employee.class, gson);
   }
 
