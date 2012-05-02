@@ -25,6 +25,7 @@ import com.google.greaze.definition.CallPath;
 import com.google.greaze.definition.rest.RestCallSpecMap;
 import com.google.greaze.rest.server.ResponseBuilderMap;
 import com.google.greaze.server.GreazeDispatcherServlet;
+import com.google.greaze.server.filters.GreazeFilterChain;
 import com.google.greaze.server.fixtures.HttpServletRequestFake;
 import com.google.greaze.server.fixtures.HttpServletResponseFake;
 import com.google.gson.Gson;
@@ -58,7 +59,7 @@ public class NetworkSwitcherResource extends NetworkSwitcherWebService {
    */
   public NetworkSwitcherResource(final ResponseBuilderMap responseBuilders,
       final RestCallSpecMap restCallSpecMap, final Gson serverGson,
-      Collection<CallPath> servicePaths, String resourcePrefix) {
+      Collection<CallPath> servicePaths, String resourcePrefix, GreazeFilterChain filters) {
     super(serverGson, servicePaths, resourcePrefix);
 
     @SuppressWarnings("unused")
@@ -83,7 +84,7 @@ public class NetworkSwitcherResource extends NetworkSwitcherWebService {
       }
     };
     Injector injector = Guice.createInjector(gsm, module);
-    this.dispatcher = new GreazeDispatcherServlet(injector, resourcePrefix);
+    this.dispatcher = new GreazeDispatcherServlet(injector, resourcePrefix, filters);
   }
 
   @Override

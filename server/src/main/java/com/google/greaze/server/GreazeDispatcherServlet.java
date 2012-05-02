@@ -23,12 +23,10 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import com.google.greaze.definition.CallPath;
 import com.google.greaze.definition.ErrorReason;
-import com.google.greaze.definition.LogConfig;
 import com.google.greaze.definition.WebServiceSystemException;
-import com.google.greaze.server.dispatcher.RequestType;
-import com.google.greaze.server.dispatcher.ResourceQueryDispatcher;
+import com.google.greaze.server.filters.GreazeFilter;
+import com.google.greaze.server.filters.GreazeFilterChain;
 import com.google.inject.Inject;
 import com.google.inject.Injector;
 import com.google.inject.Singleton;
@@ -43,45 +41,27 @@ import com.google.inject.name.Named;
 @SuppressWarnings("serial")
 public class GreazeDispatcherServlet extends HttpServlet {
   private static final Logger log = Logger.getLogger(GreazeDispatcherServlet.class.getSimpleName());
-  private final Injector injector;
-  private final String resourcePrefix;
+  private GreazeFilterChain filters;
 
   @Inject
-  public GreazeDispatcherServlet(Injector injector, @Named("resource-prefix") String resourcePrefix) {
-    this.injector = injector;
-    this.resourcePrefix = resourcePrefix;
+  public GreazeDispatcherServlet(Injector injector, @Named("resource-prefix") String resourcePrefix,
+      GreazeFilterChain filtersToBeInstalled) {
+    this.filters = filtersToBeInstalled == null
+        ? new GreazeFilterChain() : filtersToBeInstalled.copyOf();
+    this.filters.install(new RequestServicingFilter());
+    for (GreazeFilter filter : this.filters.getFilters()) {
+      filter.init(injector, resourcePrefix);
+    }
   }
 
-  @SuppressWarnings("unchecked")
   @Override
   public void service(HttpServletRequest req, HttpServletResponse res) throws IOException {
     try {
-      try {
-        CallPath callPath = injector.getInstance(CallPath.class);
-        if (callPath.equals(CallPath.NULL_PATH)) {
-          throw new WebServiceSystemException(
-              ErrorReason.INVALID_CALLPATH, req.getServletPath());
+      for (GreazeFilter filter : filters.getFilters()) {
+        boolean continueFilterChain = filter.service(req, res);
+        if (!continueFilterChain) {
+          break;
         }
-        String queryName = RequestType.getQueryName(req.getParameterMap());
-        RequestType requestType = RequestType.getRequestType(callPath, queryName, resourcePrefix);
-        if (LogConfig.INFO) log.info(String.format("%s: %s", requestType, callPath));
-        switch (requestType) {
-          case RESOURCE_ACCESS:
-            injector.getInstance(ResourceDepotDispatcher.class).service(res);
-            break;
-          case RESOURCE_QUERY:
-            injector.getInstance(ResourceQueryDispatcher.class).service(req, res, queryName, callPath);
-            break;
-          case WEBSERVICE:
-            injector.getInstance(WebServiceDispatcher.class).service(req, res);
-            break;
-          default:
-            throw new UnsupportedOperationException();
-        }
-      } catch (IllegalArgumentException e) {
-        throw new WebServiceSystemException(e);
-      } catch (NullPointerException e) {
-        throw new WebServiceSystemException(e);
       }
     } catch (WebServiceSystemException e) {
       ErrorReason reason = e.getReason();
