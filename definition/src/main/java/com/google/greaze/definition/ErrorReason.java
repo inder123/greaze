@@ -28,6 +28,7 @@ public enum ErrorReason {
   INVALID_CALLPATH(HttpURLConnection.HTTP_NOT_IMPLEMENTED),
   UNEXPECTED_RETRYABLE_ERROR(HttpURLConnection.HTTP_UNAVAILABLE),
   UNEXPECTED_PERMANENT_ERROR(HttpURLConnection.HTTP_INTERNAL_ERROR),
+  UNAUTHORIZED(HttpURLConnection.HTTP_UNAUTHORIZED),
   SERVER_UNAVAILABLE(HttpURLConnection.HTTP_UNAVAILABLE),
   PRECONDITION_FAILED(HttpURLConnection.HTTP_UNAVAILABLE),
   /**
@@ -48,6 +49,25 @@ public enum ErrorReason {
   public static final String HTTP_RESPONSE_HEADER_NAME = "ErrorReason";
   private ErrorReason(int responseCode) {
     this.responseCode = responseCode;
+  }
+
+  public static ErrorReason fromHttpResponseCode(int sc) {
+    switch (sc) {
+    case HttpURLConnection.HTTP_BAD_REQUEST:
+      return BAD_REQUEST;
+    case HttpURLConnection.HTTP_NOT_IMPLEMENTED:
+      return INVALID_CALLPATH;
+    case HttpURLConnection.HTTP_UNAVAILABLE:
+      return UNEXPECTED_RETRYABLE_ERROR;
+    case HttpURLConnection.HTTP_UNAUTHORIZED:
+      return UNAUTHORIZED;
+    case HttpURLConnection.HTTP_INTERNAL_ERROR:
+      return SERVER_MESSAGE_TO_USER;
+    case HttpURLConnection.HTTP_BAD_GATEWAY:
+      return LOCAL_NETWORK_FAILURE;
+    default:
+      return BAD_REQUEST;
+    }
   }
 
   public int getResponseCode() {
