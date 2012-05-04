@@ -25,10 +25,12 @@ import java.util.logging.Logger;
 
 import com.google.greaze.client.internal.utils.ConnectionPreconditions;
 import com.google.greaze.definition.ContentBodyType;
+import com.google.greaze.definition.ErrorReason;
 import com.google.greaze.definition.HeaderMap;
 import com.google.greaze.definition.HeaderMapSpec;
 import com.google.greaze.definition.LogConfig;
 import com.google.greaze.definition.WebServiceSystemException;
+import com.google.greaze.definition.internal.utils.GreazeStrings;
 import com.google.greaze.definition.internal.utils.Streams;
 import com.google.greaze.definition.webservice.ResponseBody;
 import com.google.greaze.definition.webservice.ResponseBodySpec;
@@ -53,6 +55,7 @@ public class ResponseReceiver {
   
   public WebServiceResponse receive(HttpURLConnection conn) {
     try {
+      handleResponseCode(conn);
       HeaderMapSpec paramSpec = spec.getHeadersSpec();
       ResponseBodySpec bodySpec = spec.getBodySpec();
       // read response
@@ -64,7 +67,20 @@ public class ResponseReceiver {
     }
   }
 
-  protected HeaderMap readResponseHeaders(HttpURLConnection conn, HeaderMapSpec paramsSpec) {    
+  protected void handleResponseCode(HttpURLConnection conn) throws WebServiceSystemException, IOException {
+    // First check response code
+    int responseCode = conn.getResponseCode();
+    String errorReason = conn.getHeaderField(ErrorReason.HTTP_RESPONSE_HEADER_NAME);
+    if (responseCode >= 400 || !GreazeStrings.isEmpty(errorReason)) {
+      ErrorReason reason = GreazeStrings.isEmpty(errorReason)
+          ? ErrorReason.fromHttpResponseCode(responseCode)
+              : ErrorReason.valueOf(errorReason);
+      String msg = Streams.readAsString(conn.getInputStream());
+      throw new WebServiceSystemException(reason, "Server input: " + msg);
+    }
+  }
+
+  protected HeaderMap readResponseHeaders(HttpURLConnection conn, HeaderMapSpec paramsSpec) {
     HeaderMap.Builder paramsBuilder = new HeaderMap.Builder(paramsSpec);    
     for (Map.Entry<String, Type> entry : paramsSpec.entrySet()) {
       String paramName = entry.getKey();

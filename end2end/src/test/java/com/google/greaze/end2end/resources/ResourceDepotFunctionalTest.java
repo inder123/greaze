@@ -17,9 +17,12 @@ package com.google.greaze.end2end.resources;
 
 import junit.framework.TestCase;
 
+import com.google.common.base.Preconditions;
 import com.google.common.collect.ImmutableList;
 import com.google.greaze.definition.CallPath;
 import com.google.greaze.definition.CallPathParser;
+import com.google.greaze.definition.ErrorReason;
+import com.google.greaze.definition.WebServiceSystemException;
 import com.google.greaze.definition.rest.Id;
 import com.google.greaze.definition.rest.IdGsonTypeAdapterFactory;
 import com.google.greaze.definition.rest.RestCallSpec;
@@ -47,6 +50,8 @@ public class ResourceDepotFunctionalTest extends TestCase {
   private static final String RESOURCE_PREFIX = "/rest";
   private static final CallPath RESOURCE_PATH =
     new CallPathParser(RESOURCE_PREFIX, false, "/employee").parse(RESOURCE_PREFIX + "/employee");
+  private static final Id<Employee> ERROR_ID = Id.get("ErrorId12");
+
   private ResourceDepotClient<Employee> client;
   private Repository<Employee> employees;
 
@@ -57,7 +62,7 @@ public class ResourceDepotFunctionalTest extends TestCase {
       .registerTypeAdapterFactory(new IdGsonTypeAdapterFactory())
       .create();
     this.employees = new RepositoryInMemory<Employee>();
-    RestResponseBuilder<Employee> responseBuilder = new RestResponseBuilder<Employee>(employees);
+    RestResponseBuilder<Employee> responseBuilder = new ResponseBuilderEmployee(employees);
     RestCallSpec employeeRestCallSpec =
       ResourceDepotBaseClient.generateRestCallSpec(RESOURCE_PATH, Employee.class, null);
     RestCallSpecMap restCallSpecMap = new RestCallSpecMap.Builder()
@@ -76,6 +81,15 @@ public class ResourceDepotFunctionalTest extends TestCase {
     employees.put(new Employee(id, "bob"));
     Employee e = client.get(id, new WebContext());
     assertEquals("bob", e.getName());
+  }
+
+  public void testServerErrorOnGet() throws Exception {
+    try {
+      client.get(ERROR_ID, new WebContext());
+      fail();
+    } catch (WebServiceSystemException expected) {
+      assertEquals(ErrorReason.BAD_REQUEST, expected.getReason());
+    }
   }
 
   public void testPost() throws Exception {
@@ -97,5 +111,16 @@ public class ResourceDepotFunctionalTest extends TestCase {
     assertEquals("bob", bob.getName());
     client.delete(bob.getId(), new WebContext());
     assertNull(client.get(bob.getId(), new WebContext()));
+  }
+
+  private static final class ResponseBuilderEmployee extends RestResponseBuilder<Employee> {
+    public ResponseBuilderEmployee(Repository<Employee> employees) {
+      super(employees);
+    }
+    @Override
+    public Employee get(Id<Employee> resourceId, WebContext context) {
+      Preconditions.checkArgument(!resourceId.equals(ERROR_ID));
+      return super.get(resourceId, context);
+    }
   }
 }

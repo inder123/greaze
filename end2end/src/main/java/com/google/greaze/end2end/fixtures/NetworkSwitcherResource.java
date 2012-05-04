@@ -95,7 +95,7 @@ public class NetworkSwitcherResource extends NetworkSwitcherWebService {
       .setInputStream(conn.getForwardForInput())
       .setHeaders(conn.getHeaders());
     OutputStream reverseForOutput = conn.getReverseForOutput();
-    HttpServletResponseFake res = new HttpServletResponseFake(reverseForOutput);
+    HttpServletResponseFake res = new HttpServletResponseFake(reverseForOutput, conn);
     InstallableGuiceContext.install(req, res);
     dispatcher.service(req, res);
     res.flushBuffer();

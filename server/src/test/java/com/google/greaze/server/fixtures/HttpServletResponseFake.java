@@ -28,12 +28,11 @@ import javax.servlet.http.HttpServletResponse;
 
 import com.google.common.base.Preconditions;
 import com.google.greaze.definition.ContentBodySpec;
-import com.google.greaze.definition.ErrorReason;
-import com.google.greaze.definition.WebServiceSystemException;
+import com.google.greaze.definition.fixtures.NetworkSwitcherPiped.HttpURLConnectionFake;
 
 /**
  * A test fixture for {@link HttpServletResponse}
- *
+ * 
  * @author Inderjeet Singh
  */
 public final class HttpServletResponseFake implements HttpServletResponse {
@@ -42,14 +41,14 @@ public final class HttpServletResponseFake implements HttpServletResponse {
   private final PrintWriter writer;
   private String contentType;
   private final Map<String, String> headers = new HashMap<String, String>();
-  private int statusCode;
-  private String statusMessage;
   private Locale locale;
   /** Doesn't really matter as we just use {@link #sos} */
   private int bufferSize = 1024;
+  private HttpURLConnectionFake conn;
 
-  public HttpServletResponseFake(OutputStream out) {
+  public HttpServletResponseFake(OutputStream out, HttpURLConnectionFake conn) {
     this.sos = new ServletOutputStreamPiped(out);
+    this.conn = conn;
     this.writer = new PrintWriter(sos, true);
     this.contentType = ContentBodySpec.JSON_CONTENT_TYPE;
   }
@@ -157,10 +156,7 @@ public final class HttpServletResponseFake implements HttpServletResponse {
 
   @Override
   public void sendError(int sc, String msg) {
-    this.statusCode = sc;
-    this.statusMessage = msg;
-    ErrorReason reason = ErrorReason.fromHttpResponseCode(sc);
-    throw new WebServiceSystemException(reason, msg);
+    setStatus(sc, msg);
   }
 
   @Override
@@ -210,12 +206,14 @@ public final class HttpServletResponseFake implements HttpServletResponse {
 
   @Override
   public void setStatus(int sc) {
-    this.statusCode = sc;
+    setStatus(sc, null);
   }
 
   @Override
   public void setStatus(int sc, String sm) {
-    this.statusCode = sc;
-    this.statusMessage = sm;
+    conn.setHttpResponseCode(sc);
+    if (sm != null) {
+      writer.append(sm);
+    }
   }
 }

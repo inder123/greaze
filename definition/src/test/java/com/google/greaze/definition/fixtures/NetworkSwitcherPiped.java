@@ -59,6 +59,10 @@ public class NetworkSwitcherPiped implements NetworkSwitcher {
       this.reverse = new ByteArrayPipedStream();
     }
 
+    public void setHttpResponseCode(int responseCode) {
+      this.responseCode = responseCode;
+    }
+
     @Override
     public void disconnect() {
     }

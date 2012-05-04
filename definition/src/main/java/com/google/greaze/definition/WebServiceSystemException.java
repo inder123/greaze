@@ -19,6 +19,7 @@ import java.io.IOException;
 import java.net.ConnectException;
 import java.util.concurrent.ExecutionException;
 
+import com.google.greaze.definition.internal.utils.GreazeStrings;
 import com.google.gson.JsonParseException;
 
 /**
@@ -38,11 +39,11 @@ public class WebServiceSystemException extends RuntimeException {
   }
 
   public WebServiceSystemException(IllegalArgumentException e) {
-    this(ErrorReason.PRECONDITION_FAILED, e.getMessage(), e);
+    this(ErrorReason.PRECONDITION_FAILED, getMessageFromException(e), e);
   }
 
   public WebServiceSystemException(NullPointerException e) {
-    this(ErrorReason.PRECONDITION_FAILED, e.getMessage(), e);
+    this(ErrorReason.PRECONDITION_FAILED, getMessageFromException(e), e);
   }
 
   public WebServiceSystemException(JsonParseException e) {
@@ -72,6 +73,10 @@ public class WebServiceSystemException extends RuntimeException {
     this.reason = reason;
   }
 
+  public WebServiceSystemException(ErrorReason reason) {
+    this.reason = reason;
+  }
+
   public ErrorReason getReason() {
     return reason;
   }
@@ -82,5 +87,13 @@ public class WebServiceSystemException extends RuntimeException {
       return ErrorReason.LOCAL_NETWORK_FAILURE;
     }
     return ErrorReason.UNEXPECTED_RETRYABLE_ERROR;
+  }
+
+  private static String getMessageFromException(Exception e) {
+    String msg  = e.getMessage();
+    if (GreazeStrings.isEmpty(msg) && e.getCause() != null) {
+      msg = e.getCause().getMessage();
+    }
+    return msg;
   }
 }
