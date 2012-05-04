@@ -30,7 +30,7 @@ public enum ErrorReason {
   UNEXPECTED_PERMANENT_ERROR(HttpURLConnection.HTTP_INTERNAL_ERROR),
   UNAUTHORIZED(HttpURLConnection.HTTP_UNAUTHORIZED),
   SERVER_UNAVAILABLE(HttpURLConnection.HTTP_UNAVAILABLE),
-  PRECONDITION_FAILED(HttpURLConnection.HTTP_UNAVAILABLE),
+  PRECONDITION_FAILED(HttpURLConnection.HTTP_BAD_REQUEST),
   /**
    * This error reason indicates that the server is communicating a specific
    * message to be displayed to the user.

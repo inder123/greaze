@@ -15,23 +15,34 @@
  */
 package com.google.greaze.end2end.fixtures;
 
+import java.io.IOException;
 import java.io.OutputStream;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 
 import com.google.common.collect.ImmutableList;
 import com.google.greaze.definition.CallPath;
 import com.google.greaze.definition.fixtures.NetworkSwitcherPiped;
+import com.google.greaze.definition.rest.RestCallSpecMap;
 import com.google.greaze.definition.rest.RestResource;
 import com.google.greaze.definition.rest.query.ResourceQuery;
 import com.google.greaze.definition.rest.query.ResourceQueryParams;
-import com.google.greaze.server.dispatcher.RequestType;
+import com.google.greaze.rest.server.ResponseBuilderMap;
+import com.google.greaze.server.GreazeDispatcherServlet;
 import com.google.greaze.server.dispatcher.ResourceQueryDispatcher;
 import com.google.greaze.server.fixtures.HttpServletRequestFake;
 import com.google.greaze.server.fixtures.HttpServletResponseFake;
 import com.google.greaze.server.inject.GreazeServerModule;
 import com.google.gson.GsonBuilder;
+import com.google.inject.AbstractModule;
+import com.google.inject.Guice;
+import com.google.inject.Injector;
+import com.google.inject.Module;
 import com.google.inject.Provider;
+import com.google.inject.Provides;
+import com.google.inject.Singleton;
+import com.google.inject.servlet.InstallableGuiceContext;
 
 /**
  * Connects a RequestReceiver to HttpURLConnection
@@ -42,39 +53,61 @@ public class NetworkSwitcherQuery<R extends RestResource<R>, Q extends ResourceQ
     extends NetworkSwitcherPiped {
 
   private static final String SERVLET_BASE_PATH = "/fake";
-  private final ResourceQuery<R, Q> query;
   private final CallPath queryCallPath;
   private final GreazeServerModule gsm;
-  private ResourceQueryDispatcher dispatcher;
+  private final GreazeDispatcherServlet dispatcher;
 
-  public NetworkSwitcherQuery(ResourceQuery<R, Q> query, Provider<GsonBuilder> serverGsonBuilder,
-      CallPath queryCallPath) {
+  public NetworkSwitcherQuery(final ResourceQuery<R, Q> queryHandler, 
+      final Provider<GsonBuilder> serverGsonBuilder, CallPath queryCallPath) {
     this.gsm = new GreazeServerModule(
         SERVLET_BASE_PATH, ImmutableList.of(queryCallPath), queryCallPath.getBasePath());
-    this.query = query;
     this.queryCallPath = queryCallPath;
-    this.dispatcher = new ResourceQueryDispatcher(serverGsonBuilder);
+
+    @SuppressWarnings("unused")
+    Module module = new AbstractModule() {
+      @Override
+      protected void configure() {
+      }
+      @Singleton
+      @Provides
+      public ResponseBuilderMap getResponseBuilderMap() {
+        return new ResponseBuilderMap.Builder()
+          .build();
+      }
+      @Singleton
+      @Provides
+      public RestCallSpecMap getRestCallSpecMap() {
+        return new RestCallSpecMap.Builder()
+          .build();
+      }
+
+      @Singleton
+      @Provides
+      public ResourceQueryDispatcher getResourceQueryDispatcher() {
+        return new ResourceQueryDispatcher(serverGsonBuilder) {
+          public void service(HttpServletRequest req, HttpServletResponse res,
+              String queryName, CallPath callPath) {
+            super.service(req, res, queryName, callPath, queryHandler);
+          }
+        };
+      }
+    };
+    Injector injector = Guice.createInjector(gsm, module);
+    this.dispatcher = new GreazeDispatcherServlet(injector, queryCallPath.getBasePath(), null);
   }
 
-  @SuppressWarnings("unchecked")
   @Override
-  protected void switchNetwork(HttpURLConnectionFake conn) {
-    HttpServletRequest req = buildRequest(conn);
-    CallPath callPath = gsm.getCallPath(req);
-    String queryName = RequestType.getQueryName(req.getParameterMap());
-    OutputStream reverseForOutput = conn.getReverseForOutput();
-    HttpServletResponseFake res = new HttpServletResponseFake(reverseForOutput);
-    dispatcher.service(req, res, queryName, callPath, query);
-    res.flushBuffer();
-  }
-
-  protected HttpServletRequest buildRequest(HttpURLConnectionFake conn) {
+  protected void switchNetwork(HttpURLConnectionFake conn) throws IOException {
     HttpServletRequest req = new HttpServletRequestFake()
       .setRequestMethod(conn.getRequestMethod())
       .setHeaders(conn.getHeaders())
-      .setServletPath(SERVLET_BASE_PATH + queryCallPath.getPathPrefix() + conn.getURL().getPath())
+      .setServletPath(SERVLET_BASE_PATH + queryCallPath.getBasePath() + conn.getURL().getPath())
       .setUrlParams(conn.getURL().getQuery())
       .setInputStream(conn.getForwardForInput());
-    return req;
+    OutputStream reverseForOutput = conn.getReverseForOutput();
+    HttpServletResponseFake res = new HttpServletResponseFake(reverseForOutput, conn);
+    InstallableGuiceContext.install(req, res);
+    dispatcher.service(req, res);
+    res.flushBuffer();
   }
 }

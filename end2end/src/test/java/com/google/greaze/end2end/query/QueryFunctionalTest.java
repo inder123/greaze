@@ -19,8 +19,11 @@ import java.util.List;
 
 import junit.framework.TestCase;
 
+import com.google.common.base.Preconditions;
 import com.google.greaze.definition.CallPath;
 import com.google.greaze.definition.CallPathParser;
+import com.google.greaze.definition.ErrorReason;
+import com.google.greaze.definition.WebServiceSystemException;
 import com.google.greaze.definition.rest.IdGsonTypeAdapterFactory;
 import com.google.greaze.definition.rest.WebContext;
 import com.google.greaze.end2end.definition.Employee;
@@ -39,9 +42,12 @@ import com.google.inject.Provider;
  * @author Inderjeet Singh
  */
 public class QueryFunctionalTest extends TestCase {
+  private static final String BAD_EMPLOYEE = "Evil Employee";
 
   private Provider<GsonBuilder> gsonBuilder;
   private Repository<Employee> employees;
+  private QueryHandlerEmployeeByName queryHandler;
+  private ResourceQueryClient<Employee, QueryEmployeeByName> queryClient;
 
   @Override
   protected void setUp() throws Exception {
@@ -53,36 +59,64 @@ public class QueryFunctionalTest extends TestCase {
       }
     };
     this.employees = new RepositoryInMemory<Employee>();
-  }
+    this.queryHandler = new QueryHandlerEmployee(employees);
 
-  public void testParamsRoundTripWithoutVersion() throws Exception {
     CallPath queryPath =
-      new CallPathParser("/rest", false, "/employee").parse("/rest/employee");
-    doParamsRoundTrip(queryPath);
-  }
-
-  public void testParamsRoundTripWithVersion() throws Exception {
-    CallPath queryPath =
-      new CallPathParser("/rest", true, "/employee").parse("/rest/1.2/employee");
-    doParamsRoundTrip(queryPath);
-  }
-
-  private void doParamsRoundTrip(CallPath queryPath) {
-    QueryHandlerEmployeeByName query = new QueryHandlerEmployeeByName(employees);
+        new CallPathParser("/rest", true, "/employee").parse("/rest/1.2/employee");
     ResourceQueryClientFake<Employee, QueryEmployeeByName> stub =
-      new ResourceQueryClientFake<Employee, QueryEmployeeByName>(query, gsonBuilder, queryPath);
-    ResourceQueryClient<Employee, QueryEmployeeByName> queryClient =
-      new ResourceQueryClient<Employee, QueryEmployeeByName>(
+      new ResourceQueryClientFake<Employee, QueryEmployeeByName>(queryHandler, gsonBuilder, queryPath);
+    this.queryClient = new ResourceQueryClient<Employee, QueryEmployeeByName>(
         stub, queryPath, QueryEmployeeByName.class, gsonBuilder.get(), Employee.class);
 
     employees.put(new Employee(null, "foo"));
     employees.put(new Employee(null, "foo"));
     employees.put(new Employee(null, "bar"));
+  }
+
+  public void testParamsRoundTripWithoutVersion() throws Exception {
+    CallPath queryPath =
+      new CallPathParser("/rest", false, "/employee").parse("/rest/employee");
+    ResourceQueryClientFake<Employee, QueryEmployeeByName> stub =
+      new ResourceQueryClientFake<Employee, QueryEmployeeByName>(queryHandler, gsonBuilder, queryPath);
+    ResourceQueryClient<Employee, QueryEmployeeByName> queryClient =
+        new ResourceQueryClient<Employee, QueryEmployeeByName>(
+            stub, queryPath, QueryEmployeeByName.class, gsonBuilder.get(), Employee.class);
+
     QueryEmployeeByName queryByName = new QueryEmployeeByName("foo");
     List<Employee> results = queryClient.query(queryByName, new WebContext());
     assertEquals(2, results.size());
     for (Employee employee : results) {
       assertEquals("foo", employee.getName());
+    }
+  }
+
+  public void testParamsRoundTripWithVersion() throws Exception {
+    List<Employee> results = queryClient.query(new QueryEmployeeByName("foo"), new WebContext());
+    assertEquals(2, results.size());
+    for (Employee employee : results) {
+      assertEquals("foo", employee.getName());
+    }
+  }
+
+  public void testQueryWithAServerError() {
+    try {
+      queryClient.query(new QueryEmployeeByName(BAD_EMPLOYEE), new WebContext());
+      fail();
+    } catch (WebServiceSystemException expected) {
+      assertEquals(ErrorReason.BAD_REQUEST, expected.getReason());
+    }
+  }
+
+  private static final class QueryHandlerEmployee extends QueryHandlerEmployeeByName {
+
+    public QueryHandlerEmployee(Repository<Employee> employees) {
+      super(employees);
+    }
+
+    @Override
+    public List<Employee> query(QueryEmployeeByName query, WebContext context) {
+      Preconditions.checkArgument(!query.getName().equals(BAD_EMPLOYEE));
+      return super.query(query, context);
     }
   }
 }

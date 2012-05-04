@@ -55,6 +55,7 @@ public class RestResponseBaseReceiver<I extends ResourceId, R extends RestResour
   @Override
   public RestResponseBase<I, R> receive(HttpURLConnection conn) {
     try {
+      handleResponseCode(conn);
       HeaderMapSpec paramSpec = getSpec().getHeadersSpec();
       Type bodyType = getSpec().getResourceType();
       // read response
