@@ -16,6 +16,7 @@
 package com.google.greaze.definition.internal.utils;
 
 import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -73,6 +74,16 @@ public final class Streams {
       }
     } catch (Exception e) {
     }
+  }
+
+  public static String readAsString(InputStream src) {
+    ByteArrayOutputStream dst = new ByteArrayOutputStream();
+    try {
+      Streams.copy(src, dst, true, true);
+    } catch (IOException e) {
+      // ignore
+    }
+    return new String(dst.toByteArray());
   }
 
   private Streams() {

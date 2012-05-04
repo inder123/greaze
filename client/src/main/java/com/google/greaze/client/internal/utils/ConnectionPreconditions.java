@@ -15,15 +15,13 @@
  */
 package com.google.greaze.client.internal.utils;
 
-import com.google.greaze.definition.internal.utils.Streams;
-
-import java.io.ByteArrayOutputStream;
 import java.io.IOException;
-import java.io.InputStream;
 import java.net.HttpURLConnection;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+
+import com.google.greaze.definition.internal.utils.Streams;
 
 public final class ConnectionPreconditions {
 
@@ -48,23 +46,12 @@ public final class ConnectionPreconditions {
           }
           sb.append("\n");
         }
-        byte[] data = readInByteArray(conn.getInputStream());
-        sb.append(new String(data));
+        sb.append(Streams.readAsString(conn.getInputStream()));
       } catch (IOException e) {
         // ignore
       }
       throw new IllegalArgumentException(sb.toString());
     }
-  }
-
-  private static byte[] readInByteArray(InputStream src) {
-    ByteArrayOutputStream dst = new ByteArrayOutputStream();
-    try {
-      Streams.copy(src, dst, true, true);
-    } catch (IOException e) {
-      // ignore
-    }
-    return dst.toByteArray();
   }
 
   private ConnectionPreconditions() {
