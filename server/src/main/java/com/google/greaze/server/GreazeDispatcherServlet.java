@@ -29,6 +29,7 @@ import com.google.greaze.server.filters.GreazeFilter;
 import com.google.greaze.server.filters.GreazeFilterChain;
 import com.google.inject.Inject;
 import com.google.inject.Injector;
+import com.google.inject.ProvisionException;
 import com.google.inject.Singleton;
 import com.google.inject.name.Named;
 
@@ -57,10 +58,23 @@ public class GreazeDispatcherServlet extends HttpServlet {
   @Override
   public void service(HttpServletRequest req, HttpServletResponse res) throws IOException {
     try {
-      for (GreazeFilter filter : filters.getFilters()) {
-        boolean continueFilterChain = filter.service(req, res);
-        if (!continueFilterChain) {
-          break;
+      try {
+        try {
+          for (GreazeFilter filter : filters.getFilters()) {
+            boolean continueFilterChain = filter.service(req, res);
+            if (!continueFilterChain) {
+              break;
+            }
+          }
+        } catch (ProvisionException e) {
+          Exception cause = (Exception) e.getCause();
+          throw cause;
+        }
+      } catch (Exception e) {
+        if (e instanceof WebServiceSystemException) {
+          throw (WebServiceSystemException) e;
+        } else {
+          throw new WebServiceSystemException(ErrorReason.SERVER_UNAVAILABLE, e);
         }
       }
     } catch (WebServiceSystemException e) {
