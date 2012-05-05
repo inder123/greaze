@@ -62,6 +62,7 @@ public class RequestSender {
       // This is done here instead of in the response receiver because this property must be set
       // before sending any data on the connection.
       conn.setDoInput(true);
+      setHeader(conn, "Accept", request.getContentType(), true);
       if (method != HttpMethod.GET && method != HttpMethod.DELETE) {
         setHeader(conn, "Content-Type", request.getContentType(), true);
         RequestBody requestBody = request.getBody();
