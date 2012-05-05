@@ -137,7 +137,7 @@ public final class UrlParamsExtractor {
   private void extractUrlParam(String name, Type type, NameValueMap requestParams,
       ValueReceiver receiver) throws IOException {
     String urlParamValue = requestParams.getParameterValue(name);
-    if (!GreazeStrings.isEmpty(urlParamValue)) {
+    if (GreazeStrings.isNotEmpty(urlParamValue)) {
       urlParamValue = decodeUrlParam(urlParamValue);
       if (type instanceof TypeVariable || type == Object.class) {
         // We can not use Gson to extract the value, so just use the specified value.

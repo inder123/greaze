@@ -20,6 +20,10 @@ public final class GreazeStrings {
     return str == null || "".equals(str.trim());
   }
 
+  public static boolean isNotEmpty(String str) {
+    return str != null && !"".equals(str.trim());
+  }
+
   private GreazeStrings() {
     // Not instantiable
   }

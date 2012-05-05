@@ -71,7 +71,7 @@ public class ResponseReceiver {
     // First check response code
     int responseCode = conn.getResponseCode();
     String errorReason = conn.getHeaderField(ErrorReason.HTTP_RESPONSE_HEADER_NAME);
-    if (responseCode >= 400 || !GreazeStrings.isEmpty(errorReason)) {
+    if (responseCode >= 400 || GreazeStrings.isNotEmpty(errorReason)) {
       ErrorReason reason = GreazeStrings.isEmpty(errorReason)
           ? ErrorReason.fromHttpResponseCode(responseCode)
               : ErrorReason.valueOf(errorReason);

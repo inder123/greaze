@@ -45,7 +45,7 @@ public final class WebContextExtractor {
       for (Map.Entry<String, Type> entry : spec.getRequestHeaderSpec().entrySet()) {
         String keyName = entry.getKey();
         String header = request.getHeader(keyName);
-        if (!GreazeStrings.isEmpty(header)) {
+        if (GreazeStrings.isNotEmpty(header)) {
           Type type = entry.getValue();
           TypedKey<Object> key = new TypedKey<Object>(keyName, type);
           Object value = gson.fromJson(header, type);
