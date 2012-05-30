@@ -15,15 +15,14 @@
  */
 package com.google.greaze.definition;
 
-
 import java.lang.reflect.Type;
 import java.util.Map;
 import java.util.Set;
 
 /**
- * Specification of a parameter map. Both {@link ContentBody} and {@link HeaderMap} are 
+ * Specification of a parameter map. Both {@link ContentBody} and {@link HeaderMap} are
  * parameter maps.
- * 
+ *
  * @author inder
  */
 public interface ParamMapSpec {
@@ -33,9 +32,8 @@ public interface ParamMapSpec {
   boolean checkIfCompatible(String paramName, Type type);
 
   boolean checkIfCompatible(String paramName, Object object);
-  
+
   public Set<Map.Entry<String, Type>> entrySet();
 
   public int size();
-
 }

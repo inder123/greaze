@@ -50,7 +50,6 @@ public class TypedKey<T> {
     return typeOfT;
   }
 
-  
   @Override
   public int hashCode() {
     return name.hashCode() + typeOfT.hashCode() >> 1;

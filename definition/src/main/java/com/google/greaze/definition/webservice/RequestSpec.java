@@ -21,7 +21,7 @@ import com.google.greaze.definition.internal.utils.GreazePreconditions;
 
 /**
  * Specification for a {@link WebServiceRequest}.
- * 
+ *
  * @author inder
  */
 public class RequestSpec {
@@ -29,30 +29,30 @@ public class RequestSpec {
   private final HeaderMapSpec headersSpec;
   private final UrlParamsSpec urlParamsSpec;
   private final RequestBodySpec bodySpec;
-  
+
   public RequestSpec(HeaderMapSpec headersSpec, UrlParamsSpec urlParamSpec,
       RequestBodySpec bodySpec) {
     GreazePreconditions.checkNotNull(headersSpec);
     GreazePreconditions.checkNotNull(urlParamSpec);
     GreazePreconditions.checkNotNull(bodySpec);
-    
+
     this.headersSpec = headersSpec;
     this.urlParamsSpec = urlParamSpec;
     this.bodySpec = bodySpec;
   }
-  
+
   public HeaderMapSpec getHeadersSpec() {
     return headersSpec;
   }
- 
+
   public UrlParamsSpec getUrlParamsSpec() {
     return urlParamsSpec;
   }
- 
+
   public RequestBodySpec getBodySpec() {
     return bodySpec;
   }
-  
+
   @Override
   public String toString() {
     return String.format("headers:%s, urlParams:%s, body: %s",

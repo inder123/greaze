@@ -18,7 +18,7 @@ package com.google.greaze.definition;
 /**
  * Central configuration to decide which log levels get logged for Greaze.
  *
- * @author inder
+ * @author Inderjeet Singh
  */
 public final class LogConfig {
 

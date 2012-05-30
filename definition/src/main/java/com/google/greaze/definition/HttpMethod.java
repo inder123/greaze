@@ -20,11 +20,11 @@ import java.util.Collections;
 import java.util.List;
 
 /**
- * An enum of Http methods to provide strongly-typed versions instead of strings. 
- * 
+ * An enum of Http methods to provide strongly-typed versions instead of strings.
+ *
  * @author inder
  */
-public enum HttpMethod { 
+public enum HttpMethod {
   GET,
   POST,
   PUT,

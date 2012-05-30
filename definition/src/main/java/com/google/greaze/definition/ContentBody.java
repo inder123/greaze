@@ -22,24 +22,24 @@ import java.util.Map;
 
 /**
  * Body of a request or response. The body contains a map of name-value pairs.
- * There is a {@link ContentBodySpec} associated with the body as well and only the name-value 
+ * There is a {@link ContentBodySpec} associated with the body as well and only the name-value
  * pairs consistent with the specification are permitted.
- * 
- * @author inder
+ *
+ * @author Inderjeet Singh
  */
 public class ContentBody extends ParamMap {
 
   public static class Builder extends ParamMap.Builder<ContentBodySpec> {
     protected Object simpleBody;
     protected List<Object> listBody = new ArrayList<Object>();
-    
+
     public Builder(ContentBodySpec spec) {
       super(spec);
     }
 
     public ContentBodySpec getSpec() {
       return spec;
-    }  
+    }
 
     public Builder setSimpleBody(Object body) {
       this.simpleBody = body;
@@ -85,7 +85,7 @@ public class ContentBody extends ParamMap {
     this.simpleBody = simpleBody;
     this.listBody = listBody;
   }
-  
+
   @Override
   public ContentBodySpec getSpec() {
     return (ContentBodySpec) spec;
@@ -94,7 +94,7 @@ public class ContentBody extends ParamMap {
   public String getContentType() {
     return getSpec().getContentType();
   }
-  
+
   public Object getSimpleBody() {
     return simpleBody;
   }

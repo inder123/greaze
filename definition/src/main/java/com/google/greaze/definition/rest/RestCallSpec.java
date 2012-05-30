@@ -42,12 +42,12 @@ public final class RestCallSpec extends WebServiceCallSpec {
     private WebContextSpec webContextSpec;
     private final Type resourceType;
     private double version;
-    
+
     public Builder(CallPath callPath, Type resourceType) {
       this.callPath = callPath;
       supportedHttpMethods.addAll(HttpMethod.ALL_METHODS);
       this.resourceType = resourceType;
-      this.version = -1D; 
+      this.version = -1D;
     }
 
     public Builder disableHttpMethod(HttpMethod httpMethod) {

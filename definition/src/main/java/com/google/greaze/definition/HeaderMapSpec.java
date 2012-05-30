@@ -25,13 +25,13 @@ import com.google.greaze.definition.internal.utils.$GreazeTypes;
 /**
  * Specification of a header map for {@link HeaderMap}. 
  *
- * @author inder
+ * @author Inderjeet Singh
  */
 public final class HeaderMapSpec implements ParamMapSpec {
   
   public static class Builder {
     private final Map<String, Type> map = new HashMap<String, Type>();
-  
+
     public <T> Builder put(TypedKey<T> header, Type headerType) {
       map.put(header.getName(), headerType);
       return this;
@@ -41,7 +41,7 @@ public final class HeaderMapSpec implements ParamMapSpec {
       map.put(headerName, headerType);
       return this;
     }
-    
+
     public HeaderMapSpec build() {
       return new HeaderMapSpec(map);
     }
@@ -50,18 +50,18 @@ public final class HeaderMapSpec implements ParamMapSpec {
   
   private HeaderMapSpec(Map<String, Type> map) {
     this.map = map;
-  }  
-  
+  }
+
   @Override
   public Type getTypeFor(String headerName) {
     return map.get(headerName);
   }
-  
+
   @Override
   public Set<Map.Entry<String, Type>> entrySet() {
     return map.entrySet();
   }
-  
+
   @Override
   public boolean checkIfCompatible(String headerName, Type targetType) {
     Type typeOfHeader = getTypeFor(headerName);
@@ -77,7 +77,7 @@ public final class HeaderMapSpec implements ParamMapSpec {
   public boolean checkIfCompatible(String headerName, Object headerValue) {
     return checkIfCompatible(headerName, headerValue.getClass());
   }
-  
+
   @Override
   public String toString() {
     return Util.toStringMapKeys(map);

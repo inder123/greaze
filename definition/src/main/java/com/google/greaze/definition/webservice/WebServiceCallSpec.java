@@ -31,25 +31,25 @@ import com.google.greaze.definition.internal.utils.GreazePreconditions;
 import com.google.gson.GsonBuilder;
 
 /**
- * Specification for a Json web service call. The call includes the relative path where the call 
- * is available, the specification of requests, and responses. 
- * 
+ * Specification for a Json web service call. The call includes the relative path where the call
+ * is available, the specification of requests, and responses.
+ *
  * @author Inderjeet Singh
  */
 public class WebServiceCallSpec {
-  
+
   public static final WebServiceCallSpec NULL_SPEC = new Builder(CallPath.NULL_PATH).build();
-  
+
   public static class Builder {
-	private final CallPath callPath;
-	private final Set<HttpMethod> supportedHttpMethods;
+    private final CallPath callPath;
+    private final Set<HttpMethod> supportedHttpMethods;
     private final UrlParamsSpec.Builder urlParamsSpecBuilder;
     private final HeaderMapSpec.Builder reqParamsSpecBuilder;
     private final RequestBodySpec.Builder reqBodySpecBuilder;
     private final HeaderMapSpec.Builder resParamsSpecBuilder;
     private final ResponseBodySpec.Builder resBodySpecBuilder;
     private double version;
-    
+
     public Builder(CallPath callPath) {
       this.callPath = callPath;
       supportedHttpMethods = new LinkedHashSet<HttpMethod>();
@@ -60,25 +60,25 @@ public class WebServiceCallSpec {
       resBodySpecBuilder = new ResponseBodySpec.Builder();
       this.version = -1D; 
     }
-    
+
     public Builder setSimpleBody(Type simpleBodyType) {
       reqBodySpecBuilder.setSimpleBody(simpleBodyType);
       resBodySpecBuilder.setSimpleBody(simpleBodyType);
       return this;
     }
-    
+
     public Builder setListBody(Type listElementType) {
       reqBodySpecBuilder.setListBody(listElementType);
       resBodySpecBuilder.setListBody(listElementType);
       return this;
     }
-    
+
     public Builder setMapBody() {
       reqBodySpecBuilder.setMapBody();
       resBodySpecBuilder.setMapBody();
       return this;
     }
-    
+
     public Builder setVersion(double version) {
       this.version = version;
       return this;
@@ -95,7 +95,7 @@ public class WebServiceCallSpec {
       supportedHttpMethods.addAll(Arrays.asList(httpMethods));
       return this;
     }
-    
+
     public <T> Builder addRequestParam(TypedKey<T> param) {
       reqParamsSpecBuilder.put(param.getName(), param.getTypeOfT());
       return this;
@@ -146,7 +146,7 @@ public class WebServiceCallSpec {
       return this;
     }
 
-    public WebServiceCallSpec build() {      
+    public WebServiceCallSpec build() {
       if (supportedHttpMethods.isEmpty()) {
         supportedHttpMethods.addAll(Arrays.asList(HttpMethod.values()));
       }
@@ -154,23 +154,23 @@ public class WebServiceCallSpec {
           reqParamsSpecBuilder.build(), urlParamsSpecBuilder.build(), reqBodySpecBuilder.build());
       ResponseSpec responseSpec = 
         new ResponseSpec(resParamsSpecBuilder.build(), resBodySpecBuilder.build());
-      WebServiceCallSpec callSpec = new WebServiceCallSpec(supportedHttpMethods, callPath, 
+      WebServiceCallSpec callSpec = new WebServiceCallSpec(supportedHttpMethods, callPath,
           requestSpec, responseSpec, version);
       return callSpec;
     }
   }
-  
+
   protected final Set<HttpMethod> supportedHttpMethods;
   protected final CallPath path;
   protected final ResponseSpec responseSpec;
   protected final RequestSpec requestSpec;
   protected final double version;
-  
-  protected WebServiceCallSpec(Set<HttpMethod> supportedHttpMethods, CallPath path, 
+
+  protected WebServiceCallSpec(Set<HttpMethod> supportedHttpMethods, CallPath path,
       RequestSpec requestSpec, ResponseSpec responseSpec, double version) {
     GreazePreconditions.checkArgument(!supportedHttpMethods.isEmpty());
     GreazePreconditions.checkNotNull(path);
-    
+
     this.supportedHttpMethods = supportedHttpMethods;
     this.path = path;
     this.requestSpec = requestSpec;

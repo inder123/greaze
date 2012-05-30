@@ -24,7 +24,7 @@ final class Util {
   public static boolean isAssignableFrom(Type typeOfValue, Type expectedType) {
     return typeOfValue.equals(expectedType);
   }
-  
+
   public static String toStringMapKeys(Map<String, ?> map) {
     StringBuilder sb = new StringBuilder("[");
     boolean first = true;
@@ -37,9 +37,9 @@ final class Util {
       sb.append(entry.getKey());
     }
     sb.append("]");
-    return sb.toString();    
+    return sb.toString();
   }
-  
+
   public static String toStringMapOfTypes(Map<String, Type> map) {
     StringBuilder sb = new StringBuilder("[");
     boolean first = true;
@@ -54,9 +54,9 @@ final class Util {
       sb.append(clazz.getSimpleName());
     }
     sb.append("]");
-    return sb.toString();    
+    return sb.toString();
   }
-  
+
   public static String toStringMap(Map<String, Object> map) {
     StringBuilder sb = new StringBuilder("[");
     boolean first = true;
@@ -69,7 +69,6 @@ final class Util {
       sb.append(entry.getKey()).append(":").append(entry.getValue());
     }
     sb.append("]");
-    return sb.toString();    
+    return sb.toString();
   }
-
 }

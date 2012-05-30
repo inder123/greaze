@@ -24,7 +24,7 @@ import java.lang.reflect.Type;
 
 /**
  * Specification for a {@link RestRequestBase}.
- * 
+ *
  * @author Inderjeet Singh
  */
 public final class RestRequestSpec extends RequestSpec {
@@ -36,7 +36,7 @@ public final class RestRequestSpec extends RequestSpec {
   }
 
   public RestRequestSpec(HeaderMapSpec headersSpec, RequestBodySpec bodySpec,
-                         Type resourceType) {
+      Type resourceType) {
     super(headersSpec, buildUrlParamSpec(), bodySpec);
     this.resourceType = resourceType;
   }
@@ -52,7 +52,7 @@ public final class RestRequestSpec extends RequestSpec {
   public Type getResourceType() {
     return resourceType;
   }
-  
+
   @Override
   public String toString() {
     return String.format("resourceType:%s", resourceType);

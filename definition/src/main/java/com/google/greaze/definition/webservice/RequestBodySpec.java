@@ -25,15 +25,15 @@ import com.google.greaze.definition.TypedKey;
 
 /**
  * Specification of a {@link RequestBody}.
- * 
+ *
  * @author Inderjeet Singh
  */
 public final class RequestBodySpec extends ContentBodySpec {
-  
+
   public static class Builder {
     private final Map<String, Type> paramsSpec = new LinkedHashMap<String, Type>();
     private ContentBodyType contentBodyType;
-    private Type simpleBodyType; 
+    private Type simpleBodyType;
 
     public Builder setSimpleBody(Type simpleBodyType) {
       this.contentBodyType = ContentBodyType.SIMPLE;
@@ -56,10 +56,10 @@ public final class RequestBodySpec extends ContentBodySpec {
       paramsSpec.put(param.getName(), param.getTypeOfT());
       return this;
     }
-    
+
     public RequestBodySpec build() {
       return new RequestBodySpec(contentBodyType, paramsSpec, simpleBodyType);
-    }    
+    }
   }
 
   /**

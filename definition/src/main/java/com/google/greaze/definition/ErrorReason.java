@@ -41,7 +41,7 @@ public enum ErrorReason {
    * not working correctly. For example, a mobile phone client has lost all data connections.
    */
   LOCAL_NETWORK_FAILURE(HttpURLConnection.HTTP_BAD_GATEWAY);
-  
+
   private final int responseCode;
   /**
    * The name of the HTTP response header that carries the error reason enum value
