@@ -22,8 +22,8 @@ import java.util.Map;
 /**
  * Map of request or response header objects. There is a {@link HeaderMapSpec} associated with the
  * map as well and only those headers are allowed that are consistent with the specification.
- * 
- * @author inder
+ *
+ * @author Inderjeet Singh
  */
 public final class HeaderMap extends ParamMap {
 
@@ -36,7 +36,7 @@ public final class HeaderMap extends ParamMap {
     public <T> Builder put(TypedKey<T> paramKey, T content) {
       return put(paramKey.getName(), content);
     }
-    
+
     @Override
     public Builder put(String paramName, Object content) {
       return (Builder) super.put(paramName, content);
@@ -46,15 +46,15 @@ public final class HeaderMap extends ParamMap {
     public Builder put(String paramName, Object content, Type typeOfContent) {
       return (Builder) super.put(paramName, content, typeOfContent);
     }
-    
+
     public HeaderMap build() {
       return new HeaderMap(spec, contents);
     }
   }
-  
+
   private HeaderMap(HeaderMapSpec spec, Map<String, Object> contents) {
     super(spec, contents);
-  }  
+  }
 
   @Override
   public HeaderMapSpec getSpec() {

@@ -19,7 +19,7 @@ import com.google.greaze.definition.internal.utils.GreazeStrings;
 
 /**
  * Encapsulation of a Web service path that is sent by the client.
- * 
+ *
  * @author inder
  */
 public final class CallPath {
@@ -106,7 +106,7 @@ public final class CallPath {
   @Override
   public int hashCode() {
     int hash = basePath == null ? 0 : basePath.hashCode();
-    hash += servicePath == null ? 0 : 3*basePath.hashCode(); 
+    hash += servicePath == null ? 0 : 3*basePath.hashCode();
     return hash;
   }
 

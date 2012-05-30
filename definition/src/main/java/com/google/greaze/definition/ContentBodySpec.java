@@ -27,8 +27,8 @@ import com.google.greaze.definition.internal.utils.$GreazeTypes;
 
 /**
  * Base class for the specification of a {@link ContentBody}.
- * 
- * @author inder
+ *
+ * @author Inderjeet Singh
  */
 public class ContentBodySpec implements ParamMapSpec {
 
@@ -41,7 +41,7 @@ public class ContentBodySpec implements ParamMapSpec {
   private final Type bodyJavaType;
 
   protected ContentBodySpec(ContentBodyType contentBodyType, Map<String, Type> paramsSpec,
-                            Type simpleBodyType) {
+      Type simpleBodyType) {
     if (paramsSpec == null) {
       paramsSpec = new LinkedHashMap<String, Type>();
     }
@@ -68,22 +68,22 @@ public class ContentBodySpec implements ParamMapSpec {
       }
     }
   }
-  
+
   @Override
   public Type getTypeFor(String paramName) {
     return paramsSpec.get(paramName);
   }
-  
+
   @Override
   public boolean checkIfCompatible(String paramName, Type type) {
     return type.equals(getTypeFor(paramName));
   }
-  
+
   @Override
   public boolean checkIfCompatible(String paramName, Object object) {
     return checkIfCompatible(paramName, object.getClass());
   }
-  
+
   @Override
   public Set<Map.Entry<String, Type>> entrySet() {
     return paramsSpec.entrySet();
@@ -97,7 +97,7 @@ public class ContentBodySpec implements ParamMapSpec {
   public int size() {
     return paramsSpec.size();
   }
-  
+
   public String getContentType() {
     return JSON_CONTENT_TYPE;
   }
@@ -116,11 +116,11 @@ public class ContentBodySpec implements ParamMapSpec {
   public Type getSimpleBodyType() {
     return simpleBodyType;
   }
-  
+
   public String getCharacterEncoding() {
     return JSON_CHARACTER_ENCODING;
   }
-  
+
   @Override
   public String toString() {
     return Util.toStringMapKeys(paramsSpec);

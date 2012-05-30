@@ -44,7 +44,6 @@ public final class UntypedKey {
     return typeOfT;
   }
 
-  
   @Override
   public int hashCode() {
     return name.hashCode();

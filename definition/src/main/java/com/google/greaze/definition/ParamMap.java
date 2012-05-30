@@ -24,7 +24,7 @@ import com.google.greaze.definition.internal.utils.GreazePreconditions;
 
 public class ParamMap {
 
-  public static class Builder<T extends ParamMapSpec> {    
+  public static class Builder<T extends ParamMapSpec> {
     protected final Map<String, Object> contents = new HashMap<String, Object>();
     protected final T spec;
 
@@ -56,7 +56,7 @@ public class ParamMap {
       return this;
     }
   }
-  
+
   protected final Map<String, Object> contents;
   protected final ParamMapSpec spec;
 

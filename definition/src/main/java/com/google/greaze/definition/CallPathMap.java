@@ -19,18 +19,18 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
- * A generic Map of calls with relative path where the call is available as the key. 
- * 
+ * A generic Map of calls with relative path where the call is available as the key.
+ *
  * @author inder
  *
  * @param <T> The target of the call path.
  */
 public final class CallPathMap<T> {
-  
+
   public static class Builder<T> {
     private final Map<CallPath, T> contents = new HashMap<CallPath, T>();
     private final T nullValue;
-    
+
     public Builder(T nullValue) {
       this.nullValue = nullValue;
     }
@@ -38,25 +38,25 @@ public final class CallPathMap<T> {
       contents.put(path, content);
       return this;
     }
-    
+
     public CallPathMap<T> build() {
       return new CallPathMap<T>(contents, nullValue);
     }
   }
-  
+
   private final Map<CallPath, T> contents;
   private final T nullValue;
-  
+
   private CallPathMap(Map<CallPath, T> contents, T nullValue) {
     this.contents = contents;
     this.nullValue = nullValue;
   }
-  
+
   public T get(CallPath path) {
     T content = contents.get(path);
     return content == null ? nullValue : content;
   }
-  
+
   @Override
   public String toString() {
     StringBuilder sb = new StringBuilder("{");

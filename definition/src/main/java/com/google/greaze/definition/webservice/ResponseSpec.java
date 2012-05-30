@@ -20,7 +20,7 @@ import com.google.greaze.definition.internal.utils.GreazePreconditions;
 
 /**
  * Specification for a {@link WebServiceResponse}.
- * 
+ *
  * @author inder
  */
 public class ResponseSpec {
@@ -30,7 +30,7 @@ public class ResponseSpec {
   public ResponseSpec(HeaderMapSpec headersSpec, ResponseBodySpec bodySpec) {
     GreazePreconditions.checkNotNull(headersSpec);
     GreazePreconditions.checkNotNull(bodySpec);
-    
+
     this.headersSpec = headersSpec;
     this.bodySpec = bodySpec;
   }
@@ -42,7 +42,7 @@ public class ResponseSpec {
   public HeaderMapSpec getHeadersSpec() {
     return headersSpec;
   }
-  
+
   @Override
   public String toString() {
     StringBuilder sb = new StringBuilder("{headersSpec:");

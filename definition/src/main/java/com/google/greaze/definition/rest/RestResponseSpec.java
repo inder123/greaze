@@ -23,7 +23,7 @@ import com.google.greaze.definition.webservice.ResponseSpec;
 
 /**
  * Specification for a {@link RestResponseBase}.
- * 
+ *
  * @author Inderjeet Singh
  */
 public final class RestResponseSpec extends ResponseSpec {
@@ -43,7 +43,7 @@ public final class RestResponseSpec extends ResponseSpec {
   public Type getResourceType() {
     return resourceType;
   }
-  
+
   @Override
   public String toString() {
     return String.format("{resourceType:%s}", resourceType);
