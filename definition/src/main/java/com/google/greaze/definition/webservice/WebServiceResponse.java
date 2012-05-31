@@ -21,38 +21,38 @@ import com.google.greaze.definition.TypedKey;
 import java.lang.reflect.Type;
 
 /**
- * The data associated with a Web service response. This includes http response header parameters, 
- * and {@link ResponseBody}. 
- * 
- * @author inder
+ * The data associated with a Web service response. This includes http response header parameters,
+ * and {@link ResponseBody}.
+ *
+ * @author Inderjeet Singh
  */
 public class WebServiceResponse {
-  
+
   protected final HeaderMap headers;
   protected final ResponseBody body;
   protected final ResponseSpec spec;
-  
+
   public static class Builder {
     private final HeaderMap.Builder headers;
     private final ResponseBody.Builder body;
     private final ResponseSpec spec;
-    
+
     public Builder(ResponseSpec spec) {
       this.spec = spec;
       headers = new HeaderMap.Builder(spec.getHeadersSpec());
-      body = new ResponseBody.Builder(spec.getBodySpec());      
+      body = new ResponseBody.Builder(spec.getBodySpec());
     }
-    
+
     public Builder putHeader(String paramName, Object content) {
       headers.put(paramName, content);
       return this;
     }
-    
+
     public Builder putHeader(String paramName, Object content, Type typeOfContent) {
       headers.put(paramName, content, typeOfContent);
       return this;
     }
-    
+
     public <T> Builder putBody(TypedKey<T> paramName, T content) {
       return putBody(paramName.getName(), content);
     }
@@ -66,18 +66,18 @@ public class WebServiceResponse {
       body.put(paramName, content, typeOfContent);
       return this;
     }
-    
+
     public WebServiceResponse build() {
       return new WebServiceResponse(spec, headers.build(), body.build());
     }
   }
-  
+
   protected WebServiceResponse(ResponseSpec spec, HeaderMap headers, ResponseBody body) {
     this.spec = spec;
     this.headers = headers;
     this.body = body;
   }
-  
+
   public WebServiceResponse(HeaderMap responseHeaders, ResponseBody responseBody) {
     this.spec = new ResponseSpec(responseHeaders.getSpec(), responseBody.getSpec());
     this.headers = responseHeaders;
@@ -100,7 +100,7 @@ public class WebServiceResponse {
   public <T> T getHeader(String headerName) {
     return (T) headers.get(headerName);
   }
-  
+
   @Override
   public String toString() {
     StringBuilder sb = new StringBuilder("{headers:");

@@ -35,15 +35,14 @@ public class WebServiceRequest {
   protected final RequestSpec spec;
   
   public WebServiceRequest(HttpMethod method, HeaderMap requestHeaders,
-                           UrlParams urlParams, RequestBody requestBody) {
+      UrlParams urlParams, RequestBody requestBody) {
     this(method, requestHeaders, urlParams, requestBody,
       new RequestSpec(requestHeaders.getSpec(), urlParams.getSpec(),
         requestBody.getSpec()));
     
   }
   public WebServiceRequest(HttpMethod method, HeaderMap requestHeaders,
-                           UrlParams urlParams, RequestBody requestBody,
-                           RequestSpec requestSpec) {
+      UrlParams urlParams, RequestBody requestBody, RequestSpec requestSpec) {
     this.method = method;
     this.body = requestBody;
     this.headers = requestHeaders;

@@ -29,9 +29,10 @@ import com.google.greaze.definition.rest.WebContextSpec;
 import com.google.greaze.definition.rest.query.ResourceQueryBase;
 import com.google.greaze.definition.rest.query.ResourceQueryParams;
 import com.google.greaze.definition.rest.query.ResourceQueryUtils;
-import com.google.greaze.definition.webservice.RequestBody;
+import com.google.greaze.definition.webservice.RequestBodyGsonTypeAdapterFactory;
 import com.google.greaze.definition.webservice.RequestSpec;
 import com.google.greaze.definition.webservice.ResponseBody;
+import com.google.greaze.definition.webservice.ResponseBodyGsonTypeAdapterFactory;
 import com.google.greaze.definition.webservice.ResponseBodySpec;
 import com.google.greaze.definition.webservice.WebServiceCallSpec;
 import com.google.greaze.definition.webservice.WebServiceRequest;
@@ -65,7 +66,7 @@ public class ResourceQueryDispatcher {
         webContextSpec);
     RequestSpec requestSpec = spec.getRequestSpec();
     Gson gson = gsonBuilder.get()
-        .registerTypeAdapterFactory(new RequestBody.GsonTypeAdapterFactory(requestSpec.getBodySpec()))
+        .registerTypeAdapterFactory(new RequestBodyGsonTypeAdapterFactory(requestSpec.getBodySpec()))
         .create();
     RequestReceiver requestReceiver = new RequestReceiver(gson, requestSpec);
     WebServiceRequest webServiceRequest = requestReceiver.receive(req);
@@ -84,7 +85,7 @@ public class ResourceQueryDispatcher {
       .build();
     WebServiceResponse response = new WebServiceResponse(responseHeaders, responseBody);
     gson = gsonBuilder.get()
-        .registerTypeAdapterFactory(new ResponseBody.GsonTypeAdapterFactory(bodySpec))
+        .registerTypeAdapterFactory(new ResponseBodyGsonTypeAdapterFactory(bodySpec))
         .create();
     ResponseSender responseSender = new ResponseSender(gson);
     responseSender.send(res, response);
