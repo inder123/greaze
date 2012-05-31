@@ -22,22 +22,21 @@ import java.util.Map;
 import com.google.greaze.definition.ContentBody;
 import com.google.greaze.definition.TypedKey;
 import com.google.greaze.definition.UntypedKey;
-import com.google.gson.reflect.TypeToken;
 
 /**
  * Definition of the request body of a {@link WebServiceCall}. The request body is what is sent out
- * in the output stream of the request (for example, with 
- * {@link java.net.HttpURLConnection#getOutputStream()}) , and is read by the 
+ * in the output stream of the request (for example, with
+ * {@link java.net.HttpURLConnection#getOutputStream()}) , and is read by the
  * javax.servlet.http.HttpServletRequest#getInputStream().
  * This class omits the default constructor for use by Gson. Instead the user must use
- * {@link RequestBody.GsonTypeAdapterFactory}
- * 
+ * {@link RequestBodyGsonTypeAdapterFactory}
+ *
  * @author Inderjeet Singh
  */
 public final class RequestBody extends ContentBody {
 
-  public static class Builder extends ContentBody.Builder {    
-    
+  public static class Builder extends ContentBody.Builder {
+
     public Builder(RequestBodySpec spec) {
       super(spec);
     }
@@ -80,28 +79,16 @@ public final class RequestBody extends ContentBody {
     @Override
     public RequestBody build() {
       return new RequestBody(getSpec(), simpleBody, listBody, contents);
-    }    
+    }
   }
 
   private RequestBody(RequestBodySpec spec, Object simpleBody,
       List<Object> listBody, Map<String, Object> mapBody) {
     super(spec, simpleBody, listBody, mapBody);
   }
-  
+
   @Override
   public RequestBodySpec getSpec() {
     return (RequestBodySpec) spec;
-  }
-
-  public static final class GsonTypeAdapterFactory extends GsonAdapterFactoryBase<RequestBody, RequestBodySpec> {
-
-    public GsonTypeAdapterFactory(RequestBodySpec spec) {
-      super(spec, TypeToken.get(RequestBody.class));
-    }
-
-    @Override
-    public ContentBody.Builder createBuilder() {
-      return new RequestBody.Builder(spec);
-    }
   }
 }

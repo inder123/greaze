@@ -20,7 +20,7 @@ import java.util.Map;
 
 final class Util {
   private Util() { }
-  
+
   public static boolean isAssignableFrom(Type typeOfValue, Type expectedType) {
     return typeOfValue.equals(expectedType);
   }

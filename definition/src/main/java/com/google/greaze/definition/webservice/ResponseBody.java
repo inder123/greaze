@@ -22,18 +22,17 @@ import java.util.Map;
 import com.google.greaze.definition.ContentBody;
 import com.google.greaze.definition.TypedKey;
 import com.google.greaze.definition.UntypedKey;
-import com.google.gson.reflect.TypeToken;
 
 /**
- * body of the response. This is written out as JSON to be sent out to the client. 
+ * body of the response. This is written out as JSON to be sent out to the client.
  * This class omits the default constructor for use by Gson. Instead the user must use
- * {@link ResponseBody.GsonTypeAdapterFactory}
+ * {@link ResponseBodyGsonTypeAdapterFactory}
  *
  * @author Inderjeet Singh
  */
 public final class ResponseBody extends ContentBody {
 
-  public static class Builder extends ContentBody.Builder {    
+  public static class Builder extends ContentBody.Builder {
 
     public Builder(ResponseBodySpec spec) {
       super(spec);
@@ -88,14 +87,5 @@ public final class ResponseBody extends ContentBody {
   @Override
   public ResponseBodySpec getSpec() {
     return (ResponseBodySpec) spec;
-  }
-
-  public static final class GsonTypeAdapterFactory extends GsonAdapterFactoryBase<ResponseBody, ResponseBodySpec> {
-    public GsonTypeAdapterFactory(ResponseBodySpec spec) {
-      super(spec, TypeToken.get(ResponseBody.class));
-    }
-    public ContentBody.Builder createBuilder() {
-      return new ResponseBody.Builder(spec);
-    }
   }
 }
