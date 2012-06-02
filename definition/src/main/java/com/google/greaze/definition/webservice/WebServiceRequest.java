@@ -22,32 +22,51 @@ import com.google.greaze.definition.TypedKey;
 import com.google.greaze.definition.UrlParams;
 
 /**
- * The data associated with a Web service request. This includes HTTP request header parameters 
- * (form and URL parameters), and {@link RequestBody}. 
- * 
- * @author inder
+ * The data associated with a Web service request. This includes HTTP request header parameters
+ * (form and URL parameters), and {@link RequestBody}.
+ *
+ * @author Inderjeet Singh
  */
 public class WebServiceRequest {
+  /**
+   * This URL parameter if present and set to true will force all the headers to be sent
+   * in the headers section of the body.
+   */
+  public static final String INLINE_URL_PARAM = "X-Greaze-Inline";
+
   protected final HttpMethod method;
   protected final HeaderMap headers;
   protected final UrlParams urlParams;
   protected final RequestBody body;
   protected final RequestSpec spec;
-  
+  protected final boolean inlined;
+
   public WebServiceRequest(HttpMethod method, HeaderMap requestHeaders,
-      UrlParams urlParams, RequestBody requestBody) {
+      UrlParams urlParams, RequestBody requestBody, boolean inlined) {
     this(method, requestHeaders, urlParams, requestBody,
       new RequestSpec(requestHeaders.getSpec(), urlParams.getSpec(),
-        requestBody.getSpec()));
-    
+        requestBody.getSpec()), inlined);
   }
+
   public WebServiceRequest(HttpMethod method, HeaderMap requestHeaders,
-      UrlParams urlParams, RequestBody requestBody, RequestSpec requestSpec) {
+      UrlParams urlParams, RequestBody requestBody, RequestSpec requestSpec, boolean inlined) {
     this.method = method;
     this.body = requestBody;
     this.headers = requestHeaders;
-    this.urlParams = urlParams;
+    this.urlParams = inlined ? buildInlinedUrlParams(urlParams) : urlParams;
     this.spec = requestSpec;
+    this.inlined = inlined;
+  }
+
+  private UrlParams buildInlinedUrlParams(UrlParams urlParams) {
+    return new UrlParams.Builder(urlParams.getSpec())
+      .put(INLINE_URL_PARAM, true)
+      .putAll(urlParams)
+      .build();
+  }
+
+  public boolean isInlined() {
+    return inlined;
   }
 
   public HttpMethod getMethod() {
@@ -77,11 +96,11 @@ public class WebServiceRequest {
   public String getContentType() {
     return ContentBodySpec.JSON_CONTENT_TYPE;
   }
-  
+
   public <T> T getHeader(TypedKey<T> headerKey) {
     return headers.get(headerKey);
   }
-  
+
   @Override
   public String toString() {
     StringBuilder sb = new StringBuilder("{");
@@ -89,6 +108,7 @@ public class WebServiceRequest {
     sb.append(",headers:").append(headers);
     sb.append(",urlParams:").append(urlParams);
     sb.append(",body:").append(body);
+    sb.append(",inlined:").append(inlined);
     sb.append("}");
     return sb.toString();
   }

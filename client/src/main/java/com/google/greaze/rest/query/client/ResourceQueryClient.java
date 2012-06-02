@@ -43,8 +43,8 @@ public class ResourceQueryClient<R extends RestResource<R>, Q extends ResourceQu
    * @param callPath relative path to the resource
    */
   public ResourceQueryClient(WebServiceClient stub, CallPath callPath,
-      Type queryType, GsonBuilder gsonBuilder, Type resourceType) {
-    super(stub, callPath, queryType, gsonBuilder, resourceType, new WebContextSpec());
+      Type queryType, GsonBuilder gsonBuilder, Type resourceType, boolean inlined) {
+    super(stub, callPath, queryType, gsonBuilder, resourceType, new WebContextSpec(), inlined);
   }
 
   /**
@@ -53,12 +53,14 @@ public class ResourceQueryClient<R extends RestResource<R>, Q extends ResourceQu
    * @param webContextSpec specification for the WebContext for each query call 
    */
   public ResourceQueryClient(WebServiceClient stub, CallPath callPath,
-      Type queryType, GsonBuilder gsonBuilder, Type resourceType, WebContextSpec webContextSpec) {
-    super(stub, callPath, queryType, gsonBuilder, resourceType, webContextSpec);
+      Type queryType, GsonBuilder gsonBuilder, Type resourceType, WebContextSpec webContextSpec,
+      boolean inlined) {
+    super(stub, callPath, queryType, gsonBuilder, resourceType, webContextSpec, inlined);
   }
 
   protected ResourceQueryClient(WebServiceClient stub, WebServiceCallSpec callSpec,
-      Type queryType, GsonBuilder gsonBuilder, Type resourceType, WebContextSpec webContextSpec) {
-    super(stub, callSpec, queryType, gsonBuilder, resourceType, webContextSpec);
+      Type queryType, GsonBuilder gsonBuilder, Type resourceType, WebContextSpec webContextSpec,
+      boolean inlined) {
+    super(stub, callSpec, queryType, gsonBuilder, resourceType, webContextSpec, inlined);
   }
 }

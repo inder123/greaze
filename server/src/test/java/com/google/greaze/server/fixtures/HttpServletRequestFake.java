@@ -9,6 +9,8 @@
 package com.google.greaze.server.fixtures;
 
 import java.io.BufferedReader;
+import java.io.EOFException;
+import java.io.IOException;
 import java.io.InputStream;
 import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
@@ -16,10 +18,8 @@ import java.security.Principal;
 import java.util.Date;
 import java.util.Enumeration;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.Locale;
 import java.util.Map;
-import java.util.Map.Entry;
 import java.util.Vector;
 
 import javax.servlet.RequestDispatcher;
@@ -36,16 +36,12 @@ import com.google.greaze.definition.internal.utils.GreazeStrings;
  * @author Inderjeet Singh
  */
 @SuppressWarnings("rawtypes")
-public final class HttpServletRequestFake
-    implements HttpServletRequest {
+public final class HttpServletRequestFake implements HttpServletRequest {
   private String method;
-
+  private final Map<String, Object> attributes = new HashMap<String, Object>();
   private Map<String, String[]> urlParams = new HashMap<String, String[]>();
-
   private String servletPath;
-
   private ServletInputStream inputStream;
-
   private Map<String, String> headers;
 
   public HttpServletRequestFake setRequestMethod(String method) {
@@ -55,9 +51,6 @@ public final class HttpServletRequestFake
 
   public HttpServletRequestFake setServletPath(String path) {
     this.servletPath = path;
-    if (servletPath.contains("?")) {
-      setUrlParams(servletPath.substring(servletPath.indexOf('?')));
-    }
     return this;
   }
 
@@ -105,16 +98,6 @@ public final class HttpServletRequestFake
   }
 
   @Override
-  public Object getAttribute(String name) {
-    return null;
-  }
-
-  @Override
-  public Enumeration getAttributeNames() {
-    return null;
-  }
-
-  @Override
   public String getCharacterEncoding() {
     return null;
   }
@@ -134,18 +117,22 @@ public final class HttpServletRequestFake
   }
 
   @Override
-  public ServletInputStream getInputStream() {
+  public ServletInputStream getInputStream() throws IOException {
+    if (inputStream == null) {
+      throw new EOFException();
+    }
     return inputStream;
   }
 
   @Override
   public String getParameter(String name) {
-    return null;
+    String[] params = urlParams.get(name);
+    return params == null || params.length == 0 ? null : params[0];
   }
 
   @Override
   public Enumeration getParameterNames() {
-    return null;
+    return new Iterator2Enumeration<String>(urlParams.keySet().iterator());
   }
 
   @Override
@@ -195,11 +182,23 @@ public final class HttpServletRequestFake
   }
 
   @Override
-  public void setAttribute(String name, Object o) {
+  public Object getAttribute(String name) {
+    return attributes.get(name);
+  }
+
+  @Override
+  public Enumeration getAttributeNames() {
+    return new Iterator2Enumeration<String>(attributes.keySet().iterator());
+  }
+
+  @Override
+  public void setAttribute(String name, Object attribute) {
+    attributes.put(name, attribute);
   }
 
   @Override
   public void removeAttribute(String name) {
+    attributes.remove(name);
   }
 
   @Override
@@ -285,18 +284,7 @@ public final class HttpServletRequestFake
     if (headers == null) {
       return null;
     }
-    final Iterator<Entry<String, String>> iterator = headers.entrySet().iterator();
-    return new Enumeration() {
-      @Override
-      public boolean hasMoreElements() {
-        return iterator.hasNext();
-      }
-
-      @Override
-      public Object nextElement() {
-        return iterator.next().getKey();
-      }
-    };
+    return new Iterator2Enumeration<String>(headers.keySet().iterator());
   }
 
   @Override

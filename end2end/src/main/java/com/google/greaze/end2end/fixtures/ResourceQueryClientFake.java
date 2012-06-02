@@ -26,6 +26,7 @@ import com.google.greaze.definition.rest.query.ResourceQueryParams;
 import com.google.greaze.webservice.client.ServerConfig;
 import com.google.greaze.webservice.client.WebServiceClient;
 import com.google.gson.GsonBuilder;
+import com.google.inject.Injector;
 import com.google.inject.Provider;
 
 /**
@@ -41,6 +42,11 @@ public class ResourceQueryClientFake<R extends RestResource<R>, Q extends Resour
       Provider<GsonBuilder> serverGsonBuilder, CallPath queryPath) {
     super(new ServerConfig("http://localhost"));
     networkSwitcher = new NetworkSwitcherQuery<R, Q>(responseBuilder, serverGsonBuilder, queryPath);
+  }
+
+  public ResourceQueryClientFake(Injector injector, CallPath queryPath) {
+    super(new ServerConfig("http://localhost"));
+    networkSwitcher = new NetworkSwitcherQuery<R, Q>(injector, queryPath);
   }
 
   @Override

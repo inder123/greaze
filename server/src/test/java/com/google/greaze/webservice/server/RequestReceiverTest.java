@@ -15,17 +15,17 @@
  */
 package com.google.greaze.webservice.server;
 
+import javax.servlet.http.HttpServletRequest;
+
+import junit.framework.TestCase;
+
 import com.google.greaze.definition.HeaderMapSpec;
 import com.google.greaze.definition.UrlParamsSpec;
 import com.google.greaze.definition.webservice.RequestBodySpec;
 import com.google.greaze.definition.webservice.RequestSpec;
 import com.google.greaze.definition.webservice.WebServiceRequest;
 import com.google.greaze.server.fixtures.HttpServletRequestFake;
-import com.google.gson.Gson;
-
-import junit.framework.TestCase;
-
-import javax.servlet.http.HttpServletRequest;
+import com.google.gson.GsonBuilder;
 
 
 /**
@@ -34,21 +34,13 @@ import javax.servlet.http.HttpServletRequest;
  * @author Inderjeet Singh
  */
 public class RequestReceiverTest extends TestCase {
-
-  private Gson gson;
-
-  @Override
-  protected void setUp() throws Exception {
-    super.setUp();
-    this.gson = new Gson();
-  }
   
   public void testUrlParams() {
     HeaderMapSpec headersSpec = new HeaderMapSpec.Builder().build();
     UrlParamsSpec urlParamSpec = new UrlParamsSpec.Builder().put("foo", String.class).build();
     RequestBodySpec bodySpec = new RequestBodySpec.Builder().build();
     RequestSpec spec = new RequestSpec(headersSpec, urlParamSpec, bodySpec);
-    RequestReceiver receiver = new RequestReceiver(gson, spec);
+    RequestReceiver receiver = new RequestReceiver(new GsonBuilder(), spec);
     HttpServletRequest req = new HttpServletRequestFake()
       .setRequestMethod("GET")
       .setUrlParam("foo", "bar");

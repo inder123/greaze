@@ -22,26 +22,22 @@ import com.google.greaze.definition.CallPathParser;
 import com.google.greaze.definition.rest.RestResourceImpl;
 import com.google.greaze.definition.rest.WebContext;
 import com.google.greaze.rest.client.fixtures.RestClientStubClientSideFake;
-import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 
 /**
  * Unit tests for {@link ResourceDepotBaseClient}
- * 
+ *
  * @author Inderjeet Singh
  */
 public class ResourceDepotClientTest extends TestCase {
-  private Gson gson;
   private ResourceDepotClient<MyResource> client;
 
   @Override
   protected void setUp() throws Exception {
     super.setUp();
-    gson = new GsonBuilder()
-        .create();
     RestClientStub stub = new RestClientStubClientSideFake();
     client = new ResourceDepotClient<MyResource>(
-        stub, MyResource.CALL_PATH, MyResource.class, gson);
+        stub, MyResource.CALL_PATH, MyResource.class, new GsonBuilder(), false);
   }
 
   public void testPost() throws Exception {

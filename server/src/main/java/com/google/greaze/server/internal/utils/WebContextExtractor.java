@@ -20,11 +20,9 @@ import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 
-import com.google.greaze.definition.TypedKey;
-import com.google.greaze.definition.internal.utils.GreazeStrings;
+import com.google.greaze.definition.HeaderMap;
 import com.google.greaze.definition.rest.WebContext;
 import com.google.greaze.definition.rest.WebContextSpec;
-import com.google.gson.Gson;
 
 /**
  * A utility class to extract {@link WebContext} from an {@link HttpServletRequest} headers.
@@ -33,23 +31,18 @@ import com.google.gson.Gson;
  */
 public final class WebContextExtractor {
   private final WebContextSpec spec;
-  private final Gson gson;
-  public WebContextExtractor(WebContextSpec spec, Gson gson) {
+  public WebContextExtractor(WebContextSpec spec) {
     this.spec = spec;
-    this.gson = gson;
   }
 
-  public WebContext extract(HttpServletRequest request) {
+  public WebContext extract(HeaderMap requestHeaders) {
     WebContext.Builder builder = new WebContext.Builder();
     if (spec != null) {
       for (Map.Entry<String, Type> entry : spec.getRequestHeaderSpec().entrySet()) {
         String keyName = entry.getKey();
-        String header = request.getHeader(keyName);
-        if (GreazeStrings.isNotEmpty(header)) {
-          Type type = entry.getValue();
-          TypedKey<Object> key = new TypedKey<Object>(keyName, type);
-          Object value = gson.fromJson(header, type);
-          builder.put(key, value);
+        Object header = requestHeaders.get(keyName);
+        if (header != null) {
+          builder.put(keyName, header);
         }
       }
     }

@@ -29,9 +29,9 @@ import java.util.Set;
 import java.util.Map.Entry;
 
 /**
- * Specification for a REST service
+ * Specification of a REST service
  *
- * @author inder
+ * @author Inderjeet Singh
  */
 public final class RestCallSpec extends WebServiceCallSpec {
   public static class Builder {
@@ -85,7 +85,7 @@ public final class RestCallSpec extends WebServiceCallSpec {
       if (supportedHttpMethods.isEmpty()) {
         supportedHttpMethods.addAll(Arrays.asList(HttpMethod.values()));
       }
-      RestRequestSpec requestSpec = 
+      RestRequestSpec requestSpec =
         new RestRequestSpec(reqParamsSpecBuilder.build(), resourceType);
       RestResponseSpec responseSpec =
         new RestResponseSpec(resParamsSpecBuilder.build(), resourceType);
@@ -125,7 +125,7 @@ public final class RestCallSpec extends WebServiceCallSpec {
 
   @Override
   public String toString() {
-    return String.format("resourceType: %s, %s", path, super.toString());
+    return "resourceType: " + path + ", " + super.toString();
   }
 
   public RestCallSpec createCopy(CallPath callPath) {

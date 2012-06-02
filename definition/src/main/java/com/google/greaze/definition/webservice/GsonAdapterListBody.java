@@ -18,22 +18,16 @@ package com.google.greaze.definition.webservice;
 import java.io.IOException;
 
 import com.google.greaze.definition.ContentBody;
-import com.google.greaze.definition.ContentBodySpec;
-import com.google.greaze.definition.internal.utils.GreazePreconditions;
-import com.google.gson.Gson;
 import com.google.gson.TypeAdapter;
-import com.google.gson.reflect.TypeToken;
 import com.google.gson.stream.JsonReader;
 import com.google.gson.stream.JsonWriter;
 
 @SuppressWarnings({"rawtypes", "unchecked"})
 abstract class GsonAdapterListBody<CB extends ContentBody> extends TypeAdapter<CB> {
   private final TypeAdapter simpleBodyAdapter;
-  private final ContentBodySpec spec;
 
-  GsonAdapterListBody(Gson gson, ContentBodySpec spec) {
-    this.simpleBodyAdapter = gson.getAdapter(TypeToken.get(spec.getSimpleBodyType()));
-    this.spec = spec;
+  GsonAdapterListBody(TypeAdapter simpleBodyAdapter) {
+    this.simpleBodyAdapter = simpleBodyAdapter;
   }
 
   public abstract ContentBody.Builder createBuilder();
@@ -41,8 +35,6 @@ abstract class GsonAdapterListBody<CB extends ContentBody> extends TypeAdapter<C
   @Override
   public CB read(JsonReader reader) throws IOException {
     ContentBody.Builder builder = createBuilder();
-    ContentBodySpec spec = builder.getSpec();
-    GreazePreconditions.checkArgument(this.spec.equals(spec));
     reader.beginArray();
     while (reader.hasNext()) {
       builder.addToListBody(simpleBodyAdapter.read(reader));
@@ -54,8 +46,6 @@ abstract class GsonAdapterListBody<CB extends ContentBody> extends TypeAdapter<C
   @Override
   public void write(JsonWriter writer, CB value) throws IOException {
     ContentBody src = (ContentBody) value;
-    ContentBodySpec bodySpec = src.getSpec();
-    GreazePreconditions.checkArgument(this.spec.equals(bodySpec));
     writer.beginArray();
     for(Object entry : src.getListBody()) {
       simpleBodyAdapter.write(writer, entry);

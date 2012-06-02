@@ -102,6 +102,10 @@ public class ParamMap {
     return contents.size();
   }
 
+  public boolean isEmpty() {
+    return contents.isEmpty();
+  }
+
   @Override
   public String toString() {
     return Util.toStringMap(contents);

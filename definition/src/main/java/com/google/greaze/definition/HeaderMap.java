@@ -42,6 +42,11 @@ public final class HeaderMap extends ParamMap {
       return (Builder) super.put(paramName, content);
     }
 
+    public Builder putAll(HeaderMap map) {
+      this.contents.putAll(map.contents);
+      return this;
+    }
+
     @Override
     public Builder put(String paramName, Object content, Type typeOfContent) {
       return (Builder) super.put(paramName, content, typeOfContent);

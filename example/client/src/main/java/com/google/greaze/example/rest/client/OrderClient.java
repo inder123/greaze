@@ -55,12 +55,12 @@ public class OrderClient {
 
     RestClientStub restClientStub = new RestClientStub(serverConfig);
     cartRestClient = new ResourceDepotClient<Cart>(
-        restClientStub, ServicePaths.CART.getCallPath(), Cart.class, gson);
+        restClientStub, ServicePaths.CART.getCallPath(), Cart.class, gsonBuilder, false);
     orderRestClient = new ResourceDepotClient<Order>(
-        restClientStub, ServicePaths.ORDER.getCallPath(), Order.class, gson);
+        restClientStub, ServicePaths.ORDER.getCallPath(), Order.class, gsonBuilder, false);
     queryClient = new ResourceQueryClient<Order, QueryOrdersByItemName>(
         new WebServiceClient(serverConfig), ServicePaths.ORDER.getCallPath(),
-        QueryOrdersByItemName.class, gsonBuilder, Order.class); 
+        QueryOrdersByItemName.class, gsonBuilder, Order.class, false); 
   }
 
   private Cart createCart(Cart cart) {

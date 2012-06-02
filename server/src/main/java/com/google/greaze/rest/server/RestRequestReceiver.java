@@ -15,6 +15,8 @@
  */
 package com.google.greaze.rest.server;
 
+import javax.servlet.http.HttpServletRequest;
+
 import com.google.greaze.definition.HeaderMap;
 import com.google.greaze.definition.HttpMethod;
 import com.google.greaze.definition.UrlParams;
@@ -22,23 +24,21 @@ import com.google.greaze.definition.rest.Id;
 import com.google.greaze.definition.rest.RestRequest;
 import com.google.greaze.definition.rest.RestRequestSpec;
 import com.google.greaze.definition.rest.RestResource;
-import com.google.gson.Gson;
-
-import javax.servlet.http.HttpServletRequest;
+import com.google.gson.GsonBuilder;
 
 /**
  * Receives and parses a request at the server side on a
- * {@link HttpServletRequest}.  
- * 
+ * {@link HttpServletRequest}.
+ *
  * @author Inderjeet Singh
  */
 public final class RestRequestReceiver<R extends RestResource<R>>
     extends RestRequestBaseReceiver<Id<R>, R> {
 
-  public RestRequestReceiver(Gson gson, RestRequestSpec spec) {
-    super(gson, spec);
+  public RestRequestReceiver(GsonBuilder gsonBuilder, RestRequestSpec spec) {
+    super(gsonBuilder, spec);
   }
-  
+
   @Override
   public RestRequest<R> receive(HttpServletRequest request, Id<R> resourceId) {
     return (RestRequest<R>) super.receive(request, resourceId);
@@ -46,8 +46,8 @@ public final class RestRequestReceiver<R extends RestResource<R>>
 
   @Override
   protected RestRequest<R> createRequest(HttpMethod method, HeaderMap requestParams,
-    UrlParams urlParams, Id<R> resourceId, R requestBody) {
-    return new RestRequest<R>(
-        method, requestParams, urlParams, resourceId, requestBody, getSpec().getResourceType());
+    UrlParams urlParams, Id<R> resourceId, R requestBody, boolean inlined) {
+    return new RestRequest<R>(method, requestParams, urlParams, resourceId,
+        requestBody, getSpec().getResourceType(), inlined);
   }
 }

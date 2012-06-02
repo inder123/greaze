@@ -44,6 +44,12 @@ public class UrlParams {
       map.put(name, value);
       return this;
     }
+
+    public Builder putAll(UrlParams urlParams) {
+      if (urlParams != null) this.map.putAll(urlParams.map);
+      return this;
+    }
+
     public UrlParams build() {
       return new UrlParams(spec, params, map.build());
     }

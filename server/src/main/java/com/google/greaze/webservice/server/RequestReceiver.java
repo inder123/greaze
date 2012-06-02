@@ -16,81 +16,46 @@
 package com.google.greaze.webservice.server;
 
 import java.io.IOException;
-import java.io.InputStreamReader;
-import java.lang.reflect.Type;
-import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 
-import com.google.greaze.definition.HeaderMap;
-import com.google.greaze.definition.HeaderMapSpec;
-import com.google.greaze.definition.HttpMethod;
-import com.google.greaze.definition.UrlParams;
 import com.google.greaze.definition.WebServiceSystemException;
-import com.google.greaze.definition.webservice.RequestBody;
-import com.google.greaze.definition.webservice.RequestBodySpec;
+import com.google.greaze.definition.webservice.RequestBodyGsonTypeAdapterFactory;
 import com.google.greaze.definition.webservice.RequestSpec;
 import com.google.greaze.definition.webservice.WebServiceRequest;
 import com.google.greaze.server.internal.utils.UrlParamsExtractor;
 import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import com.google.gson.JsonParseException;
 
 /**
- * Receives and parses a request at the server side on a {@link HttpServletRequest}.  
- * 
+ * Receives and parses a request at the server side on a {@link HttpServletRequest}.
+ *
  * @author Inderjeet Singh
  */
 public class RequestReceiver {
 
   protected final Gson gson;
   protected final RequestSpec spec;
+  protected final UrlParamsExtractor urlParamsExtractor;
 
-  public RequestReceiver(Gson gson, RequestSpec spec) {
-    this.gson = gson;
+  public RequestReceiver(GsonBuilder gsonBuilder, RequestSpec spec) {
+    this.gson = gsonBuilder
+        .registerTypeAdapterFactory(new RequestBodyGsonTypeAdapterFactory(spec.getBodySpec()))
+        .create();
     this.spec = spec;
+    this.urlParamsExtractor = new UrlParamsExtractor(spec.getUrlParamsSpec(), gson);
   }
-  
+
   public WebServiceRequest receive(HttpServletRequest request) {
     try {
-      HeaderMap requestParams = buildRequestParams(request);
-      UrlParamsExtractor urlParamsExtractor = new UrlParamsExtractor(spec.getUrlParamsSpec(), gson);
-      UrlParams urlParams = urlParamsExtractor.extractUrlParams(request);
-      RequestBody requestBody = buildRequestBody(request);
-      
-      HttpMethod method = HttpMethod.getMethod(request.getMethod());
-      return new WebServiceRequest(method, requestParams, urlParams, requestBody);
+      RequestData requestData = RequestData.create(request, spec, gson);
+      return requestData.get();
     } catch (IOException e) {
       throw new WebServiceSystemException(e);
     } catch (JsonParseException e) {
       // Not a Web service request
       throw new WebServiceSystemException(e);
     }
-  }
-  
-  protected HeaderMap buildRequestParams(HttpServletRequest request) {
-    HeaderMapSpec paramsSpec = this.spec.getHeadersSpec();
-    HeaderMap.Builder paramsBuilder = new HeaderMap.Builder(paramsSpec);
-    for (Map.Entry<String, Type> param : paramsSpec.entrySet()) {
-      String name = param.getKey();
-      Type type = param.getValue();
-      String header = request.getHeader(name);
-      if (header != null && !header.equals("")) { 
-        Object value = gson.fromJson(header, type);
-        paramsBuilder.put(name, value);
-      }
-    }
-    return paramsBuilder.build();
-  }
-
-  private RequestBody buildRequestBody(HttpServletRequest request) throws IOException {
-    RequestBodySpec bodySpec = spec.getBodySpec();
-    if (bodySpec.size() == 0) {
-      return createEmptyRequestBody(bodySpec);
-    }
-    return gson.fromJson(new InputStreamReader(request.getInputStream()), RequestBody.class);
-  }
-
-  private RequestBody createEmptyRequestBody(RequestBodySpec bodySpec) {
-    return new RequestBody.Builder(bodySpec).build();
   }
 }

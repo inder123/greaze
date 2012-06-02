@@ -51,6 +51,10 @@ public final class RequestBody extends ContentBody {
       return (Builder) super.setSimpleBody(body);
     }
 
+    public Builder setListBody(List<Object> list) {
+      return (Builder) super.setListBody(list);
+    }
+
     @Override
     public Builder addToListBody(Object element) {
       return (Builder) super.addToListBody(element);
