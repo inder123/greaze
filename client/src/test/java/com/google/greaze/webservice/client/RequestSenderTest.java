@@ -52,7 +52,7 @@ public class RequestSenderTest extends TestCase {
     RequestBody requestBody = new RequestBody.Builder(requestBodySpec).build();
     for (HttpMethod method : new HttpMethod[]{HttpMethod.GET, HttpMethod.DELETE}) {
       HttpUrlConnectionMock conn = new HttpUrlConnectionMock();
-      sender.send(conn, new WebServiceRequest(method, requestHeaders, null, requestBody, null));
+      sender.send(conn, new WebServiceRequest(method, requestHeaders, null, requestBody, null, false));
       assertNull(conn.getHeaders().get("Content-Type"));
     }
   }
@@ -68,7 +68,7 @@ public class RequestSenderTest extends TestCase {
       .build();
     for (HttpMethod method : new HttpMethod[]{HttpMethod.POST, HttpMethod.PUT}) {
       HttpUrlConnectionMock conn = new HttpUrlConnectionMock();
-      sender.send(conn, new WebServiceRequest(method, requestHeaders, null, requestBody, null));
+      sender.send(conn, new WebServiceRequest(method, requestHeaders, null, requestBody, null, false));
       assertEquals(ContentBodySpec.JSON_CONTENT_TYPE, conn.getHeaders().get("Content-Type"));
       assertEquals("hello world", conn.getBodyAsString());
     }
@@ -86,8 +86,8 @@ public class RequestSenderTest extends TestCase {
     UrlParams urlParams = null;
     RequestBody requestBody = null;
     RequestSpec requestSpec = null;
-    WebServiceRequest request =
-        new WebServiceRequest(HttpMethod.GET, requestHeaders, urlParams, requestBody, requestSpec);
+    WebServiceRequest request = new WebServiceRequest(
+        HttpMethod.GET, requestHeaders, urlParams, requestBody, requestSpec, false);
     HttpUrlConnectionMock conn = new HttpUrlConnectionMock();
     sender.send(conn, request);
     assertEquals("bob", conn.getHeaders().get("X-Name"));
@@ -104,8 +104,8 @@ public class RequestSenderTest extends TestCase {
     UrlParams urlParams = null;
     RequestBody requestBody = null;
     RequestSpec requestSpec = null;
-    WebServiceRequest request =
-        new WebServiceRequest(HttpMethod.GET, requestHeaders, urlParams, requestBody, requestSpec);
+    WebServiceRequest request = new WebServiceRequest(
+        HttpMethod.GET, requestHeaders, urlParams, requestBody, requestSpec, false);
     HttpUrlConnectionMock conn = new HttpUrlConnectionMock();
     sender.send(conn, request);
     assertEquals("{\"real\":10,\"imaginary\":3}", conn.getHeaders().get("X-Number"));

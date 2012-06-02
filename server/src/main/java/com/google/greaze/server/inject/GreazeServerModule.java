@@ -36,7 +36,7 @@ import com.google.greaze.rest.server.RestRequestBaseReceiver;
 import com.google.greaze.rest.server.RestResponseBaseBuilder;
 import com.google.greaze.server.GreazeDispatcherServlet;
 import com.google.greaze.server.internal.utils.WebContextExtractor;
-import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import com.google.inject.Provides;
 import com.google.inject.Singleton;
 import com.google.inject.name.Named;
@@ -123,13 +123,6 @@ public class GreazeServerModule extends ServletModule {
     return responseBuilders.get(callSpec.getResourceType());
   }
 
-  @RequestScoped
-  @Provides
-  public WebContext getWebContext(HttpServletRequest request, RestCallSpec spec, Gson gson) {
-    WebContextExtractor extractor = new WebContextExtractor(spec.getWebContextSpec(), gson);
-    return extractor.extract(request);
-  }
-
   @Singleton
   @Provides
   public ResourceIdFactory<Id<?>> getIDFactory() {
@@ -139,10 +132,23 @@ public class GreazeServerModule extends ServletModule {
   @RequestScoped
   @SuppressWarnings({"rawtypes", "unchecked"})
   @Provides
-  public RestRequestBase getRestRequest(Gson gson, RestCallSpec callSpec, CallPath callPath,
-      HttpServletRequest request, ResourceIdFactory<Id<?>> idFactory) {
-    RestRequestBaseReceiver requestReceiver =
-      new RestRequestBaseReceiver(gson, callSpec.getRequestSpec());
-    return requestReceiver.receive(request, idFactory.createId(callPath.getResourceId()));
+  public RestRequestBase getRestRequest(GsonBuilder gsonBuilder, RestCallSpec callSpec,
+      CallPath callPath, HttpServletRequest request, ResourceIdFactory<Id<?>> idFactory) {
+    RestRequestBase restRequest = (RestRequestBase) request.getAttribute("greazeRestRequest");
+    if (restRequest == null) {
+      RestRequestBaseReceiver requestReceiver =
+          new RestRequestBaseReceiver(gsonBuilder, callSpec.getRequestSpec());
+      restRequest = requestReceiver.receive(request, idFactory.createId(callPath.getResourceId()));
+      request.setAttribute("greazeRestRequest", restRequest);
+    }
+    return restRequest;
+  }
+
+  @SuppressWarnings("rawtypes")
+  @RequestScoped
+  @Provides
+  public WebContext getWebContext(RestRequestBase request, RestCallSpec spec) {
+    WebContextExtractor extractor = new WebContextExtractor(spec.getWebContextSpec());
+    return extractor.extract(request.getHeaders());
   }
 }

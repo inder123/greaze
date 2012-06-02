@@ -29,7 +29,6 @@ import com.google.greaze.definition.rest.WebContextSpec;
 import com.google.greaze.definition.rest.query.ResourceQueryBase;
 import com.google.greaze.definition.rest.query.ResourceQueryParams;
 import com.google.greaze.definition.rest.query.ResourceQueryUtils;
-import com.google.greaze.definition.webservice.RequestBodyGsonTypeAdapterFactory;
 import com.google.greaze.definition.webservice.RequestSpec;
 import com.google.greaze.definition.webservice.ResponseBody;
 import com.google.greaze.definition.webservice.ResponseBodyGsonTypeAdapterFactory;
@@ -65,15 +64,12 @@ public class ResourceQueryDispatcher {
         resourceQuery.getResourceType(), resourceQuery.getQueryType(),
         webContextSpec);
     RequestSpec requestSpec = spec.getRequestSpec();
-    Gson gson = gsonBuilder.get()
-        .registerTypeAdapterFactory(new RequestBodyGsonTypeAdapterFactory(requestSpec.getBodySpec()))
-        .create();
-    RequestReceiver requestReceiver = new RequestReceiver(gson, requestSpec);
+    RequestReceiver requestReceiver = new RequestReceiver(gsonBuilder.get(), requestSpec);
     WebServiceRequest webServiceRequest = requestReceiver.receive(req);
 
     ResourceQueryParams queryParams =
       (ResourceQueryParams) webServiceRequest.getUrlParameters().getParamsObject();
-    WebContext context = new WebContextExtractor(webContextSpec, gson).extract(req);
+    WebContext context = new WebContextExtractor(webContextSpec).extract(webServiceRequest.getHeaders());
     List results = resourceQuery.query(queryParams, context);
     HeaderMapSpec headerSpec = new HeaderMapSpec.Builder().build();
     HeaderMap responseHeaders = new HeaderMap.Builder(headerSpec).build();
@@ -84,7 +80,7 @@ public class ResourceQueryDispatcher {
       .setListBody(results)
       .build();
     WebServiceResponse response = new WebServiceResponse(responseHeaders, responseBody);
-    gson = gsonBuilder.get()
+    Gson gson = gsonBuilder.get()
         .registerTypeAdapterFactory(new ResponseBodyGsonTypeAdapterFactory(bodySpec))
         .create();
     ResponseSender responseSender = new ResponseSender(gson);

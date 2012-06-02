@@ -27,7 +27,8 @@ import com.google.greaze.rest.server.ResponseBuilderMap;
 import com.google.greaze.server.filters.GreazeFilterChain;
 import com.google.greaze.server.inject.GreazeServerModule;
 import com.google.greaze.webservice.client.ServerConfig;
-import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+import com.google.inject.Injector;
 
 /**
  * A fake for use in tests for {@link RestClientStub}
@@ -51,11 +52,16 @@ public class RestClientStubFake extends RestClientStub {
    * @param filters the filter chain to be optionall installed. It is ok to pass null.
    */
   public RestClientStubFake(ResponseBuilderMap responseBuilders, RestCallSpecMap restCallSpecMap,
-      Gson serverGson, Collection<CallPath> servicePaths, String resourcePrefix,
+      GsonBuilder serverGson, Collection<CallPath> servicePaths, String resourcePrefix,
       GreazeFilterChain filters) {
     super(new ServerConfig("http://localhost/fake" + resourcePrefix));
     this.networkSwitcher = new NetworkSwitcherResource(
         responseBuilders, restCallSpecMap, serverGson, servicePaths, resourcePrefix, filters);
+  }
+
+  public RestClientStubFake(Injector injector, String resourcePrefix, GreazeFilterChain filters) {
+    super(new ServerConfig("http://localhost/fake" + resourcePrefix));
+    this.networkSwitcher = new NetworkSwitcherResource(injector, resourcePrefix, filters);
   }
 
   public String getServiceBaseUrl() {

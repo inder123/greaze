@@ -36,6 +36,10 @@ public class WebContext {
       map.put(key.getName(), value);
       return this;
     }
+    public <T> Builder put(String keyName, T value) {
+      map.put(keyName, value);
+      return this;
+    }
     public WebContext build() {
       return new WebContext(map);
     }

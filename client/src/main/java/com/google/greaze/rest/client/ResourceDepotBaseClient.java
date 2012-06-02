@@ -25,14 +25,16 @@ import com.google.greaze.definition.UrlParamsSpec;
 import com.google.greaze.definition.rest.ResourceDepotBase;
 import com.google.greaze.definition.rest.ResourceId;
 import com.google.greaze.definition.rest.RestCallSpec;
+import com.google.greaze.definition.rest.RestCallSpec.Builder;
+import com.google.greaze.definition.rest.IdGsonTypeAdapterFactory;
 import com.google.greaze.definition.rest.RestRequestBase;
 import com.google.greaze.definition.rest.RestRequestSpec;
 import com.google.greaze.definition.rest.RestResourceBase;
 import com.google.greaze.definition.rest.RestResponseBase;
 import com.google.greaze.definition.rest.WebContext;
 import com.google.greaze.definition.rest.WebContextSpec;
-import com.google.greaze.definition.rest.RestCallSpec.Builder;
 import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 
 /**
  * A client class to access a rest resource
@@ -45,23 +47,30 @@ public class ResourceDepotBaseClient<I extends ResourceId, R extends RestResourc
   private final RestCallSpec callSpec;
   private final Type resourceType;
   private final Gson gson;
+  private final boolean inlined;
 
   /**
    * @param stub stub containing server info to access the rest client
    * @param callPath relative path to the resource
    * @param resourceType Class for the resource. Such as Cart.class
+   * @param inlined set this to true to indicate that the request and response headers should be
+   *   sent in the body itself.
    */
   public ResourceDepotBaseClient(RestClientStub stub, CallPath callPath,
-      Type resourceType, WebContextSpec webContextSpec, Gson gson) {
-    this(stub, resourceType, generateRestCallSpec(callPath, resourceType, webContextSpec), gson);
+      Type resourceType, WebContextSpec webContextSpec, GsonBuilder gsonBuilder, boolean inlined) {
+    this(stub, resourceType, generateRestCallSpec(callPath, resourceType, webContextSpec),
+        gsonBuilder, inlined);
   }
 
   protected ResourceDepotBaseClient(RestClientStub stub, Type resourceType,
-      RestCallSpec callSpec, Gson gson) {
+      RestCallSpec callSpec, GsonBuilder gsonBuilder, boolean inlined) {
     this.stub = stub;
     this.callSpec = callSpec;
     this.resourceType = resourceType;
-    this.gson = gson;
+    this.gson = callSpec.addTypeAdapters(gsonBuilder)
+        .registerTypeAdapterFactory(new IdGsonTypeAdapterFactory())
+        .create();
+    this.inlined = inlined;
   }
 
   public static RestCallSpec generateRestCallSpec(
@@ -82,10 +91,10 @@ public class ResourceDepotBaseClient<I extends ResourceId, R extends RestResourc
       context.populate(requestHeadersBuilder);
     }
     HeaderMap requestHeaders = requestHeadersBuilder.build();
-    UrlParamsSpec urlParamsSpec = new UrlParamsSpec.Builder().build();
+    UrlParamsSpec urlParamsSpec = callSpec.getRequestSpec().getUrlParamsSpec();
     UrlParams urlParams = new UrlParams.Builder(urlParamsSpec).build();
     RestRequestBase<I, R> request = new RestRequestBase<I, R>(
-        HttpMethod.GET, requestHeaders, urlParams, resourceId, null, resourceType);
+        HttpMethod.GET, requestHeaders, urlParams, resourceId, null, resourceType, inlined);
     RestResponseBase<I, R> response = stub.getResponse(callSpec, request, gson);
     return response.getResource();
   }
@@ -98,10 +107,10 @@ public class ResourceDepotBaseClient<I extends ResourceId, R extends RestResourc
       context.populate(requestHeadersBuilder);
     }
     HeaderMap requestHeaders = requestHeadersBuilder.build();
-    UrlParamsSpec urlParamsSpec = new UrlParamsSpec.Builder().build();
+    UrlParamsSpec urlParamsSpec = callSpec.getRequestSpec().getUrlParamsSpec();
     UrlParams urlParams = new UrlParams.Builder(urlParamsSpec).build();
     RestRequestBase<I, R> request = new RestRequestBase<I, R>(
-        HttpMethod.POST, requestHeaders, urlParams, resource.getId(), resource, resourceType);
+        HttpMethod.POST, requestHeaders, urlParams, resource.getId(), resource, resourceType, inlined);
     RestResponseBase<I, R> response = stub.getResponse(callSpec, request, gson);
     return response.getResource();
   }
@@ -114,10 +123,10 @@ public class ResourceDepotBaseClient<I extends ResourceId, R extends RestResourc
       context.populate(requestHeadersBuilder);
     }
     HeaderMap requestHeaders = requestHeadersBuilder.build();
-    UrlParamsSpec urlParamsSpec = new UrlParamsSpec.Builder().build();
+    UrlParamsSpec urlParamsSpec = callSpec.getRequestSpec().getUrlParamsSpec();
     UrlParams urlParams = new UrlParams.Builder(urlParamsSpec).build();
     RestRequestBase<I, R> request = new RestRequestBase<I, R>(
-        HttpMethod.PUT, requestHeaders, urlParams, resource.getId(), resource, resourceType);
+        HttpMethod.PUT, requestHeaders, urlParams, resource.getId(), resource, resourceType, inlined);
     RestResponseBase<I, R> response = stub.getResponse(callSpec, request, gson);
     return response.getResource();
   }
@@ -130,10 +139,10 @@ public class ResourceDepotBaseClient<I extends ResourceId, R extends RestResourc
       context.populate(requestHeadersBuilder);
     }
     HeaderMap requestHeaders = requestHeadersBuilder.build();
-    UrlParamsSpec urlParamsSpec = new UrlParamsSpec.Builder().build();
+    UrlParamsSpec urlParamsSpec = callSpec.getRequestSpec().getUrlParamsSpec();
     UrlParams urlParams = new UrlParams.Builder(urlParamsSpec).build();
     RestRequestBase<I, R> request = new RestRequestBase<I, R>(
-        HttpMethod.DELETE, requestHeaders, urlParams, resourceId, null, resourceType);
+        HttpMethod.DELETE, requestHeaders, urlParams, resourceId, null, resourceType, inlined);
     stub.getResponse(callSpec, request, gson);
   }
 }

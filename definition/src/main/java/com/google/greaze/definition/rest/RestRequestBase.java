@@ -27,18 +27,22 @@ import java.lang.reflect.Type;
 
 /**
  * The data associated with a Web service request. This includes HTTP request header parameters 
- * (form and URL parameters), and request body. 
- * 
- * @author inder
+ * (form and URL parameters), and request body.
+ *
+ * @author Inderjeet Singh
  */
 public class RestRequestBase<I extends ResourceId, R extends RestResourceBase<I, R>>
     extends WebServiceRequest {
   private final I id;
-  
+
+  /**
+   * @param inlined set this to true to indicate that the request and response headers should be
+   *   sent in the body itself.
+   */
   public RestRequestBase(HttpMethod method, HeaderMap requestHeaders, UrlParams urlParams,
-      I resourceId, R requestBody, Type resourceType) {
+      I resourceId, R requestBody, Type resourceType, boolean inlined) {
     super(method, requestHeaders, urlParams, createBody(requestBody, resourceType),
-      new RestRequestSpec(requestHeaders.getSpec(), resourceType));
+      new RestRequestSpec(requestHeaders.getSpec(), resourceType), inlined);
     this.id = resourceId;
   }
 

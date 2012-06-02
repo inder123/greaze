@@ -31,13 +31,12 @@ public final class RestRequestSpec extends RequestSpec {
   private final Type resourceType;
 
   public RestRequestSpec(HeaderMapSpec headersSpec, Type resourceType) {
-    super(headersSpec, buildUrlParamSpec(), buildBodySpec(resourceType));
-    this.resourceType = resourceType;
+    this(headersSpec, buildUrlParamSpec(), buildBodySpec(resourceType), resourceType);
   }
 
-  public RestRequestSpec(HeaderMapSpec headersSpec, RequestBodySpec bodySpec,
-      Type resourceType) {
-    super(headersSpec, buildUrlParamSpec(), bodySpec);
+  public RestRequestSpec(HeaderMapSpec headersSpec, UrlParamsSpec paramsSpec,
+      RequestBodySpec bodySpec, Type resourceType) {
+    super(headersSpec, paramsSpec, bodySpec);
     this.resourceType = resourceType;
   }
 
@@ -55,6 +54,6 @@ public final class RestRequestSpec extends RequestSpec {
 
   @Override
   public String toString() {
-    return String.format("resourceType:%s", resourceType);
+    return "resourceType:" + resourceType;
   }
 }

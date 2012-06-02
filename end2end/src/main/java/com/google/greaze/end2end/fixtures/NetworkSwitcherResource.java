@@ -17,18 +17,22 @@ package com.google.greaze.end2end.fixtures;
 
 import java.io.IOException;
 import java.io.OutputStream;
+import java.net.URL;
 import java.util.Collection;
 
 import javax.servlet.http.HttpServletRequest;
 
 import com.google.greaze.definition.CallPath;
+import com.google.greaze.definition.fixtures.NetworkSwitcherPiped;
 import com.google.greaze.definition.rest.RestCallSpecMap;
 import com.google.greaze.rest.server.ResponseBuilderMap;
 import com.google.greaze.server.GreazeDispatcherServlet;
 import com.google.greaze.server.filters.GreazeFilterChain;
 import com.google.greaze.server.fixtures.HttpServletRequestFake;
 import com.google.greaze.server.fixtures.HttpServletResponseFake;
+import com.google.greaze.server.inject.GreazeServerModule;
 import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import com.google.inject.AbstractModule;
 import com.google.inject.Guice;
 import com.google.inject.Injector;
@@ -36,13 +40,14 @@ import com.google.inject.Module;
 import com.google.inject.Provides;
 import com.google.inject.Singleton;
 import com.google.inject.servlet.InstallableGuiceContext;
+import com.google.inject.servlet.RequestScoped;
 
 /**
- * Connects a RequestReceiver to HttpURLConnection
+ * Connects a RequestReceiver to HttpURLConnection for a resource.
  * 
  * @author Inderjeet Singh
  */
-public class NetworkSwitcherResource extends NetworkSwitcherWebService {
+public class NetworkSwitcherResource extends NetworkSwitcherPiped {
 
   private final GreazeDispatcherServlet dispatcher;
 
@@ -57,41 +62,30 @@ public class NetworkSwitcherResource extends NetworkSwitcherWebService {
    *   for /myshop/resource/1.0/order. Same as resourcePrefix parameter for
    *   {@link GreazeServerModule#GreazeServerModule(String, Collection, String)
    */
-  public NetworkSwitcherResource(final ResponseBuilderMap responseBuilders,
-      final RestCallSpecMap restCallSpecMap, final Gson serverGson,
+  public NetworkSwitcherResource(ResponseBuilderMap responseBuilders,
+      RestCallSpecMap restCallSpecMap, GsonBuilder serverGson,
       Collection<CallPath> servicePaths, String resourcePrefix, GreazeFilterChain filters) {
-    super(serverGson, servicePaths, resourcePrefix);
+    this(buildInjector(responseBuilders, restCallSpecMap, serverGson, servicePaths, resourcePrefix),
+        resourcePrefix, filters);
+  }
 
-    @SuppressWarnings("unused")
-    Module module = new AbstractModule() {
-      @Override
-      protected void configure() {
-      }
-      @Singleton
-      @Provides
-      public ResponseBuilderMap getResponseBuilderMap() {
-        return responseBuilders;
-      }
-      @Singleton
-      @Provides
-      public RestCallSpecMap getRestCallSpecMap() {
-        return restCallSpecMap;
-      }
-      @Singleton
-      @Provides
-      public Gson getGson() {
-        return serverGson;
-      }
-    };
-    Injector injector = Guice.createInjector(gsm, module);
+  /**
+   * @param resourcePrefix the resource prefix after the path to Servlet. For example, /resource
+   *   for /myshop/resource/1.0/order. Same as resourcePrefix parameter for
+   *   {@link GreazeServerModule#GreazeServerModule(String, Collection, String)
+   */
+  public NetworkSwitcherResource(Injector injector, String resourcePrefix,
+      GreazeFilterChain filters) {
     this.dispatcher = new GreazeDispatcherServlet(injector, resourcePrefix, filters);
   }
 
   @Override
   protected void switchNetwork(HttpURLConnectionFake conn) throws IOException {
+    URL url = conn.getURL();
     final HttpServletRequest req = new HttpServletRequestFake()
       .setRequestMethod(conn.getRequestMethod())
-      .setServletPath(conn.getURL().getPath())
+      .setServletPath(url.getPath())
+      .setUrlParams(url.getQuery())
       .setInputStream(conn.getForwardForInput())
       .setHeaders(conn.getHeaders());
     OutputStream reverseForOutput = conn.getReverseForOutput();
@@ -99,5 +93,42 @@ public class NetworkSwitcherResource extends NetworkSwitcherWebService {
     InstallableGuiceContext.install(req, res);
     dispatcher.service(req, res);
     res.flushBuffer();
+  }
+
+  private static Injector buildInjector(final ResponseBuilderMap responseBuilders,
+      final RestCallSpecMap restCallSpecMap, final GsonBuilder serverGson,
+      Collection<CallPath> servicePaths, String resourcePrefix) {
+    @SuppressWarnings("unused")
+    Module module = new AbstractModule() {
+      @Override
+      protected void configure() {
+      }
+
+      @Singleton
+      @Provides
+      public ResponseBuilderMap getResponseBuilderMap() {
+        return responseBuilders;
+      }
+
+      @Singleton
+      @Provides
+      public RestCallSpecMap getRestCallSpecMap() {
+        return restCallSpecMap;
+      }
+
+      @RequestScoped
+      @Provides
+      public GsonBuilder getGsonBuilder() {
+        return serverGson;
+      }
+
+      @RequestScoped
+      @Provides
+      public Gson getGson() {
+        return serverGson.create();
+      }
+    };
+    GreazeServerModule gsm = new GreazeServerModule("/fake", servicePaths, resourcePrefix);
+    return Guice.createInjector(gsm, module);
   }
 }

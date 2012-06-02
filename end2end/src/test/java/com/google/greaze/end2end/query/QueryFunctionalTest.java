@@ -66,7 +66,7 @@ public class QueryFunctionalTest extends TestCase {
     ResourceQueryClientFake<Employee, QueryEmployeeByName> stub =
       new ResourceQueryClientFake<Employee, QueryEmployeeByName>(queryHandler, gsonBuilder, queryPath);
     this.queryClient = new ResourceQueryClient<Employee, QueryEmployeeByName>(
-        stub, queryPath, QueryEmployeeByName.class, gsonBuilder.get(), Employee.class);
+        stub, queryPath, QueryEmployeeByName.class, gsonBuilder.get(), Employee.class, false);
 
     employees.put(new Employee(null, "foo"));
     employees.put(new Employee(null, "foo"));
@@ -80,7 +80,7 @@ public class QueryFunctionalTest extends TestCase {
       new ResourceQueryClientFake<Employee, QueryEmployeeByName>(queryHandler, gsonBuilder, queryPath);
     ResourceQueryClient<Employee, QueryEmployeeByName> queryClient =
         new ResourceQueryClient<Employee, QueryEmployeeByName>(
-            stub, queryPath, QueryEmployeeByName.class, gsonBuilder.get(), Employee.class);
+            stub, queryPath, QueryEmployeeByName.class, gsonBuilder.get(), Employee.class, false);
 
     QueryEmployeeByName queryByName = new QueryEmployeeByName("foo");
     List<Employee> results = queryClient.query(queryByName, new WebContext());

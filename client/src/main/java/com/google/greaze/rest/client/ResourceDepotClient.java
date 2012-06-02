@@ -23,7 +23,7 @@ import com.google.greaze.definition.rest.ResourceDepot;
 import com.google.greaze.definition.rest.RestCallSpec;
 import com.google.greaze.definition.rest.RestResource;
 import com.google.greaze.definition.rest.WebContextSpec;
-import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 
 /**
  * A client class to access a rest resource
@@ -31,26 +31,28 @@ import com.google.gson.Gson;
  * @author Inderjeet Singh
  */
 public class ResourceDepotClient<R extends RestResource<R>>
-    extends ResourceDepotBaseClient<Id<R>, R> 
+    extends ResourceDepotBaseClient<Id<R>, R>
     implements ResourceDepot<R> {
 
   /**
    * @param stub stub containing server info to access the rest client
    * @param callPath relative path to the resource
    * @param resourceType Class for the resource. Such as Cart.class
+   * @param inlined set this to true to indicate that the request and response headers should be
+   *   sent in the body itself.
    */
   public ResourceDepotClient(RestClientStub stub, CallPath callPath,
-      Type resourceType, Gson gson) {
-    super(stub, callPath, resourceType, null, gson);
+      Type resourceType, GsonBuilder gsonBuilder, boolean inlined) {
+    super(stub, callPath, resourceType, null, gsonBuilder, inlined);
   }
 
   public ResourceDepotClient(RestClientStub stub, CallPath callPath,
-      Type resourceType, WebContextSpec webContextSpec, Gson gson) {
-    super(stub, callPath, resourceType, webContextSpec, gson);
+      Type resourceType, WebContextSpec webContextSpec, GsonBuilder gsonBuilder, boolean inlined) {
+    super(stub, callPath, resourceType, webContextSpec, gsonBuilder, inlined);
   }
 
   public ResourceDepotClient(RestClientStub stub, Type resourceType,
-      RestCallSpec callSpec, Gson gson) {
-    super(stub, resourceType, callSpec, gson);
+      RestCallSpec callSpec, GsonBuilder gsonBuilder, boolean inlined) {
+    super(stub, resourceType, callSpec, gsonBuilder, inlined);
   }
 }

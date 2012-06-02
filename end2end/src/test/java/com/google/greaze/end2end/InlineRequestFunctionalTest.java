@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.google.greaze.end2end.resources;
+package com.google.greaze.end2end;
 
 import junit.framework.TestCase;
 
@@ -21,13 +21,16 @@ import com.google.common.base.Preconditions;
 import com.google.common.collect.ImmutableList;
 import com.google.greaze.definition.CallPath;
 import com.google.greaze.definition.CallPathParser;
-import com.google.greaze.definition.ErrorReason;
-import com.google.greaze.definition.WebServiceSystemException;
+import com.google.greaze.definition.HeaderMapSpec;
+import com.google.greaze.definition.TypedKey;
 import com.google.greaze.definition.rest.Id;
 import com.google.greaze.definition.rest.IdGsonTypeAdapterFactory;
 import com.google.greaze.definition.rest.RestCallSpec;
 import com.google.greaze.definition.rest.RestCallSpecMap;
+import com.google.greaze.definition.rest.RestRequestBase;
+import com.google.greaze.definition.rest.RestResponseBase;
 import com.google.greaze.definition.rest.WebContext;
+import com.google.greaze.definition.rest.WebContextSpec;
 import com.google.greaze.end2end.definition.Employee;
 import com.google.greaze.end2end.fixtures.RestClientStubFake;
 import com.google.greaze.rest.client.ResourceDepotBaseClient;
@@ -37,7 +40,6 @@ import com.google.greaze.rest.server.Repository;
 import com.google.greaze.rest.server.RepositoryInMemory;
 import com.google.greaze.rest.server.ResponseBuilderMap;
 import com.google.greaze.rest.server.RestResponseBuilder;
-import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 
 /**
@@ -45,25 +47,33 @@ import com.google.gson.GsonBuilder;
  *
  * @author Inderjeet Singh
  */
-public class ResourceDepotFunctionalTest extends TestCase {
+public class InlineRequestFunctionalTest extends TestCase {
 
-  private static final String RESOURCE_PREFIX = "/rest";
-  private static final CallPath RESOURCE_PATH =
-    new CallPathParser(RESOURCE_PREFIX, false, "/employee").parse(RESOURCE_PREFIX + "/employee");
-  private static final Id<Employee> ERROR_ID = Id.get("ErrorId12");
+  private static final TypedKey<String> HEADER1 = new TypedKey<String>("header1", String.class);
+  private static final TypedKey<String> HEADER2 = new TypedKey<String>("header2", String.class);
 
   private ResourceDepotClient<Employee> client;
   private Repository<Employee> employees;
+  private WebContext context;
 
   @Override
   protected void setUp() throws Exception {
     super.setUp();
+    String resourcePrefix = "/rest";
+    CallPath resourcePath = new CallPathParser(
+        resourcePrefix, false, "/employee").parse(resourcePrefix + "/employee");
+
     this.employees = new RepositoryInMemory<Employee>();
     RestResponseBuilder<Employee> responseBuilder = new ResponseBuilderEmployee(employees);
-    RestCallSpec employeeRestCallSpec =
-      ResourceDepotBaseClient.generateRestCallSpec(RESOURCE_PATH, Employee.class, null);
+    HeaderMapSpec contextHeaderSpec = new HeaderMapSpec.Builder()
+      .put(HEADER1.getName(), String.class)
+      .put(HEADER2.getName(), String.class)
+      .build();
+  WebContextSpec webContextSpec = new WebContextSpec(contextHeaderSpec);
+    RestCallSpec callSpec =
+      ResourceDepotBaseClient.generateRestCallSpec(resourcePath, Employee.class, webContextSpec);
     RestCallSpecMap restCallSpecMap = new RestCallSpecMap.Builder()
-      .set(RESOURCE_PATH, employeeRestCallSpec)
+      .set(resourcePath, callSpec)
       .build();
     ResponseBuilderMap responseBuilders = new ResponseBuilderMap.Builder()
       .set(Employee.class, responseBuilder)
@@ -71,46 +81,41 @@ public class ResourceDepotFunctionalTest extends TestCase {
     GsonBuilder gsonBuilder = new GsonBuilder()
       .registerTypeAdapterFactory(new IdGsonTypeAdapterFactory());
     RestClientStub stub = new RestClientStubFake(responseBuilders,
-        restCallSpecMap, gsonBuilder, ImmutableList.of(RESOURCE_PATH), RESOURCE_PREFIX, null);
+        restCallSpecMap, gsonBuilder, ImmutableList.of(resourcePath), resourcePrefix, null);
     this.client = new ResourceDepotClient<Employee>(
-        stub, RESOURCE_PATH, Employee.class, new GsonBuilder(), false);
+        stub, Employee.class, callSpec, new GsonBuilder(), true);
+    this.context = new WebContext.Builder()
+      .put(HEADER1, "value1")
+      .put(HEADER2, "value2")
+      .build();
   }
 
   public void testGet() throws Exception {
     Id<Employee> id = Id.get("1");
     employees.put(new Employee(id, "bob"));
-    Employee e = client.get(id, new WebContext());
+    Employee e = client.get(id, context);
     assertEquals("bob", e.getName());
   }
 
-  public void testServerErrorOnGet() throws Exception {
-    try {
-      client.get(ERROR_ID, new WebContext());
-      fail();
-    } catch (WebServiceSystemException expected) {
-      assertEquals(ErrorReason.BAD_REQUEST, expected.getReason());
-    }
-  }
-
   public void testPost() throws Exception {
-    Employee e = client.post(new Employee("bob"), new WebContext());
+    Employee e = client.post(new Employee("bob"), context);
     assertEquals("bob", e.getName());
     assertTrue(Id.isValid(e.getId()));
   }
 
   public void testPut() throws Exception {
-    Employee bob = client.post(new Employee("bob"), new WebContext());
+    Employee bob = client.post(new Employee("bob"), context);
     assertEquals("bob", bob.getName());
-    Employee sam = client.put(new Employee(bob.getId(), "sam"), new WebContext());
+    Employee sam = client.put(new Employee(bob.getId(), "sam"), context);
     assertEquals("sam", sam.getName());
     assertEquals(bob.getId(), sam.getId());
   }
 
   public void testDelete() throws Exception {
-    Employee bob = client.post(new Employee("bob"), new WebContext());
+    Employee bob = client.post(new Employee("bob"), context);
     assertEquals("bob", bob.getName());
-    client.delete(bob.getId(), new WebContext());
-    assertNull(client.get(bob.getId(), new WebContext()));
+    client.delete(bob.getId(), context);
+    assertNull(client.get(bob.getId(), context));
   }
 
   private static final class ResponseBuilderEmployee extends RestResponseBuilder<Employee> {
@@ -118,9 +123,13 @@ public class ResourceDepotFunctionalTest extends TestCase {
       super(employees);
     }
     @Override
-    public Employee get(Id<Employee> resourceId, WebContext context) {
-      Preconditions.checkArgument(!resourceId.equals(ERROR_ID));
-      return super.get(resourceId, context);
+    public void buildResponse(WebContext context, RestRequestBase<Id<Employee>, Employee> request,
+        RestResponseBase.Builder<Id<Employee>, Employee> responseBuilder) {
+      String header1 = context.get(HEADER1);
+      String header2 = context.get(HEADER2);
+      Preconditions.checkArgument(header1 != null && header1.equals("value1"), "missing header1");
+      Preconditions.checkArgument(header2 != null && header2.equals("value2"), "missing header2");
+      super.buildResponse(context, request, responseBuilder);
     }
   }
 }

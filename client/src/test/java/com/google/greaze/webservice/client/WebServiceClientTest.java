@@ -66,7 +66,7 @@ public class WebServiceClientTest extends TestCase {
     UrlParamsSpec urlParamsSpec = new UrlParamsSpec.Builder().build();
     UrlParams urlParams = new UrlParams.Builder(urlParamsSpec).build();
     WebServiceRequest request =
-      new WebServiceRequest(HttpMethod.GET, requestHeaders, urlParams, requestBody);
+      new WebServiceRequest(HttpMethod.GET, requestHeaders, urlParams, requestBody, false);
     URL url = client.getWebServiceUrl(callSpec, request, gson);
     assertEquals(SERVER_URL + CALL_PATH, url.toExternalForm());
   }
@@ -77,7 +77,7 @@ public class WebServiceClientTest extends TestCase {
       .put("foo", "bar bar")
       .build();
     WebServiceRequest request =
-      new WebServiceRequest(HttpMethod.GET, requestHeaders, urlParams, requestBody);
+      new WebServiceRequest(HttpMethod.GET, requestHeaders, urlParams, requestBody, false);
     URL url = client.getWebServiceUrl(callSpec, request, gson);
     assertEquals(SERVER_URL + CALL_PATH + "?foo=bar+bar", url.toExternalForm());
   }

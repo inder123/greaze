@@ -42,6 +42,13 @@ public final class HeaderMapSpec implements ParamMapSpec {
       return this;
     }
 
+    public Builder putAll(HeaderMapSpec mapSpec) {
+      if (mapSpec != null) {
+        map.putAll(mapSpec.map);
+      }
+      return this;
+    }
+
     public HeaderMapSpec build() {
       return new HeaderMapSpec(map);
     }

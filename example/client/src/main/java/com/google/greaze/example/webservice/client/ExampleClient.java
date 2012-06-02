@@ -61,7 +61,7 @@ public class ExampleClient {
 	    .put(TypedKeys.RequestBody.CART, cart)
 	    .build();
 	WebServiceRequest request = new WebServiceRequest(
-	    HttpMethod.POST, requestHeaders, urlParams, requestBody);
+	    HttpMethod.POST, requestHeaders, urlParams, requestBody, false);
 	WebServiceResponse response = wsClient.getResponse(spec, request, gson);
 	return response.getBody().get(TypedKeys.ResponseBody.ORDER);
   }

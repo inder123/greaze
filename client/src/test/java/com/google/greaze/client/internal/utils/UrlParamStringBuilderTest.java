@@ -80,7 +80,7 @@ public class UrlParamStringBuilderTest extends TestCase {
 
   /** Tests for {@link UrlParamStringBuilder#stripQuotesIfString(String)} */
   public void testStripsQuotes() {
-    assertEquals("foo.bar", UrlParamStringBuilder.stripQuotesIfString("\"foo.bar\""));
+    assertEquals("foo.bar", UrlParamsToStringMapConverter.stripQuotesIfString("\"foo.bar\""));
   }
 
   @SuppressWarnings("unused")

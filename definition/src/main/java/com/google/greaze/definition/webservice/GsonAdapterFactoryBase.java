@@ -43,17 +43,19 @@ abstract class GsonAdapterFactoryBase<CB extends ContentBody, CBS extends Conten
         : null; 
   }
 
+  @SuppressWarnings("rawtypes")
   private TypeAdapter<ContentBody> create(Gson gson) {
+    TypeAdapter simpleBodyAdapter = gson.getAdapter(TypeToken.get(spec.getSimpleBodyType()));
     switch(spec.getContentBodyType()) {
       case SIMPLE:
-        return new GsonAdapterSimpleBody<ContentBody>(gson, spec) {
+        return new GsonAdapterSimpleBody<ContentBody>(simpleBodyAdapter) {
           @Override
           public ContentBody.Builder createBuilder() {
             return GsonAdapterFactoryBase.this.createBuilder();
           }
         };
       case LIST:
-        return new GsonAdapterListBody<ContentBody>(gson, spec) {
+        return new GsonAdapterListBody<ContentBody>(simpleBodyAdapter) {
           @Override
           public ContentBody.Builder createBuilder() {
             return GsonAdapterFactoryBase.this.createBuilder();

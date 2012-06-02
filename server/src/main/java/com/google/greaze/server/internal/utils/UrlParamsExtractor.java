@@ -60,6 +60,16 @@ public final class UrlParamsExtractor {
     public String getParameterValue(String name);
   }
 
+  public UrlParams extractUrlParams(final Map<String, String> params) {
+    NameValueMap requestParams = new NameValueMap() {
+      @Override
+      public String getParameterValue(String name) {
+        return params.get(name);
+      }
+    };
+    return extractUrlParams(requestParams);
+  }
+
   public UrlParams extractUrlParams(final HttpServletRequest request) {
     NameValueMap requestParams = new NameValueMap() {
       @Override

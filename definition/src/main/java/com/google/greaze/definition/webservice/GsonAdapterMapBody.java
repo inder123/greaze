@@ -22,7 +22,6 @@ import java.util.Map;
 
 import com.google.greaze.definition.ContentBody;
 import com.google.greaze.definition.ContentBodySpec;
-import com.google.greaze.definition.internal.utils.GreazePreconditions;
 import com.google.gson.Gson;
 import com.google.gson.TypeAdapter;
 import com.google.gson.reflect.TypeToken;
@@ -32,11 +31,9 @@ import com.google.gson.stream.JsonWriter;
 @SuppressWarnings({"rawtypes", "unchecked"})
 abstract class GsonAdapterMapBody<CB extends ContentBody> extends TypeAdapter<CB> {
   private final LazyAdapterMap adapters;
-  private final ContentBodySpec spec;
 
   GsonAdapterMapBody(Gson gson, ContentBodySpec spec) {
     this.adapters = new LazyAdapterMap(gson, spec);
-    this.spec = spec;
   }
 
   public abstract ContentBody.Builder createBuilder();
@@ -44,8 +41,6 @@ abstract class GsonAdapterMapBody<CB extends ContentBody> extends TypeAdapter<CB
   @Override
   public CB read(JsonReader reader) throws IOException {
     ContentBody.Builder builder = createBuilder();
-    ContentBodySpec spec = builder.getSpec();
-    GreazePreconditions.checkArgument(this.spec.equals(spec));
     reader.beginObject();
     while (reader.hasNext()) {
       String key = reader.nextName();
@@ -60,8 +55,6 @@ abstract class GsonAdapterMapBody<CB extends ContentBody> extends TypeAdapter<CB
   @Override
   public void write(JsonWriter writer, CB value) throws IOException {
     ContentBody src = (ContentBody) value;
-    ContentBodySpec bodySpec = src.getSpec();
-    GreazePreconditions.checkArgument(this.spec.equals(bodySpec));
     writer.beginObject();
     for(Map.Entry<String, Object> entry : src.entrySet()) {
       String key = entry.getKey();
