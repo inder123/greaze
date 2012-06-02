@@ -13,6 +13,8 @@ import java.io.EOFException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.UnsupportedEncodingException;
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.net.URLDecoder;
 import java.security.Principal;
 import java.util.Date;
@@ -43,6 +45,21 @@ public final class HttpServletRequestFake implements HttpServletRequest {
   private String servletPath;
   private ServletInputStream inputStream;
   private Map<String, String> headers;
+  private URL url;
+
+  public HttpServletRequestFake setUrl(String url) {
+    try {
+      return setUrl(new URL(url));
+    } catch (MalformedURLException e) {
+      throw new RuntimeException(e);
+    }
+  }
+
+  public HttpServletRequestFake setUrl(URL url) {
+    this.url = url;
+    setUrlParams(url.getQuery());
+    return this;
+  }
 
   public HttpServletRequestFake setRequestMethod(String method) {
     this.method = method;
@@ -309,7 +326,10 @@ public final class HttpServletRequestFake implements HttpServletRequest {
 
   @Override
   public String getContextPath() {
-    return null;
+    // For http://localhost:90/fake/abcd/efg?a=10 returns /fake
+    String requestUri = getRequestURI();
+    String pathWithoutSlash = requestUri.substring(1);
+    return requestUri.substring(0, 1+pathWithoutSlash.indexOf('/'));
   }
 
   @Override
@@ -339,12 +359,23 @@ public final class HttpServletRequestFake implements HttpServletRequest {
 
   @Override
   public String getRequestURI() {
-    return null;
+    // For http://localhost:90/fake/abcd/efg?a=10 returns /fake/abcd/efg
+    StringBuffer requestUrl = getRequestURL();
+    String requestUri = requestUrl.substring(requestUrl.indexOf("//") + 2);
+    requestUri = requestUri.substring(requestUri.indexOf("/"));
+    return requestUri;
   }
 
   @Override
   public StringBuffer getRequestURL() {
-    return null;
+    // For http://localhost:90/fake/abcd/efg?a=10 returns http://localhost:90/fake/abcd/efg
+    String requestUrl = url.toExternalForm();
+    String query = url.getQuery();
+    if (query != null) {
+      int queryStartIndex = requestUrl.length() - query.length();
+      requestUrl = requestUrl.substring(0, queryStartIndex-1);
+    }
+    return new StringBuffer(requestUrl);
   }
 
   @Override
