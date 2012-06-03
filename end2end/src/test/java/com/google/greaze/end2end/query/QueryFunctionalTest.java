@@ -35,7 +35,6 @@ import com.google.greaze.rest.query.client.ResourceQueryClient;
 import com.google.greaze.rest.server.Repository;
 import com.google.greaze.rest.server.RepositoryInMemory;
 import com.google.gson.GsonBuilder;
-import com.google.inject.Provider;
 
 /**
  * Functional tests for passing resource query parameters
@@ -45,7 +44,7 @@ import com.google.inject.Provider;
 public class QueryFunctionalTest extends TestCase {
   private static final String BAD_EMPLOYEE = "Evil Employee";
 
-  private Provider<GsonBuilder> gsonBuilder;
+  private GsonBuilder gsonBuilder;
   private Repository<Employee> employees;
   private QueryHandlerEmployeeByName queryHandler;
   private ResourceQueryClient<Employee, QueryEmployeeByName> queryClient;
@@ -54,12 +53,7 @@ public class QueryFunctionalTest extends TestCase {
   @Override
   protected void setUp() throws Exception {
     super.setUp();
-    this.gsonBuilder = new Provider<GsonBuilder>() {
-      @Override
-      public GsonBuilder get() {
-        return new GsonBuilder().registerTypeAdapterFactory(new IdGsonTypeAdapterFactory());
-      }
-    };
+    this.gsonBuilder = new GsonBuilder().registerTypeAdapterFactory(new IdGsonTypeAdapterFactory());
     this.employees = new RepositoryInMemory<Employee>();
     this.queryHandler = new QueryHandlerEmployee(employees);
 
@@ -71,7 +65,7 @@ public class QueryFunctionalTest extends TestCase {
       new ResourceQueryClientFake<Employee, QueryEmployeeByName>(queryHandler, gsonBuilder,
           urlPaths, queryPath, null);
     this.queryClient = new ResourceQueryClient<Employee, QueryEmployeeByName>(
-        stub, queryPath, QueryEmployeeByName.class, gsonBuilder.get(), Employee.class, false);
+        stub, queryPath, QueryEmployeeByName.class, gsonBuilder, Employee.class, false);
 
     employees.put(new Employee(null, "foo"));
     employees.put(new Employee(null, "foo"));
@@ -86,7 +80,7 @@ public class QueryFunctionalTest extends TestCase {
           queryHandler, gsonBuilder, urlPaths, queryPath, null);
     ResourceQueryClient<Employee, QueryEmployeeByName> queryClient =
         new ResourceQueryClient<Employee, QueryEmployeeByName>(
-            stub, queryPath, QueryEmployeeByName.class, gsonBuilder.get(), Employee.class, false);
+            stub, queryPath, QueryEmployeeByName.class, gsonBuilder, Employee.class, false);
 
     QueryEmployeeByName queryByName = new QueryEmployeeByName("foo");
     List<Employee> results = queryClient.query(queryByName, new WebContext());
