@@ -21,6 +21,7 @@ import java.util.Collection;
 
 import com.google.greaze.definition.CallPath;
 import com.google.greaze.definition.fixtures.NetworkSwitcher;
+import com.google.greaze.definition.rest.ResourceUrlPaths;
 import com.google.greaze.definition.rest.RestCallSpecMap;
 import com.google.greaze.rest.client.RestClientStub;
 import com.google.greaze.rest.server.ResponseBuilderMap;
@@ -38,6 +39,7 @@ import com.google.inject.Injector;
 public class RestClientStubFake extends RestClientStub {
 
   private final NetworkSwitcher networkSwitcher;
+  private final ResourceUrlPaths urlPaths;
 
   /**
    * @param responseBuilders Rest response builder for the resource
@@ -46,26 +48,25 @@ public class RestClientStubFake extends RestClientStub {
    * @param servicePaths All the paths for the resources available on the server. Same as
    *   servicePaths parameter for
    *   {@link GreazeServerModule#GreazeServerModule(String, Collection, String)}
-   * @param resourcePrefix the resource prefix after the path to Servlet. For example, /resource
-   *   for /myshop/resource/1.0/order. Same as resourcePrefix parameter for
-   *   {@link GreazeServerModule#GreazeServerModule(String, Collection, String)}
-   * @param filters the filter chain to be optionall installed. It is ok to pass null.
+   * @param filters the filter chain to be optional installed. It is ok to pass null.
    */
   public RestClientStubFake(ResponseBuilderMap responseBuilders, RestCallSpecMap restCallSpecMap,
-      GsonBuilder serverGson, Collection<CallPath> servicePaths, String resourcePrefix,
+      GsonBuilder serverGson, Collection<CallPath> servicePaths, ResourceUrlPaths urlPaths,
       GreazeFilterChain filters) {
-    super(new ServerConfig("http://localhost/fake" + resourcePrefix));
+    super(new ServerConfig(urlPaths.getResourceBaseUrl()));
+    this.urlPaths = urlPaths;
     this.networkSwitcher = new NetworkSwitcherResource(
-        responseBuilders, restCallSpecMap, serverGson, servicePaths, resourcePrefix, filters);
+        responseBuilders, restCallSpecMap, serverGson, servicePaths, urlPaths, filters);
   }
 
-  public RestClientStubFake(Injector injector, String resourcePrefix, GreazeFilterChain filters) {
-    super(new ServerConfig("http://localhost/fake" + resourcePrefix));
-    this.networkSwitcher = new NetworkSwitcherResource(injector, resourcePrefix, filters);
+  public RestClientStubFake(Injector injector, ResourceUrlPaths urlPaths) {
+    super(new ServerConfig(urlPaths.getResourceBaseUrl()));
+    this.urlPaths = urlPaths;
+    this.networkSwitcher = new NetworkSwitcherResource(injector, urlPaths);
   }
 
   public String getServiceBaseUrl() {
-    return "http://localhost/fake";
+    return urlPaths.getContextUrl() + urlPaths.getServletPath();
   }
 
   @Override

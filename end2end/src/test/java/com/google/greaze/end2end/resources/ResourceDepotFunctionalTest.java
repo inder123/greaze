@@ -25,6 +25,7 @@ import com.google.greaze.definition.ErrorReason;
 import com.google.greaze.definition.WebServiceSystemException;
 import com.google.greaze.definition.rest.Id;
 import com.google.greaze.definition.rest.IdGsonTypeAdapterFactory;
+import com.google.greaze.definition.rest.ResourceUrlPaths;
 import com.google.greaze.definition.rest.RestCallSpec;
 import com.google.greaze.definition.rest.RestCallSpecMap;
 import com.google.greaze.definition.rest.WebContext;
@@ -37,7 +38,6 @@ import com.google.greaze.rest.server.Repository;
 import com.google.greaze.rest.server.RepositoryInMemory;
 import com.google.greaze.rest.server.ResponseBuilderMap;
 import com.google.greaze.rest.server.RestResponseBuilder;
-import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 
 /**
@@ -70,8 +70,10 @@ public class ResourceDepotFunctionalTest extends TestCase {
       .build();
     GsonBuilder gsonBuilder = new GsonBuilder()
       .registerTypeAdapterFactory(new IdGsonTypeAdapterFactory());
+    ResourceUrlPaths urlPaths = new ResourceUrlPaths("http://localhost/fake/service/rest",
+        "/fake", "/service", RESOURCE_PREFIX);
     RestClientStub stub = new RestClientStubFake(responseBuilders,
-        restCallSpecMap, gsonBuilder, ImmutableList.of(RESOURCE_PATH), RESOURCE_PREFIX, null);
+        restCallSpecMap, gsonBuilder, ImmutableList.of(RESOURCE_PATH), urlPaths, null);
     this.client = new ResourceDepotClient<Employee>(
         stub, RESOURCE_PATH, Employee.class, new GsonBuilder(), false);
   }
