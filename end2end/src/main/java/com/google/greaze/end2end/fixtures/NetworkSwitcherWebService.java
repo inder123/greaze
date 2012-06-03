@@ -16,6 +16,7 @@
 package com.google.greaze.end2end.fixtures;
 
 import java.io.IOException;
+import java.io.OutputStream;
 
 import javax.servlet.FilterChain;
 import javax.servlet.ServletException;
@@ -25,7 +26,10 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import com.google.greaze.definition.fixtures.NetworkSwitcherPiped;
+import com.google.greaze.definition.rest.ResourceUrlPaths;
 import com.google.greaze.server.GreazeDispatcherServlet;
+import com.google.greaze.server.fixtures.HttpServletRequestFake;
+import com.google.greaze.server.fixtures.HttpServletResponseFake;
 import com.google.inject.servlet.GuiceFilter;
 
 /**
@@ -35,9 +39,13 @@ import com.google.inject.servlet.GuiceFilter;
  */
 public class NetworkSwitcherWebService extends NetworkSwitcherPiped {
   private static final GuiceFilter guice = new GuiceFilter();
-  private final FilterChain filterChain;
 
-  protected NetworkSwitcherWebService(final GreazeDispatcherServlet dispatcher) {
+  protected final ResourceUrlPaths urlPaths;
+  protected final FilterChain filterChain;
+
+  protected NetworkSwitcherWebService(ResourceUrlPaths urlPaths,
+      final GreazeDispatcherServlet dispatcher) {
+    this.urlPaths = urlPaths;
     this.filterChain = new FilterChain() {
       @Override
       public void doFilter(ServletRequest request, ServletResponse response) throws IOException,
@@ -45,6 +53,18 @@ public class NetworkSwitcherWebService extends NetworkSwitcherPiped {
         dispatcher.service(request, response);
       }
     };
+  }
+
+  @Override
+  protected void switchNetwork(HttpURLConnectionFake conn) throws IOException {
+    HttpServletRequest req = new HttpServletRequestFake()
+      .setResourceUrlPaths(conn.getURL(), urlPaths)
+      .setRequestMethod(conn.getRequestMethod())
+      .setHeaders(conn.getHeaders())
+      .setInputStream(conn.getForwardForInput());
+    OutputStream reverseForOutput = conn.getReverseForOutput();
+    HttpServletResponseFake res = new HttpServletResponseFake(reverseForOutput, conn);
+    serviceRequest(req, res);
   }
 
   protected void serviceRequest(HttpServletRequest req, HttpServletResponse res) throws IOException {

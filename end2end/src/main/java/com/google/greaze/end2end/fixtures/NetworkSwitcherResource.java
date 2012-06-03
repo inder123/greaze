@@ -15,11 +15,7 @@
  */
 package com.google.greaze.end2end.fixtures;
 
-import java.io.IOException;
-import java.io.OutputStream;
 import java.util.Collection;
-
-import javax.servlet.http.HttpServletRequest;
 
 import com.google.greaze.definition.CallPath;
 import com.google.greaze.definition.rest.ResourceUrlPaths;
@@ -27,8 +23,6 @@ import com.google.greaze.definition.rest.RestCallSpecMap;
 import com.google.greaze.rest.server.ResponseBuilderMap;
 import com.google.greaze.server.GreazeDispatcherServlet;
 import com.google.greaze.server.filters.GreazeFilterChain;
-import com.google.greaze.server.fixtures.HttpServletRequestFake;
-import com.google.greaze.server.fixtures.HttpServletResponseFake;
 import com.google.greaze.server.inject.GreazeServerModule;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
@@ -47,8 +41,6 @@ import com.google.inject.servlet.RequestScoped;
  */
 public class NetworkSwitcherResource extends NetworkSwitcherWebService {
 
-  private final ResourceUrlPaths urlPaths;
-
   /**
    * @param responseBuilders Rest response builder for the resource
    * @param restCallSpecMap A map of call paths to RestCallSpecs
@@ -66,21 +58,8 @@ public class NetworkSwitcherResource extends NetworkSwitcherWebService {
   }
 
   public NetworkSwitcherResource(Injector injector, ResourceUrlPaths urlPaths) {
-    super(new GreazeDispatcherServlet(injector, urlPaths.getResourcePrefix(),
+    super(urlPaths, new GreazeDispatcherServlet(injector, urlPaths.getResourcePrefix(),
         injector.getInstance(GreazeFilterChain.class)));
-    this.urlPaths = urlPaths;
-  }
-
-  @Override
-  protected void switchNetwork(HttpURLConnectionFake conn) throws IOException {
-    final HttpServletRequest req = new HttpServletRequestFake()
-      .setResourceUrlPaths(conn.getURL(), urlPaths)
-      .setRequestMethod(conn.getRequestMethod())
-      .setInputStream(conn.getForwardForInput())
-      .setHeaders(conn.getHeaders());
-    OutputStream reverseForOutput = conn.getReverseForOutput();
-    HttpServletResponseFake res = new HttpServletResponseFake(reverseForOutput, conn);
-    serviceRequest(req, res);
   }
 
   private static Injector buildInjector(final ResponseBuilderMap responseBuilders,
