@@ -26,7 +26,6 @@ import com.google.greaze.definition.rest.RestResource;
 import com.google.greaze.definition.rest.query.ResourceQuery;
 import com.google.greaze.definition.rest.query.ResourceQueryParams;
 import com.google.greaze.rest.server.ResponseBuilderMap;
-import com.google.greaze.server.GreazeDispatcherServlet;
 import com.google.greaze.server.dispatcher.ResourceQueryDispatcher;
 import com.google.greaze.server.filters.GreazeFilterChain;
 import com.google.greaze.server.inject.GreazeServerModule;
@@ -50,12 +49,7 @@ public class NetworkSwitcherQuery<R extends RestResource<R>, Q extends ResourceQ
   public NetworkSwitcherQuery(ResourceQuery<R, Q> queryHandler,
       Provider<GsonBuilder> serverGsonBuilder, ResourceUrlPaths urlPaths, CallPath queryCallPath,
       GreazeFilterChain filters) {
-    this(buildInjector(queryHandler, serverGsonBuilder, urlPaths, queryCallPath, filters), urlPaths);
-  }
-
-  public NetworkSwitcherQuery(Injector injector, ResourceUrlPaths urlPaths) {
-    super(urlPaths, new GreazeDispatcherServlet(injector, urlPaths.getResourcePrefix(),
-        injector.getInstance(GreazeFilterChain.class)));
+    super(urlPaths, buildInjector(queryHandler, serverGsonBuilder, urlPaths, queryCallPath, filters));
   }
 
   private static <R extends RestResource<R>, Q extends ResourceQueryParams> Injector buildInjector(

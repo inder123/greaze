@@ -53,13 +53,8 @@ public class NetworkSwitcherResource extends NetworkSwitcherWebService {
       RestCallSpecMap restCallSpecMap, GsonBuilder serverGson,
       Collection<CallPath> servicePaths, ResourceUrlPaths urlPaths,
       GreazeFilterChain filters) {
-    this(buildInjector(responseBuilders, restCallSpecMap, serverGson, servicePaths, urlPaths, filters),
-        urlPaths);
-  }
-
-  public NetworkSwitcherResource(Injector injector, ResourceUrlPaths urlPaths) {
-    super(urlPaths, new GreazeDispatcherServlet(injector, urlPaths.getResourcePrefix(),
-        injector.getInstance(GreazeFilterChain.class)));
+    super(urlPaths,
+        buildInjector(responseBuilders, restCallSpecMap, serverGson, servicePaths, urlPaths, filters));
   }
 
   private static Injector buildInjector(final ResponseBuilderMap responseBuilders,
