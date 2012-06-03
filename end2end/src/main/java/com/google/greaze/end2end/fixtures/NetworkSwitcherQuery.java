@@ -17,13 +17,13 @@ package com.google.greaze.end2end.fixtures;
 
 import java.io.IOException;
 import java.io.OutputStream;
+import java.net.URL;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import com.google.common.collect.ImmutableList;
 import com.google.greaze.definition.CallPath;
-import com.google.greaze.definition.fixtures.NetworkSwitcherPiped;
 import com.google.greaze.definition.rest.RestCallSpecMap;
 import com.google.greaze.definition.rest.RestResource;
 import com.google.greaze.definition.rest.query.ResourceQuery;
@@ -42,7 +42,6 @@ import com.google.inject.Module;
 import com.google.inject.Provider;
 import com.google.inject.Provides;
 import com.google.inject.Singleton;
-import com.google.inject.servlet.InstallableGuiceContext;
 
 /**
  * Connects a RequestReceiver to HttpURLConnection for a resource query.
@@ -50,11 +49,10 @@ import com.google.inject.servlet.InstallableGuiceContext;
  * @author Inderjeet Singh
  */
 public class NetworkSwitcherQuery<R extends RestResource<R>, Q extends ResourceQueryParams>
-    extends NetworkSwitcherPiped {
+    extends NetworkSwitcherWebService {
 
   private static final String SERVLET_BASE_PATH = "/fake";
   private final CallPath queryCallPath;
-  private final GreazeDispatcherServlet dispatcher;
 
   public NetworkSwitcherQuery(ResourceQuery<R, Q> queryHandler,
       Provider<GsonBuilder> serverGsonBuilder, CallPath queryCallPath) {
@@ -62,23 +60,22 @@ public class NetworkSwitcherQuery<R extends RestResource<R>, Q extends ResourceQ
   }
 
   public NetworkSwitcherQuery(Injector injector, CallPath queryCallPath) {
+    super(new GreazeDispatcherServlet(injector, queryCallPath.getBasePath(), null));
     this.queryCallPath = queryCallPath;
-    this.dispatcher = new GreazeDispatcherServlet(injector, queryCallPath.getBasePath(), null);
   }
 
   @Override
   protected void switchNetwork(HttpURLConnectionFake conn) throws IOException {
+    URL url = conn.getURL();
     HttpServletRequest req = new HttpServletRequestFake()
+      .setUrl(url)
       .setRequestMethod(conn.getRequestMethod())
       .setHeaders(conn.getHeaders())
-      .setServletPath(SERVLET_BASE_PATH + queryCallPath.getBasePath() + conn.getURL().getPath())
-      .setUrlParams(conn.getURL().getQuery())
+      .setServletPath(SERVLET_BASE_PATH + queryCallPath.getBasePath() + url.getPath())
       .setInputStream(conn.getForwardForInput());
     OutputStream reverseForOutput = conn.getReverseForOutput();
     HttpServletResponseFake res = new HttpServletResponseFake(reverseForOutput, conn);
-    InstallableGuiceContext.install(req, res);
-    dispatcher.service(req, res);
-    res.flushBuffer();
+    serviceRequest(req, res);
   }
 
   private static <R extends RestResource<R>, Q extends ResourceQueryParams> Injector buildInjector(

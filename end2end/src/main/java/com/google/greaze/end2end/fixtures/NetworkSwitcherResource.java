@@ -23,7 +23,6 @@ import java.util.Collection;
 import javax.servlet.http.HttpServletRequest;
 
 import com.google.greaze.definition.CallPath;
-import com.google.greaze.definition.fixtures.NetworkSwitcherPiped;
 import com.google.greaze.definition.rest.RestCallSpecMap;
 import com.google.greaze.rest.server.ResponseBuilderMap;
 import com.google.greaze.server.GreazeDispatcherServlet;
@@ -39,7 +38,6 @@ import com.google.inject.Injector;
 import com.google.inject.Module;
 import com.google.inject.Provides;
 import com.google.inject.Singleton;
-import com.google.inject.servlet.InstallableGuiceContext;
 import com.google.inject.servlet.RequestScoped;
 
 /**
@@ -47,9 +45,7 @@ import com.google.inject.servlet.RequestScoped;
  * 
  * @author Inderjeet Singh
  */
-public class NetworkSwitcherResource extends NetworkSwitcherPiped {
-
-  private final GreazeDispatcherServlet dispatcher;
+public class NetworkSwitcherResource extends NetworkSwitcherWebService {
 
   /**
    * @param responseBuilders Rest response builder for the resource
@@ -76,23 +72,21 @@ public class NetworkSwitcherResource extends NetworkSwitcherPiped {
    */
   public NetworkSwitcherResource(Injector injector, String resourcePrefix,
       GreazeFilterChain filters) {
-    this.dispatcher = new GreazeDispatcherServlet(injector, resourcePrefix, filters);
+    super(new GreazeDispatcherServlet(injector, resourcePrefix, filters));
   }
 
   @Override
   protected void switchNetwork(HttpURLConnectionFake conn) throws IOException {
     URL url = conn.getURL();
     final HttpServletRequest req = new HttpServletRequestFake()
+      .setUrl(url)
       .setRequestMethod(conn.getRequestMethod())
       .setServletPath(url.getPath())
-      .setUrlParams(url.getQuery())
       .setInputStream(conn.getForwardForInput())
       .setHeaders(conn.getHeaders());
     OutputStream reverseForOutput = conn.getReverseForOutput();
     HttpServletResponseFake res = new HttpServletResponseFake(reverseForOutput, conn);
-    InstallableGuiceContext.install(req, res);
-    dispatcher.service(req, res);
-    res.flushBuffer();
+    serviceRequest(req, res);
   }
 
   private static Injector buildInjector(final ResponseBuilderMap responseBuilders,
