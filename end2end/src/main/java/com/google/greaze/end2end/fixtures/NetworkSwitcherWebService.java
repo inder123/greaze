@@ -28,8 +28,10 @@ import javax.servlet.http.HttpServletResponse;
 import com.google.greaze.definition.fixtures.NetworkSwitcherPiped;
 import com.google.greaze.definition.rest.ResourceUrlPaths;
 import com.google.greaze.server.GreazeDispatcherServlet;
+import com.google.greaze.server.filters.GreazeFilterChain;
 import com.google.greaze.server.fixtures.HttpServletRequestFake;
 import com.google.greaze.server.fixtures.HttpServletResponseFake;
+import com.google.inject.Injector;
 import com.google.inject.servlet.GuiceFilter;
 
 /**
@@ -41,12 +43,14 @@ public class NetworkSwitcherWebService extends NetworkSwitcherPiped {
   private static final GuiceFilter guice = new GuiceFilter();
 
   protected final ResourceUrlPaths urlPaths;
-  protected final FilterChain filterChain;
+  protected final FilterChain guiceFilterChain;
 
-  protected NetworkSwitcherWebService(ResourceUrlPaths urlPaths,
-      final GreazeDispatcherServlet dispatcher) {
+  protected NetworkSwitcherWebService(ResourceUrlPaths urlPaths, Injector injector) {
     this.urlPaths = urlPaths;
-    this.filterChain = new FilterChain() {
+    GreazeFilterChain filters = injector.getInstance(GreazeFilterChain.class);
+    final GreazeDispatcherServlet dispatcher =
+        new GreazeDispatcherServlet(injector, urlPaths.getResourcePrefix(), filters);
+    this.guiceFilterChain = new FilterChain() {
       @Override
       public void doFilter(ServletRequest request, ServletResponse response) throws IOException,
           ServletException {
@@ -69,7 +73,7 @@ public class NetworkSwitcherWebService extends NetworkSwitcherPiped {
 
   protected void serviceRequest(HttpServletRequest req, HttpServletResponse res) throws IOException {
     try {
-      guice.doFilter(req, res, filterChain);
+      guice.doFilter(req, res, guiceFilterChain);
       res.flushBuffer();
     } catch (ServletException e) {
       throw new IOException(e);
