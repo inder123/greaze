@@ -20,9 +20,11 @@ import java.net.URL;
 
 import com.google.greaze.definition.CallPath;
 import com.google.greaze.definition.fixtures.NetworkSwitcher;
+import com.google.greaze.definition.rest.ResourceUrlPaths;
 import com.google.greaze.definition.rest.RestResource;
 import com.google.greaze.definition.rest.query.ResourceQuery;
 import com.google.greaze.definition.rest.query.ResourceQueryParams;
+import com.google.greaze.server.filters.GreazeFilterChain;
 import com.google.greaze.webservice.client.ServerConfig;
 import com.google.greaze.webservice.client.WebServiceClient;
 import com.google.gson.GsonBuilder;
@@ -38,15 +40,18 @@ public class ResourceQueryClientFake<R extends RestResource<R>, Q extends Resour
     extends WebServiceClient {
 
   private final NetworkSwitcher networkSwitcher;
+
   public ResourceQueryClientFake(ResourceQuery<R, Q> responseBuilder,
-      Provider<GsonBuilder> serverGsonBuilder, CallPath queryPath) {
-    super(new ServerConfig("http://localhost"));
-    networkSwitcher = new NetworkSwitcherQuery<R, Q>(responseBuilder, serverGsonBuilder, queryPath);
+      Provider<GsonBuilder> serverGsonBuilder, ResourceUrlPaths urlPaths, CallPath queryPath,
+      GreazeFilterChain filters) {
+    super(new ServerConfig(urlPaths.getResourceBaseUrl()));
+    networkSwitcher = new NetworkSwitcherQuery<R, Q>(
+        responseBuilder, serverGsonBuilder, urlPaths, queryPath, filters);
   }
 
-  public ResourceQueryClientFake(Injector injector, CallPath queryPath) {
-    super(new ServerConfig("http://localhost"));
-    networkSwitcher = new NetworkSwitcherQuery<R, Q>(injector, queryPath);
+  public ResourceQueryClientFake(Injector injector, ResourceUrlPaths urlPaths) {
+    super(new ServerConfig(urlPaths.getResourceBaseUrl()));
+    networkSwitcher = new NetworkSwitcherQuery<R, Q>(injector, urlPaths);
   }
 
   @Override

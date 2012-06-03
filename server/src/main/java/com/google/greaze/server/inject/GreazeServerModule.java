@@ -50,31 +50,32 @@ import com.google.inject.servlet.ServletModule;
  */
 public class GreazeServerModule extends ServletModule {
 
-  private final String pathToServlet;
+  private final String servletPath;
   private final Collection<CallPath> servicePaths;
   private final String resourcePrefix;
   private final Logger log = Logger.getLogger(GreazeServerModule.class.getSimpleName());
 
   /**
-   * @param pathToServlet The path to the servlet. For example, /myshop for /myshop/resources/order
+   * @param servletPath The path to the servlet (after excluding the context path).
+   *   For example, /myshop for http://localhost/serverContext/myshop/resources/order
    * @param servicePaths a list of paths corresponding to the supported services. For example,
    *   order callPath for /myshop/resource/1.0/order
    * @param resourcePrefix The resource prefix after the pathToServlet. For example, /resource for
    *   /myshop/resource/1.0/order
    */
-  public GreazeServerModule(String pathToServlet,
+  public GreazeServerModule(String servletPath,
       Collection<CallPath> servicePaths, String resourcePrefix) {
-    Preconditions.checkArgument(!Strings.isNullOrEmpty(pathToServlet));
+    Preconditions.checkArgument(!Strings.isNullOrEmpty(servletPath));
     Preconditions.checkArgument(!Strings.isNullOrEmpty(resourcePrefix));
     Preconditions.checkArgument(servicePaths != null && !servicePaths.isEmpty());
-    this.pathToServlet = pathToServlet;
+    this.servletPath = servletPath;
     this.servicePaths = servicePaths;
     this.resourcePrefix = resourcePrefix;
   }
 
   @Override
   protected void configureServlets() {
-    serve(pathToServlet + "/*").with(GreazeDispatcherServlet.class);
+    serve(servletPath + "/*").with(GreazeDispatcherServlet.class);
   }
 
   @Named("resource-prefix")
@@ -87,10 +88,8 @@ public class GreazeServerModule extends ServletModule {
   @RequestScoped
   @Provides
   public CallPath getCallPath(HttpServletRequest request) {
-    String servletPath = request.getServletPath();
-    if (LogConfig.FINE) log.fine("Parsing servletPath : " + servletPath);
-    int index = pathToServlet.length();
-    String incomingPath = servletPath.substring(index);
+    String incomingPath = request.getPathInfo();
+    if (LogConfig.FINE) log.fine("Incoming pathInfo: " + incomingPath);
     for (CallPath servicePath : servicePaths) {
       CallPathParser callPathParser = servicePath.toParser();
       try {
@@ -134,14 +133,9 @@ public class GreazeServerModule extends ServletModule {
   @Provides
   public RestRequestBase getRestRequest(GsonBuilder gsonBuilder, RestCallSpec callSpec,
       CallPath callPath, HttpServletRequest request, ResourceIdFactory<Id<?>> idFactory) {
-    RestRequestBase restRequest = (RestRequestBase) request.getAttribute("greazeRestRequest");
-    if (restRequest == null) {
       RestRequestBaseReceiver requestReceiver =
           new RestRequestBaseReceiver(gsonBuilder, callSpec.getRequestSpec());
-      restRequest = requestReceiver.receive(request, idFactory.createId(callPath.getResourceId()));
-      request.setAttribute("greazeRestRequest", restRequest);
-    }
-    return restRequest;
+      return requestReceiver.receive(request, idFactory.createId(callPath.getResourceId()));
   }
 
   @SuppressWarnings("rawtypes")

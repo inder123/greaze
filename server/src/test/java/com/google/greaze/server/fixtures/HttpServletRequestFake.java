@@ -31,6 +31,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 
 import com.google.greaze.definition.internal.utils.GreazeStrings;
+import com.google.greaze.definition.rest.ResourceUrlPaths;
 
 /**
  * A test fixture for {@link HttpServletRequest}
@@ -39,6 +40,7 @@ import com.google.greaze.definition.internal.utils.GreazeStrings;
  */
 @SuppressWarnings("rawtypes")
 public final class HttpServletRequestFake implements HttpServletRequest {
+  private String contextPath;
   private String method;
   private final Map<String, Object> attributes = new HashMap<String, Object>();
   private Map<String, String[]> urlParams = new HashMap<String, String[]>();
@@ -46,18 +48,14 @@ public final class HttpServletRequestFake implements HttpServletRequest {
   private ServletInputStream inputStream;
   private Map<String, String> headers;
   private URL url;
+  private String pathInfo;
 
-  public HttpServletRequestFake setUrl(String url) {
-    try {
-      return setUrl(new URL(url));
-    } catch (MalformedURLException e) {
-      throw new RuntimeException(e);
-    }
-  }
-
-  public HttpServletRequestFake setUrl(URL url) {
-    this.url = url;
+  public HttpServletRequestFake setResourceUrlPaths(URL actualUrl, ResourceUrlPaths urlPaths) {
+    this.url = actualUrl;
+    this.contextPath = urlPaths.getContextPath();
     setUrlParams(url.getQuery());
+    setServletPath(urlPaths.getServletPath());
+    this.pathInfo = urlPaths.getPathInfo(actualUrl);
     return this;
   }
 
@@ -316,7 +314,7 @@ public final class HttpServletRequestFake implements HttpServletRequest {
 
   @Override
   public String getPathInfo() {
-    return null;
+    return pathInfo;
   }
 
   @Override
@@ -326,10 +324,7 @@ public final class HttpServletRequestFake implements HttpServletRequest {
 
   @Override
   public String getContextPath() {
-    // For http://localhost:90/fake/abcd/efg?a=10 returns /fake
-    String requestUri = getRequestURI();
-    String pathWithoutSlash = requestUri.substring(1);
-    return requestUri.substring(0, 1+pathWithoutSlash.indexOf('/'));
+    return contextPath;
   }
 
   @Override

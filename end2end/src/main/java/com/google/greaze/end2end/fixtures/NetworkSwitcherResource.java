@@ -17,12 +17,12 @@ package com.google.greaze.end2end.fixtures;
 
 import java.io.IOException;
 import java.io.OutputStream;
-import java.net.URL;
 import java.util.Collection;
 
 import javax.servlet.http.HttpServletRequest;
 
 import com.google.greaze.definition.CallPath;
+import com.google.greaze.definition.rest.ResourceUrlPaths;
 import com.google.greaze.definition.rest.RestCallSpecMap;
 import com.google.greaze.rest.server.ResponseBuilderMap;
 import com.google.greaze.server.GreazeDispatcherServlet;
@@ -47,6 +47,8 @@ import com.google.inject.servlet.RequestScoped;
  */
 public class NetworkSwitcherResource extends NetworkSwitcherWebService {
 
+  private final ResourceUrlPaths urlPaths;
+
   /**
    * @param responseBuilders Rest response builder for the resource
    * @param restCallSpecMap A map of call paths to RestCallSpecs
@@ -54,34 +56,26 @@ public class NetworkSwitcherResource extends NetworkSwitcherWebService {
    * @param servicePaths All the paths for the resources available on the server. Same as
    *   servicePaths parameter for
    *   {@link GreazeServerModule#GreazeServerModule(String, Collection, String)
-   * @param resourcePrefix the resource prefix after the path to Servlet. For example, /resource
-   *   for /myshop/resource/1.0/order. Same as resourcePrefix parameter for
-   *   {@link GreazeServerModule#GreazeServerModule(String, Collection, String)
    */
   public NetworkSwitcherResource(ResponseBuilderMap responseBuilders,
       RestCallSpecMap restCallSpecMap, GsonBuilder serverGson,
-      Collection<CallPath> servicePaths, String resourcePrefix, GreazeFilterChain filters) {
-    this(buildInjector(responseBuilders, restCallSpecMap, serverGson, servicePaths, resourcePrefix),
-        resourcePrefix, filters);
+      Collection<CallPath> servicePaths, ResourceUrlPaths urlPaths,
+      GreazeFilterChain filters) {
+    this(buildInjector(responseBuilders, restCallSpecMap, serverGson, servicePaths, urlPaths, filters),
+        urlPaths);
   }
 
-  /**
-   * @param resourcePrefix the resource prefix after the path to Servlet. For example, /resource
-   *   for /myshop/resource/1.0/order. Same as resourcePrefix parameter for
-   *   {@link GreazeServerModule#GreazeServerModule(String, Collection, String)
-   */
-  public NetworkSwitcherResource(Injector injector, String resourcePrefix,
-      GreazeFilterChain filters) {
-    super(new GreazeDispatcherServlet(injector, resourcePrefix, filters));
+  public NetworkSwitcherResource(Injector injector, ResourceUrlPaths urlPaths) {
+    super(new GreazeDispatcherServlet(injector, urlPaths.getResourcePrefix(),
+        injector.getInstance(GreazeFilterChain.class)));
+    this.urlPaths = urlPaths;
   }
 
   @Override
   protected void switchNetwork(HttpURLConnectionFake conn) throws IOException {
-    URL url = conn.getURL();
     final HttpServletRequest req = new HttpServletRequestFake()
-      .setUrl(url)
+      .setResourceUrlPaths(conn.getURL(), urlPaths)
       .setRequestMethod(conn.getRequestMethod())
-      .setServletPath(url.getPath())
       .setInputStream(conn.getForwardForInput())
       .setHeaders(conn.getHeaders());
     OutputStream reverseForOutput = conn.getReverseForOutput();
@@ -91,7 +85,8 @@ public class NetworkSwitcherResource extends NetworkSwitcherWebService {
 
   private static Injector buildInjector(final ResponseBuilderMap responseBuilders,
       final RestCallSpecMap restCallSpecMap, final GsonBuilder serverGson,
-      Collection<CallPath> servicePaths, String resourcePrefix) {
+      Collection<CallPath> servicePaths, ResourceUrlPaths urlPaths,
+      final GreazeFilterChain filters) {
     @SuppressWarnings("unused")
     Module module = new AbstractModule() {
       @Override
@@ -110,6 +105,12 @@ public class NetworkSwitcherResource extends NetworkSwitcherWebService {
         return restCallSpecMap;
       }
 
+      @Singleton
+      @Provides
+      public GreazeFilterChain getFilters() {
+        return filters == null ? new GreazeFilterChain() : filters;
+      }
+
       @RequestScoped
       @Provides
       public GsonBuilder getGsonBuilder() {
@@ -122,7 +123,8 @@ public class NetworkSwitcherResource extends NetworkSwitcherWebService {
         return serverGson.create();
       }
     };
-    GreazeServerModule gsm = new GreazeServerModule("/fake", servicePaths, resourcePrefix);
+    GreazeServerModule gsm = new GreazeServerModule(
+        urlPaths.getServletPath(), servicePaths, urlPaths.getResourcePrefix());
     return Guice.createInjector(gsm, module);
   }
 }

@@ -25,6 +25,7 @@ import com.google.greaze.definition.HeaderMapSpec;
 import com.google.greaze.definition.TypedKey;
 import com.google.greaze.definition.rest.Id;
 import com.google.greaze.definition.rest.IdGsonTypeAdapterFactory;
+import com.google.greaze.definition.rest.ResourceUrlPaths;
 import com.google.greaze.definition.rest.RestCallSpec;
 import com.google.greaze.definition.rest.RestCallSpecMap;
 import com.google.greaze.definition.rest.RestRequestBase;
@@ -62,6 +63,8 @@ public class InlineRequestFunctionalTest extends TestCase {
     String resourcePrefix = "/rest";
     CallPath resourcePath = new CallPathParser(
         resourcePrefix, false, "/employee").parse(resourcePrefix + "/employee");
+    ResourceUrlPaths urlPaths = new ResourceUrlPaths("http://localhost/fake/service/rest",
+        "/fake", "/service", resourcePrefix);
 
     this.employees = new RepositoryInMemory<Employee>();
     RestResponseBuilder<Employee> responseBuilder = new ResponseBuilderEmployee(employees);
@@ -81,7 +84,7 @@ public class InlineRequestFunctionalTest extends TestCase {
     GsonBuilder gsonBuilder = new GsonBuilder()
       .registerTypeAdapterFactory(new IdGsonTypeAdapterFactory());
     RestClientStub stub = new RestClientStubFake(responseBuilders,
-        restCallSpecMap, gsonBuilder, ImmutableList.of(resourcePath), resourcePrefix, null);
+        restCallSpecMap, gsonBuilder, ImmutableList.of(resourcePath), urlPaths, null);
     this.client = new ResourceDepotClient<Employee>(
         stub, Employee.class, callSpec, new GsonBuilder(), true);
     this.context = new WebContext.Builder()
