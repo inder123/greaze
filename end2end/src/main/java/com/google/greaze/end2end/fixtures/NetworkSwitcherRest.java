@@ -39,13 +39,13 @@ import com.google.inject.servlet.GuiceFilter;
  *
  * @author Inderjeet Singh
  */
-public class NetworkSwitcherWebService extends NetworkSwitcherPiped {
+public class NetworkSwitcherRest extends NetworkSwitcherPiped {
   private static final GuiceFilter guice = new GuiceFilter();
 
   protected final ResourceUrlPaths urlPaths;
   protected final FilterChain guiceFilterChain;
 
-  protected NetworkSwitcherWebService(ResourceUrlPaths urlPaths, Injector injector) {
+  protected NetworkSwitcherRest(Injector injector, ResourceUrlPaths urlPaths) {
     this.urlPaths = urlPaths;
     GreazeFilterChain filters = injector.getInstance(GreazeFilterChain.class);
     final GreazeDispatcherServlet dispatcher =
