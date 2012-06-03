@@ -28,8 +28,15 @@ import com.google.greaze.rest.server.ResponseBuilderMap;
 import com.google.greaze.server.filters.GreazeFilterChain;
 import com.google.greaze.server.inject.GreazeServerModule;
 import com.google.greaze.webservice.client.ServerConfig;
+import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import com.google.inject.AbstractModule;
+import com.google.inject.Guice;
 import com.google.inject.Injector;
+import com.google.inject.Module;
+import com.google.inject.Provides;
+import com.google.inject.Singleton;
+import com.google.inject.servlet.RequestScoped;
 
 /**
  * A fake for use in tests for {@link RestClientStub}
@@ -53,16 +60,14 @@ public class RestClientStubFake extends RestClientStub {
   public RestClientStubFake(ResponseBuilderMap responseBuilders, RestCallSpecMap restCallSpecMap,
       GsonBuilder serverGson, Collection<CallPath> servicePaths, ResourceUrlPaths urlPaths,
       GreazeFilterChain filters) {
-    super(new ServerConfig(urlPaths.getResourceBaseUrl()));
-    this.urlPaths = urlPaths;
-    this.networkSwitcher = new NetworkSwitcherResource(
-        responseBuilders, restCallSpecMap, serverGson, servicePaths, urlPaths, filters);
+    this(buildInjector(
+        responseBuilders, restCallSpecMap, serverGson, servicePaths, urlPaths, filters), urlPaths);
   }
 
   public RestClientStubFake(Injector injector, ResourceUrlPaths urlPaths) {
     super(new ServerConfig(urlPaths.getResourceBaseUrl()));
     this.urlPaths = urlPaths;
-    this.networkSwitcher = new NetworkSwitcherResource(injector, urlPaths);
+    this.networkSwitcher = new NetworkSwitcherRest(injector, urlPaths);
   }
 
   public String getServiceBaseUrl() {
@@ -72,5 +77,50 @@ public class RestClientStubFake extends RestClientStub {
   @Override
   public HttpURLConnection openConnection(URL url) {
     return networkSwitcher.get(url);
+  }
+
+  private static Injector buildInjector(final ResponseBuilderMap responseBuilders,
+      final RestCallSpecMap restCallSpecMap, final GsonBuilder serverGson,
+      Collection<CallPath> servicePaths, ResourceUrlPaths urlPaths,
+      final GreazeFilterChain filters) {
+    @SuppressWarnings("unused")
+    Module module = new AbstractModule() {
+      @Override
+      protected void configure() {
+      }
+
+      @Singleton
+      @Provides
+      public ResponseBuilderMap getResponseBuilderMap() {
+        return responseBuilders;
+      }
+
+      @Singleton
+      @Provides
+      public RestCallSpecMap getRestCallSpecMap() {
+        return restCallSpecMap;
+      }
+
+      @Singleton
+      @Provides
+      public GreazeFilterChain getFilters() {
+        return filters == null ? new GreazeFilterChain() : filters;
+      }
+
+      @RequestScoped
+      @Provides
+      public GsonBuilder getGsonBuilder() {
+        return serverGson;
+      }
+
+      @RequestScoped
+      @Provides
+      public Gson getGson() {
+        return serverGson.create();
+      }
+    };
+    GreazeServerModule gsm = new GreazeServerModule(
+        urlPaths.getServletPath(), servicePaths, urlPaths.getResourcePrefix());
+    return Guice.createInjector(gsm, module);
   }
 }
