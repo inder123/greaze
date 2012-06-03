@@ -15,9 +15,6 @@
  */
 package com.google.greaze.end2end.fixtures;
 
-import java.io.IOException;
-import java.io.OutputStream;
-
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
@@ -32,8 +29,6 @@ import com.google.greaze.rest.server.ResponseBuilderMap;
 import com.google.greaze.server.GreazeDispatcherServlet;
 import com.google.greaze.server.dispatcher.ResourceQueryDispatcher;
 import com.google.greaze.server.filters.GreazeFilterChain;
-import com.google.greaze.server.fixtures.HttpServletRequestFake;
-import com.google.greaze.server.fixtures.HttpServletResponseFake;
 import com.google.greaze.server.inject.GreazeServerModule;
 import com.google.gson.GsonBuilder;
 import com.google.inject.AbstractModule;
@@ -52,8 +47,6 @@ import com.google.inject.Singleton;
 public class NetworkSwitcherQuery<R extends RestResource<R>, Q extends ResourceQueryParams>
     extends NetworkSwitcherWebService {
 
-  private final ResourceUrlPaths urlPaths;
-
   public NetworkSwitcherQuery(ResourceQuery<R, Q> queryHandler,
       Provider<GsonBuilder> serverGsonBuilder, ResourceUrlPaths urlPaths, CallPath queryCallPath,
       GreazeFilterChain filters) {
@@ -61,21 +54,8 @@ public class NetworkSwitcherQuery<R extends RestResource<R>, Q extends ResourceQ
   }
 
   public NetworkSwitcherQuery(Injector injector, ResourceUrlPaths urlPaths) {
-    super(new GreazeDispatcherServlet(injector, urlPaths.getResourcePrefix(),
+    super(urlPaths, new GreazeDispatcherServlet(injector, urlPaths.getResourcePrefix(),
         injector.getInstance(GreazeFilterChain.class)));
-    this.urlPaths = urlPaths;
-  }
-
-  @Override
-  protected void switchNetwork(HttpURLConnectionFake conn) throws IOException {
-    HttpServletRequest req = new HttpServletRequestFake()
-      .setResourceUrlPaths(conn.getURL(), urlPaths)
-      .setRequestMethod(conn.getRequestMethod())
-      .setHeaders(conn.getHeaders())
-      .setInputStream(conn.getForwardForInput());
-    OutputStream reverseForOutput = conn.getReverseForOutput();
-    HttpServletResponseFake res = new HttpServletResponseFake(reverseForOutput, conn);
-    serviceRequest(req, res);
   }
 
   private static <R extends RestResource<R>, Q extends ResourceQueryParams> Injector buildInjector(
