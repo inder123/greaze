@@ -72,6 +72,10 @@ public final class ResourceUrlPaths {
     return urlValue.substring(0, index);
   }
 
+  public String getServletPathBaseUrl() {
+    return getContextUrl() + servletPath;
+  }
+
   public String getResourceBaseUrl() {
     return getContextUrl() + servletPath + resourcePrefix;
   }

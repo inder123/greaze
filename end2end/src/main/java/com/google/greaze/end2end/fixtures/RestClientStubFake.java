@@ -66,7 +66,7 @@ public class RestClientStubFake extends RestClientStub {
   }
 
   public String getServiceBaseUrl() {
-    return urlPaths.getContextUrl() + urlPaths.getServletPath();
+    return urlPaths.getServletPathBaseUrl();
   }
 
   @Override
