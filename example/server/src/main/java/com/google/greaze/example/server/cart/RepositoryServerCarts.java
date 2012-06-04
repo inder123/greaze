@@ -17,7 +17,7 @@ package com.google.greaze.example.server.cart;
 
 import java.util.List;
 
-import com.google.appengine.repackaged.com.google.common.collect.Lists;
+import com.google.common.collect.Lists;
 import com.google.greaze.definition.rest.Id;
 import com.google.greaze.example.definition.model.Cart;
 import com.google.greaze.example.definition.model.LineItem;
