@@ -61,6 +61,9 @@ public final class UrlParamsExtractor {
   }
 
   public UrlParams extractUrlParams(final Map<String, String> params) {
+    if (params.isEmpty()) {
+      return new UrlParams.Builder(spec).build();
+    }
     NameValueMap requestParams = new NameValueMap() {
       @Override
       public String getParameterValue(String name) {

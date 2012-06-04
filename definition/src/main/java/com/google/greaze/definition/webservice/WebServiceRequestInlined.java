@@ -15,6 +15,7 @@
  */
 package com.google.greaze.definition.webservice;
 
+import java.util.HashMap;
 import java.util.Map;
 
 import com.google.greaze.definition.HttpMethod;
@@ -27,10 +28,11 @@ import com.google.greaze.definition.HttpMethod;
  */
 public final class WebServiceRequestInlined {
 
-  private final HttpMethod method;
-  private final Map<String, String> headers;
-  private final Map<String, String> urlParams;
+  private HttpMethod method;
+  private Map<String, String> headers;
+  private Map<String, String> urlParams;
   private final RequestBody body;
+
   public WebServiceRequestInlined(HttpMethod method, Map<String, String> headers,
       Map<String, String> urlParams, RequestBody body) {
     this.method = method;
@@ -39,8 +41,20 @@ public final class WebServiceRequestInlined {
     this.body = body;
   }
 
+  public void postInit(HttpMethod method) {
+    if (this.method == null) {
+      this.method = method;
+    }
+    if (headers == null) headers = new HashMap<String, String>();
+    if (urlParams == null) urlParams = new HashMap<String, String>();
+  }
+
   public HttpMethod getMethod() {
     return method;
+  }
+
+  public void setMethod(HttpMethod method) {
+    this.method = method;
   }
 
   public Map<String, String> getHeaders() {

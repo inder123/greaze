@@ -22,6 +22,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import javax.servlet.ServletInputStream;
 import javax.servlet.http.HttpServletRequest;
 
 import com.google.greaze.definition.HeaderMap;
@@ -212,8 +213,11 @@ public abstract class RequestData {
     }
     private static WebServiceRequestInlined extractInlineRequest(
         HttpServletRequest request, Gson gson) throws IOException {
-      return gson.fromJson(new InputStreamReader(request.getInputStream()),
-          WebServiceRequestInlined.class);
+      ServletInputStream input = request.getInputStream();
+      WebServiceRequestInlined inlinedRequest =
+          gson.fromJson(new InputStreamReader(input), WebServiceRequestInlined.class);
+      inlinedRequest.postInit(HttpMethod.getMethod(request.getMethod()));
+      return inlinedRequest;
     }
   }
 }
