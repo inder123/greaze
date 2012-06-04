@@ -13,7 +13,6 @@ import java.io.EOFException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.UnsupportedEncodingException;
-import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLDecoder;
 import java.security.Principal;
@@ -54,8 +53,11 @@ public final class HttpServletRequestFake implements HttpServletRequest {
     this.url = actualUrl;
     this.contextPath = urlPaths.getContextPath();
     setUrlParams(url.getQuery());
-    setServletPath(urlPaths.getServletPath());
-    this.pathInfo = urlPaths.getPathInfo(actualUrl);
+    // Since the GuiceFilter is applied to *, the servlet path will include the PathInfo as well.
+    // It also makes the PathInfo null.
+    String fullServletPath = urlPaths.getServletPath() + urlPaths.getPathInfo(actualUrl);
+    setServletPath(fullServletPath);
+    this.pathInfo = null;
     return this;
   }
 
