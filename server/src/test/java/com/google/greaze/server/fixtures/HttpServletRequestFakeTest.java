@@ -62,7 +62,7 @@ public class HttpServletRequestFakeTest extends TestCase {
   }
 
   public void testServletPath() {
-    assertEquals("/abcd", req1.getServletPath());
-    assertEquals("/abcd", req2.getServletPath());
+    assertEquals("/abcd/resource/1.0/order/232", req1.getServletPath());
+    assertEquals("/abcd/resource/1.0/order/121", req2.getServletPath());
   }
 }
