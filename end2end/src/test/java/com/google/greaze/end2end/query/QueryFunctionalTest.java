@@ -98,6 +98,24 @@ public class QueryFunctionalTest extends TestCase {
     }
   }
 
+  public void testParamsRoundTripInlined() throws Exception {
+    CallPath queryPath =
+        new CallPathParser("/rest", true, "/employee").parse("/rest/1.2/employee");
+    ResourceQueryClientFake<Employee, QueryEmployeeByName> stub =
+      new ResourceQueryClientFake<Employee, QueryEmployeeByName>(
+          queryHandler, gsonBuilder, urlPaths, queryPath, null);
+    ResourceQueryClient<Employee, QueryEmployeeByName> queryClient =
+        new ResourceQueryClient<Employee, QueryEmployeeByName>(
+            stub, queryPath, QueryEmployeeByName.class, gsonBuilder, Employee.class, true);
+
+    QueryEmployeeByName queryByName = new QueryEmployeeByName("foo");
+    List<Employee> results = queryClient.query(queryByName, new WebContext());
+    assertEquals(2, results.size());
+    for (Employee employee : results) {
+      assertEquals("foo", employee.getName());
+    }
+  }
+
   public void testQueryWithAServerError() {
     try {
       queryClient.query(new QueryEmployeeByName(BAD_EMPLOYEE), new WebContext());

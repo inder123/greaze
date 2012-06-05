@@ -46,7 +46,12 @@ public class UrlParams {
     }
 
     public Builder putAll(UrlParams urlParams) {
-      if (urlParams != null) this.map.putAll(urlParams.map);
+      if (urlParams != null) {
+        this.map.putAll(urlParams.map);
+        if (urlParams.params != null) {
+          this.params = urlParams.params;
+        }
+      }
       return this;
     }
 
