@@ -22,6 +22,7 @@ import java.lang.reflect.Field;
 import java.lang.reflect.Type;
 import java.lang.reflect.TypeVariable;
 import java.net.URLDecoder;
+import java.util.HashMap;
 import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
@@ -56,45 +57,14 @@ public final class UrlParamsExtractor {
     this.gson = gson;
   }
 
-  interface NameValueMap {
-    public String getParameterValue(String name);
+  public UrlParams extractUrlParams(HttpServletRequest request) {
+    return extractUrlParams(createParameterMap(request));
   }
 
-  public UrlParams extractUrlParams(final Map<String, String> params) {
-    if (params.isEmpty()) {
+  public UrlParams extractUrlParams(Map<String, String> requestParams) {
+    if (requestParams.isEmpty()) {
       return new UrlParams.Builder(spec).build();
     }
-    NameValueMap requestParams = new NameValueMap() {
-      @Override
-      public String getParameterValue(String name) {
-        return params.get(name);
-      }
-    };
-    return extractUrlParams(requestParams);
-  }
-
-  public UrlParams extractUrlParams(final HttpServletRequest request) {
-    NameValueMap requestParams = new NameValueMap() {
-      @Override
-      public String getParameterValue(String name) {
-        String[] urlParamValues = request.getParameterValues(name);
-        if (urlParamValues != null) {
-          GreazePreconditions.checkArgument(urlParamValues.length <= 1,
-            "Greaze supports only one URL parameter value per name.");
-          if (urlParamValues.length == 1) {
-            return urlParamValues[0];
-          }
-        }
-        return null;
-      }
-    };
-    return extractUrlParams(requestParams);
-  }
-
-  /**
-   * Visible for testing only
-   */
-  UrlParams extractUrlParams(NameValueMap requestParams) {
     try {
       UrlParams.Builder paramsBuilder = new UrlParams.Builder(spec);
       if (spec.hasParamsObject()) {
@@ -147,9 +117,9 @@ public final class UrlParamsExtractor {
     }
   }
 
-  private void extractUrlParam(String name, Type type, NameValueMap requestParams,
+  private void extractUrlParam(String name, Type type, Map<String, String> requestParams,
       ValueReceiver receiver) throws IOException {
-    String urlParamValue = requestParams.getParameterValue(name);
+    String urlParamValue = requestParams.get(name);
     if (GreazeStrings.isNotEmpty(urlParamValue)) {
       urlParamValue = decodeUrlParam(urlParamValue);
       if (type instanceof TypeVariable || type == Object.class) {
@@ -164,6 +134,33 @@ public final class UrlParamsExtractor {
   
   private interface ValueReceiver {
     void put(String name, Type type, Object value) throws IOException;
+  }
+
+  /**
+   * Extracts the parameters as a Map<String, String>. Throws error if a url parameter
+   * is repeated.
+   */
+  private static Map<String, String> createParameterMap(HttpServletRequest request) {
+    Map<String, String> urlParamsStringMap = new HashMap<String, String>();
+    @SuppressWarnings("unchecked")
+    Map<String, String[]> requestParameterMap = request.getParameterMap();
+    for (Map.Entry<String, String[]> param : requestParameterMap.entrySet()) {
+      String paramName = param.getKey();
+      String[] urlParamValues = param.getValue();
+      if (urlParamValues != null) {
+        if (urlParamValues.length == 1) {
+          urlParamsStringMap.put(paramName, urlParamValues[0]);
+        } else if (urlParamValues.length > 1) {
+          String value = urlParamValues[0];
+          for (String v : urlParamValues) {
+            GreazePreconditions.checkArgument(GreazeStrings.equals(value, v),
+                "Found multiple values for " + paramName + ":" + urlParamValues
+                + ". Greaze supports only one URL parameter value per name.");
+          }
+        }
+      }
+    }
+    return urlParamsStringMap;
   }
 
   /** Visible for testing only */
