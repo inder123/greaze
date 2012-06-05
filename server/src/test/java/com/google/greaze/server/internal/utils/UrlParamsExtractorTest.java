@@ -17,6 +17,7 @@ package com.google.greaze.server.internal.utils;
 
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.TypeVariable;
+import java.util.HashMap;
 import java.util.Map;
 
 import junit.framework.TestCase;
@@ -102,21 +103,21 @@ public class UrlParamsExtractorTest extends TestCase {
     assertNull(actual.occupation);
   }
 
-  private static class Params implements UrlParamsExtractor.NameValueMap {
-    private final Map<String, String> params = Maps.newHashMap();
+  private static class Params extends HashMap<String, String> {
+//    private final Map<String, String> params = Maps.newHashMap();
 
     Params(String src) {
       for (String pair : src.split("&")) {
         String[] parts = pair.split("=");
         Preconditions.checkArgument(parts.length == 2);
-        params.put(parts[0], parts[1]);
+        put(parts[0], parts[1]);
       }
     }
 
-    @Override
-    public String getParameterValue(String name) {
-      return params.get(name);
-    }
+//    @Override
+//    public String getParameterValue(String name) {
+//      return params.get(name);
+//    }
   }
 
   private static class MySelectionFields {
