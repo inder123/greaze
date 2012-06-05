@@ -38,6 +38,7 @@ import com.google.gson.GsonBuilder;
  */
 public class ResourceQueryClient<R extends RestResource<R>, Q extends ResourceQueryParams>
     extends ResourceQueryBaseClient<Id<R>, R, Q> implements ResourceQuery<R, Q> {
+
   /**
    * @param stub stub containing server info to access the rest client
    * @param callPath relative path to the resource
