@@ -15,7 +15,10 @@
  */
 package com.google.greaze.definition.webservice;
 
+import java.io.IOException;
 import java.lang.reflect.Type;
+import java.util.HashMap;
+import java.util.Map;
 
 import com.google.greaze.definition.ContentBody;
 import com.google.greaze.definition.ContentBodySpec;
@@ -23,6 +26,8 @@ import com.google.gson.Gson;
 import com.google.gson.TypeAdapter;
 import com.google.gson.TypeAdapterFactory;
 import com.google.gson.reflect.TypeToken;
+import com.google.gson.stream.JsonReader;
+import com.google.gson.stream.JsonWriter;
 
 abstract class GsonAdapterFactoryBase<CB extends ContentBody, CBS extends ContentBodySpec>
     implements TypeAdapterFactory {
@@ -37,39 +42,101 @@ abstract class GsonAdapterFactoryBase<CB extends ContentBody, CBS extends Conten
 
   @SuppressWarnings("unchecked")
   @Override
-  public <T> TypeAdapter<T> create(Gson gson, TypeToken<T> type) {
-    return bodyClass == type.getRawType()
-        ? (TypeAdapter<T>) create(gson) // runtime check guarantees 'T == ContentBody'
-        : null; 
+  public <T> TypeAdapter<T> create(final Gson gson, TypeToken<T> type) {
+    if (bodyClass != type.getRawType()) return null;
+    return (TypeAdapter<T>) create(gson);
   }
 
-  @SuppressWarnings("rawtypes")
-  private TypeAdapter<ContentBody> create(Gson gson) {
-    TypeAdapter simpleBodyAdapter = gson.getAdapter(TypeToken.get(spec.getSimpleBodyType()));
+  @SuppressWarnings({"rawtypes", "unchecked"})
+  private TypeAdapter<ContentBody> create(final Gson gson) {
+    final TypeAdapter simpleBodyAdapter = gson.getAdapter(TypeToken.get(spec.getSimpleBodyType()));
     switch(spec.getContentBodyType()) {
       case SIMPLE:
-        return new GsonAdapterSimpleBody<ContentBody>(simpleBodyAdapter) {
+        return new TypeAdapter<ContentBody>() {
           @Override
-          public ContentBody.Builder createBuilder() {
-            return GsonAdapterFactoryBase.this.createBuilder();
+          public ContentBody read(JsonReader reader) throws IOException {
+            return createBuilder()
+                .setSimpleBody(simpleBodyAdapter.read(reader))
+                .build();
+          }
+          public void write(JsonWriter writer, ContentBody value) throws IOException {
+            ContentBody src = (ContentBody) value;
+            simpleBodyAdapter.write(writer, src.getSimpleBody());
           }
         };
       case LIST:
-        return new GsonAdapterListBody<ContentBody>(simpleBodyAdapter) {
+        return new TypeAdapter<ContentBody>() {
           @Override
-          public ContentBody.Builder createBuilder() {
-            return GsonAdapterFactoryBase.this.createBuilder();
+          public ContentBody read(JsonReader reader) throws IOException {
+            ContentBody.Builder builder = createBuilder();
+            reader.beginArray();
+            while (reader.hasNext()) {
+              builder.addToListBody(simpleBodyAdapter.read(reader));
+            }
+            reader.endArray();
+            return (ContentBody) builder.build();
+          }
+          @Override
+          public void write(JsonWriter writer, ContentBody value) throws IOException {
+            ContentBody src = (ContentBody) value;
+            writer.beginArray();
+            for(Object entry : src.getListBody()) {
+              simpleBodyAdapter.write(writer, entry);
+            }
+            writer.endArray();
           }
         };
       case MAP:
-        return new GsonAdapterMapBody<ContentBody>(gson, spec) {
+        return new TypeAdapter<ContentBody>() {
+          private final LazyAdapterMap adapters = new LazyAdapterMap(gson, spec);
           @Override
-          public ContentBody.Builder createBuilder() {
-            return GsonAdapterFactoryBase.this.createBuilder();
+          public ContentBody read(JsonReader reader) throws IOException {
+            ContentBody.Builder builder = createBuilder();
+            reader.beginObject();
+            while (reader.hasNext()) {
+              String key = reader.nextName();
+              TypeAdapter adapter = adapters.getAdapter(key);
+              Object value = adapter.read(reader);
+              builder.put(key, value);
+            }
+            reader.endObject();
+            return (CB) builder.build();
+          }
+          @Override
+          public void write(JsonWriter writer, ContentBody value) throws IOException {
+            ContentBody src = (ContentBody) value;
+            writer.beginObject();
+            for(Map.Entry<String, Object> entry : src.entrySet()) {
+              String key = entry.getKey();
+              TypeAdapter adapter = adapters.getAdapter(key);
+              writer.name(key);
+              adapter.write(writer, entry.getValue());
+            }
+            writer.endObject();
           }
         };
       default:
         throw new IllegalArgumentException("unexpected: " + spec.getContentBodyType());
+    }
+  }
+
+  @SuppressWarnings("rawtypes")
+  private static final class LazyAdapterMap {
+    private final Gson gson;
+    private final ContentBodySpec spec;
+    private final Map<String, TypeAdapter> map = new HashMap<String, TypeAdapter>();
+    LazyAdapterMap(Gson gson, ContentBodySpec spec) {
+      this.gson = gson;
+      this.spec = spec;
+    }
+    TypeAdapter getAdapter(String paramName) {
+      TypeAdapter adapter = map.get(paramName);
+      if (adapter == null) {
+        Type entryType = spec.getTypeFor(paramName);
+        adapter = gson.getAdapter(TypeToken.get(entryType));
+        map.put(paramName, adapter);
+      }
+      return adapter;
     }
   }
 }
