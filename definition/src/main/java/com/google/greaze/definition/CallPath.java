@@ -52,6 +52,16 @@ public final class CallPath {
     this.resourceId = resourceId;
   }
 
+  /**
+   * Creates a copy of the specified callPath but with the specified resource id
+   */
+  public CallPath(CallPath callPath, String resourceId) {
+    this.basePath = callPath.basePath;
+    this.version = callPath.version;
+    this.servicePath = callPath.servicePath;
+    this.resourceId = resourceId;
+  }
+
   public String getBasePath() {
     return basePath;
   }
