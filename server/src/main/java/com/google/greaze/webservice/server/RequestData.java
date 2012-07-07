@@ -16,13 +16,11 @@
 package com.google.greaze.webservice.server;
 
 import java.io.IOException;
-import java.io.InputStreamReader;
 import java.lang.reflect.Type;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import javax.servlet.ServletInputStream;
 import javax.servlet.http.HttpServletRequest;
 
 import com.google.greaze.definition.HeaderMap;
@@ -31,6 +29,7 @@ import com.google.greaze.definition.HttpMethod;
 import com.google.greaze.definition.UrlParams;
 import com.google.greaze.definition.UrlParamsSpec;
 import com.google.greaze.definition.internal.utils.GreazeStrings;
+import com.google.greaze.definition.internal.utils.Streams;
 import com.google.greaze.definition.webservice.RequestBody;
 import com.google.greaze.definition.webservice.RequestBodySpec;
 import com.google.greaze.definition.webservice.RequestSpec;
@@ -50,6 +49,7 @@ import com.google.gson.JsonSyntaxException;
  * @author Inderjeet Singh
  */
 public abstract class RequestData {
+  private static final String REQUEST_BODY_JSON = "Greaze-Request-Body-Json";
   private final boolean inlined;
   private final RequestSpec spec;
   private final Gson gson;
@@ -133,10 +133,11 @@ public abstract class RequestData {
   }
 
   public WebServiceRequest get() {
-    return new WebServiceRequest(method, headers, urlParams, requestBody, inlined);
+    return new WebServiceRequest(method, headers, urlParams, requestBody, spec, inlined);
   }
 
   private static final class RequestDataHttpBacked extends RequestData {
+
     private RequestDataHttpBacked(HttpServletRequest request, RequestSpec spec, Gson gson)
         throws JsonParseException, IOException {
       super(false, spec, gson, HttpMethod.getMethod(request.getMethod()),
@@ -167,7 +168,7 @@ public abstract class RequestData {
     private static RequestBody buildRequestBody(
         HttpServletRequest request, RequestBodySpec bodySpec, Gson gson) throws JsonSyntaxException {
       try {
-        InputStreamReader inputJson = new InputStreamReader(request.getInputStream());
+        String inputJson = getInputStreamAsJson(request);
         switch (bodySpec.getContentBodyType()) {
         case SIMPLE:
           Object simpleBody = gson.fromJson(inputJson, bodySpec.getBodyJavaType());
@@ -213,11 +214,19 @@ public abstract class RequestData {
     }
     private static WebServiceRequestInlined extractInlineRequest(
         HttpServletRequest request, Gson gson) throws IOException {
-      ServletInputStream input = request.getInputStream();
+      String inputJson = getInputStreamAsJson(request);
       WebServiceRequestInlined inlinedRequest =
-          gson.fromJson(new InputStreamReader(input), WebServiceRequestInlined.class);
+          gson.fromJson(inputJson, WebServiceRequestInlined.class);
       inlinedRequest.postInit(HttpMethod.getMethod(request.getMethod()));
       return inlinedRequest;
     }
+  }
+  private static String getInputStreamAsJson(HttpServletRequest request) throws IOException {
+    String inputJson = (String) request.getAttribute(REQUEST_BODY_JSON);
+    if (inputJson == null) {
+      inputJson = Streams.readAsString(request.getInputStream());
+      request.setAttribute(REQUEST_BODY_JSON, inputJson);
+    }
+    return inputJson;
   }
 }
