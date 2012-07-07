@@ -148,7 +148,17 @@ public final class CallPath {
 
   @Override
   public String toString() {
-    return String.format("basePath: %s, version:%.2f, servicePath:%s, resourceId: %s",
-        basePath, version, servicePath, resourceId);
+    StringBuilder sb = new StringBuilder();
+    sb.append(basePath);
+    sb.append(servicePath);
+    if (version != IGNORE_VERSION) {
+      sb.append("/");
+      sb.append(version);
+    }
+    if (resourceId != null) {
+      sb.append("/");
+      sb.append(resourceId);
+    }
+    return sb.toString();
   }
 }
