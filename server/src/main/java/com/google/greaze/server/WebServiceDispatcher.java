@@ -18,7 +18,6 @@ package com.google.greaze.server;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import com.google.greaze.definition.webservice.RequestBodyGsonTypeAdapterFactory;
 import com.google.greaze.definition.webservice.RequestSpec;
 import com.google.greaze.definition.webservice.ResponseBodyGsonTypeAdapterFactory;
 import com.google.greaze.definition.webservice.ResponseSpec;

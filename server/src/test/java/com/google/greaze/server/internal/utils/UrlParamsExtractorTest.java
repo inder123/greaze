@@ -18,12 +18,10 @@ package com.google.greaze.server.internal.utils;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.TypeVariable;
 import java.util.HashMap;
-import java.util.Map;
 
 import junit.framework.TestCase;
 
 import com.google.common.base.Preconditions;
-import com.google.common.collect.Maps;
 import com.google.greaze.definition.HeaderMap;
 import com.google.greaze.definition.UrlParams;
 import com.google.greaze.definition.UrlParamsSpec;
@@ -103,6 +101,7 @@ public class UrlParamsExtractorTest extends TestCase {
     assertNull(actual.occupation);
   }
 
+  @SuppressWarnings("serial")
   private static class Params extends HashMap<String, String> {
 //    private final Map<String, String> params = Maps.newHashMap();
 
