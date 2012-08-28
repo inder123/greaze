@@ -6,7 +6,7 @@
   <groupId>com.google.code.greaze</groupId>
   <artifactId>greaze-definition</artifactId>
   <packaging>jar</packaging>
-  <version>0.5.2</version>
+  <version>1.0</version>
   <name>Greaze REST and Web Service Definition Framework</name>
   <description>A Framework for Defining JSON based REST resources and Web-services</description>
   <parent>
