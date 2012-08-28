@@ -6,7 +6,7 @@
   <groupId>com.google.code.greaze</groupId>
   <artifactId>greaze-client</artifactId>
   <packaging>jar</packaging>
-  <version>0.5.2</version>
+  <version>1.0-SNAPSHOT</version>
   <name>Greaze REST and Web Service Client Framework</name>
   <description>A Framework for Writing Clients for JSON based REST and Web services</description>
   <parent>
