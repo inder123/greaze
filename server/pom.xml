@@ -48,13 +48,13 @@
     <dependency>
       <groupId>com.google.code.greaze</groupId>
       <artifactId>greaze-definition</artifactId>
-      <version>0.5.2-SNAPSHOT</version>
+      <version>0.5.2</version>
       <scope>compile</scope>
     </dependency>
     <dependency>
       <groupId>com.google.code.greaze</groupId>
       <artifactId>greaze-definition</artifactId>
-      <version>0.5.2-SNAPSHOT</version>
+      <version>0.5.2</version>
       <type>test-jar</type>
       <scope>test</scope>
     </dependency>
