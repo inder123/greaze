@@ -6,7 +6,7 @@
   <groupId>com.google.code.greaze</groupId>
   <artifactId>greaze-example-server</artifactId>
   <packaging>war</packaging>
-  <version>0.5.2</version>
+  <version>1.0-SNAPSHOT</version>
   <name>Greaze server-side example</name>
   <description>An example for writing server that implements JSON based REST and web-services using Greaze</description>
   <parent>
