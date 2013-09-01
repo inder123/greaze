@@ -3,7 +3,7 @@
   <modelVersion>4.0.0</modelVersion>
   <groupId>com.google.code.greaze</groupId>
   <artifactId>greaze</artifactId>
-  <version>1.0</version>
+  <version>1.1-SNAPSHOT</version>
   <packaging>pom</packaging>
   <name>Greaze Metaproject</name>
   <parent>
@@ -22,7 +22,7 @@
     <connection>scm:hg:http://greaze.googlecode.com/hg</connection>
     <developerConnection>scm:hg:https://greaze.googlecode.com/hg</developerConnection>
     <url>http://greaze.codegoogle.com/hg/client</url>
-    <tag>greaze-1.0</tag>
+    <tag>HEAD</tag>
   </scm>
   <issueManagement>
     <system>Google Code Issue Tracking</system>
