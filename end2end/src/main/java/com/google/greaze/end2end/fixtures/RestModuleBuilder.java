@@ -72,7 +72,6 @@ public class RestModuleBuilder {
     return this;
   }
 
-  @SuppressWarnings("unused")
   public Module build() {
     if (responseBuilderMap == null) responseBuilderMap = new ResponseBuilderMap.Builder().build();
     if (restCallSpecMap == null) restCallSpecMap = new RestCallSpecMap.Builder().build();
