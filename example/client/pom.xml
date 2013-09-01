@@ -10,20 +10,20 @@
   <parent>
     <groupId>com.google.code.greaze</groupId>
     <artifactId>greaze</artifactId>
-    <version>1.0-SNAPSHOT</version>
+    <version>1.0</version>
   </parent>
 
   <dependencies>
     <dependency>
       <groupId>com.google.code.greaze</groupId>
       <artifactId>greaze-client</artifactId>
-      <version>1.0-SNAPSHOT</version>
+      <version>1.0</version>
       <scope>compile</scope>
     </dependency>
     <dependency>
       <groupId>com.google.code.greaze</groupId>
       <artifactId>greaze-example-definition</artifactId>
-      <version>1.0-SNAPSHOT</version>
+      <version>1.0</version>
       <scope>compile</scope>
     </dependency>
   </dependencies>
